@@ -1,0 +1,50 @@
+{
+	"textures": {
+		"background": {
+            "file":  "textures/ice.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
+        "photon": {
+            "file":  "textures/photon.png"
+        },
+        "ship": {
+            "file":  "textures/ships.png"
+        },
+        "asteroid1": {
+            "file":  "textures/asteroid1.png"
+        },
+        "asteroid2": {
+            "file":  "textures/asteroid2.png"
+        }
+	},
+    "fonts": {
+        "pixel32": {
+            "file":     "fonts/LightPixel7.ttf",
+            "size":     32
+        }
+    },
+    "sounds" : {
+        "fusion" : {
+            "type": "sample",
+            "file": "sounds/fusion.ogg"
+        },
+        "laser" : {
+            "type": "sample",
+            "file": "sounds/laser.ogg",
+            "volume": 0.5
+        },
+        "blast" : {
+            "type": "sample",
+            "file": "sounds/explode.ogg"
+        },
+        "bang" : {
+            "type": "sample",
+            "file": "sounds/bang.ogg",
+            "volume": 0.8
+        }
+    },
+    "jsons" : {
+        "constants" : "json/constants.json"
+    }
+}
