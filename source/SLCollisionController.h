@@ -90,7 +90,7 @@ public:
      *
      * @return true if there is a ship-asteroid collision
      */
-    bool resolveCollision(const std::shared_ptr<Ship>& ship, AsteroidSet& ast);
+    bool resolveCollision(const std::shared_ptr<Player>& ship, AsteroidSet& ast);
 
 };
 

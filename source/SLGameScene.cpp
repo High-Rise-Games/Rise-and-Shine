@@ -57,12 +57,12 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _constants = assets->get<JsonValue>("constants");
 
     // Make a ship and set its texture
-    _ship = std::make_shared<Ship>(getSize()/2, _constants->get("ship"));
+    _ship = std::make_shared<Player>(getSize()/2, _constants->get("ship"));
     _ship->setTexture(assets->get<Texture>("ship"));
 
     // Initialize the asteroid set
-    _asteroids.init(_constants->get("asteroids"));
-    _asteroids.setTexture(assets->get<Texture>("asteroid1"));
+    //_asteroids.init(_constants->get("asteroids"));
+    //_asteroids.setTexture(assets->get<Texture>("asteroid1"));
 
     // Get the bang sound
     _bang = assets->get<Sound>("bang");
@@ -72,7 +72,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _text = TextLayout::allocWithText(msg, assets->get<Font>("pixel32"));
     _text->layout();
     
-    _collisions.init(getSize());
+    //_collisions.init(getSize());
     
     reset();
     return true;
@@ -99,7 +99,7 @@ void GameScene::reset() {
     _ship->setAngle(0);
     _ship->setVelocity(Vec2::ZERO);
     _ship->setHealth(_constants->get("ship")->getInt("health",0));
-    _asteroids.init(_constants->get("asteroids"));
+    //_asteroids.init(_constants->get("asteroids"));
 }
 
 /**
@@ -120,12 +120,12 @@ void GameScene::update(float timestep) {
     _ship->move( _input.getForward(),  _input.getTurn(), getSize());
     
     // Move the asteroids
-    _asteroids.update(getSize());
+    //_asteroids.update(getSize());
     
     // Check for collisions and play sound
-    if (_collisions.resolveCollision(_ship, _asteroids)) {
-        AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
-    }
+    //if (_collisions.resolveCollision(_ship, _asteroids)) {
+    //    AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
+    //}
     
     // Update the health meter
     _text->setText(strtool::format("Health %d", _ship->getHealth()));
@@ -147,7 +147,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->begin(getCamera()->getCombined());
     
     batch->draw(_background,Rect(Vec2::ZERO,getSize()));
-    _asteroids.draw(batch,getSize());
+    //_asteroids.draw(batch,getSize());
     _ship->draw(batch,getSize());
     
     batch->setColor(Color4::BLACK);

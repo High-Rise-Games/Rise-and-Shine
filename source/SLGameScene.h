@@ -20,6 +20,8 @@
 #include "SLAsteroidSet.h"
 #include "SLInputController.h"
 #include "SLCollisionController.h"
+#include "WindowGrid.h"
+#include "WindowGrid.cpp"
 
 
 
@@ -45,7 +47,7 @@ protected:
     /** The JSON value with all of the constants */
     std::shared_ptr<cugl::JsonValue> _constants;
     /** Location and animation information for the ship */
-    std::shared_ptr<Ship> _ship;
+    std::shared_ptr<Player> _ship;
     /** The location of all of the active asteroids */
     AsteroidSet _asteroids;
 

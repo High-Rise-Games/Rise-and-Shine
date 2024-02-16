@@ -44,7 +44,7 @@ using namespace cugl;
  *
  * @return true if there is a ship-asteroid collision
  */
-bool CollisionController::resolveCollision(const std::shared_ptr<Ship>& ship, AsteroidSet& aset) {
+bool CollisionController::resolveCollision(const std::shared_ptr<Player>& ship, AsteroidSet& aset) {
     bool collision = false;
     for(auto it = aset.current.begin(); it != aset.current.end(); ++it) {
         // Calculate the normal of the (possible) point of collision

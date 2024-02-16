@@ -297,24 +297,6 @@ void AsteroidSet::draw(const std::shared_ptr<SpriteBatch>& batch, Size size) {
 
             float r = _radius*scale;
             sprite->draw(batch,trans);
-            if (pos.x+r > size.width) {
-                trans.translate(-size.width,0);
-                sprite->draw(batch,trans);
-                trans.translate(size.width,0);
-            } else if (pos.x-r < 0) {
-                trans.translate(size.width,0);
-                sprite->draw(batch,trans);
-                trans.translate(-size.width,0);
-            }
-            if (pos.y+r > size.height) {
-                trans.translate(0,-size.height);
-                sprite->draw(batch,trans);
-                trans.translate(0,size.height);
-            } else if (pos.y-r < 0) {
-                trans.translate(0,size.height);
-                sprite->draw(batch,trans);
-                trans.translate(0,-size.height);
-            }
         }
     }
 }

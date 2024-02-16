@@ -26,7 +26,7 @@
 /**
  * Model class representing an alien ship.
  */
-class Ship {
+class Player {
 private:
     /** Position of the ship */
     cugl::Vec2 _pos;
@@ -84,12 +84,12 @@ public:
      * @param pos   The ship position
      * @param data  The data defining the physics constants
      */
-    Ship(const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data);
+    Player(const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data);
     
     /**
      * Disposes the ship, releasing all resources.
      */
-    ~Ship() {}
+    ~Player() {}
 
     
 #pragma mark Properties

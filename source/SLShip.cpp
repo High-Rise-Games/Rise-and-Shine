@@ -29,7 +29,7 @@ using namespace cugl;
  * @param pos   The ship position
  * @param data  The data defining the physics constants
  */
-Ship::Ship(const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data) {
+Player::Player(const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data) {
     _pos = pos;
     _ang  = 0;
     _dang = 0;
@@ -61,7 +61,7 @@ Ship::Ship(const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data) {
  *
  * @param value The current ship health.
  */
-void Ship::setHealth(int value) {
+void Player::setHealth(int value) {
     if (value >= 0) {
         // Do not allow health to go negative
         _health = value;
@@ -81,7 +81,7 @@ void Ship::setHealth(int value) {
  *
  * @param texture   The texture for the sprite sheet
  */
-void Ship::setTexture(const std::shared_ptr<cugl::Texture>& texture) {
+void Player::setTexture(const std::shared_ptr<cugl::Texture>& texture) {
     if (_framecols > 0) {
         int rows = _framesize/_framecols;
         if (_framesize % _framecols != 0) {
@@ -104,7 +104,7 @@ void Ship::setTexture(const std::shared_ptr<cugl::Texture>& texture) {
  * @param batch     The sprite batch to draw to
  * @param size      The size of the window (for wrap around)
  */
-void Ship::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) {
+void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) {
     // Don't draw if sprite not set
     if (_sprite) {
         // Transform to place the ship
@@ -162,7 +162,7 @@ void Ship::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) {
  * @param value     The position of this ship
  * @param size      The size of the window (for wrap around)
  */
-void Ship::setPosition(cugl::Vec2 value, cugl::Vec2 size) {
+void Player::setPosition(cugl::Vec2 value, cugl::Vec2 size) {
     _pos = value;
     wrapPosition(size);
 }
@@ -177,7 +177,7 @@ void Ship::setPosition(cugl::Vec2 value, cugl::Vec2 size) {
  * @param forward    Amount to move forward
  * @param turn        Amount to turn the ship
  */
-void Ship::move(float forward, float turn, Size size) {
+void Player::move(float forward, float turn, Size size) {
     // Process the ship turning.
     processTurn(turn);
 
@@ -222,7 +222,7 @@ void Ship::move(float forward, float turn, Size size) {
  *
  * @param turn Amount to turn the ship
  */
-void Ship::processTurn(float turn) {
+void Player::processTurn(float turn) {
     int frame = (_sprite == nullptr ? 0 : _sprite->getFrame());
     int fsize = (_sprite == nullptr ? 0 : _sprite->getSize());
     if (turn != 0.0f) {
@@ -266,7 +266,7 @@ void Ship::processTurn(float turn) {
  *
  * @param size      The size of the window (for wrap around)
  */
-void Ship::wrapPosition(cugl::Size size) {
+void Player::wrapPosition(cugl::Size size) {
     while (_pos.x > size.width) {
         _pos.x -= size.width;
     }
