@@ -1,0 +1,2310 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		EB1637EF295613A30090F7D4 /* CUFiletools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FD7D25B3671C00974097 /* CUFiletools.cpp */; };
+		EB1637F0295613A30090F7D4 /* CUStrings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4AEC461D01BC4F0090AF7F /* CUStrings.cpp */; };
+		EB1637F1295613A30090F7D4 /* CUThreadPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBCE54721DED2EC5003B52FE /* CUThreadPool.cpp */; };
+		EB1637F3295613A40090F7D4 /* CUFiletools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FD7D25B3671C00974097 /* CUFiletools.cpp */; };
+		EB1637F4295613A40090F7D4 /* CUStrings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4AEC461D01BC4F0090AF7F /* CUStrings.cpp */; };
+		EB1637F5295613A40090F7D4 /* CUThreadPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBCE54721DED2EC5003B52FE /* CUThreadPool.cpp */; };
+		EB1637F6295616040090F7D4 /* CUMathBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB6CDA5A1D25B77C006AD8CF /* CUMathBase.cpp */; };
+		EB1637F7295616050090F7D4 /* CUMathBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB6CDA5A1D25B77C006AD8CF /* CUMathBase.cpp */; };
+		EB1637F82956160A0090F7D4 /* CUVec2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4AEC131CFCE9B40090AF7F /* CUVec2.cpp */; };
+		EB1637F92956160A0090F7D4 /* CUVec2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4AEC131CFCE9B40090AF7F /* CUVec2.cpp */; };
+		EB1637FA2956160E0090F7D4 /* CUVec3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4AEC251CFF0BF50090AF7F /* CUVec3.cpp */; };
+		EB1637FB2956160E0090F7D4 /* CUVec3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4AEC251CFF0BF50090AF7F /* CUVec3.cpp */; };
+		EB1637FC2956195F0090F7D4 /* CUVec4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4AEC281CFF0C0B0090AF7F /* CUVec4.cpp */; };
+		EB1637FD2956195F0090F7D4 /* CUVec4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4AEC281CFF0C0B0090AF7F /* CUVec4.cpp */; };
+		EB1638002956196B0090F7D4 /* CUQuaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1BFD7C1D076942006D653A /* CUQuaternion.cpp */; };
+		EB16380F2956196C0090F7D4 /* CUQuaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1BFD7C1D076942006D653A /* CUQuaternion.cpp */; };
+		EB16381C29561A440090F7D4 /* CUMat4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1BFD701D066CED006D653A /* CUMat4.cpp */; };
+		EB16381D29561A440090F7D4 /* CUAffine2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5AE1D1AE9370005448C /* CUAffine2.cpp */; };
+		EB16381E29561A440090F7D4 /* CUMat4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1BFD701D066CED006D653A /* CUMat4.cpp */; };
+		EB16381F29561A440090F7D4 /* CUAffine2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5AE1D1AE9370005448C /* CUAffine2.cpp */; };
+		EB16382029561F650090F7D4 /* CUColor4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4AEC4C1D024FEB0090AF7F /* CUColor4.cpp */; };
+		EB16382129561F650090F7D4 /* CUColor4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4AEC4C1D024FEB0090AF7F /* CUColor4.cpp */; };
+		EB16382229561FAE0090F7D4 /* CURect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4AEC1F1CFDCC590090AF7F /* CURect.cpp */; };
+		EB16382329561FAE0090F7D4 /* CUSize.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4AEC101CFCE5A80090AF7F /* CUSize.cpp */; };
+		EB16382429561FAE0090F7D4 /* CUPolynomial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5B51D1C45830005448C /* CUPolynomial.cpp */; };
+		EB16382529561FAF0090F7D4 /* CURect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4AEC1F1CFDCC590090AF7F /* CURect.cpp */; };
+		EB16382629561FAF0090F7D4 /* CUSize.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4AEC101CFCE5A80090AF7F /* CUSize.cpp */; };
+		EB16382729561FAF0090F7D4 /* CUPolynomial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5B51D1C45830005448C /* CUPolynomial.cpp */; };
+		EB16382829561FE40090F7D4 /* CUPath2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC6AC3726994EE200DF1C83 /* CUPath2.cpp */; };
+		EB16382929561FE40090F7D4 /* CUPlane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5EC1D22F4700005448C /* CUPlane.cpp */; };
+		EB16382A29561FE40090F7D4 /* CURay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5E91D22EA970005448C /* CURay.cpp */; };
+		EB16382B29561FE40090F7D4 /* CUSpline2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5B81D1C6F3D0005448C /* CUSpline2.cpp */; };
+		EB16382C29561FE40090F7D4 /* CUPoly2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5B11D1B4F230005448C /* CUPoly2.cpp */; };
+		EB16382D29561FE40090F7D4 /* CUEasingBezier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB0F49181E79FE51002E50DB /* CUEasingBezier.cpp */; };
+		EB16382E29561FE40090F7D4 /* CUEasingFunction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB0F491C1E7A10B7002E50DB /* CUEasingFunction.cpp */; };
+		EB16382F29561FE40090F7D4 /* CUFrustum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5EF1D2307830005448C /* CUFrustum.cpp */; };
+		EB16383029561FE40090F7D4 /* CUPath2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC6AC3726994EE200DF1C83 /* CUPath2.cpp */; };
+		EB16383129561FE40090F7D4 /* CUPlane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5EC1D22F4700005448C /* CUPlane.cpp */; };
+		EB16383229561FE40090F7D4 /* CURay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5E91D22EA970005448C /* CURay.cpp */; };
+		EB16383329561FE40090F7D4 /* CUSpline2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5B81D1C6F3D0005448C /* CUSpline2.cpp */; };
+		EB16383429561FE40090F7D4 /* CUPoly2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5B11D1B4F230005448C /* CUPoly2.cpp */; };
+		EB16383529561FE40090F7D4 /* CUEasingBezier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB0F49181E79FE51002E50DB /* CUEasingBezier.cpp */; };
+		EB16383629561FE40090F7D4 /* CUEasingFunction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB0F491C1E7A10B7002E50DB /* CUEasingFunction.cpp */; };
+		EB16383729561FE40090F7D4 /* CUFrustum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5EF1D2307830005448C /* CUFrustum.cpp */; };
+		EB163838295621BF0090F7D4 /* CUDelaunayTriangulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDC803325B8CB2D004DECAE /* CUDelaunayTriangulator.cpp */; };
+		EB163839295621BF0090F7D4 /* CUPathFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC6AC9C269FD0C200DF1C83 /* CUPathFactory.cpp */; };
+		EB16383A295621C00090F7D4 /* CUSplinePather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5BE1D1C772B0005448C /* CUSplinePather.cpp */; };
+		EB16383B295621C00090F7D4 /* CUEarclipTriangulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC6ACE226A1E3F200DF1C83 /* CUEarclipTriangulator.cpp */; };
+		EB16383C295621C00090F7D4 /* CUSimpleExtruder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB07893B1D2D6E3E000BFDF7 /* CUSimpleExtruder.cpp */; };
+		EB16383D295621C00090F7D4 /* CUComplexExtruder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDC804625BA33D3004DECAE /* CUComplexExtruder.cpp */; };
+		EB16383E295621C00090F7D4 /* CUPolyFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDC804D25BF3832004DECAE /* CUPolyFactory.cpp */; };
+		EB16383F295621C00090F7D4 /* CUPathSmoother.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDC806025C08F7D004DECAE /* CUPathSmoother.cpp */; };
+		EB163840295621C00090F7D4 /* CUDelaunayTriangulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDC803325B8CB2D004DECAE /* CUDelaunayTriangulator.cpp */; };
+		EB163841295621C00090F7D4 /* CUPathFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC6AC9C269FD0C200DF1C83 /* CUPathFactory.cpp */; };
+		EB163842295621C00090F7D4 /* CUSplinePather.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5BE1D1C772B0005448C /* CUSplinePather.cpp */; };
+		EB163843295621C00090F7D4 /* CUEarclipTriangulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC6ACE226A1E3F200DF1C83 /* CUEarclipTriangulator.cpp */; };
+		EB163844295621C00090F7D4 /* CUSimpleExtruder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB07893B1D2D6E3E000BFDF7 /* CUSimpleExtruder.cpp */; };
+		EB163845295621C00090F7D4 /* CUComplexExtruder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDC804625BA33D3004DECAE /* CUComplexExtruder.cpp */; };
+		EB163846295621C00090F7D4 /* CUPolyFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDC804D25BF3832004DECAE /* CUPolyFactory.cpp */; };
+		EB163847295621C00090F7D4 /* CUPathSmoother.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDC806025C08F7D004DECAE /* CUPathSmoother.cpp */; };
+		EB16384E295625BB0090F7D4 /* CUTextWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB202C4B1DE5F9B900116616 /* CUTextWriter.cpp */; };
+		EB16384F295625BB0090F7D4 /* CUJsonWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB202C5C1DE9367C00116616 /* CUJsonWriter.cpp */; };
+		EB163850295625BB0090F7D4 /* CUBinaryReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB202C911DEBDE9900116616 /* CUBinaryReader.cpp */; };
+		EB163851295625BB0090F7D4 /* CUBinaryWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBA6CF0E1DECCB8B00BC2146 /* CUBinaryWriter.cpp */; };
+		EB163852295625BB0090F7D4 /* CUJsonReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB202C591DE924AB00116616 /* CUJsonReader.cpp */; };
+		EB163853295625BB0090F7D4 /* CUTextReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB202C411DE39BAA00116616 /* CUTextReader.cpp */; };
+		EB163857295625BB0090F7D4 /* CUTextWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB202C4B1DE5F9B900116616 /* CUTextWriter.cpp */; };
+		EB163858295625BB0090F7D4 /* CUJsonWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB202C5C1DE9367C00116616 /* CUJsonWriter.cpp */; };
+		EB163859295625BB0090F7D4 /* CUBinaryReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB202C911DEBDE9900116616 /* CUBinaryReader.cpp */; };
+		EB16385A295625BB0090F7D4 /* CUBinaryWriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBA6CF0E1DECCB8B00BC2146 /* CUBinaryWriter.cpp */; };
+		EB16385B295625BB0090F7D4 /* CUJsonReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB202C591DE924AB00116616 /* CUJsonReader.cpp */; };
+		EB16385C295625BB0090F7D4 /* CUTextReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB202C411DE39BAA00116616 /* CUTextReader.cpp */; };
+		EB16385D295626040090F7D4 /* CUMouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBB96D7B1D31EDB100C2CA07 /* CUMouse.cpp */; };
+		EB16385E295626040090F7D4 /* CUAccelerometer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBCB16161D36F79E0089A883 /* CUAccelerometer.cpp */; };
+		EB16385F295626040090F7D4 /* CUTouchscreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC7E78B1D333886000A892F /* CUTouchscreen.cpp */; };
+		EB163860295626040090F7D4 /* CUInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB0789521D3020E3000BFDF7 /* CUInput.cpp */; };
+		EB163861295626040090F7D4 /* CUTextInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB0789581D306BE4000BFDF7 /* CUTextInput.cpp */; };
+		EB163862295626040090F7D4 /* CUKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB0789551D302104000BFDF7 /* CUKeyboard.cpp */; };
+		EB163863295626050090F7D4 /* CUMouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBB96D7B1D31EDB100C2CA07 /* CUMouse.cpp */; };
+		EB163864295626050090F7D4 /* CUAccelerometer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBCB16161D36F79E0089A883 /* CUAccelerometer.cpp */; };
+		EB163865295626050090F7D4 /* CUTouchscreen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC7E78B1D333886000A892F /* CUTouchscreen.cpp */; };
+		EB163866295626050090F7D4 /* CUInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB0789521D3020E3000BFDF7 /* CUInput.cpp */; };
+		EB163867295626050090F7D4 /* CUTextInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB0789581D306BE4000BFDF7 /* CUTextInput.cpp */; };
+		EB163868295626050090F7D4 /* CUKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB0789551D302104000BFDF7 /* CUKeyboard.cpp */; };
+		EB1638692956265A0090F7D4 /* CUTextureLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBFE7BDF1E15A9AD001007C2 /* CUTextureLoader.cpp */; };
+		EB16386A2956265A0090F7D4 /* CUJsonLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB59D5201E251D1F00A93BB5 /* CUJsonLoader.cpp */; };
+		EB16386B2956265A0090F7D4 /* CUScene2Loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD3CE9E2005DAFC00CFD1BC /* CUScene2Loader.cpp */; };
+		EB16386C2956265A0090F7D4 /* CUWidgetLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB950C8923DA3BF100E54B1A /* CUWidgetLoader.cpp */; };
+		EB16386D2956265A0090F7D4 /* CUAssetManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBFE7C011E187321001007C2 /* CUAssetManager.cpp */; };
+		EB16386F2956265A0090F7D4 /* CUJsonValue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB202C501DE68CCA00116616 /* CUJsonValue.cpp */; };
+		EB1638702956265A0090F7D4 /* CUFontLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBFE7BED1E15CC75001007C2 /* CUFontLoader.cpp */; };
+		EB1638712956265B0090F7D4 /* CUTextureLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBFE7BDF1E15A9AD001007C2 /* CUTextureLoader.cpp */; };
+		EB1638722956265B0090F7D4 /* CUJsonLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB59D5201E251D1F00A93BB5 /* CUJsonLoader.cpp */; };
+		EB1638732956265B0090F7D4 /* CUScene2Loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD3CE9E2005DAFC00CFD1BC /* CUScene2Loader.cpp */; };
+		EB1638742956265B0090F7D4 /* CUWidgetLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB950C8923DA3BF100E54B1A /* CUWidgetLoader.cpp */; };
+		EB1638752956265B0090F7D4 /* CUAssetManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBFE7C011E187321001007C2 /* CUAssetManager.cpp */; };
+		EB1638772956265B0090F7D4 /* CUJsonValue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB202C501DE68CCA00116616 /* CUJsonValue.cpp */; };
+		EB1638782956265B0090F7D4 /* CUFontLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBFE7BED1E15CC75001007C2 /* CUFontLoader.cpp */; };
+		EB163879295627E20090F7D4 /* CUFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FD7325B3563C00974097 /* CUFont.cpp */; };
+		EB16387A295627E20090F7D4 /* CUShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5C91D1DCCC60005448C /* CUShader.cpp */; };
+		EB16387B295627E20090F7D4 /* CUSpriteBatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5C11D1CE15E0005448C /* CUSpriteBatch.cpp */; };
+		EB16387C295627E20090F7D4 /* CUTextLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC6ADB326AF3B4000DF1C83 /* CUTextLayout.cpp */; };
+		EB16387D295627E20090F7D4 /* CUGradient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FD7025B3563C00974097 /* CUGradient.cpp */; };
+		EB16387E295627E20090F7D4 /* CUSpriteSheet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB28FC3D279F7DA900D15D07 /* CUSpriteSheet.cpp */; };
+		EB16387F295627E20090F7D4 /* CURenderTarget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FD7425B3563C00974097 /* CURenderTarget.cpp */; };
+		EB163880295627E20090F7D4 /* CUTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5D21D1E06B60005448C /* CUTexture.cpp */; };
+		EB163881295627E20090F7D4 /* CUScissor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FD6F25B3563C00974097 /* CUScissor.cpp */; };
+		EB163882295627E20090F7D4 /* CUUniformBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FD7125B3563C00974097 /* CUUniformBuffer.cpp */; };
+		EB163883295627E20090F7D4 /* CUOrthographicCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5F51D236E990005448C /* CUOrthographicCamera.cpp */; };
+		EB163884295627E20090F7D4 /* CUCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5F21D2356CC0005448C /* CUCamera.cpp */; };
+		EB163885295627E20090F7D4 /* CUPerspectiveCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB6CDA441D25703A006AD8CF /* CUPerspectiveCamera.cpp */; };
+		EB163886295627E20090F7D4 /* CUVertexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FD7225B3563C00974097 /* CUVertexBuffer.cpp */; };
+		EB163887295627E30090F7D4 /* CUFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FD7325B3563C00974097 /* CUFont.cpp */; };
+		EB163888295627E30090F7D4 /* CUShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5C91D1DCCC60005448C /* CUShader.cpp */; };
+		EB163889295627E30090F7D4 /* CUSpriteBatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5C11D1CE15E0005448C /* CUSpriteBatch.cpp */; };
+		EB16388A295627E30090F7D4 /* CUTextLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC6ADB326AF3B4000DF1C83 /* CUTextLayout.cpp */; };
+		EB16388B295627E30090F7D4 /* CUGradient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FD7025B3563C00974097 /* CUGradient.cpp */; };
+		EB16388C295627E30090F7D4 /* CUSpriteSheet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB28FC3D279F7DA900D15D07 /* CUSpriteSheet.cpp */; };
+		EB16388D295627E30090F7D4 /* CURenderTarget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FD7425B3563C00974097 /* CURenderTarget.cpp */; };
+		EB16388E295627E30090F7D4 /* CUTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5D21D1E06B60005448C /* CUTexture.cpp */; };
+		EB16388F295627E30090F7D4 /* CUScissor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FD6F25B3563C00974097 /* CUScissor.cpp */; };
+		EB163890295627E30090F7D4 /* CUUniformBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FD7125B3563C00974097 /* CUUniformBuffer.cpp */; };
+		EB163891295627E30090F7D4 /* CUOrthographicCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5F51D236E990005448C /* CUOrthographicCamera.cpp */; };
+		EB163892295627E30090F7D4 /* CUCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB8EC5F21D2356CC0005448C /* CUCamera.cpp */; };
+		EB163893295627E30090F7D4 /* CUPerspectiveCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB6CDA441D25703A006AD8CF /* CUPerspectiveCamera.cpp */; };
+		EB163894295627E30090F7D4 /* CUVertexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FD7225B3563C00974097 /* CUVertexBuffer.cpp */; };
+		EB163895295634660090F7D4 /* CUWireNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FDB525B3ADE600974097 /* CUWireNode.cpp */; };
+		EB163896295634660090F7D4 /* CUSceneNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FDB325B3ADE600974097 /* CUSceneNode.cpp */; };
+		EB163897295634660090F7D4 /* CUPathNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FDB925B3ADE600974097 /* CUPathNode.cpp */; };
+		EB163898295634660090F7D4 /* CUOrderedNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9D6A5525F56B0200C076C1 /* CUOrderedNode.cpp */; };
+		EB163899295634660090F7D4 /* CUTexturedNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FDB825B3ADE600974097 /* CUTexturedNode.cpp */; };
+		EB16389A295634660090F7D4 /* CUPolygonNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FDB625B3ADE600974097 /* CUPolygonNode.cpp */; };
+		EB16389B295634660090F7D4 /* CUSpriteNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FDB725B3ADE600974097 /* CUSpriteNode.cpp */; };
+		EB16389C295634660090F7D4 /* CUCanvasNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC6AD2826A74CE500DF1C83 /* CUCanvasNode.cpp */; };
+		EB16389D295634660090F7D4 /* CUWireNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FDB525B3ADE600974097 /* CUWireNode.cpp */; };
+		EB16389E295634670090F7D4 /* CUSceneNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FDB325B3ADE600974097 /* CUSceneNode.cpp */; };
+		EB16389F295634670090F7D4 /* CUPathNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FDB925B3ADE600974097 /* CUPathNode.cpp */; };
+		EB1638A0295634670090F7D4 /* CUOrderedNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9D6A5525F56B0200C076C1 /* CUOrderedNode.cpp */; };
+		EB1638A1295634670090F7D4 /* CUTexturedNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FDB825B3ADE600974097 /* CUTexturedNode.cpp */; };
+		EB1638A2295634670090F7D4 /* CUPolygonNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FDB625B3ADE600974097 /* CUPolygonNode.cpp */; };
+		EB1638A3295634670090F7D4 /* CUSpriteNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FDB725B3ADE600974097 /* CUSpriteNode.cpp */; };
+		EB1638A4295634670090F7D4 /* CUCanvasNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC6AD2826A74CE500DF1C83 /* CUCanvasNode.cpp */; };
+		EB1638A52956346B0090F7D4 /* CUScrollPane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB28FC40279F7F8400D15D07 /* CUScrollPane.cpp */; };
+		EB1638A62956346B0090F7D4 /* CUTextField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD3CE7B2004070000CFD1BC /* CUTextField.cpp */; };
+		EB1638A72956346B0090F7D4 /* CUProgressBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBFE7C101E1AB140001007C2 /* CUProgressBar.cpp */; };
+		EB1638A82956346B0090F7D4 /* CULabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4AEC181CFD4DCD0090AF7F /* CULabel.cpp */; };
+		EB1638A92956346B0090F7D4 /* CUButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBFE7C131E1B00CA001007C2 /* CUButton.cpp */; };
+		EB1638AA2956346B0090F7D4 /* CUNinePatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FDC125B3AE3200974097 /* CUNinePatch.cpp */; };
+		EB1638AB2956346B0090F7D4 /* CUSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD3CE7C2004070000CFD1BC /* CUSlider.cpp */; };
+		EB1638AC2956346B0090F7D4 /* CUScrollPane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB28FC40279F7F8400D15D07 /* CUScrollPane.cpp */; };
+		EB1638AD2956346B0090F7D4 /* CUTextField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD3CE7B2004070000CFD1BC /* CUTextField.cpp */; };
+		EB1638AE2956346B0090F7D4 /* CUProgressBar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBFE7C101E1AB140001007C2 /* CUProgressBar.cpp */; };
+		EB1638AF2956346B0090F7D4 /* CULabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4AEC181CFD4DCD0090AF7F /* CULabel.cpp */; };
+		EB1638B02956346B0090F7D4 /* CUButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBFE7C131E1B00CA001007C2 /* CUButton.cpp */; };
+		EB1638B12956346B0090F7D4 /* CUNinePatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FDC125B3AE3200974097 /* CUNinePatch.cpp */; };
+		EB1638B22956346B0090F7D4 /* CUSlider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD3CE7C2004070000CFD1BC /* CUSlider.cpp */; };
+		EB1638B3295634700090F7D4 /* CUAnchoredLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD3CEA32007260F00CFD1BC /* CUAnchoredLayout.cpp */; };
+		EB1638B4295634710090F7D4 /* CULayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB77B91E2010FA3300713568 /* CULayout.cpp */; };
+		EB1638B5295634710090F7D4 /* CUFloatLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB77B914200FF15800713568 /* CUFloatLayout.cpp */; };
+		EB1638B6295634710090F7D4 /* CUGridLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB77B9212010FD0500713568 /* CUGridLayout.cpp */; };
+		EB1638B7295634710090F7D4 /* CUAnchoredLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD3CEA32007260F00CFD1BC /* CUAnchoredLayout.cpp */; };
+		EB1638B8295634710090F7D4 /* CULayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB77B91E2010FA3300713568 /* CULayout.cpp */; };
+		EB1638B9295634710090F7D4 /* CUFloatLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB77B914200FF15800713568 /* CUFloatLayout.cpp */; };
+		EB1638BA295634710090F7D4 /* CUGridLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB77B9212010FD0500713568 /* CUGridLayout.cpp */; };
+		EB1638D629563A240090F7D4 /* CUScene2Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDC807525C0AD7D004DECAE /* CUScene2Texture.cpp */; };
+		EB1638D729563A240090F7D4 /* CUScene2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FDC325B3AE5500974097 /* CUScene2.cpp */; };
+		EB1638DB29563A240090F7D4 /* CUScene2Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDC807525C0AD7D004DECAE /* CUScene2Texture.cpp */; };
+		EB1638DC29563A240090F7D4 /* CUScene2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB45FDC325B3AE5500974097 /* CUScene2.cpp */; };
+		EB1639A9295A23E70090F7D4 /* CUPinchGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639A5295A23E70090F7D4 /* CUPinchGesture.cpp */; };
+		EB1639AA295A23E70090F7D4 /* CUSpinGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639A6295A23E70090F7D4 /* CUSpinGesture.cpp */; };
+		EB1639AB295A23E70090F7D4 /* CUCoreGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639A7295A23E70090F7D4 /* CUCoreGesture.cpp */; };
+		EB1639AC295A23E70090F7D4 /* CUPanGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639A8295A23E70090F7D4 /* CUPanGesture.cpp */; };
+		EB1639B5295A24160090F7D4 /* CUAudioEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639AE295A24150090F7D4 /* CUAudioEngine.cpp */; };
+		EB1639B6295A24160090F7D4 /* CUAudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639AF295A24150090F7D4 /* CUAudioDecoder.cpp */; };
+		EB1639B7295A24160090F7D4 /* CUAudioQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639B0295A24160090F7D4 /* CUAudioQueue.cpp */; };
+		EB1639B8295A24160090F7D4 /* CUAudioSample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639B1295A24160090F7D4 /* CUAudioSample.cpp */; };
+		EB1639B9295A24160090F7D4 /* CUAudioWaveform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639B2295A24160090F7D4 /* CUAudioWaveform.cpp */; };
+		EB1639BA295A24160090F7D4 /* CUSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639B3295A24160090F7D4 /* CUSound.cpp */; };
+		EB1639BB295A24160090F7D4 /* CUAudioDevices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639B4295A24160090F7D4 /* CUAudioDevices.cpp */; };
+		EB1639C9295A243D0090F7D4 /* CUAudioSynchronizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639BD295A243D0090F7D4 /* CUAudioSynchronizer.cpp */; };
+		EB1639CA295A243D0090F7D4 /* CUAudioInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639BE295A243D0090F7D4 /* CUAudioInput.cpp */; };
+		EB1639CB295A243D0090F7D4 /* CUAudioMixer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639BF295A243D0090F7D4 /* CUAudioMixer.cpp */; };
+		EB1639CC295A243D0090F7D4 /* CUAudioOutput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639C0295A243D0090F7D4 /* CUAudioOutput.cpp */; };
+		EB1639CD295A243D0090F7D4 /* CUAudioPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639C1295A243D0090F7D4 /* CUAudioPlayer.cpp */; };
+		EB1639CE295A243D0090F7D4 /* CUAudioRedistributor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639C2295A243D0090F7D4 /* CUAudioRedistributor.cpp */; };
+		EB1639CF295A243D0090F7D4 /* CUAudioPanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639C3295A243D0090F7D4 /* CUAudioPanner.cpp */; };
+		EB1639D0295A243D0090F7D4 /* CUAudioSpinner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639C4295A243D0090F7D4 /* CUAudioSpinner.cpp */; };
+		EB1639D1295A243D0090F7D4 /* CUAudioFader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639C5295A243D0090F7D4 /* CUAudioFader.cpp */; };
+		EB1639D2295A243D0090F7D4 /* CUAudioNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639C6295A243D0090F7D4 /* CUAudioNode.cpp */; };
+		EB1639D3295A243D0090F7D4 /* CUAudioScheduler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639C7295A243D0090F7D4 /* CUAudioScheduler.cpp */; };
+		EB1639D4295A243D0090F7D4 /* CUAudioResampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639C8295A243D0090F7D4 /* CUAudioResampler.cpp */; };
+		EB1639D7295A326D0090F7D4 /* CUAudioTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639D6295A326D0090F7D4 /* CUAudioTypes.cpp */; };
+		EB1639E0295A38FE0090F7D4 /* CUAudioDevices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639B4295A24160090F7D4 /* CUAudioDevices.cpp */; };
+		EB1639E1295A38FE0090F7D4 /* CUAudioEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639AE295A24150090F7D4 /* CUAudioEngine.cpp */; };
+		EB1639E2295A38FE0090F7D4 /* CUAudioDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639AF295A24150090F7D4 /* CUAudioDecoder.cpp */; };
+		EB1639E3295A38FE0090F7D4 /* CUAudioTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639D6295A326D0090F7D4 /* CUAudioTypes.cpp */; };
+		EB1639E4295A38FE0090F7D4 /* CUSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639B3295A24160090F7D4 /* CUSound.cpp */; };
+		EB1639E5295A38FE0090F7D4 /* CUAudioSample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639B1295A24160090F7D4 /* CUAudioSample.cpp */; };
+		EB1639E6295A38FE0090F7D4 /* CUAudioQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639B0295A24160090F7D4 /* CUAudioQueue.cpp */; };
+		EB1639E7295A38FE0090F7D4 /* CUAudioWaveform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639B2295A24160090F7D4 /* CUAudioWaveform.cpp */; };
+		EB1639F0295B6CFA0090F7D4 /* CUSoundLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBB8FEFE21E198D60039834E /* CUSoundLoader.cpp */; };
+		EB1639F4295B6CFB0090F7D4 /* CUSoundLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBB8FEFE21E198D60039834E /* CUSoundLoader.cpp */; };
+		EB1639FC295D2F470090F7D4 /* CUAudioRedistributor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639C2295A243D0090F7D4 /* CUAudioRedistributor.cpp */; };
+		EB1639FD295D2F470090F7D4 /* CUAudioSynchronizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639BD295A243D0090F7D4 /* CUAudioSynchronizer.cpp */; };
+		EB1639FE295D2F470090F7D4 /* CUAudioSpinner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639C4295A243D0090F7D4 /* CUAudioSpinner.cpp */; };
+		EB1639FF295D2F470090F7D4 /* CUAudioScheduler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639C7295A243D0090F7D4 /* CUAudioScheduler.cpp */; };
+		EB163A00295D2F470090F7D4 /* CUAudioNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639C6295A243D0090F7D4 /* CUAudioNode.cpp */; };
+		EB163A01295D2F470090F7D4 /* CUAudioPanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639C3295A243D0090F7D4 /* CUAudioPanner.cpp */; };
+		EB163A02295D2F470090F7D4 /* CUAudioResampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639C8295A243D0090F7D4 /* CUAudioResampler.cpp */; };
+		EB163A03295D2F470090F7D4 /* CUAudioMixer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639BF295A243D0090F7D4 /* CUAudioMixer.cpp */; };
+		EB163A04295D2F470090F7D4 /* CUAudioPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639C1295A243D0090F7D4 /* CUAudioPlayer.cpp */; };
+		EB163A05295D2F470090F7D4 /* CUAudioInput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639BE295A243D0090F7D4 /* CUAudioInput.cpp */; };
+		EB163A06295D2F470090F7D4 /* CUAudioOutput.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639C0295A243D0090F7D4 /* CUAudioOutput.cpp */; };
+		EB163A07295D2F470090F7D4 /* CUAudioFader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639C5295A243D0090F7D4 /* CUAudioFader.cpp */; };
+		EB163A14295D2F640090F7D4 /* CUPanGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639A8295A23E70090F7D4 /* CUPanGesture.cpp */; };
+		EB163A15295D2F640090F7D4 /* CUPinchGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639A5295A23E70090F7D4 /* CUPinchGesture.cpp */; };
+		EB163A16295D2F640090F7D4 /* CUSpinGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639A6295A23E70090F7D4 /* CUSpinGesture.cpp */; };
+		EB163A17295D2F640090F7D4 /* CUCoreGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1639A7295A23E70090F7D4 /* CUCoreGesture.cpp */; };
+		EB163A4C295E0A930090F7D4 /* CURenderBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163A4B295E0A930090F7D4 /* CURenderBase.cpp */; };
+		EB163A4D295E0A930090F7D4 /* CURenderBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163A4B295E0A930090F7D4 /* CURenderBase.cpp */; };
+		EB163A50295E11680090F7D4 /* CUStencilEffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163A4F295E11680090F7D4 /* CUStencilEffect.cpp */; };
+		EB163A51295E11680090F7D4 /* CUStencilEffect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163A4F295E11680090F7D4 /* CUStencilEffect.cpp */; };
+		EB163A63295E14200090F7D4 /* CUAnimateAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163A5C295E14200090F7D4 /* CUAnimateAction.cpp */; };
+		EB163A64295E14200090F7D4 /* CUAnimateAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163A5C295E14200090F7D4 /* CUAnimateAction.cpp */; };
+		EB163A65295E14200090F7D4 /* CUActionManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163A5D295E14200090F7D4 /* CUActionManager.cpp */; };
+		EB163A66295E14200090F7D4 /* CUActionManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163A5D295E14200090F7D4 /* CUActionManager.cpp */; };
+		EB163A67295E14200090F7D4 /* CUScaleAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163A5E295E14200090F7D4 /* CUScaleAction.cpp */; };
+		EB163A68295E14200090F7D4 /* CUScaleAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163A5E295E14200090F7D4 /* CUScaleAction.cpp */; };
+		EB163A69295E14200090F7D4 /* CUAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163A5F295E14200090F7D4 /* CUAction.cpp */; };
+		EB163A6A295E14200090F7D4 /* CUAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163A5F295E14200090F7D4 /* CUAction.cpp */; };
+		EB163A6B295E14200090F7D4 /* CUMoveAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163A60295E14200090F7D4 /* CUMoveAction.cpp */; };
+		EB163A6C295E14200090F7D4 /* CUMoveAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163A60295E14200090F7D4 /* CUMoveAction.cpp */; };
+		EB163A6D295E14200090F7D4 /* CURotateAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163A61295E14200090F7D4 /* CURotateAction.cpp */; };
+		EB163A6E295E14200090F7D4 /* CURotateAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163A61295E14200090F7D4 /* CURotateAction.cpp */; };
+		EB163A6F295E14200090F7D4 /* CUFadeAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163A62295E14200090F7D4 /* CUFadeAction.cpp */; };
+		EB163A70295E14200090F7D4 /* CUFadeAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163A62295E14200090F7D4 /* CUFadeAction.cpp */; };
+		EB163B07295E1BF90090F7D4 /* CUObstacleSelector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163AFE295E1BF80090F7D4 /* CUObstacleSelector.cpp */; };
+		EB163B08295E1BF90090F7D4 /* CUBoxObstacle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163AFF295E1BF90090F7D4 /* CUBoxObstacle.cpp */; };
+		EB163B09295E1BF90090F7D4 /* CUPolygonObstacle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163B00295E1BF90090F7D4 /* CUPolygonObstacle.cpp */; };
+		EB163B0A295E1BF90090F7D4 /* CUObstacle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163B01295E1BF90090F7D4 /* CUObstacle.cpp */; };
+		EB163B0B295E1BF90090F7D4 /* CUCapsuleObstacle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163B02295E1BF90090F7D4 /* CUCapsuleObstacle.cpp */; };
+		EB163B0C295E1BF90090F7D4 /* CUObstacleWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163B03295E1BF90090F7D4 /* CUObstacleWorld.cpp */; };
+		EB163B0E295E1BF90090F7D4 /* CUWheelObstacle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163B05295E1BF90090F7D4 /* CUWheelObstacle.cpp */; };
+		EB163B0F295E1BFF0090F7D4 /* CUWheelObstacle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163B05295E1BF90090F7D4 /* CUWheelObstacle.cpp */; };
+		EB163B10295E1BFF0090F7D4 /* CUCapsuleObstacle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163B02295E1BF90090F7D4 /* CUCapsuleObstacle.cpp */; };
+		EB163B11295E1BFF0090F7D4 /* CUBoxObstacle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163AFF295E1BF90090F7D4 /* CUBoxObstacle.cpp */; };
+		EB163B12295E1BFF0090F7D4 /* CUObstacleWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163B03295E1BF90090F7D4 /* CUObstacleWorld.cpp */; };
+		EB163B14295E1BFF0090F7D4 /* CUPolygonObstacle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163B00295E1BF90090F7D4 /* CUPolygonObstacle.cpp */; };
+		EB163B16295E1BFF0090F7D4 /* CUObstacle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163B01295E1BF90090F7D4 /* CUObstacle.cpp */; };
+		EB163B17295E1BFF0090F7D4 /* CUObstacleSelector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB163AFE295E1BF80090F7D4 /* CUObstacleSelector.cpp */; };
+		EB7453F61D74D276002FBAE6 /* CUApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4AEC041CFCBA270090AF7F /* CUApplication.cpp */; };
+		EB7453F71D74D276002FBAE6 /* CUDisplay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB77F1CE1D3690E000D52B9E /* CUDisplay.cpp */; };
+		EB9E56E02B38B0E50074B480 /* libbox2d.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EB9E56CE2B38B0A20074B480 /* libbox2d.a */; };
+		EB9E56E22B38B0E50074B480 /* libsdlapp-mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EB9E56DD2B38B0CC0074B480 /* libsdlapp-mac.a */; };
+		EB9E56EE2B38B62B0074B480 /* clipper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9E56EA2B38B62B0074B480 /* clipper.cpp */; };
+		EB9E56EF2B38B62B0074B480 /* clipper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9E56EA2B38B62B0074B480 /* clipper.cpp */; };
+		EB9E56F52B38B64A0074B480 /* libpoly2tri.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EB9E56F42B38B6360074B480 /* libpoly2tri.a */; };
+		EB9E56F62B38B6630074B480 /* libbox2d.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EB9E56CE2B38B0A20074B480 /* libbox2d.a */; };
+		EB9E56F72B38B6630074B480 /* libpoly2tri.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EB9E56F42B38B6360074B480 /* libpoly2tri.a */; };
+		EB9E56F82B38B6630074B480 /* libsdlapp-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EB9E56DF2B38B0CC0074B480 /* libsdlapp-ios.a */; };
+		EBBF18101D7486EA008E2001 /* CUApplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4AEC041CFCBA270090AF7F /* CUApplication.cpp */; };
+		EBBF18111D7486EA008E2001 /* CUDisplay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB77F1CE1D3690E000D52B9E /* CUDisplay.cpp */; };
+		EBDABBAA2B40F35E006862AF /* CUInetAddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA22B40F35E006862AF /* CUInetAddress.cpp */; };
+		EBDABBAB2B40F35E006862AF /* CUNetcodePeer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA32B40F35E006862AF /* CUNetcodePeer.cpp */; };
+		EBDABBAC2B40F35E006862AF /* CUICEAddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA42B40F35E006862AF /* CUICEAddress.cpp */; };
+		EBDABBAD2B40F35E006862AF /* CUNetcodeChannel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA52B40F35E006862AF /* CUNetcodeChannel.cpp */; };
+		EBDABBAE2B40F35E006862AF /* CUNetcodeConnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA62B40F35E006862AF /* CUNetcodeConnection.cpp */; };
+		EBDABBAF2B40F35E006862AF /* CUNetcodeSerializer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA72B40F35E006862AF /* CUNetcodeSerializer.cpp */; };
+		EBDABBB02B40F35E006862AF /* CUNetcodeConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA82B40F35E006862AF /* CUNetcodeConfig.cpp */; };
+		EBDABBB12B40F35E006862AF /* CUNetworkLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA92B40F35E006862AF /* CUNetworkLayer.cpp */; };
+		EBDABBBF2B40F379006862AF /* libdatachannel-mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBDABBBC2B40F36F006862AF /* libdatachannel-mac.a */; };
+		EBDABBC02B40F37F006862AF /* libdatachannel-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBDABBBE2B40F36F006862AF /* libdatachannel-ios.a */; };
+		EBDABC452B4297A8006862AF /* CUTextureRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABC422B4297A8006862AF /* CUTextureRenderer.cpp */; };
+		EBDABC462B4297A8006862AF /* CUTextureRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABC422B4297A8006862AF /* CUTextureRenderer.cpp */; };
+		EBDABD312B42AC97006862AF /* CUButtonGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABD252B42AC97006862AF /* CUButtonGroup.cpp */; };
+		EBDABD322B42AC97006862AF /* CUButtonGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABD252B42AC97006862AF /* CUButtonGroup.cpp */; };
+		EBDABD3E2B42ACC4006862AF /* CUMeshNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABD3D2B42ACC4006862AF /* CUMeshNode.cpp */; };
+		EBDABD3F2B42ACC4006862AF /* CUMeshNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABD3D2B42ACC4006862AF /* CUMeshNode.cpp */; };
+		EBDABE442B49FFEE006862AF /* CUJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE422B49FFEE006862AF /* CUJoint.cpp */; };
+		EBDABE452B49FFEE006862AF /* CUJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE422B49FFEE006862AF /* CUJoint.cpp */; };
+		EBDABE5E2B4C588E006862AF /* CUDistanceJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE5D2B4C588E006862AF /* CUDistanceJoint.cpp */; };
+		EBDABE5F2B4C588E006862AF /* CUDistanceJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE5D2B4C588E006862AF /* CUDistanceJoint.cpp */; };
+		EBDABE612B4C58A3006862AF /* CUFrictionJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE602B4C58A3006862AF /* CUFrictionJoint.cpp */; };
+		EBDABE622B4C58A3006862AF /* CUFrictionJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE602B4C58A3006862AF /* CUFrictionJoint.cpp */; };
+		EBDABE642B4C58B2006862AF /* CUGearJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE632B4C58B2006862AF /* CUGearJoint.cpp */; };
+		EBDABE652B4C58B2006862AF /* CUGearJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE632B4C58B2006862AF /* CUGearJoint.cpp */; };
+		EBDABE672B4C58C3006862AF /* CUMotorJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE662B4C58C3006862AF /* CUMotorJoint.cpp */; };
+		EBDABE682B4C58C3006862AF /* CUMotorJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE662B4C58C3006862AF /* CUMotorJoint.cpp */; };
+		EBDABE6A2B4C58E0006862AF /* CUMouseJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE692B4C58E0006862AF /* CUMouseJoint.cpp */; };
+		EBDABE6B2B4C58E0006862AF /* CUMouseJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE692B4C58E0006862AF /* CUMouseJoint.cpp */; };
+		EBDABE6D2B4C58F6006862AF /* CUPrismaticJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE6C2B4C58F6006862AF /* CUPrismaticJoint.cpp */; };
+		EBDABE6E2B4C58F6006862AF /* CUPrismaticJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE6C2B4C58F6006862AF /* CUPrismaticJoint.cpp */; };
+		EBDABE702B4C590D006862AF /* CUPulleyJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE6F2B4C590D006862AF /* CUPulleyJoint.cpp */; };
+		EBDABE712B4C590D006862AF /* CUPulleyJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE6F2B4C590D006862AF /* CUPulleyJoint.cpp */; };
+		EBDABE732B4C5920006862AF /* CURevoluteJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE722B4C5920006862AF /* CURevoluteJoint.cpp */; };
+		EBDABE742B4C5920006862AF /* CURevoluteJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE722B4C5920006862AF /* CURevoluteJoint.cpp */; };
+		EBDABE762B4C5933006862AF /* CUWheelJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE752B4C5933006862AF /* CUWheelJoint.cpp */; };
+		EBDABE772B4C5933006862AF /* CUWheelJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE752B4C5933006862AF /* CUWheelJoint.cpp */; };
+		EBDABE792B4C5944006862AF /* CUWeldJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE782B4C5944006862AF /* CUWeldJoint.cpp */; };
+		EBDABE7A2B4C5944006862AF /* CUWeldJoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE782B4C5944006862AF /* CUWeldJoint.cpp */; };
+		EBDABEE22B4C8690006862AF /* CUNetWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE2B2B49DDE6006862AF /* CUNetWorld.cpp */; };
+		EBDABEE32B4C8691006862AF /* CUNetWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE2B2B49DDE6006862AF /* CUNetWorld.cpp */; };
+		EBDABEE52B4CABB4006862AF /* CUPhysObstEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABEE42B4CABB4006862AF /* CUPhysObstEvent.cpp */; };
+		EBDABEE62B4CABB4006862AF /* CUPhysObstEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABEE42B4CABB4006862AF /* CUPhysObstEvent.cpp */; };
+		EBDABEE82B4CB720006862AF /* CUPhysSyncEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABEE72B4CB720006862AF /* CUPhysSyncEvent.cpp */; };
+		EBDABEE92B4CB720006862AF /* CUPhysSyncEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABEE72B4CB720006862AF /* CUPhysSyncEvent.cpp */; };
+		EBDABEEF2B4CC1B7006862AF /* CUGameStateEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABEEE2B4CC1B7006862AF /* CUGameStateEvent.cpp */; };
+		EBDABEF02B4CC1B7006862AF /* CUGameStateEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABEEE2B4CC1B7006862AF /* CUGameStateEvent.cpp */; };
+		EBDABEF12B4CDBCF006862AF /* CUNetPhysicsController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE242B49BD1E006862AF /* CUNetPhysicsController.cpp */; };
+		EBDABEF22B4CDBD0006862AF /* CUNetPhysicsController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE242B49BD1E006862AF /* CUNetPhysicsController.cpp */; };
+		EBDABEF32B4DACED006862AF /* CUNetEventController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE252B49BD1E006862AF /* CUNetEventController.cpp */; };
+		EBDABEF42B4DACEE006862AF /* CUNetEventController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABE252B49BD1E006862AF /* CUNetEventController.cpp */; };
+		EBDABF042B4DC48B006862AF /* CUAlgorithmicReverb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABF032B4DC48B006862AF /* CUAlgorithmicReverb.cpp */; };
+		EBDABF052B4DC48B006862AF /* CUAlgorithmicReverb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABF032B4DC48B006862AF /* CUAlgorithmicReverb.cpp */; };
+		EBDABF9D2B538760006862AF /* CULogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABF9C2B538760006862AF /* CULogger.cpp */; };
+		EBDABF9E2B538760006862AF /* CULogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABF9C2B538760006862AF /* CULogger.cpp */; };
+		EBDB2A2329560BD400A4B39C /* cJSON.c in Sources */ = {isa = PBXBuildFile; fileRef = EBDB2A2229560BD400A4B39C /* cJSON.c */; };
+		EBDB2A2429560BD400A4B39C /* cJSON.c in Sources */ = {isa = PBXBuildFile; fileRef = EBDB2A2229560BD400A4B39C /* cJSON.c */; };
+		EBE2DFF82B794B360091FF11 /* CUICEAddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA42B40F35E006862AF /* CUICEAddress.cpp */; };
+		EBE2DFFF2B794B390091FF11 /* CUInetAddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA22B40F35E006862AF /* CUInetAddress.cpp */; };
+		EBE2E0002B794B3C0091FF11 /* CUNetcodeChannel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA52B40F35E006862AF /* CUNetcodeChannel.cpp */; };
+		EBE2E0012B794B410091FF11 /* CUNetcodeConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA82B40F35E006862AF /* CUNetcodeConfig.cpp */; };
+		EBE2E0022B794B410091FF11 /* CUNetcodeSerializer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA72B40F35E006862AF /* CUNetcodeSerializer.cpp */; };
+		EBE2E0032B794B410091FF11 /* CUNetcodeConnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA62B40F35E006862AF /* CUNetcodeConnection.cpp */; };
+		EBE2E0042B794B410091FF11 /* CUNetcodePeer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA32B40F35E006862AF /* CUNetcodePeer.cpp */; };
+		EBE2E0052B794B410091FF11 /* CUNetworkLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA92B40F35E006862AF /* CUNetworkLayer.cpp */; };
+		EBF2856D2B5CAB3B00E91BB4 /* CUGestureRecognizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBF2856C2B5CAB3B00E91BB4 /* CUGestureRecognizer.cpp */; };
+		EBF2856E2B5CAB3B00E91BB4 /* CUGestureRecognizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBF2856C2B5CAB3B00E91BB4 /* CUGestureRecognizer.cpp */; };
+		EBF285702B5CAB4A00E91BB4 /* CUGameController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBF2856F2B5CAB4A00E91BB4 /* CUGameController.cpp */; };
+		EBF285712B5CAB4A00E91BB4 /* CUGameController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBF2856F2B5CAB4A00E91BB4 /* CUGameController.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		EB9E56CD2B38B0A20074B480 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EB163ADA295E1A840090F7D4 /* box2d.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FC7321AB602646E2BABB8DFB;
+			remoteInfo = box2d;
+		};
+		EB9E56DC2B38B0CC0074B480 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EBDB2A2529560C5900A4B39C /* sdl2app.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EB7089351CD51810005B1025;
+			remoteInfo = "sdlapp-mac";
+		};
+		EB9E56DE2B38B0CC0074B480 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EBDB2A2529560C5900A4B39C /* sdl2app.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EB7089281CD517C2005B1025;
+			remoteInfo = "sdlapp-ios";
+		};
+		EB9E56F32B38B6360074B480 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EBDB2A3229560C7000A4B39C /* poly2tri.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EB7089351CD51810005B1025;
+			remoteInfo = poly2tri;
+		};
+		EBDABBBB2B40F36F006862AF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EBDABBB22B40F36F006862AF /* libdatachannel.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 37C4D6EF165B467A905CE53E;
+			remoteInfo = "datachannel-mac";
+		};
+		EBDABBBD2B40F36F006862AF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EBDABBB22B40F36F006862AF /* libdatachannel.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EB98C6D92961FB3D00DFB8F9;
+			remoteInfo = "datachannel-ios";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		EB0703B026B4BFC1001838D6 /* CUTextAlignment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUTextAlignment.h; sourceTree = "<group>"; };
+		EB07893B1D2D6E3E000BFDF7 /* CUSimpleExtruder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUSimpleExtruder.cpp; sourceTree = "<group>"; };
+		EB0789521D3020E3000BFDF7 /* CUInput.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUInput.cpp; sourceTree = "<group>"; };
+		EB0789531D3020E3000BFDF7 /* CUInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUInput.h; sourceTree = "<group>"; };
+		EB0789551D302104000BFDF7 /* CUKeyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUKeyboard.cpp; sourceTree = "<group>"; };
+		EB0789561D302104000BFDF7 /* CUKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUKeyboard.h; sourceTree = "<group>"; };
+		EB0789581D306BE4000BFDF7 /* CUTextInput.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUTextInput.cpp; sourceTree = "<group>"; };
+		EB0789591D306BE4000BFDF7 /* CUTextInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUTextInput.h; sourceTree = "<group>"; };
+		EB0F49131E79F9EC002E50DB /* CUEasingBezier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUEasingBezier.h; sourceTree = "<group>"; };
+		EB0F49181E79FE51002E50DB /* CUEasingBezier.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUEasingBezier.cpp; sourceTree = "<group>"; };
+		EB0F491B1E7A093A002E50DB /* CUEasingFunction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUEasingFunction.h; sourceTree = "<group>"; };
+		EB0F491C1E7A10B7002E50DB /* CUEasingFunction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUEasingFunction.cpp; sourceTree = "<group>"; };
+		EB163969295A22A20090F7D4 /* CUPanGesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUPanGesture.h; sourceTree = "<group>"; };
+		EB16396A295A22A20090F7D4 /* CUPinchGesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUPinchGesture.h; sourceTree = "<group>"; };
+		EB16396B295A22A20090F7D4 /* cu_gesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cu_gesture.h; sourceTree = "<group>"; };
+		EB16396C295A22A20090F7D4 /* CUCoreGesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUCoreGesture.h; sourceTree = "<group>"; };
+		EB16396D295A22A20090F7D4 /* CUSpinGesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUSpinGesture.h; sourceTree = "<group>"; };
+		EB16396F295A22EE0090F7D4 /* CUAudioDevices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAudioDevices.h; sourceTree = "<group>"; };
+		EB163970295A22EE0090F7D4 /* CUAudioQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAudioQueue.h; sourceTree = "<group>"; };
+		EB163971295A22EE0090F7D4 /* CUAudioEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAudioEngine.h; sourceTree = "<group>"; };
+		EB163972295A22EE0090F7D4 /* CUAudioWaveform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAudioWaveform.h; sourceTree = "<group>"; };
+		EB163973295A22EE0090F7D4 /* CUSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUSound.h; sourceTree = "<group>"; };
+		EB163974295A22EE0090F7D4 /* CUAudioDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAudioDecoder.h; sourceTree = "<group>"; };
+		EB163975295A22EE0090F7D4 /* cu_audio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cu_audio.h; sourceTree = "<group>"; };
+		EB163976295A22EE0090F7D4 /* CUAudioSample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAudioSample.h; sourceTree = "<group>"; };
+		EB163978295A23150090F7D4 /* CUAudioInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAudioInput.h; sourceTree = "<group>"; };
+		EB163979295A23150090F7D4 /* cu_audio_graph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cu_audio_graph.h; sourceTree = "<group>"; };
+		EB16397A295A23150090F7D4 /* CUAudioRedistributor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAudioRedistributor.h; sourceTree = "<group>"; };
+		EB16397B295A23150090F7D4 /* CUAudioMixer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAudioMixer.h; sourceTree = "<group>"; };
+		EB16397C295A23150090F7D4 /* CUAudioResampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAudioResampler.h; sourceTree = "<group>"; };
+		EB16397D295A23150090F7D4 /* CUAudioSpinner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAudioSpinner.h; sourceTree = "<group>"; };
+		EB16397E295A23150090F7D4 /* CUAudioNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAudioNode.h; sourceTree = "<group>"; };
+		EB16397F295A23150090F7D4 /* CUAudioScheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAudioScheduler.h; sourceTree = "<group>"; };
+		EB163980295A23150090F7D4 /* CUAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAudioPlayer.h; sourceTree = "<group>"; };
+		EB163981295A23150090F7D4 /* CUAudioFader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAudioFader.h; sourceTree = "<group>"; };
+		EB163982295A23150090F7D4 /* CUAudioPanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAudioPanner.h; sourceTree = "<group>"; };
+		EB163983295A23150090F7D4 /* CUAudioSynchronizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAudioSynchronizer.h; sourceTree = "<group>"; };
+		EB163984295A23150090F7D4 /* CUAudioOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAudioOutput.h; sourceTree = "<group>"; };
+		EB1639A5295A23E70090F7D4 /* CUPinchGesture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUPinchGesture.cpp; sourceTree = "<group>"; };
+		EB1639A6295A23E70090F7D4 /* CUSpinGesture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUSpinGesture.cpp; sourceTree = "<group>"; };
+		EB1639A7295A23E70090F7D4 /* CUCoreGesture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUCoreGesture.cpp; sourceTree = "<group>"; };
+		EB1639A8295A23E70090F7D4 /* CUPanGesture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUPanGesture.cpp; sourceTree = "<group>"; };
+		EB1639AE295A24150090F7D4 /* CUAudioEngine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioEngine.cpp; sourceTree = "<group>"; };
+		EB1639AF295A24150090F7D4 /* CUAudioDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioDecoder.cpp; sourceTree = "<group>"; };
+		EB1639B0295A24160090F7D4 /* CUAudioQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioQueue.cpp; sourceTree = "<group>"; };
+		EB1639B1295A24160090F7D4 /* CUAudioSample.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioSample.cpp; sourceTree = "<group>"; };
+		EB1639B2295A24160090F7D4 /* CUAudioWaveform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioWaveform.cpp; sourceTree = "<group>"; };
+		EB1639B3295A24160090F7D4 /* CUSound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUSound.cpp; sourceTree = "<group>"; };
+		EB1639B4295A24160090F7D4 /* CUAudioDevices.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioDevices.cpp; sourceTree = "<group>"; };
+		EB1639BD295A243D0090F7D4 /* CUAudioSynchronizer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioSynchronizer.cpp; sourceTree = "<group>"; };
+		EB1639BE295A243D0090F7D4 /* CUAudioInput.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioInput.cpp; sourceTree = "<group>"; };
+		EB1639BF295A243D0090F7D4 /* CUAudioMixer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioMixer.cpp; sourceTree = "<group>"; };
+		EB1639C0295A243D0090F7D4 /* CUAudioOutput.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioOutput.cpp; sourceTree = "<group>"; };
+		EB1639C1295A243D0090F7D4 /* CUAudioPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioPlayer.cpp; sourceTree = "<group>"; };
+		EB1639C2295A243D0090F7D4 /* CUAudioRedistributor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioRedistributor.cpp; sourceTree = "<group>"; };
+		EB1639C3295A243D0090F7D4 /* CUAudioPanner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioPanner.cpp; sourceTree = "<group>"; };
+		EB1639C4295A243D0090F7D4 /* CUAudioSpinner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioSpinner.cpp; sourceTree = "<group>"; };
+		EB1639C5295A243D0090F7D4 /* CUAudioFader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioFader.cpp; sourceTree = "<group>"; };
+		EB1639C6295A243D0090F7D4 /* CUAudioNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioNode.cpp; sourceTree = "<group>"; };
+		EB1639C7295A243D0090F7D4 /* CUAudioScheduler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioScheduler.cpp; sourceTree = "<group>"; };
+		EB1639C8295A243D0090F7D4 /* CUAudioResampler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioResampler.cpp; sourceTree = "<group>"; };
+		EB1639D5295A2B7A0090F7D4 /* CUAudioTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUAudioTypes.h; sourceTree = "<group>"; };
+		EB1639D6295A326D0090F7D4 /* CUAudioTypes.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUAudioTypes.cpp; sourceTree = "<group>"; };
+		EB163A47295E07B80090F7D4 /* CURenderBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CURenderBase.h; sourceTree = "<group>"; };
+		EB163A4B295E0A930090F7D4 /* CURenderBase.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CURenderBase.cpp; sourceTree = "<group>"; };
+		EB163A4E295E0DFD0090F7D4 /* CUStencilEffect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUStencilEffect.h; sourceTree = "<group>"; };
+		EB163A4F295E11680090F7D4 /* CUStencilEffect.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUStencilEffect.cpp; sourceTree = "<group>"; };
+		EB163A53295E13EF0090F7D4 /* CUScaleAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUScaleAction.h; sourceTree = "<group>"; };
+		EB163A54295E13EF0090F7D4 /* CUFadeAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUFadeAction.h; sourceTree = "<group>"; };
+		EB163A55295E13EF0090F7D4 /* CUMoveAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUMoveAction.h; sourceTree = "<group>"; };
+		EB163A56295E13EF0090F7D4 /* CUActionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUActionManager.h; sourceTree = "<group>"; };
+		EB163A57295E13EF0090F7D4 /* CUAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAction.h; sourceTree = "<group>"; };
+		EB163A58295E13F00090F7D4 /* CURotateAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CURotateAction.h; sourceTree = "<group>"; };
+		EB163A59295E13F00090F7D4 /* CUAnimateAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAnimateAction.h; sourceTree = "<group>"; };
+		EB163A5A295E13F00090F7D4 /* cu_actions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cu_actions.h; sourceTree = "<group>"; };
+		EB163A5C295E14200090F7D4 /* CUAnimateAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAnimateAction.cpp; sourceTree = "<group>"; };
+		EB163A5D295E14200090F7D4 /* CUActionManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUActionManager.cpp; sourceTree = "<group>"; };
+		EB163A5E295E14200090F7D4 /* CUScaleAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUScaleAction.cpp; sourceTree = "<group>"; };
+		EB163A5F295E14200090F7D4 /* CUAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAction.cpp; sourceTree = "<group>"; };
+		EB163A60295E14200090F7D4 /* CUMoveAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUMoveAction.cpp; sourceTree = "<group>"; };
+		EB163A61295E14200090F7D4 /* CURotateAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CURotateAction.cpp; sourceTree = "<group>"; };
+		EB163A62295E14200090F7D4 /* CUFadeAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUFadeAction.cpp; sourceTree = "<group>"; };
+		EB163ADA295E1A840090F7D4 /* box2d.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = box2d.xcodeproj; path = support/box2d.xcodeproj; sourceTree = "<group>"; };
+		EB163AF2295E1BC20090F7D4 /* CUObstacleSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUObstacleSelector.h; sourceTree = "<group>"; };
+		EB163AF3295E1BC20090F7D4 /* cu_physics2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cu_physics2.h; sourceTree = "<group>"; };
+		EB163AF4295E1BC20090F7D4 /* CUObstacle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUObstacle.h; sourceTree = "<group>"; };
+		EB163AF5295E1BC20090F7D4 /* CUBoxObstacle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUBoxObstacle.h; sourceTree = "<group>"; };
+		EB163AF7295E1BC30090F7D4 /* CUObstacleWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUObstacleWorld.h; sourceTree = "<group>"; };
+		EB163AF8295E1BC30090F7D4 /* CUWheelObstacle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUWheelObstacle.h; sourceTree = "<group>"; };
+		EB163AF9295E1BC30090F7D4 /* CUCapsuleObstacle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUCapsuleObstacle.h; sourceTree = "<group>"; };
+		EB163AFA295E1BC30090F7D4 /* CUPolygonObstacle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUPolygonObstacle.h; sourceTree = "<group>"; };
+		EB163AFE295E1BF80090F7D4 /* CUObstacleSelector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUObstacleSelector.cpp; sourceTree = "<group>"; };
+		EB163AFF295E1BF90090F7D4 /* CUBoxObstacle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUBoxObstacle.cpp; sourceTree = "<group>"; };
+		EB163B00295E1BF90090F7D4 /* CUPolygonObstacle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUPolygonObstacle.cpp; sourceTree = "<group>"; };
+		EB163B01295E1BF90090F7D4 /* CUObstacle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUObstacle.cpp; sourceTree = "<group>"; };
+		EB163B02295E1BF90090F7D4 /* CUCapsuleObstacle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUCapsuleObstacle.cpp; sourceTree = "<group>"; };
+		EB163B03295E1BF90090F7D4 /* CUObstacleWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUObstacleWorld.cpp; sourceTree = "<group>"; };
+		EB163B05295E1BF90090F7D4 /* CUWheelObstacle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUWheelObstacle.cpp; sourceTree = "<group>"; };
+		EB1B34AF1D26CB290057E0BD /* CUScene2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUScene2.h; sourceTree = "<group>"; };
+		EB1B34C81D2C5FD60057E0BD /* CUTimestamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUTimestamp.h; sourceTree = "<group>"; };
+		EB1BFD701D066CED006D653A /* CUMat4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUMat4.cpp; sourceTree = "<group>"; };
+		EB1BFD7C1D076942006D653A /* CUQuaternion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUQuaternion.cpp; sourceTree = "<group>"; };
+		EB202C3D1DE39B8200116616 /* CUTextReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUTextReader.h; sourceTree = "<group>"; };
+		EB202C411DE39BAA00116616 /* CUTextReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUTextReader.cpp; sourceTree = "<group>"; };
+		EB202C481DE5F64E00116616 /* CUTextWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUTextWriter.h; sourceTree = "<group>"; };
+		EB202C4B1DE5F9B900116616 /* CUTextWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUTextWriter.cpp; sourceTree = "<group>"; };
+		EB202C4E1DE63E5200116616 /* cu_io.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cu_io.h; sourceTree = "<group>"; };
+		EB202C4F1DE63F0B00116616 /* CUJsonValue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUJsonValue.h; sourceTree = "<group>"; };
+		EB202C501DE68CCA00116616 /* CUJsonValue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUJsonValue.cpp; sourceTree = "<group>"; };
+		EB202C531DE9219100116616 /* CUJsonReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUJsonReader.h; sourceTree = "<group>"; };
+		EB202C561DE921D100116616 /* CUJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUJsonWriter.h; sourceTree = "<group>"; };
+		EB202C591DE924AB00116616 /* CUJsonReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUJsonReader.cpp; sourceTree = "<group>"; };
+		EB202C5C1DE9367C00116616 /* CUJsonWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUJsonWriter.cpp; sourceTree = "<group>"; };
+		EB202C871DEBBA1000116616 /* CUEndian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUEndian.h; sourceTree = "<group>"; };
+		EB202C8B1DEBC7CE00116616 /* CUBinaryWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUBinaryWriter.h; sourceTree = "<group>"; };
+		EB202C8E1DEBCD4700116616 /* CUBinaryReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUBinaryReader.h; sourceTree = "<group>"; };
+		EB202C911DEBDE9900116616 /* CUBinaryReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUBinaryReader.cpp; sourceTree = "<group>"; };
+		EB28FC3C279F7D9400D15D07 /* CUSpriteSheet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUSpriteSheet.h; sourceTree = "<group>"; };
+		EB28FC3D279F7DA900D15D07 /* CUSpriteSheet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUSpriteSheet.cpp; sourceTree = "<group>"; };
+		EB28FC40279F7F8400D15D07 /* CUScrollPane.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUScrollPane.cpp; sourceTree = "<group>"; };
+		EB28FC43279F7F9C00D15D07 /* CUScrollPane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUScrollPane.h; sourceTree = "<group>"; };
+		EB45FD5125B355AF00974097 /* CUUniformBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUUniformBuffer.h; sourceTree = "<group>"; };
+		EB45FD5C25B355AF00974097 /* CUSpriteVertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUSpriteVertex.h; sourceTree = "<group>"; };
+		EB45FD5D25B355AF00974097 /* CUScissor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUScissor.h; sourceTree = "<group>"; };
+		EB45FD5E25B355AF00974097 /* CUGradient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUGradient.h; sourceTree = "<group>"; };
+		EB45FD5F25B355AF00974097 /* CUFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUFont.h; sourceTree = "<group>"; };
+		EB45FD6025B355AF00974097 /* CUMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUMesh.h; sourceTree = "<group>"; };
+		EB45FD6125B355AF00974097 /* CUVertexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUVertexBuffer.h; sourceTree = "<group>"; };
+		EB45FD6225B355AF00974097 /* CURenderTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CURenderTarget.h; sourceTree = "<group>"; };
+		EB45FD6F25B3563C00974097 /* CUScissor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUScissor.cpp; sourceTree = "<group>"; };
+		EB45FD7025B3563C00974097 /* CUGradient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUGradient.cpp; sourceTree = "<group>"; };
+		EB45FD7125B3563C00974097 /* CUUniformBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUUniformBuffer.cpp; sourceTree = "<group>"; };
+		EB45FD7225B3563C00974097 /* CUVertexBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUVertexBuffer.cpp; sourceTree = "<group>"; };
+		EB45FD7325B3563C00974097 /* CUFont.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUFont.cpp; sourceTree = "<group>"; };
+		EB45FD7425B3563C00974097 /* CURenderTarget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CURenderTarget.cpp; sourceTree = "<group>"; };
+		EB45FD7B25B3660600974097 /* CUFiletools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUFiletools.h; sourceTree = "<group>"; };
+		EB45FD7D25B3671C00974097 /* CUFiletools.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUFiletools.cpp; sourceTree = "<group>"; };
+		EB45FD9625B3988300974097 /* CUNinePatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUNinePatch.h; sourceTree = "<group>"; };
+		EB45FD9725B3988400974097 /* CUSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUSlider.h; sourceTree = "<group>"; };
+		EB45FD9825B3988400974097 /* CUTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUTextField.h; sourceTree = "<group>"; };
+		EB45FD9C25B398A000974097 /* CUPathNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUPathNode.h; sourceTree = "<group>"; };
+		EB45FD9D25B398A000974097 /* CUSpriteNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUSpriteNode.h; sourceTree = "<group>"; };
+		EB45FD9E25B398A000974097 /* CUPolygonNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUPolygonNode.h; sourceTree = "<group>"; };
+		EB45FD9F25B398A000974097 /* CUSceneNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUSceneNode.h; sourceTree = "<group>"; };
+		EB45FDA025B398A000974097 /* CUWireNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUWireNode.h; sourceTree = "<group>"; };
+		EB45FDA125B398A000974097 /* CUTexturedNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUTexturedNode.h; sourceTree = "<group>"; };
+		EB45FDB325B3ADE600974097 /* CUSceneNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUSceneNode.cpp; sourceTree = "<group>"; };
+		EB45FDB525B3ADE600974097 /* CUWireNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUWireNode.cpp; sourceTree = "<group>"; };
+		EB45FDB625B3ADE600974097 /* CUPolygonNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUPolygonNode.cpp; sourceTree = "<group>"; };
+		EB45FDB725B3ADE600974097 /* CUSpriteNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUSpriteNode.cpp; sourceTree = "<group>"; };
+		EB45FDB825B3ADE600974097 /* CUTexturedNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUTexturedNode.cpp; sourceTree = "<group>"; };
+		EB45FDB925B3ADE600974097 /* CUPathNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUPathNode.cpp; sourceTree = "<group>"; };
+		EB45FDC125B3AE3200974097 /* CUNinePatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUNinePatch.cpp; sourceTree = "<group>"; };
+		EB45FDC325B3AE5500974097 /* CUScene2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUScene2.cpp; sourceTree = "<group>"; };
+		EB4AEC041CFCBA270090AF7F /* CUApplication.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUApplication.cpp; sourceTree = "<group>"; };
+		EB4AEC051CFCBA270090AF7F /* CUApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUApplication.h; sourceTree = "<group>"; };
+		EB4AEC101CFCE5A80090AF7F /* CUSize.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUSize.cpp; sourceTree = "<group>"; };
+		EB4AEC131CFCE9B40090AF7F /* CUVec2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUVec2.cpp; sourceTree = "<group>"; };
+		EB4AEC181CFD4DCD0090AF7F /* CULabel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CULabel.cpp; sourceTree = "<group>"; };
+		EB4AEC191CFD4DCD0090AF7F /* CULabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CULabel.h; sourceTree = "<group>"; };
+		EB4AEC1D1CFDB9AC0090AF7F /* CUDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUDebug.h; sourceTree = "<group>"; };
+		EB4AEC1F1CFDCC590090AF7F /* CURect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CURect.cpp; sourceTree = "<group>"; };
+		EB4AEC251CFF0BF50090AF7F /* CUVec3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUVec3.cpp; sourceTree = "<group>"; };
+		EB4AEC281CFF0C0B0090AF7F /* CUVec4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUVec4.cpp; sourceTree = "<group>"; };
+		EB4AEC461D01BC4F0090AF7F /* CUStrings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUStrings.cpp; sourceTree = "<group>"; };
+		EB4AEC471D01BC4F0090AF7F /* CUStrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUStrings.h; sourceTree = "<group>"; };
+		EB4AEC4C1D024FEB0090AF7F /* CUColor4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUColor4.cpp; sourceTree = "<group>"; };
+		EB59D51B1E251B8A00A93BB5 /* CUJsonLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUJsonLoader.h; sourceTree = "<group>"; };
+		EB59D5201E251D1F00A93BB5 /* CUJsonLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUJsonLoader.cpp; sourceTree = "<group>"; };
+		EB6CDA441D25703A006AD8CF /* CUPerspectiveCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUPerspectiveCamera.cpp; sourceTree = "<group>"; };
+		EB6CDA521D25B684006AD8CF /* CUBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUBase.h; sourceTree = "<group>"; };
+		EB6CDA5A1D25B77C006AD8CF /* CUMathBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUMathBase.cpp; sourceTree = "<group>"; };
+		EB7453D71D74B0C5002FBAE6 /* libcugl-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libcugl-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB77B90E200D972900713568 /* CUFloatLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUFloatLayout.h; sourceTree = "<group>"; };
+		EB77B90F200D973A00713568 /* CUGridLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUGridLayout.h; sourceTree = "<group>"; };
+		EB77B912200EFD0000713568 /* cu_layout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cu_layout.h; sourceTree = "<group>"; };
+		EB77B914200FF15800713568 /* CUFloatLayout.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUFloatLayout.cpp; sourceTree = "<group>"; };
+		EB77B91E2010FA3300713568 /* CULayout.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CULayout.cpp; sourceTree = "<group>"; };
+		EB77B9212010FD0500713568 /* CUGridLayout.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUGridLayout.cpp; sourceTree = "<group>"; };
+		EB77F1CE1D3690E000D52B9E /* CUDisplay.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUDisplay.cpp; sourceTree = "<group>"; };
+		EB77F1CF1D3690E000D52B9E /* CUDisplay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUDisplay.h; sourceTree = "<group>"; };
+		EB87CBB625F5B6A800F1E301 /* CUOrderedNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUOrderedNode.h; sourceTree = "<group>"; };
+		EB8B6C9F262F3F5F00CEC82C /* CUPath2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUPath2.h; sourceTree = "<group>"; };
+		EB8EC5AE1D1AE9370005448C /* CUAffine2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAffine2.cpp; sourceTree = "<group>"; };
+		EB8EC5B11D1B4F230005448C /* CUPoly2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUPoly2.cpp; sourceTree = "<group>"; };
+		EB8EC5B51D1C45830005448C /* CUPolynomial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUPolynomial.cpp; sourceTree = "<group>"; };
+		EB8EC5B81D1C6F3D0005448C /* CUSpline2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUSpline2.cpp; sourceTree = "<group>"; };
+		EB8EC5BE1D1C772B0005448C /* CUSplinePather.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUSplinePather.cpp; sourceTree = "<group>"; };
+		EB8EC5C11D1CE15E0005448C /* CUSpriteBatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUSpriteBatch.cpp; sourceTree = "<group>"; };
+		EB8EC5C91D1DCCC60005448C /* CUShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUShader.cpp; sourceTree = "<group>"; };
+		EB8EC5D21D1E06B60005448C /* CUTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUTexture.cpp; sourceTree = "<group>"; };
+		EB8EC5E91D22EA970005448C /* CURay.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CURay.cpp; sourceTree = "<group>"; };
+		EB8EC5EC1D22F4700005448C /* CUPlane.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUPlane.cpp; sourceTree = "<group>"; };
+		EB8EC5EF1D2307830005448C /* CUFrustum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUFrustum.cpp; sourceTree = "<group>"; };
+		EB8EC5F21D2356CC0005448C /* CUCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUCamera.cpp; sourceTree = "<group>"; };
+		EB8EC5F51D236E990005448C /* CUOrthographicCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUOrthographicCamera.cpp; sourceTree = "<group>"; };
+		EB950C8923DA3BF100E54B1A /* CUWidgetLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUWidgetLoader.cpp; sourceTree = "<group>"; };
+		EB950C9523DA3BFE00E54B1A /* CUWidgetLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUWidgetLoader.h; sourceTree = "<group>"; };
+		EB950C9623DA3BFF00E54B1A /* CUWidgetValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUWidgetValue.h; sourceTree = "<group>"; };
+		EB9D6A4325F45D0E00C076C1 /* CUGlyphRun.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUGlyphRun.h; sourceTree = "<group>"; };
+		EB9D6A5525F56B0200C076C1 /* CUOrderedNode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUOrderedNode.cpp; sourceTree = "<group>"; };
+		EB9E56EA2B38B62B0074B480 /* clipper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = clipper.cpp; sourceTree = "<group>"; };
+		EBA6CF0E1DECCB8B00BC2146 /* CUBinaryWriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUBinaryWriter.cpp; sourceTree = "<group>"; };
+		EBB8FEF421E196B30039834E /* CUSoundLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUSoundLoader.h; sourceTree = "<group>"; };
+		EBB8FEFE21E198D60039834E /* CUSoundLoader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUSoundLoader.cpp; sourceTree = "<group>"; };
+		EBB96D7B1D31EDB100C2CA07 /* CUMouse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUMouse.cpp; sourceTree = "<group>"; };
+		EBB96D7C1D31EDB100C2CA07 /* CUMouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUMouse.h; sourceTree = "<group>"; };
+		EBBF18071D7485D1008E2001 /* libcugl-mac.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libcugl-mac.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EBC2F16E1D74A90F007EC7A6 /* CUAffine2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAffine2.h; sourceTree = "<group>"; };
+		EBC2F16F1D74A90F007EC7A6 /* CUColor4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUColor4.h; sourceTree = "<group>"; };
+		EBC2F1701D74A90F007EC7A6 /* CUSpline2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUSpline2.h; sourceTree = "<group>"; };
+		EBC2F1711D74A90F007EC7A6 /* CUFrustum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUFrustum.h; sourceTree = "<group>"; };
+		EBC2F1721D74A90F007EC7A6 /* CUMat4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUMat4.h; sourceTree = "<group>"; };
+		EBC2F1731D74A90F007EC7A6 /* CUMathBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUMathBase.h; sourceTree = "<group>"; };
+		EBC2F1741D74A90F007EC7A6 /* CUPlane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUPlane.h; sourceTree = "<group>"; };
+		EBC2F1751D74A90F007EC7A6 /* CUPoly2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUPoly2.h; sourceTree = "<group>"; };
+		EBC2F1761D74A90F007EC7A6 /* CUPolynomial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUPolynomial.h; sourceTree = "<group>"; };
+		EBC2F1771D74A90F007EC7A6 /* CUQuaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUQuaternion.h; sourceTree = "<group>"; };
+		EBC2F1781D74A90F007EC7A6 /* CURay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CURay.h; sourceTree = "<group>"; };
+		EBC2F1791D74A90F007EC7A6 /* CURect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CURect.h; sourceTree = "<group>"; };
+		EBC2F17A1D74A90F007EC7A6 /* CUSize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUSize.h; sourceTree = "<group>"; };
+		EBC2F17B1D74A90F007EC7A6 /* CUVec2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUVec2.h; sourceTree = "<group>"; };
+		EBC2F17C1D74A90F007EC7A6 /* CUVec3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUVec3.h; sourceTree = "<group>"; };
+		EBC2F17D1D74A90F007EC7A6 /* CUVec4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUVec4.h; sourceTree = "<group>"; };
+		EBC2F17E1D74A95B007EC7A6 /* CUSplinePather.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUSplinePather.h; sourceTree = "<group>"; };
+		EBC2F17F1D74A95B007EC7A6 /* CUSimpleExtruder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUSimpleExtruder.h; sourceTree = "<group>"; };
+		EBC2F1821D74A9AE007EC7A6 /* CUCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUCamera.h; sourceTree = "<group>"; };
+		EBC2F1831D74A9AE007EC7A6 /* CUOrthographicCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUOrthographicCamera.h; sourceTree = "<group>"; };
+		EBC2F1841D74A9AE007EC7A6 /* CUPerspectiveCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUPerspectiveCamera.h; sourceTree = "<group>"; };
+		EBC2F1851D74A9AE007EC7A6 /* CUShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUShader.h; sourceTree = "<group>"; };
+		EBC2F1861D74A9AE007EC7A6 /* CUSpriteBatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUSpriteBatch.h; sourceTree = "<group>"; };
+		EBC2F1881D74A9AE007EC7A6 /* CUTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUTexture.h; sourceTree = "<group>"; };
+		EBC2F18B1D74AA15007EC7A6 /* cu_base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cu_base.h; sourceTree = "<group>"; };
+		EBC2F18C1D74AA1D007EC7A6 /* cugl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cugl.h; sourceTree = "<group>"; };
+		EBC2F18D1D74AA27007EC7A6 /* cu_math.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cu_math.h; sourceTree = "<group>"; };
+		EBC2F18E1D74AA33007EC7A6 /* cu_polygon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cu_polygon.h; sourceTree = "<group>"; };
+		EBC2F18F1D74AA40007EC7A6 /* cu_util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cu_util.h; sourceTree = "<group>"; };
+		EBC2F1901D74AA4B007EC7A6 /* cu_render.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cu_render.h; sourceTree = "<group>"; };
+		EBC2F1911D74AA53007EC7A6 /* cu_assets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cu_assets.h; sourceTree = "<group>"; };
+		EBC2F1931D74AA68007EC7A6 /* cu_input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cu_input.h; sourceTree = "<group>"; };
+		EBC6AC3726994EE200DF1C83 /* CUPath2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUPath2.cpp; sourceTree = "<group>"; };
+		EBC6AC9B269FC9AA00DF1C83 /* CUPathFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUPathFactory.h; sourceTree = "<group>"; };
+		EBC6AC9C269FD0C200DF1C83 /* CUPathFactory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUPathFactory.cpp; sourceTree = "<group>"; };
+		EBC6ACDD26A1D89000DF1C83 /* CUEarclipTriangulator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUEarclipTriangulator.h; sourceTree = "<group>"; };
+		EBC6ACE226A1E3F200DF1C83 /* CUEarclipTriangulator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUEarclipTriangulator.cpp; sourceTree = "<group>"; };
+		EBC6AD1D26A74CC100DF1C83 /* CUCanvasNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUCanvasNode.h; sourceTree = "<group>"; };
+		EBC6AD2826A74CE500DF1C83 /* CUCanvasNode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUCanvasNode.cpp; sourceTree = "<group>"; };
+		EBC6ADB226AEE41800DF1C83 /* CUTextLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUTextLayout.h; sourceTree = "<group>"; };
+		EBC6ADB326AF3B4000DF1C83 /* CUTextLayout.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUTextLayout.cpp; sourceTree = "<group>"; };
+		EBC7E78B1D333886000A892F /* CUTouchscreen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUTouchscreen.cpp; sourceTree = "<group>"; };
+		EBC7E78C1D333886000A892F /* CUTouchscreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUTouchscreen.h; sourceTree = "<group>"; };
+		EBCB16161D36F79E0089A883 /* CUAccelerometer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAccelerometer.cpp; sourceTree = "<group>"; };
+		EBCB16171D36F79E0089A883 /* CUAccelerometer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAccelerometer.h; sourceTree = "<group>"; };
+		EBCE54671DED12D6003B52FE /* CUThreadPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUThreadPool.h; sourceTree = "<group>"; };
+		EBCE546C1DED12E6003B52FE /* CUFreeList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUFreeList.h; sourceTree = "<group>"; };
+		EBCE546F1DED1315003B52FE /* CUGreedyFreeList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUGreedyFreeList.h; sourceTree = "<group>"; };
+		EBCE54721DED2EC5003B52FE /* CUThreadPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUThreadPool.cpp; sourceTree = "<group>"; };
+		EBD3CE7B2004070000CFD1BC /* CUTextField.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUTextField.cpp; sourceTree = "<group>"; };
+		EBD3CE7C2004070000CFD1BC /* CUSlider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUSlider.cpp; sourceTree = "<group>"; };
+		EBD3CE9D2005D3DE00CFD1BC /* CUScene2Loader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUScene2Loader.h; sourceTree = "<group>"; };
+		EBD3CE9E2005DAFC00CFD1BC /* CUScene2Loader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUScene2Loader.cpp; sourceTree = "<group>"; };
+		EBD3CEA12007210000CFD1BC /* CULayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CULayout.h; sourceTree = "<group>"; };
+		EBD3CEA22007229000CFD1BC /* CUAnchoredLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUAnchoredLayout.h; sourceTree = "<group>"; };
+		EBD3CEA32007260F00CFD1BC /* CUAnchoredLayout.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUAnchoredLayout.cpp; sourceTree = "<group>"; };
+		EBDABB982B40F335006862AF /* CUNetcodeChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUNetcodeChannel.h; sourceTree = "<group>"; };
+		EBDABB992B40F335006862AF /* CUInetAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUInetAddress.h; sourceTree = "<group>"; };
+		EBDABB9A2B40F335006862AF /* CUNetcodeSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUNetcodeSerializer.h; sourceTree = "<group>"; };
+		EBDABB9B2B40F335006862AF /* CUNetcodeConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUNetcodeConnection.h; sourceTree = "<group>"; };
+		EBDABB9C2B40F335006862AF /* CUNetworkLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUNetworkLayer.h; sourceTree = "<group>"; };
+		EBDABB9D2B40F335006862AF /* cu_net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cu_net.h; sourceTree = "<group>"; };
+		EBDABB9E2B40F335006862AF /* CUNetcodeConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUNetcodeConfig.h; sourceTree = "<group>"; };
+		EBDABB9F2B40F335006862AF /* CUICEAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUICEAddress.h; sourceTree = "<group>"; };
+		EBDABBA02B40F335006862AF /* CUNetcodePeer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUNetcodePeer.h; sourceTree = "<group>"; };
+		EBDABBA22B40F35E006862AF /* CUInetAddress.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUInetAddress.cpp; sourceTree = "<group>"; };
+		EBDABBA32B40F35E006862AF /* CUNetcodePeer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUNetcodePeer.cpp; sourceTree = "<group>"; };
+		EBDABBA42B40F35E006862AF /* CUICEAddress.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUICEAddress.cpp; sourceTree = "<group>"; };
+		EBDABBA52B40F35E006862AF /* CUNetcodeChannel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUNetcodeChannel.cpp; sourceTree = "<group>"; };
+		EBDABBA62B40F35E006862AF /* CUNetcodeConnection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUNetcodeConnection.cpp; sourceTree = "<group>"; };
+		EBDABBA72B40F35E006862AF /* CUNetcodeSerializer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUNetcodeSerializer.cpp; sourceTree = "<group>"; };
+		EBDABBA82B40F35E006862AF /* CUNetcodeConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUNetcodeConfig.cpp; sourceTree = "<group>"; };
+		EBDABBA92B40F35E006862AF /* CUNetworkLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUNetworkLayer.cpp; sourceTree = "<group>"; };
+		EBDABBB22B40F36F006862AF /* libdatachannel.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libdatachannel.xcodeproj; path = support/libdatachannel.xcodeproj; sourceTree = "<group>"; };
+		EBDABC422B4297A8006862AF /* CUTextureRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUTextureRenderer.cpp; sourceTree = "<group>"; };
+		EBDABC472B429856006862AF /* CUTextureRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUTextureRenderer.h; sourceTree = "<group>"; };
+		EBDABCCF2B42A43F006862AF /* FSQShader.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = FSQShader.frag; sourceTree = "<group>"; };
+		EBDABCD62B42A43F006862AF /* FSQShader.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = FSQShader.vert; sourceTree = "<group>"; };
+		EBDABD252B42AC97006862AF /* CUButtonGroup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUButtonGroup.cpp; sourceTree = "<group>"; };
+		EBDABD3D2B42ACC4006862AF /* CUMeshNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUMeshNode.cpp; sourceTree = "<group>"; };
+		EBDABD402B42ACD5006862AF /* CUMeshNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUMeshNode.h; sourceTree = "<group>"; };
+		EBDABD452B42ACED006862AF /* CUButtonGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUButtonGroup.h; sourceTree = "<group>"; };
+		EBDABE182B49BC70006862AF /* CUPhysObstEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUPhysObstEvent.h; sourceTree = "<group>"; };
+		EBDABE192B49BC70006862AF /* CUNetPhysicsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUNetPhysicsController.h; sourceTree = "<group>"; };
+		EBDABE1A2B49BC70006862AF /* CUPhysSyncEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUPhysSyncEvent.h; sourceTree = "<group>"; };
+		EBDABE1B2B49BC70006862AF /* CULWDeserializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CULWDeserializer.h; sourceTree = "<group>"; };
+		EBDABE1D2B49BC70006862AF /* CUGameStateEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUGameStateEvent.h; sourceTree = "<group>"; };
+		EBDABE1E2B49BC70006862AF /* CULWSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CULWSerializer.h; sourceTree = "<group>"; };
+		EBDABE202B49BC70006862AF /* CUNetEventController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUNetEventController.h; sourceTree = "<group>"; };
+		EBDABE212B49BC70006862AF /* CUObstacleFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUObstacleFactory.h; sourceTree = "<group>"; };
+		EBDABE222B49BC70006862AF /* CUNetEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUNetEvent.h; sourceTree = "<group>"; };
+		EBDABE242B49BD1E006862AF /* CUNetPhysicsController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUNetPhysicsController.cpp; sourceTree = "<group>"; };
+		EBDABE252B49BD1E006862AF /* CUNetEventController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUNetEventController.cpp; sourceTree = "<group>"; };
+		EBDABE2A2B49DCC7006862AF /* CUNetWorld.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUNetWorld.h; sourceTree = "<group>"; };
+		EBDABE2B2B49DDE6006862AF /* CUNetWorld.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUNetWorld.cpp; sourceTree = "<group>"; };
+		EBDABE3B2B49EAAD006862AF /* CUJoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUJoint.h; sourceTree = "<group>"; };
+		EBDABE422B49FFEE006862AF /* CUJoint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUJoint.cpp; sourceTree = "<group>"; };
+		EBDABE532B4C4F85006862AF /* CUDistanceJoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUDistanceJoint.h; sourceTree = "<group>"; };
+		EBDABE542B4C5242006862AF /* CUFrictionJoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUFrictionJoint.h; sourceTree = "<group>"; };
+		EBDABE552B4C530F006862AF /* CUGearJoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUGearJoint.h; sourceTree = "<group>"; };
+		EBDABE562B4C539D006862AF /* CUMotorJoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUMotorJoint.h; sourceTree = "<group>"; };
+		EBDABE572B4C5434006862AF /* CUMouseJoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUMouseJoint.h; sourceTree = "<group>"; };
+		EBDABE582B4C54B1006862AF /* CUPrismaticJoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUPrismaticJoint.h; sourceTree = "<group>"; };
+		EBDABE592B4C55D9006862AF /* CUPulleyJoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUPulleyJoint.h; sourceTree = "<group>"; };
+		EBDABE5A2B4C5697006862AF /* CURevoluteJoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CURevoluteJoint.h; sourceTree = "<group>"; };
+		EBDABE5B2B4C5746006862AF /* CUWeldJoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUWeldJoint.h; sourceTree = "<group>"; };
+		EBDABE5C2B4C5756006862AF /* CUWheelJoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUWheelJoint.h; sourceTree = "<group>"; };
+		EBDABE5D2B4C588E006862AF /* CUDistanceJoint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUDistanceJoint.cpp; sourceTree = "<group>"; };
+		EBDABE602B4C58A3006862AF /* CUFrictionJoint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUFrictionJoint.cpp; sourceTree = "<group>"; };
+		EBDABE632B4C58B2006862AF /* CUGearJoint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUGearJoint.cpp; sourceTree = "<group>"; };
+		EBDABE662B4C58C3006862AF /* CUMotorJoint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUMotorJoint.cpp; sourceTree = "<group>"; };
+		EBDABE692B4C58E0006862AF /* CUMouseJoint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUMouseJoint.cpp; sourceTree = "<group>"; };
+		EBDABE6C2B4C58F6006862AF /* CUPrismaticJoint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUPrismaticJoint.cpp; sourceTree = "<group>"; };
+		EBDABE6F2B4C590D006862AF /* CUPulleyJoint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUPulleyJoint.cpp; sourceTree = "<group>"; };
+		EBDABE722B4C5920006862AF /* CURevoluteJoint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CURevoluteJoint.cpp; sourceTree = "<group>"; };
+		EBDABE752B4C5933006862AF /* CUWheelJoint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUWheelJoint.cpp; sourceTree = "<group>"; };
+		EBDABE782B4C5944006862AF /* CUWeldJoint.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUWeldJoint.cpp; sourceTree = "<group>"; };
+		EBDABEDE2B4C6F51006862AF /* cu_net_physics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cu_net_physics.h; sourceTree = "<group>"; };
+		EBDABEE42B4CABB4006862AF /* CUPhysObstEvent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUPhysObstEvent.cpp; sourceTree = "<group>"; };
+		EBDABEE72B4CB720006862AF /* CUPhysSyncEvent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUPhysSyncEvent.cpp; sourceTree = "<group>"; };
+		EBDABEEE2B4CC1B7006862AF /* CUGameStateEvent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUGameStateEvent.cpp; sourceTree = "<group>"; };
+		EBDABF022B4DC095006862AF /* CUAlgorithmicReverb.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUAlgorithmicReverb.h; sourceTree = "<group>"; };
+		EBDABF032B4DC48B006862AF /* CUAlgorithmicReverb.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUAlgorithmicReverb.cpp; sourceTree = "<group>"; };
+		EBDABF952B5386E3006862AF /* CULogger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CULogger.h; sourceTree = "<group>"; };
+		EBDABF9C2B538760006862AF /* CULogger.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CULogger.cpp; sourceTree = "<group>"; };
+		EBDB2A1C29560B3300A4B39C /* cJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cJSON.h; sourceTree = "<group>"; };
+		EBDB2A1E29560B4300A4B39C /* utf8core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utf8core.h; sourceTree = "<group>"; };
+		EBDB2A1F29560B4300A4B39C /* utf8checked.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utf8checked.h; sourceTree = "<group>"; };
+		EBDB2A2029560B4300A4B39C /* utf8unchecked.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utf8unchecked.h; sourceTree = "<group>"; };
+		EBDB2A2129560B4300A4B39C /* utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utf8.h; sourceTree = "<group>"; };
+		EBDB2A2229560BD400A4B39C /* cJSON.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cJSON.c; sourceTree = "<group>"; };
+		EBDB2A2529560C5900A4B39C /* sdl2app.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = sdl2app.xcodeproj; path = ../../sdlapp/buildfiles/apple/sdl2app.xcodeproj; sourceTree = "<group>"; };
+		EBDB2A3229560C7000A4B39C /* poly2tri.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = poly2tri.xcodeproj; path = support/poly2tri.xcodeproj; sourceTree = "<group>"; };
+		EBDC802E25B8B807004DECAE /* ColorTexture.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = ColorTexture.vert; sourceTree = "<group>"; };
+		EBDC802F25B8B807004DECAE /* ColorTexture.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = ColorTexture.frag; sourceTree = "<group>"; };
+		EBDC803025B8B807004DECAE /* SpriteShader.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = SpriteShader.vert; sourceTree = "<group>"; };
+		EBDC803125B8B807004DECAE /* SpriteShader.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = SpriteShader.frag; sourceTree = "<group>"; };
+		EBDC803225B8B9A1004DECAE /* CUDelaunayTriangulator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUDelaunayTriangulator.h; sourceTree = "<group>"; };
+		EBDC803325B8CB2D004DECAE /* CUDelaunayTriangulator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUDelaunayTriangulator.cpp; sourceTree = "<group>"; };
+		EBDC804525BA2D73004DECAE /* CUComplexExtruder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUComplexExtruder.h; sourceTree = "<group>"; };
+		EBDC804625BA33D3004DECAE /* CUComplexExtruder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUComplexExtruder.cpp; sourceTree = "<group>"; };
+		EBDC804B25BBA7F4004DECAE /* CUPolyFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUPolyFactory.h; sourceTree = "<group>"; };
+		EBDC804C25BCF9E0004DECAE /* CUPolyEnums.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUPolyEnums.h; sourceTree = "<group>"; };
+		EBDC804D25BF3832004DECAE /* CUPolyFactory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUPolyFactory.cpp; sourceTree = "<group>"; };
+		EBDC805F25BFB9FF004DECAE /* CUPathSmoother.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUPathSmoother.h; sourceTree = "<group>"; };
+		EBDC806025C08F7D004DECAE /* CUPathSmoother.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUPathSmoother.cpp; sourceTree = "<group>"; };
+		EBDC806825C0AB1F004DECAE /* CUScene2Texture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUScene2Texture.h; sourceTree = "<group>"; };
+		EBDC807325C0AD57004DECAE /* cu_scene2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cu_scene2.h; sourceTree = "<group>"; };
+		EBDC807525C0AD7D004DECAE /* CUScene2Texture.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CUScene2Texture.cpp; sourceTree = "<group>"; };
+		EBF285652B5CAB0F00E91BB4 /* CUGestureRecognizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUGestureRecognizer.h; sourceTree = "<group>"; };
+		EBF2856C2B5CAB3B00E91BB4 /* CUGestureRecognizer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUGestureRecognizer.cpp; sourceTree = "<group>"; };
+		EBF2856F2B5CAB4A00E91BB4 /* CUGameController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUGameController.cpp; sourceTree = "<group>"; };
+		EBF285722B5CAB5600E91BB4 /* CUGameController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUGameController.h; sourceTree = "<group>"; };
+		EBFE7BD31E158612001007C2 /* CUAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAsset.h; sourceTree = "<group>"; };
+		EBFE7BD61E158735001007C2 /* CUAssetManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUAssetManager.h; sourceTree = "<group>"; };
+		EBFE7BD91E15927A001007C2 /* CULoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CULoader.h; sourceTree = "<group>"; };
+		EBFE7BDC1E159734001007C2 /* CUTextureLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUTextureLoader.h; sourceTree = "<group>"; };
+		EBFE7BDF1E15A9AD001007C2 /* CUTextureLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUTextureLoader.cpp; sourceTree = "<group>"; };
+		EBFE7BE41E15BFD4001007C2 /* CUFontLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUFontLoader.h; sourceTree = "<group>"; };
+		EBFE7BED1E15CC75001007C2 /* CUFontLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUFontLoader.cpp; sourceTree = "<group>"; };
+		EBFE7BF81E15E45C001007C2 /* CUGenericLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUGenericLoader.h; sourceTree = "<group>"; };
+		EBFE7C011E187321001007C2 /* CUAssetManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUAssetManager.cpp; sourceTree = "<group>"; };
+		EBFE7C0B1E1A86FC001007C2 /* CUButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CUButton.h; sourceTree = "<group>"; };
+		EBFE7C0C1E1A872B001007C2 /* CUProgressBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CUProgressBar.h; sourceTree = "<group>"; };
+		EBFE7C101E1AB140001007C2 /* CUProgressBar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUProgressBar.cpp; sourceTree = "<group>"; };
+		EBFE7C131E1B00CA001007C2 /* CUButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CUButton.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EB7453D41D74B0C5002FBAE6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB9E56F62B38B6630074B480 /* libbox2d.a in Frameworks */,
+				EB9E56F72B38B6630074B480 /* libpoly2tri.a in Frameworks */,
+				EBDABBC02B40F37F006862AF /* libdatachannel-ios.a in Frameworks */,
+				EB9E56F82B38B6630074B480 /* libsdlapp-ios.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EBBF18041D7485D1008E2001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB9E56E02B38B0E50074B480 /* libbox2d.a in Frameworks */,
+				EB9E56F52B38B64A0074B480 /* libpoly2tri.a in Frameworks */,
+				EBDABBBF2B40F379006862AF /* libdatachannel-mac.a in Frameworks */,
+				EB9E56E22B38B0E50074B480 /* libsdlapp-mac.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		EB0789511D302051000BFDF7 /* input */ = {
+			isa = PBXGroup;
+			children = (
+				EB0789521D3020E3000BFDF7 /* CUInput.cpp */,
+				EB0789551D302104000BFDF7 /* CUKeyboard.cpp */,
+				EBB96D7B1D31EDB100C2CA07 /* CUMouse.cpp */,
+				EBC7E78B1D333886000A892F /* CUTouchscreen.cpp */,
+				EB0789581D306BE4000BFDF7 /* CUTextInput.cpp */,
+				EBCB16161D36F79E0089A883 /* CUAccelerometer.cpp */,
+				EBF2856F2B5CAB4A00E91BB4 /* CUGameController.cpp */,
+				EB1639A4295A23D00090F7D4 /* gestures */,
+			);
+			path = input;
+			sourceTree = "<group>";
+		};
+		EB163965295A22860090F7D4 /* gestures */ = {
+			isa = PBXGroup;
+			children = (
+				EB16396B295A22A20090F7D4 /* cu_gesture.h */,
+				EB16396C295A22A20090F7D4 /* CUCoreGesture.h */,
+				EB163969295A22A20090F7D4 /* CUPanGesture.h */,
+				EB16396A295A22A20090F7D4 /* CUPinchGesture.h */,
+				EB16396D295A22A20090F7D4 /* CUSpinGesture.h */,
+				EBF285652B5CAB0F00E91BB4 /* CUGestureRecognizer.h */,
+			);
+			path = gestures;
+			sourceTree = "<group>";
+		};
+		EB16396E295A22C60090F7D4 /* audio */ = {
+			isa = PBXGroup;
+			children = (
+				EB163975295A22EE0090F7D4 /* cu_audio.h */,
+				EB1639D5295A2B7A0090F7D4 /* CUAudioTypes.h */,
+				EB163974295A22EE0090F7D4 /* CUAudioDecoder.h */,
+				EB16396F295A22EE0090F7D4 /* CUAudioDevices.h */,
+				EB163971295A22EE0090F7D4 /* CUAudioEngine.h */,
+				EB163970295A22EE0090F7D4 /* CUAudioQueue.h */,
+				EB163976295A22EE0090F7D4 /* CUAudioSample.h */,
+				EB163972295A22EE0090F7D4 /* CUAudioWaveform.h */,
+				EB163973295A22EE0090F7D4 /* CUSound.h */,
+				EB163977295A22F40090F7D4 /* graph */,
+			);
+			path = audio;
+			sourceTree = "<group>";
+		};
+		EB163977295A22F40090F7D4 /* graph */ = {
+			isa = PBXGroup;
+			children = (
+				EB163979295A23150090F7D4 /* cu_audio_graph.h */,
+				EB16397E295A23150090F7D4 /* CUAudioNode.h */,
+				EB163984295A23150090F7D4 /* CUAudioOutput.h */,
+				EB163978295A23150090F7D4 /* CUAudioInput.h */,
+				EB163981295A23150090F7D4 /* CUAudioFader.h */,
+				EB163982295A23150090F7D4 /* CUAudioPanner.h */,
+				EB16397B295A23150090F7D4 /* CUAudioMixer.h */,
+				EB163980295A23150090F7D4 /* CUAudioPlayer.h */,
+				EB16397A295A23150090F7D4 /* CUAudioRedistributor.h */,
+				EB16397C295A23150090F7D4 /* CUAudioResampler.h */,
+				EB16397F295A23150090F7D4 /* CUAudioScheduler.h */,
+				EB16397D295A23150090F7D4 /* CUAudioSpinner.h */,
+				EB163983295A23150090F7D4 /* CUAudioSynchronizer.h */,
+				EBDABF022B4DC095006862AF /* CUAlgorithmicReverb.h */,
+			);
+			path = graph;
+			sourceTree = "<group>";
+		};
+		EB1639A4295A23D00090F7D4 /* gestures */ = {
+			isa = PBXGroup;
+			children = (
+				EB1639A7295A23E70090F7D4 /* CUCoreGesture.cpp */,
+				EB1639A8295A23E70090F7D4 /* CUPanGesture.cpp */,
+				EB1639A5295A23E70090F7D4 /* CUPinchGesture.cpp */,
+				EB1639A6295A23E70090F7D4 /* CUSpinGesture.cpp */,
+				EBF2856C2B5CAB3B00E91BB4 /* CUGestureRecognizer.cpp */,
+			);
+			path = gestures;
+			sourceTree = "<group>";
+		};
+		EB1639AD295A23F40090F7D4 /* audio */ = {
+			isa = PBXGroup;
+			children = (
+				EB1639D6295A326D0090F7D4 /* CUAudioTypes.cpp */,
+				EB1639AF295A24150090F7D4 /* CUAudioDecoder.cpp */,
+				EB1639B4295A24160090F7D4 /* CUAudioDevices.cpp */,
+				EB1639AE295A24150090F7D4 /* CUAudioEngine.cpp */,
+				EB1639B0295A24160090F7D4 /* CUAudioQueue.cpp */,
+				EB1639B1295A24160090F7D4 /* CUAudioSample.cpp */,
+				EB1639B2295A24160090F7D4 /* CUAudioWaveform.cpp */,
+				EB1639B3295A24160090F7D4 /* CUSound.cpp */,
+				EB1639BC295A241D0090F7D4 /* graph */,
+			);
+			path = audio;
+			sourceTree = "<group>";
+		};
+		EB1639BC295A241D0090F7D4 /* graph */ = {
+			isa = PBXGroup;
+			children = (
+				EB1639C6295A243D0090F7D4 /* CUAudioNode.cpp */,
+				EB1639C0295A243D0090F7D4 /* CUAudioOutput.cpp */,
+				EB1639BE295A243D0090F7D4 /* CUAudioInput.cpp */,
+				EB1639C5295A243D0090F7D4 /* CUAudioFader.cpp */,
+				EB1639C3295A243D0090F7D4 /* CUAudioPanner.cpp */,
+				EB1639BF295A243D0090F7D4 /* CUAudioMixer.cpp */,
+				EB1639C1295A243D0090F7D4 /* CUAudioPlayer.cpp */,
+				EB1639C2295A243D0090F7D4 /* CUAudioRedistributor.cpp */,
+				EB1639C8295A243D0090F7D4 /* CUAudioResampler.cpp */,
+				EB1639C7295A243D0090F7D4 /* CUAudioScheduler.cpp */,
+				EB1639C4295A243D0090F7D4 /* CUAudioSpinner.cpp */,
+				EB1639BD295A243D0090F7D4 /* CUAudioSynchronizer.cpp */,
+				EBDABF032B4DC48B006862AF /* CUAlgorithmicReverb.cpp */,
+			);
+			path = graph;
+			sourceTree = "<group>";
+		};
+		EB163A52295E13D60090F7D4 /* actions */ = {
+			isa = PBXGroup;
+			children = (
+				EB163A5A295E13F00090F7D4 /* cu_actions.h */,
+				EB163A57295E13EF0090F7D4 /* CUAction.h */,
+				EB163A56295E13EF0090F7D4 /* CUActionManager.h */,
+				EB163A59295E13F00090F7D4 /* CUAnimateAction.h */,
+				EB163A54295E13EF0090F7D4 /* CUFadeAction.h */,
+				EB163A55295E13EF0090F7D4 /* CUMoveAction.h */,
+				EB163A58295E13F00090F7D4 /* CURotateAction.h */,
+				EB163A53295E13EF0090F7D4 /* CUScaleAction.h */,
+			);
+			path = actions;
+			sourceTree = "<group>";
+		};
+		EB163A5B295E13FE0090F7D4 /* actions */ = {
+			isa = PBXGroup;
+			children = (
+				EB163A5F295E14200090F7D4 /* CUAction.cpp */,
+				EB163A5D295E14200090F7D4 /* CUActionManager.cpp */,
+				EB163A5C295E14200090F7D4 /* CUAnimateAction.cpp */,
+				EB163A62295E14200090F7D4 /* CUFadeAction.cpp */,
+				EB163A60295E14200090F7D4 /* CUMoveAction.cpp */,
+				EB163A61295E14200090F7D4 /* CURotateAction.cpp */,
+				EB163A5E295E14200090F7D4 /* CUScaleAction.cpp */,
+			);
+			path = actions;
+			sourceTree = "<group>";
+		};
+		EB163AED295E1B6D0090F7D4 /* physics2 */ = {
+			isa = PBXGroup;
+			children = (
+				EB163AF3295E1BC20090F7D4 /* cu_physics2.h */,
+				EB163AF4295E1BC20090F7D4 /* CUObstacle.h */,
+				EB163AF5295E1BC20090F7D4 /* CUBoxObstacle.h */,
+				EB163AF9295E1BC30090F7D4 /* CUCapsuleObstacle.h */,
+				EB163AF2295E1BC20090F7D4 /* CUObstacleSelector.h */,
+				EB163AFA295E1BC30090F7D4 /* CUPolygonObstacle.h */,
+				EB163AF8295E1BC30090F7D4 /* CUWheelObstacle.h */,
+				EBDABE3B2B49EAAD006862AF /* CUJoint.h */,
+				EBDABE532B4C4F85006862AF /* CUDistanceJoint.h */,
+				EBDABE542B4C5242006862AF /* CUFrictionJoint.h */,
+				EBDABE552B4C530F006862AF /* CUGearJoint.h */,
+				EBDABE562B4C539D006862AF /* CUMotorJoint.h */,
+				EBDABE572B4C5434006862AF /* CUMouseJoint.h */,
+				EBDABE582B4C54B1006862AF /* CUPrismaticJoint.h */,
+				EBDABE592B4C55D9006862AF /* CUPulleyJoint.h */,
+				EBDABE5A2B4C5697006862AF /* CURevoluteJoint.h */,
+				EBDABE5B2B4C5746006862AF /* CUWeldJoint.h */,
+				EBDABE5C2B4C5756006862AF /* CUWheelJoint.h */,
+				EB163AF7295E1BC30090F7D4 /* CUObstacleWorld.h */,
+				EBDABEDD2B4C6F34006862AF /* net */,
+			);
+			path = physics2;
+			sourceTree = "<group>";
+		};
+		EB163AFC295E1BE00090F7D4 /* physics2 */ = {
+			isa = PBXGroup;
+			children = (
+				EB163B01295E1BF90090F7D4 /* CUObstacle.cpp */,
+				EB163AFF295E1BF90090F7D4 /* CUBoxObstacle.cpp */,
+				EB163B02295E1BF90090F7D4 /* CUCapsuleObstacle.cpp */,
+				EB163AFE295E1BF80090F7D4 /* CUObstacleSelector.cpp */,
+				EB163B00295E1BF90090F7D4 /* CUPolygonObstacle.cpp */,
+				EB163B05295E1BF90090F7D4 /* CUWheelObstacle.cpp */,
+				EBDABE422B49FFEE006862AF /* CUJoint.cpp */,
+				EBDABE5D2B4C588E006862AF /* CUDistanceJoint.cpp */,
+				EBDABE602B4C58A3006862AF /* CUFrictionJoint.cpp */,
+				EBDABE632B4C58B2006862AF /* CUGearJoint.cpp */,
+				EBDABE662B4C58C3006862AF /* CUMotorJoint.cpp */,
+				EBDABE692B4C58E0006862AF /* CUMouseJoint.cpp */,
+				EBDABE6C2B4C58F6006862AF /* CUPrismaticJoint.cpp */,
+				EBDABE6F2B4C590D006862AF /* CUPulleyJoint.cpp */,
+				EBDABE722B4C5920006862AF /* CURevoluteJoint.cpp */,
+				EBDABE782B4C5944006862AF /* CUWeldJoint.cpp */,
+				EBDABE752B4C5933006862AF /* CUWheelJoint.cpp */,
+				EB163B03295E1BF90090F7D4 /* CUObstacleWorld.cpp */,
+				EBDABEDF2B4C7A22006862AF /* net */,
+			);
+			path = physics2;
+			sourceTree = "<group>";
+		};
+		EB202C3C1DE39B2400116616 /* io */ = {
+			isa = PBXGroup;
+			children = (
+				EB202C4E1DE63E5200116616 /* cu_io.h */,
+				EB202C3D1DE39B8200116616 /* CUTextReader.h */,
+				EB202C481DE5F64E00116616 /* CUTextWriter.h */,
+				EB202C531DE9219100116616 /* CUJsonReader.h */,
+				EB202C561DE921D100116616 /* CUJsonWriter.h */,
+				EB202C8E1DEBCD4700116616 /* CUBinaryReader.h */,
+				EB202C8B1DEBC7CE00116616 /* CUBinaryWriter.h */,
+			);
+			path = io;
+			sourceTree = "<group>";
+		};
+		EB202C401DE39B8800116616 /* io */ = {
+			isa = PBXGroup;
+			children = (
+				EB202C411DE39BAA00116616 /* CUTextReader.cpp */,
+				EB202C4B1DE5F9B900116616 /* CUTextWriter.cpp */,
+				EB202C591DE924AB00116616 /* CUJsonReader.cpp */,
+				EB202C5C1DE9367C00116616 /* CUJsonWriter.cpp */,
+				EB202C911DEBDE9900116616 /* CUBinaryReader.cpp */,
+				EBA6CF0E1DECCB8B00BC2146 /* CUBinaryWriter.cpp */,
+			);
+			path = io;
+			sourceTree = "<group>";
+		};
+		EB28FC7D279F821100D15D07 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EB45FD9525B3978600974097 /* graph */ = {
+			isa = PBXGroup;
+			children = (
+				EB45FD9F25B398A000974097 /* CUSceneNode.h */,
+				EB45FDA125B398A000974097 /* CUTexturedNode.h */,
+				EB45FD9E25B398A000974097 /* CUPolygonNode.h */,
+				EB45FD9C25B398A000974097 /* CUPathNode.h */,
+				EB45FDA025B398A000974097 /* CUWireNode.h */,
+				EB45FD9D25B398A000974097 /* CUSpriteNode.h */,
+				EB87CBB625F5B6A800F1E301 /* CUOrderedNode.h */,
+				EBDABD402B42ACD5006862AF /* CUMeshNode.h */,
+				EBC6AD1D26A74CC100DF1C83 /* CUCanvasNode.h */,
+			);
+			path = graph;
+			sourceTree = "<group>";
+		};
+		EB45FDB225B3ADD100974097 /* graph */ = {
+			isa = PBXGroup;
+			children = (
+				EB45FDB325B3ADE600974097 /* CUSceneNode.cpp */,
+				EB45FDB825B3ADE600974097 /* CUTexturedNode.cpp */,
+				EB45FDB625B3ADE600974097 /* CUPolygonNode.cpp */,
+				EB45FDB925B3ADE600974097 /* CUPathNode.cpp */,
+				EB45FDB525B3ADE600974097 /* CUWireNode.cpp */,
+				EB45FDB725B3ADE600974097 /* CUSpriteNode.cpp */,
+				EB9D6A5525F56B0200C076C1 /* CUOrderedNode.cpp */,
+				EBDABD3D2B42ACC4006862AF /* CUMeshNode.cpp */,
+				EBC6AD2826A74CE500DF1C83 /* CUCanvasNode.cpp */,
+			);
+			path = graph;
+			sourceTree = "<group>";
+		};
+		EB4AEC011CFCB9C70090AF7F /* base */ = {
+			isa = PBXGroup;
+			children = (
+				EB4AEC041CFCBA270090AF7F /* CUApplication.cpp */,
+				EB77F1CE1D3690E000D52B9E /* CUDisplay.cpp */,
+			);
+			path = base;
+			sourceTree = "<group>";
+		};
+		EB4AEC031CFCB9EB0090AF7F /* render */ = {
+			isa = PBXGroup;
+			children = (
+				EB8EC5C41D1CE1780005448C /* shaders */,
+				EB163A4B295E0A930090F7D4 /* CURenderBase.cpp */,
+				EB8EC5D21D1E06B60005448C /* CUTexture.cpp */,
+				EB45FD6F25B3563C00974097 /* CUScissor.cpp */,
+				EB45FD7025B3563C00974097 /* CUGradient.cpp */,
+				EB45FD7325B3563C00974097 /* CUFont.cpp */,
+				EBC6ADB326AF3B4000DF1C83 /* CUTextLayout.cpp */,
+				EB8EC5C91D1DCCC60005448C /* CUShader.cpp */,
+				EB45FD7425B3563C00974097 /* CURenderTarget.cpp */,
+				EB45FD7125B3563C00974097 /* CUUniformBuffer.cpp */,
+				EB45FD7225B3563C00974097 /* CUVertexBuffer.cpp */,
+				EB163A4F295E11680090F7D4 /* CUStencilEffect.cpp */,
+				EB8EC5C11D1CE15E0005448C /* CUSpriteBatch.cpp */,
+				EB28FC3D279F7DA900D15D07 /* CUSpriteSheet.cpp */,
+				EBDABC422B4297A8006862AF /* CUTextureRenderer.cpp */,
+				EB8EC5F21D2356CC0005448C /* CUCamera.cpp */,
+				EB8EC5F51D236E990005448C /* CUOrthographicCamera.cpp */,
+				EB6CDA441D25703A006AD8CF /* CUPerspectiveCamera.cpp */,
+			);
+			path = render;
+			sourceTree = "<group>";
+		};
+		EB4AEC081CFCC09E0090AF7F /* math */ = {
+			isa = PBXGroup;
+			children = (
+				EB6CDA5A1D25B77C006AD8CF /* CUMathBase.cpp */,
+				EB4AEC131CFCE9B40090AF7F /* CUVec2.cpp */,
+				EB4AEC251CFF0BF50090AF7F /* CUVec3.cpp */,
+				EB4AEC281CFF0C0B0090AF7F /* CUVec4.cpp */,
+				EB1BFD7C1D076942006D653A /* CUQuaternion.cpp */,
+				EB1BFD701D066CED006D653A /* CUMat4.cpp */,
+				EB8EC5AE1D1AE9370005448C /* CUAffine2.cpp */,
+				EB4AEC4C1D024FEB0090AF7F /* CUColor4.cpp */,
+				EB4AEC101CFCE5A80090AF7F /* CUSize.cpp */,
+				EB4AEC1F1CFDCC590090AF7F /* CURect.cpp */,
+				EB8EC5B51D1C45830005448C /* CUPolynomial.cpp */,
+				EB8EC5B11D1B4F230005448C /* CUPoly2.cpp */,
+				EBC6AC3726994EE200DF1C83 /* CUPath2.cpp */,
+				EB8EC5B81D1C6F3D0005448C /* CUSpline2.cpp */,
+				EB8EC5E91D22EA970005448C /* CURay.cpp */,
+				EB8EC5EC1D22F4700005448C /* CUPlane.cpp */,
+				EB8EC5EF1D2307830005448C /* CUFrustum.cpp */,
+				EB0F491C1E7A10B7002E50DB /* CUEasingFunction.cpp */,
+				EB0F49181E79FE51002E50DB /* CUEasingBezier.cpp */,
+				EB8EC5B41D1C11080005448C /* polygon */,
+			);
+			path = math;
+			sourceTree = "<group>";
+		};
+		EB4AEC0C1CFCD1B10090AF7F /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				EBFE7C011E187321001007C2 /* CUAssetManager.cpp */,
+				EB202C501DE68CCA00116616 /* CUJsonValue.cpp */,
+				EBFE7BDF1E15A9AD001007C2 /* CUTextureLoader.cpp */,
+				EBFE7BED1E15CC75001007C2 /* CUFontLoader.cpp */,
+				EBB8FEFE21E198D60039834E /* CUSoundLoader.cpp */,
+				EB59D5201E251D1F00A93BB5 /* CUJsonLoader.cpp */,
+				EB950C8923DA3BF100E54B1A /* CUWidgetLoader.cpp */,
+				EBD3CE9E2005DAFC00CFD1BC /* CUScene2Loader.cpp */,
+			);
+			path = assets;
+			sourceTree = "<group>";
+		};
+		EB4AEC171CFD4DB90090AF7F /* scene2 */ = {
+			isa = PBXGroup;
+			children = (
+				EB45FDC325B3AE5500974097 /* CUScene2.cpp */,
+				EBDC807525C0AD7D004DECAE /* CUScene2Texture.cpp */,
+				EB163A5B295E13FE0090F7D4 /* actions */,
+				EB45FDB225B3ADD100974097 /* graph */,
+				EBFE7C0F1E1AB122001007C2 /* ui */,
+				EB77B910200ECCA200713568 /* layout */,
+			);
+			path = scene2;
+			sourceTree = "<group>";
+		};
+		EB4AEC1B1CFDB98B0090AF7F /* util */ = {
+			isa = PBXGroup;
+			children = (
+				EB45FD7D25B3671C00974097 /* CUFiletools.cpp */,
+				EB4AEC461D01BC4F0090AF7F /* CUStrings.cpp */,
+				EBCE54721DED2EC5003B52FE /* CUThreadPool.cpp */,
+				EBDABF9C2B538760006862AF /* CULogger.cpp */,
+			);
+			path = util;
+			sourceTree = "<group>";
+		};
+		EB77B910200ECCA200713568 /* layout */ = {
+			isa = PBXGroup;
+			children = (
+				EB77B91E2010FA3300713568 /* CULayout.cpp */,
+				EBD3CEA32007260F00CFD1BC /* CUAnchoredLayout.cpp */,
+				EB77B914200FF15800713568 /* CUFloatLayout.cpp */,
+				EB77B9212010FD0500713568 /* CUGridLayout.cpp */,
+			);
+			path = layout;
+			sourceTree = "<group>";
+		};
+		EB77B911200ECCB800713568 /* layout */ = {
+			isa = PBXGroup;
+			children = (
+				EB77B912200EFD0000713568 /* cu_layout.h */,
+				EBD3CEA12007210000CFD1BC /* CULayout.h */,
+				EBD3CEA22007229000CFD1BC /* CUAnchoredLayout.h */,
+				EB77B90E200D972900713568 /* CUFloatLayout.h */,
+				EB77B90F200D973A00713568 /* CUGridLayout.h */,
+			);
+			path = layout;
+			sourceTree = "<group>";
+		};
+		EB8EC5B41D1C11080005448C /* polygon */ = {
+			isa = PBXGroup;
+			children = (
+				EBDC804D25BF3832004DECAE /* CUPolyFactory.cpp */,
+				EBC6AC9C269FD0C200DF1C83 /* CUPathFactory.cpp */,
+				EB8EC5BE1D1C772B0005448C /* CUSplinePather.cpp */,
+				EBC6ACE226A1E3F200DF1C83 /* CUEarclipTriangulator.cpp */,
+				EBDC803325B8CB2D004DECAE /* CUDelaunayTriangulator.cpp */,
+				EB07893B1D2D6E3E000BFDF7 /* CUSimpleExtruder.cpp */,
+				EBDC804625BA33D3004DECAE /* CUComplexExtruder.cpp */,
+				EBDC806025C08F7D004DECAE /* CUPathSmoother.cpp */,
+			);
+			path = polygon;
+			sourceTree = "<group>";
+		};
+		EB8EC5C41D1CE1780005448C /* shaders */ = {
+			isa = PBXGroup;
+			children = (
+				EBDC802F25B8B807004DECAE /* ColorTexture.frag */,
+				EBDC802E25B8B807004DECAE /* ColorTexture.vert */,
+				EBDC803125B8B807004DECAE /* SpriteShader.frag */,
+				EBDC803025B8B807004DECAE /* SpriteShader.vert */,
+				EBDABCCF2B42A43F006862AF /* FSQShader.frag */,
+				EBDABCD62B42A43F006862AF /* FSQShader.vert */,
+			);
+			path = shaders;
+			sourceTree = "<group>";
+		};
+		EB9E56CA2B38B0A20074B480 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EB9E56CE2B38B0A20074B480 /* libbox2d.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EB9E56D82B38B0CC0074B480 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EB9E56DD2B38B0CC0074B480 /* libsdlapp-mac.a */,
+				EB9E56DF2B38B0CC0074B480 /* libsdlapp-ios.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EB9E56F02B38B6360074B480 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EB9E56F42B38B6360074B480 /* libpoly2tri.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EBC2F15F1D74A67B007EC7A6 /* Include */ = {
+			isa = PBXGroup;
+			children = (
+				EBDB2A1A295609BD00A4B39C /* cugl */,
+				EBDB2A1B29560B3300A4B39C /* cJSON */,
+				EBDB2A1D29560B4300A4B39C /* utf8 */,
+			);
+			name = Include;
+			path = ../../include;
+			sourceTree = "<group>";
+		};
+		EBC2F1601D74A685007EC7A6 /* base */ = {
+			isa = PBXGroup;
+			children = (
+				EBC2F18B1D74AA15007EC7A6 /* cu_base.h */,
+				EB6CDA521D25B684006AD8CF /* CUBase.h */,
+				EB202C871DEBBA1000116616 /* CUEndian.h */,
+				EB4AEC051CFCBA270090AF7F /* CUApplication.h */,
+				EB77F1CF1D3690E000D52B9E /* CUDisplay.h */,
+			);
+			path = base;
+			sourceTree = "<group>";
+		};
+		EBC2F1611D74A6B6007EC7A6 /* util */ = {
+			isa = PBXGroup;
+			children = (
+				EBC2F18F1D74AA40007EC7A6 /* cu_util.h */,
+				EB4AEC1D1CFDB9AC0090AF7F /* CUDebug.h */,
+				EB4AEC471D01BC4F0090AF7F /* CUStrings.h */,
+				EB1B34C81D2C5FD60057E0BD /* CUTimestamp.h */,
+				EBCE54671DED12D6003B52FE /* CUThreadPool.h */,
+				EB45FD7B25B3660600974097 /* CUFiletools.h */,
+				EBCE546C1DED12E6003B52FE /* CUFreeList.h */,
+				EBCE546F1DED1315003B52FE /* CUGreedyFreeList.h */,
+				EBDABF952B5386E3006862AF /* CULogger.h */,
+			);
+			path = util;
+			sourceTree = "<group>";
+		};
+		EBC2F1621D74A6E5007EC7A6 /* input */ = {
+			isa = PBXGroup;
+			children = (
+				EBC2F1931D74AA68007EC7A6 /* cu_input.h */,
+				EB0789531D3020E3000BFDF7 /* CUInput.h */,
+				EB0789561D302104000BFDF7 /* CUKeyboard.h */,
+				EBB96D7C1D31EDB100C2CA07 /* CUMouse.h */,
+				EBC7E78C1D333886000A892F /* CUTouchscreen.h */,
+				EB0789591D306BE4000BFDF7 /* CUTextInput.h */,
+				EBCB16171D36F79E0089A883 /* CUAccelerometer.h */,
+				EBF285722B5CAB5600E91BB4 /* CUGameController.h */,
+				EB163965295A22860090F7D4 /* gestures */,
+			);
+			path = input;
+			sourceTree = "<group>";
+		};
+		EBC2F1631D74A743007EC7A6 /* scene2 */ = {
+			isa = PBXGroup;
+			children = (
+				EBDC807325C0AD57004DECAE /* cu_scene2.h */,
+				EB1B34AF1D26CB290057E0BD /* CUScene2.h */,
+				EBDC806825C0AB1F004DECAE /* CUScene2Texture.h */,
+				EB163A52295E13D60090F7D4 /* actions */,
+				EB45FD9525B3978600974097 /* graph */,
+				EBFE7C0A1E1A8696001007C2 /* ui */,
+				EB77B911200ECCB800713568 /* layout */,
+			);
+			path = scene2;
+			sourceTree = "<group>";
+		};
+		EBC2F1641D74A7D8007EC7A6 /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				EBC2F1911D74AA53007EC7A6 /* cu_assets.h */,
+				EBFE7BD61E158735001007C2 /* CUAssetManager.h */,
+				EBFE7BD31E158612001007C2 /* CUAsset.h */,
+				EB202C4F1DE63F0B00116616 /* CUJsonValue.h */,
+				EBFE7BD91E15927A001007C2 /* CULoader.h */,
+				EBFE7BDC1E159734001007C2 /* CUTextureLoader.h */,
+				EBFE7BE41E15BFD4001007C2 /* CUFontLoader.h */,
+				EBB8FEF421E196B30039834E /* CUSoundLoader.h */,
+				EB59D51B1E251B8A00A93BB5 /* CUJsonLoader.h */,
+				EB950C9523DA3BFE00E54B1A /* CUWidgetLoader.h */,
+				EB950C9623DA3BFF00E54B1A /* CUWidgetValue.h */,
+				EBD3CE9D2005D3DE00CFD1BC /* CUScene2Loader.h */,
+				EBFE7BF81E15E45C001007C2 /* CUGenericLoader.h */,
+			);
+			path = assets;
+			sourceTree = "<group>";
+		};
+		EBC2F1661D74A80C007EC7A6 /* render */ = {
+			isa = PBXGroup;
+			children = (
+				EBC2F1901D74AA4B007EC7A6 /* cu_render.h */,
+				EB163A47295E07B80090F7D4 /* CURenderBase.h */,
+				EBC2F1881D74A9AE007EC7A6 /* CUTexture.h */,
+				EB45FD5D25B355AF00974097 /* CUScissor.h */,
+				EB45FD5E25B355AF00974097 /* CUGradient.h */,
+				EB45FD6025B355AF00974097 /* CUMesh.h */,
+				EB45FD5C25B355AF00974097 /* CUSpriteVertex.h */,
+				EB9D6A4325F45D0E00C076C1 /* CUGlyphRun.h */,
+				EB45FD5F25B355AF00974097 /* CUFont.h */,
+				EB0703B026B4BFC1001838D6 /* CUTextAlignment.h */,
+				EBC6ADB226AEE41800DF1C83 /* CUTextLayout.h */,
+				EBC2F1851D74A9AE007EC7A6 /* CUShader.h */,
+				EB45FD6225B355AF00974097 /* CURenderTarget.h */,
+				EB45FD5125B355AF00974097 /* CUUniformBuffer.h */,
+				EB45FD6125B355AF00974097 /* CUVertexBuffer.h */,
+				EB163A4E295E0DFD0090F7D4 /* CUStencilEffect.h */,
+				EBC2F1861D74A9AE007EC7A6 /* CUSpriteBatch.h */,
+				EB28FC3C279F7D9400D15D07 /* CUSpriteSheet.h */,
+				EBDABC472B429856006862AF /* CUTextureRenderer.h */,
+				EBC2F1821D74A9AE007EC7A6 /* CUCamera.h */,
+				EBC2F1831D74A9AE007EC7A6 /* CUOrthographicCamera.h */,
+				EBC2F1841D74A9AE007EC7A6 /* CUPerspectiveCamera.h */,
+			);
+			path = render;
+			sourceTree = "<group>";
+		};
+		EBC2F1671D74A816007EC7A6 /* math */ = {
+			isa = PBXGroup;
+			children = (
+				EBC2F18D1D74AA27007EC7A6 /* cu_math.h */,
+				EBC2F1731D74A90F007EC7A6 /* CUMathBase.h */,
+				EBC2F17B1D74A90F007EC7A6 /* CUVec2.h */,
+				EBC2F17C1D74A90F007EC7A6 /* CUVec3.h */,
+				EBC2F17D1D74A90F007EC7A6 /* CUVec4.h */,
+				EBC2F1771D74A90F007EC7A6 /* CUQuaternion.h */,
+				EBC2F1721D74A90F007EC7A6 /* CUMat4.h */,
+				EBC2F16E1D74A90F007EC7A6 /* CUAffine2.h */,
+				EBC2F16F1D74A90F007EC7A6 /* CUColor4.h */,
+				EBC2F17A1D74A90F007EC7A6 /* CUSize.h */,
+				EBC2F1791D74A90F007EC7A6 /* CURect.h */,
+				EBC2F1761D74A90F007EC7A6 /* CUPolynomial.h */,
+				EB8B6C9F262F3F5F00CEC82C /* CUPath2.h */,
+				EBC2F1751D74A90F007EC7A6 /* CUPoly2.h */,
+				EBC2F1701D74A90F007EC7A6 /* CUSpline2.h */,
+				EBC2F1711D74A90F007EC7A6 /* CUFrustum.h */,
+				EBC2F1741D74A90F007EC7A6 /* CUPlane.h */,
+				EBC2F1781D74A90F007EC7A6 /* CURay.h */,
+				EB0F491B1E7A093A002E50DB /* CUEasingFunction.h */,
+				EB0F49131E79F9EC002E50DB /* CUEasingBezier.h */,
+				EBC2F16D1D74A8AC007EC7A6 /* polygon */,
+			);
+			path = math;
+			sourceTree = "<group>";
+		};
+		EBC2F16D1D74A8AC007EC7A6 /* polygon */ = {
+			isa = PBXGroup;
+			children = (
+				EBC2F18E1D74AA33007EC7A6 /* cu_polygon.h */,
+				EBDC804C25BCF9E0004DECAE /* CUPolyEnums.h */,
+				EBDC804B25BBA7F4004DECAE /* CUPolyFactory.h */,
+				EBC6AC9B269FC9AA00DF1C83 /* CUPathFactory.h */,
+				EBC2F17E1D74A95B007EC7A6 /* CUSplinePather.h */,
+				EBC6ACDD26A1D89000DF1C83 /* CUEarclipTriangulator.h */,
+				EBDC803225B8B9A1004DECAE /* CUDelaunayTriangulator.h */,
+				EBC2F17F1D74A95B007EC7A6 /* CUSimpleExtruder.h */,
+				EBDC804525BA2D73004DECAE /* CUComplexExtruder.h */,
+				EBDC805F25BFB9FF004DECAE /* CUPathSmoother.h */,
+			);
+			path = polygon;
+			sourceTree = "<group>";
+		};
+		EBDABB932B40F31F006862AF /* net */ = {
+			isa = PBXGroup;
+			children = (
+				EBDABB9D2B40F335006862AF /* cu_net.h */,
+				EBDABB9F2B40F335006862AF /* CUICEAddress.h */,
+				EBDABB992B40F335006862AF /* CUInetAddress.h */,
+				EBDABB982B40F335006862AF /* CUNetcodeChannel.h */,
+				EBDABB9E2B40F335006862AF /* CUNetcodeConfig.h */,
+				EBDABB9B2B40F335006862AF /* CUNetcodeConnection.h */,
+				EBDABBA02B40F335006862AF /* CUNetcodePeer.h */,
+				EBDABB9A2B40F335006862AF /* CUNetcodeSerializer.h */,
+				EBDABB9C2B40F335006862AF /* CUNetworkLayer.h */,
+			);
+			path = net;
+			sourceTree = "<group>";
+		};
+		EBDABBA12B40F342006862AF /* net */ = {
+			isa = PBXGroup;
+			children = (
+				EBDABBA42B40F35E006862AF /* CUICEAddress.cpp */,
+				EBDABBA22B40F35E006862AF /* CUInetAddress.cpp */,
+				EBDABBA52B40F35E006862AF /* CUNetcodeChannel.cpp */,
+				EBDABBA82B40F35E006862AF /* CUNetcodeConfig.cpp */,
+				EBDABBA62B40F35E006862AF /* CUNetcodeConnection.cpp */,
+				EBDABBA32B40F35E006862AF /* CUNetcodePeer.cpp */,
+				EBDABBA72B40F35E006862AF /* CUNetcodeSerializer.cpp */,
+				EBDABBA92B40F35E006862AF /* CUNetworkLayer.cpp */,
+			);
+			path = net;
+			sourceTree = "<group>";
+		};
+		EBDABBB32B40F36F006862AF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EBDABBBC2B40F36F006862AF /* libdatachannel-mac.a */,
+				EBDABBBE2B40F36F006862AF /* libdatachannel-ios.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EBDABEDD2B4C6F34006862AF /* net */ = {
+			isa = PBXGroup;
+			children = (
+				EBDABEDE2B4C6F51006862AF /* cu_net_physics.h */,
+				EBDABE2A2B49DCC7006862AF /* CUNetWorld.h */,
+				EBDABE212B49BC70006862AF /* CUObstacleFactory.h */,
+				EBDABE1B2B49BC70006862AF /* CULWDeserializer.h */,
+				EBDABE1E2B49BC70006862AF /* CULWSerializer.h */,
+				EBDABE222B49BC70006862AF /* CUNetEvent.h */,
+				EBDABE182B49BC70006862AF /* CUPhysObstEvent.h */,
+				EBDABE1A2B49BC70006862AF /* CUPhysSyncEvent.h */,
+				EBDABE1D2B49BC70006862AF /* CUGameStateEvent.h */,
+				EBDABE192B49BC70006862AF /* CUNetPhysicsController.h */,
+				EBDABE202B49BC70006862AF /* CUNetEventController.h */,
+			);
+			path = net;
+			sourceTree = "<group>";
+		};
+		EBDABEDF2B4C7A22006862AF /* net */ = {
+			isa = PBXGroup;
+			children = (
+				EBDABE2B2B49DDE6006862AF /* CUNetWorld.cpp */,
+				EBDABEE42B4CABB4006862AF /* CUPhysObstEvent.cpp */,
+				EBDABEE72B4CB720006862AF /* CUPhysSyncEvent.cpp */,
+				EBDABEEE2B4CC1B7006862AF /* CUGameStateEvent.cpp */,
+				EBDABE242B49BD1E006862AF /* CUNetPhysicsController.cpp */,
+				EBDABE252B49BD1E006862AF /* CUNetEventController.cpp */,
+			);
+			path = net;
+			sourceTree = "<group>";
+		};
+		EBDB2A1A295609BD00A4B39C /* cugl */ = {
+			isa = PBXGroup;
+			children = (
+				EBC2F18C1D74AA1D007EC7A6 /* cugl.h */,
+				EBC2F1601D74A685007EC7A6 /* base */,
+				EBC2F1611D74A6B6007EC7A6 /* util */,
+				EBC2F1671D74A816007EC7A6 /* math */,
+				EBC2F1621D74A6E5007EC7A6 /* input */,
+				EB202C3C1DE39B2400116616 /* io */,
+				EBC2F1641D74A7D8007EC7A6 /* assets */,
+				EB16396E295A22C60090F7D4 /* audio */,
+				EBDABB932B40F31F006862AF /* net */,
+				EBC2F1661D74A80C007EC7A6 /* render */,
+				EBC2F1631D74A743007EC7A6 /* scene2 */,
+				EB163AED295E1B6D0090F7D4 /* physics2 */,
+			);
+			path = cugl;
+			sourceTree = "<group>";
+		};
+		EBDB2A1B29560B3300A4B39C /* cJSON */ = {
+			isa = PBXGroup;
+			children = (
+				EBDB2A1C29560B3300A4B39C /* cJSON.h */,
+			);
+			path = cJSON;
+			sourceTree = "<group>";
+		};
+		EBDB2A1D29560B4300A4B39C /* utf8 */ = {
+			isa = PBXGroup;
+			children = (
+				EBDB2A1E29560B4300A4B39C /* utf8core.h */,
+				EBDB2A1F29560B4300A4B39C /* utf8checked.h */,
+				EBDB2A2029560B4300A4B39C /* utf8unchecked.h */,
+				EBDB2A2129560B4300A4B39C /* utf8.h */,
+			);
+			path = utf8;
+			sourceTree = "<group>";
+		};
+		EBDC7FFF25B8AB60004DECAE /* external */ = {
+			isa = PBXGroup;
+			children = (
+				EB9E56EA2B38B62B0074B480 /* clipper.cpp */,
+				EBDB2A2229560BD400A4B39C /* cJSON.c */,
+			);
+			path = external;
+			sourceTree = "<group>";
+		};
+		EBFE7C0A1E1A8696001007C2 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				EBFE7C0B1E1A86FC001007C2 /* CUButton.h */,
+				EBDABD452B42ACED006862AF /* CUButtonGroup.h */,
+				EB45FD9625B3988300974097 /* CUNinePatch.h */,
+				EB4AEC191CFD4DCD0090AF7F /* CULabel.h */,
+				EB45FD9725B3988400974097 /* CUSlider.h */,
+				EB45FD9825B3988400974097 /* CUTextField.h */,
+				EBFE7C0C1E1A872B001007C2 /* CUProgressBar.h */,
+				EB28FC43279F7F9C00D15D07 /* CUScrollPane.h */,
+			);
+			path = ui;
+			sourceTree = "<group>";
+		};
+		EBFE7C0F1E1AB122001007C2 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				EBFE7C131E1B00CA001007C2 /* CUButton.cpp */,
+				EBDABD252B42AC97006862AF /* CUButtonGroup.cpp */,
+				EB45FDC125B3AE3200974097 /* CUNinePatch.cpp */,
+				EB4AEC181CFD4DCD0090AF7F /* CULabel.cpp */,
+				EBD3CE7C2004070000CFD1BC /* CUSlider.cpp */,
+				EBD3CE7B2004070000CFD1BC /* CUTextField.cpp */,
+				EBFE7C101E1AB140001007C2 /* CUProgressBar.cpp */,
+				EB28FC40279F7F8400D15D07 /* CUScrollPane.cpp */,
+			);
+			path = ui;
+			sourceTree = "<group>";
+		};
+		EBFFD7031CFCA12A00E047D2 = {
+			isa = PBXGroup;
+			children = (
+				EBC2F15F1D74A67B007EC7A6 /* Include */,
+				EBFFD70E1CFCA12A00E047D2 /* Source */,
+				EBFFD70D1CFCA12A00E047D2 /* Products */,
+				EB28FC7D279F821100D15D07 /* Frameworks */,
+				EB163ADA295E1A840090F7D4 /* box2d.xcodeproj */,
+				EBDB2A3229560C7000A4B39C /* poly2tri.xcodeproj */,
+				EBDABBB22B40F36F006862AF /* libdatachannel.xcodeproj */,
+				EBDB2A2529560C5900A4B39C /* sdl2app.xcodeproj */,
+			);
+			sourceTree = "<group>";
+		};
+		EBFFD70D1CFCA12A00E047D2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EBBF18071D7485D1008E2001 /* libcugl-mac.a */,
+				EB7453D71D74B0C5002FBAE6 /* libcugl-ios.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EBFFD70E1CFCA12A00E047D2 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				EB4AEC011CFCB9C70090AF7F /* base */,
+				EB4AEC1B1CFDB98B0090AF7F /* util */,
+				EB4AEC081CFCC09E0090AF7F /* math */,
+				EB0789511D302051000BFDF7 /* input */,
+				EB202C401DE39B8800116616 /* io */,
+				EB4AEC0C1CFCD1B10090AF7F /* assets */,
+				EB1639AD295A23F40090F7D4 /* audio */,
+				EBDABBA12B40F342006862AF /* net */,
+				EB4AEC031CFCB9EB0090AF7F /* render */,
+				EB4AEC171CFD4DB90090AF7F /* scene2 */,
+				EB163AFC295E1BE00090F7D4 /* physics2 */,
+				EBDC7FFF25B8AB60004DECAE /* external */,
+			);
+			name = Source;
+			path = ../../source;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EB7453D61D74B0C5002FBAE6 /* cugl-ios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EB7453DD1D74B0C5002FBAE6 /* Build configuration list for PBXNativeTarget "cugl-ios" */;
+			buildPhases = (
+				EB7453D31D74B0C5002FBAE6 /* Sources */,
+				EB7453D41D74B0C5002FBAE6 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "cugl-ios";
+			productName = "cugl-ios";
+			productReference = EB7453D71D74B0C5002FBAE6 /* libcugl-ios.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		EBBF18061D7485D1008E2001 /* cugl-mac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EBBF180D1D7485D1008E2001 /* Build configuration list for PBXNativeTarget "cugl-mac" */;
+			buildPhases = (
+				EBBF18031D7485D1008E2001 /* Sources */,
+				EBBF18041D7485D1008E2001 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "cugl-mac";
+			productName = "cugl-mac";
+			productReference = EBBF18071D7485D1008E2001 /* libcugl-mac.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EBFFD7041CFCA12A00E047D2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				ORGANIZATIONNAME = "Game Design Initiative at Cornell";
+				TargetAttributes = {
+					EB7453D61D74B0C5002FBAE6 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+					EBBF18061D7485D1008E2001 = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+				};
+			};
+			buildConfigurationList = EBFFD7071CFCA12A00E047D2 /* Build configuration list for PBXProject "cugl" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = EBFFD7031CFCA12A00E047D2;
+			productRefGroup = EBFFD70D1CFCA12A00E047D2 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = EB9E56CA2B38B0A20074B480 /* Products */;
+					ProjectRef = EB163ADA295E1A840090F7D4 /* box2d.xcodeproj */;
+				},
+				{
+					ProductGroup = EBDABBB32B40F36F006862AF /* Products */;
+					ProjectRef = EBDABBB22B40F36F006862AF /* libdatachannel.xcodeproj */;
+				},
+				{
+					ProductGroup = EB9E56F02B38B6360074B480 /* Products */;
+					ProjectRef = EBDB2A3229560C7000A4B39C /* poly2tri.xcodeproj */;
+				},
+				{
+					ProductGroup = EB9E56D82B38B0CC0074B480 /* Products */;
+					ProjectRef = EBDB2A2529560C5900A4B39C /* sdl2app.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				EBBF18061D7485D1008E2001 /* cugl-mac */,
+				EB7453D61D74B0C5002FBAE6 /* cugl-ios */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		EB9E56CE2B38B0A20074B480 /* libbox2d.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libbox2d.a;
+			remoteRef = EB9E56CD2B38B0A20074B480 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EB9E56DD2B38B0CC0074B480 /* libsdlapp-mac.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libsdlapp-mac.a";
+			remoteRef = EB9E56DC2B38B0CC0074B480 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EB9E56DF2B38B0CC0074B480 /* libsdlapp-ios.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libsdlapp-ios.a";
+			remoteRef = EB9E56DE2B38B0CC0074B480 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EB9E56F42B38B6360074B480 /* libpoly2tri.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libpoly2tri.a;
+			remoteRef = EB9E56F32B38B6360074B480 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EBDABBBC2B40F36F006862AF /* libdatachannel-mac.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libdatachannel-mac.a";
+			remoteRef = EBDABBBB2B40F36F006862AF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EBDABBBE2B40F36F006862AF /* libdatachannel-ios.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libdatachannel-ios.a";
+			remoteRef = EBDABBBD2B40F36F006862AF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EB7453D31D74B0C5002FBAE6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB1638732956265B0090F7D4 /* CUScene2Loader.cpp in Sources */,
+				EB1638BA295634710090F7D4 /* CUGridLayout.cpp in Sources */,
+				EBDABD3F2B42ACC4006862AF /* CUMeshNode.cpp in Sources */,
+				EB163859295625BB0090F7D4 /* CUBinaryReader.cpp in Sources */,
+				EB16383729561FE40090F7D4 /* CUFrustum.cpp in Sources */,
+				EB1637FB2956160E0090F7D4 /* CUVec3.cpp in Sources */,
+				EBE2E0032B794B410091FF11 /* CUNetcodeConnection.cpp in Sources */,
+				EB16385A295625BB0090F7D4 /* CUBinaryWriter.cpp in Sources */,
+				EB163A14295D2F640090F7D4 /* CUPanGesture.cpp in Sources */,
+				EB163B12295E1BFF0090F7D4 /* CUObstacleWorld.cpp in Sources */,
+				EB163888295627E30090F7D4 /* CUShader.cpp in Sources */,
+				EBDABE622B4C58A3006862AF /* CUFrictionJoint.cpp in Sources */,
+				EB16388E295627E30090F7D4 /* CUTexture.cpp in Sources */,
+				EBDABEE62B4CABB4006862AF /* CUPhysObstEvent.cpp in Sources */,
+				EB163866295626050090F7D4 /* CUInput.cpp in Sources */,
+				EB163A01295D2F470090F7D4 /* CUAudioPanner.cpp in Sources */,
+				EB163A02295D2F470090F7D4 /* CUAudioResampler.cpp in Sources */,
+				EB163A64295E14200090F7D4 /* CUAnimateAction.cpp in Sources */,
+				EB163A6C295E14200090F7D4 /* CUMoveAction.cpp in Sources */,
+				EB1639E0295A38FE0090F7D4 /* CUAudioDevices.cpp in Sources */,
+				EB163887295627E30090F7D4 /* CUFont.cpp in Sources */,
+				EB1638A4295634670090F7D4 /* CUCanvasNode.cpp in Sources */,
+				EBDABF052B4DC48B006862AF /* CUAlgorithmicReverb.cpp in Sources */,
+				EB1638A0295634670090F7D4 /* CUOrderedNode.cpp in Sources */,
+				EB16382529561FAF0090F7D4 /* CURect.cpp in Sources */,
+				EB163A05295D2F470090F7D4 /* CUAudioInput.cpp in Sources */,
+				EB1638B9295634710090F7D4 /* CUFloatLayout.cpp in Sources */,
+				EBDABE5F2B4C588E006862AF /* CUDistanceJoint.cpp in Sources */,
+				EB163A4D295E0A930090F7D4 /* CURenderBase.cpp in Sources */,
+				EB163A15295D2F640090F7D4 /* CUPinchGesture.cpp in Sources */,
+				EB163841295621C00090F7D4 /* CUPathFactory.cpp in Sources */,
+				EB7453F61D74D276002FBAE6 /* CUApplication.cpp in Sources */,
+				EB16380F2956196C0090F7D4 /* CUQuaternion.cpp in Sources */,
+				EB1637F5295613A40090F7D4 /* CUThreadPool.cpp in Sources */,
+				EB16388B295627E30090F7D4 /* CUGradient.cpp in Sources */,
+				EB16388D295627E30090F7D4 /* CURenderTarget.cpp in Sources */,
+				EB1639E7295A38FE0090F7D4 /* CUAudioWaveform.cpp in Sources */,
+				EB1638772956265B0090F7D4 /* CUJsonValue.cpp in Sources */,
+				EB1638722956265B0090F7D4 /* CUJsonLoader.cpp in Sources */,
+				EB163B16295E1BFF0090F7D4 /* CUObstacle.cpp in Sources */,
+				EB163A68295E14200090F7D4 /* CUScaleAction.cpp in Sources */,
+				EB16385C295625BB0090F7D4 /* CUTextReader.cpp in Sources */,
+				EB16383629561FE40090F7D4 /* CUEasingFunction.cpp in Sources */,
+				EB163891295627E30090F7D4 /* CUOrthographicCamera.cpp in Sources */,
+				EB1638742956265B0090F7D4 /* CUWidgetLoader.cpp in Sources */,
+				EB1638712956265B0090F7D4 /* CUTextureLoader.cpp in Sources */,
+				EB16382729561FAF0090F7D4 /* CUPolynomial.cpp in Sources */,
+				EBDABE742B4C5920006862AF /* CURevoluteJoint.cpp in Sources */,
+				EB163863295626050090F7D4 /* CUMouse.cpp in Sources */,
+				EB163845295621C00090F7D4 /* CUComplexExtruder.cpp in Sources */,
+				EB16381E29561A440090F7D4 /* CUMat4.cpp in Sources */,
+				EB163A16295D2F640090F7D4 /* CUSpinGesture.cpp in Sources */,
+				EB1638DB29563A240090F7D4 /* CUScene2Texture.cpp in Sources */,
+				EB1638AD2956346B0090F7D4 /* CUTextField.cpp in Sources */,
+				EB163868295626050090F7D4 /* CUKeyboard.cpp in Sources */,
+				EB16383329561FE40090F7D4 /* CUSpline2.cpp in Sources */,
+				EB163893295627E30090F7D4 /* CUPerspectiveCamera.cpp in Sources */,
+				EB163B10295E1BFF0090F7D4 /* CUCapsuleObstacle.cpp in Sources */,
+				EB163B0F295E1BFF0090F7D4 /* CUWheelObstacle.cpp in Sources */,
+				EB1638B02956346B0090F7D4 /* CUButton.cpp in Sources */,
+				EB1638AF2956346B0090F7D4 /* CULabel.cpp in Sources */,
+				EB163858295625BB0090F7D4 /* CUJsonWriter.cpp in Sources */,
+				EB16382629561FAF0090F7D4 /* CUSize.cpp in Sources */,
+				EBDABE682B4C58C3006862AF /* CUMotorJoint.cpp in Sources */,
+				EB1638A2295634670090F7D4 /* CUPolygonNode.cpp in Sources */,
+				EB1638AE2956346B0090F7D4 /* CUProgressBar.cpp in Sources */,
+				EB163A03295D2F470090F7D4 /* CUAudioMixer.cpp in Sources */,
+				EB163A00295D2F470090F7D4 /* CUAudioNode.cpp in Sources */,
+				EB163865295626050090F7D4 /* CUTouchscreen.cpp in Sources */,
+				EB163A66295E14200090F7D4 /* CUActionManager.cpp in Sources */,
+				EB1639FC295D2F470090F7D4 /* CUAudioRedistributor.cpp in Sources */,
+				EB16383129561FE40090F7D4 /* CUPlane.cpp in Sources */,
+				EBDABE652B4C58B2006862AF /* CUGearJoint.cpp in Sources */,
+				EB16389F295634670090F7D4 /* CUPathNode.cpp in Sources */,
+				EB9E56EF2B38B62B0074B480 /* clipper.cpp in Sources */,
+				EB16388F295627E30090F7D4 /* CUScissor.cpp in Sources */,
+				EB1638752956265B0090F7D4 /* CUAssetManager.cpp in Sources */,
+				EB163892295627E30090F7D4 /* CUCamera.cpp in Sources */,
+				EB16383029561FE40090F7D4 /* CUPath2.cpp in Sources */,
+				EB16383529561FE40090F7D4 /* CUEasingBezier.cpp in Sources */,
+				EBE2DFFF2B794B390091FF11 /* CUInetAddress.cpp in Sources */,
+				EB163A51295E11680090F7D4 /* CUStencilEffect.cpp in Sources */,
+				EBDABE772B4C5933006862AF /* CUWheelJoint.cpp in Sources */,
+				EB163840295621C00090F7D4 /* CUDelaunayTriangulator.cpp in Sources */,
+				EBE2E0012B794B410091FF11 /* CUNetcodeConfig.cpp in Sources */,
+				EB163B11295E1BFF0090F7D4 /* CUBoxObstacle.cpp in Sources */,
+				EB163843295621C00090F7D4 /* CUEarclipTriangulator.cpp in Sources */,
+				EBF285712B5CAB4A00E91BB4 /* CUGameController.cpp in Sources */,
+				EBDABEE92B4CB720006862AF /* CUPhysSyncEvent.cpp in Sources */,
+				EB163867295626050090F7D4 /* CUTextInput.cpp in Sources */,
+				EB163A07295D2F470090F7D4 /* CUAudioFader.cpp in Sources */,
+				EB1639E5295A38FE0090F7D4 /* CUAudioSample.cpp in Sources */,
+				EBDABE7A2B4C5944006862AF /* CUWeldJoint.cpp in Sources */,
+				EBDABEE32B4C8691006862AF /* CUNetWorld.cpp in Sources */,
+				EB1638B22956346B0090F7D4 /* CUSlider.cpp in Sources */,
+				EB16388C295627E30090F7D4 /* CUSpriteSheet.cpp in Sources */,
+				EB1638A3295634670090F7D4 /* CUSpriteNode.cpp in Sources */,
+				EB163A06295D2F470090F7D4 /* CUAudioOutput.cpp in Sources */,
+				EBDABEF22B4CDBD0006862AF /* CUNetPhysicsController.cpp in Sources */,
+				EB16383429561FE40090F7D4 /* CUPoly2.cpp in Sources */,
+				EB1638A1295634670090F7D4 /* CUTexturedNode.cpp in Sources */,
+				EB1638B7295634710090F7D4 /* CUAnchoredLayout.cpp in Sources */,
+				EB1639E1295A38FE0090F7D4 /* CUAudioEngine.cpp in Sources */,
+				EB1639FE295D2F470090F7D4 /* CUAudioSpinner.cpp in Sources */,
+				EBE2E0042B794B410091FF11 /* CUNetcodePeer.cpp in Sources */,
+				EBDABE452B49FFEE006862AF /* CUJoint.cpp in Sources */,
+				EB163844295621C00090F7D4 /* CUSimpleExtruder.cpp in Sources */,
+				EB1637FD2956195F0090F7D4 /* CUVec4.cpp in Sources */,
+				EB1639FD295D2F470090F7D4 /* CUAudioSynchronizer.cpp in Sources */,
+				EB1638AC2956346B0090F7D4 /* CUScrollPane.cpp in Sources */,
+				EB1639E2295A38FE0090F7D4 /* CUAudioDecoder.cpp in Sources */,
+				EB16389E295634670090F7D4 /* CUSceneNode.cpp in Sources */,
+				EB163894295627E30090F7D4 /* CUVertexBuffer.cpp in Sources */,
+				EB163A6A295E14200090F7D4 /* CUAction.cpp in Sources */,
+				EBDABE712B4C590D006862AF /* CUPulleyJoint.cpp in Sources */,
+				EB16382129561F650090F7D4 /* CUColor4.cpp in Sources */,
+				EBDABEF42B4DACEE006862AF /* CUNetEventController.cpp in Sources */,
+				EBDABC462B4297A8006862AF /* CUTextureRenderer.cpp in Sources */,
+				EBDABD322B42AC97006862AF /* CUButtonGroup.cpp in Sources */,
+				EB1639E3295A38FE0090F7D4 /* CUAudioTypes.cpp in Sources */,
+				EBE2DFF82B794B360091FF11 /* CUICEAddress.cpp in Sources */,
+				EB163842295621C00090F7D4 /* CUSplinePather.cpp in Sources */,
+				EB7453F71D74D276002FBAE6 /* CUDisplay.cpp in Sources */,
+				EB1639FF295D2F470090F7D4 /* CUAudioScheduler.cpp in Sources */,
+				EB16381F29561A440090F7D4 /* CUAffine2.cpp in Sources */,
+				EB1639E4295A38FE0090F7D4 /* CUSound.cpp in Sources */,
+				EB16385B295625BB0090F7D4 /* CUJsonReader.cpp in Sources */,
+				EBE2E0052B794B410091FF11 /* CUNetworkLayer.cpp in Sources */,
+				EB1637F4295613A40090F7D4 /* CUStrings.cpp in Sources */,
+				EB163A04295D2F470090F7D4 /* CUAudioPlayer.cpp in Sources */,
+				EB163A6E295E14200090F7D4 /* CURotateAction.cpp in Sources */,
+				EB1638B8295634710090F7D4 /* CULayout.cpp in Sources */,
+				EB163B17295E1BFF0090F7D4 /* CUObstacleSelector.cpp in Sources */,
+				EBDABE6E2B4C58F6006862AF /* CUPrismaticJoint.cpp in Sources */,
+				EBDABF9E2B538760006862AF /* CULogger.cpp in Sources */,
+				EB1639E6295A38FE0090F7D4 /* CUAudioQueue.cpp in Sources */,
+				EB163B14295E1BFF0090F7D4 /* CUPolygonObstacle.cpp in Sources */,
+				EB1638B12956346B0090F7D4 /* CUNinePatch.cpp in Sources */,
+				EB1637F7295616050090F7D4 /* CUMathBase.cpp in Sources */,
+				EBDABE6B2B4C58E0006862AF /* CUMouseJoint.cpp in Sources */,
+				EB163A17295D2F640090F7D4 /* CUCoreGesture.cpp in Sources */,
+				EB163847295621C00090F7D4 /* CUPathSmoother.cpp in Sources */,
+				EB163890295627E30090F7D4 /* CUUniformBuffer.cpp in Sources */,
+				EB16388A295627E30090F7D4 /* CUTextLayout.cpp in Sources */,
+				EBE2E0002B794B3C0091FF11 /* CUNetcodeChannel.cpp in Sources */,
+				EB163857295625BB0090F7D4 /* CUTextWriter.cpp in Sources */,
+				EB1638DC29563A240090F7D4 /* CUScene2.cpp in Sources */,
+				EBDABEF02B4CC1B7006862AF /* CUGameStateEvent.cpp in Sources */,
+				EBDB2A2429560BD400A4B39C /* cJSON.c in Sources */,
+				EB1638782956265B0090F7D4 /* CUFontLoader.cpp in Sources */,
+				EB16389D295634660090F7D4 /* CUWireNode.cpp in Sources */,
+				EB1637F92956160A0090F7D4 /* CUVec2.cpp in Sources */,
+				EB163864295626050090F7D4 /* CUAccelerometer.cpp in Sources */,
+				EB163A70295E14200090F7D4 /* CUFadeAction.cpp in Sources */,
+				EB163889295627E30090F7D4 /* CUSpriteBatch.cpp in Sources */,
+				EB163846295621C00090F7D4 /* CUPolyFactory.cpp in Sources */,
+				EB1637F3295613A40090F7D4 /* CUFiletools.cpp in Sources */,
+				EB1639F4295B6CFB0090F7D4 /* CUSoundLoader.cpp in Sources */,
+				EB16383229561FE40090F7D4 /* CURay.cpp in Sources */,
+				EBE2E0022B794B410091FF11 /* CUNetcodeSerializer.cpp in Sources */,
+				EBF2856E2B5CAB3B00E91BB4 /* CUGestureRecognizer.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EBBF18031D7485D1008E2001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB16386B2956265A0090F7D4 /* CUScene2Loader.cpp in Sources */,
+				EB1638B6295634710090F7D4 /* CUGridLayout.cpp in Sources */,
+				EB163850295625BB0090F7D4 /* CUBinaryReader.cpp in Sources */,
+				EB16382F29561FE40090F7D4 /* CUFrustum.cpp in Sources */,
+				EB1637FA2956160E0090F7D4 /* CUVec3.cpp in Sources */,
+				EBDABBB12B40F35E006862AF /* CUNetworkLayer.cpp in Sources */,
+				EB163851295625BB0090F7D4 /* CUBinaryWriter.cpp in Sources */,
+				EB16387A295627E20090F7D4 /* CUShader.cpp in Sources */,
+				EBDABBAD2B40F35E006862AF /* CUNetcodeChannel.cpp in Sources */,
+				EBDABBAA2B40F35E006862AF /* CUInetAddress.cpp in Sources */,
+				EBDABE792B4C5944006862AF /* CUWeldJoint.cpp in Sources */,
+				EB163B0B295E1BF90090F7D4 /* CUCapsuleObstacle.cpp in Sources */,
+				EBDABE642B4C58B2006862AF /* CUGearJoint.cpp in Sources */,
+				EB163880295627E20090F7D4 /* CUTexture.cpp in Sources */,
+				EB163B0A295E1BF90090F7D4 /* CUObstacle.cpp in Sources */,
+				EB163860295626040090F7D4 /* CUInput.cpp in Sources */,
+				EB1639A9295A23E70090F7D4 /* CUPinchGesture.cpp in Sources */,
+				EB163B0C295E1BF90090F7D4 /* CUObstacleWorld.cpp in Sources */,
+				EB163879295627E20090F7D4 /* CUFont.cpp in Sources */,
+				EB1639F0295B6CFA0090F7D4 /* CUSoundLoader.cpp in Sources */,
+				EBDABBAC2B40F35E006862AF /* CUICEAddress.cpp in Sources */,
+				EBDABF042B4DC48B006862AF /* CUAlgorithmicReverb.cpp in Sources */,
+				EB163B0E295E1BF90090F7D4 /* CUWheelObstacle.cpp in Sources */,
+				EB163A63295E14200090F7D4 /* CUAnimateAction.cpp in Sources */,
+				EB163A6B295E14200090F7D4 /* CUMoveAction.cpp in Sources */,
+				EB1639D1295A243D0090F7D4 /* CUAudioFader.cpp in Sources */,
+				EB16389C295634660090F7D4 /* CUCanvasNode.cpp in Sources */,
+				EBDABEEF2B4CC1B7006862AF /* CUGameStateEvent.cpp in Sources */,
+				EB163898295634660090F7D4 /* CUOrderedNode.cpp in Sources */,
+				EBDABE6A2B4C58E0006862AF /* CUMouseJoint.cpp in Sources */,
+				EB1639AC295A23E70090F7D4 /* CUPanGesture.cpp in Sources */,
+				EB16382229561FAE0090F7D4 /* CURect.cpp in Sources */,
+				EBDABBAF2B40F35E006862AF /* CUNetcodeSerializer.cpp in Sources */,
+				EB1638B5295634710090F7D4 /* CUFloatLayout.cpp in Sources */,
+				EB163839295621BF0090F7D4 /* CUPathFactory.cpp in Sources */,
+				EB163A4C295E0A930090F7D4 /* CURenderBase.cpp in Sources */,
+				EB1639B5295A24160090F7D4 /* CUAudioEngine.cpp in Sources */,
+				EBBF18101D7486EA008E2001 /* CUApplication.cpp in Sources */,
+				EB1638002956196B0090F7D4 /* CUQuaternion.cpp in Sources */,
+				EB1639CE295A243D0090F7D4 /* CUAudioRedistributor.cpp in Sources */,
+				EBDABEE22B4C8690006862AF /* CUNetWorld.cpp in Sources */,
+				EB1639B9295A24160090F7D4 /* CUAudioWaveform.cpp in Sources */,
+				EB1637F1295613A30090F7D4 /* CUThreadPool.cpp in Sources */,
+				EB16387D295627E20090F7D4 /* CUGradient.cpp in Sources */,
+				EB1639D4295A243D0090F7D4 /* CUAudioResampler.cpp in Sources */,
+				EB16387F295627E20090F7D4 /* CURenderTarget.cpp in Sources */,
+				EBDABE442B49FFEE006862AF /* CUJoint.cpp in Sources */,
+				EB16386F2956265A0090F7D4 /* CUJsonValue.cpp in Sources */,
+				EB16386A2956265A0090F7D4 /* CUJsonLoader.cpp in Sources */,
+				EB163853295625BB0090F7D4 /* CUTextReader.cpp in Sources */,
+				EB163A67295E14200090F7D4 /* CUScaleAction.cpp in Sources */,
+				EB16382E29561FE40090F7D4 /* CUEasingFunction.cpp in Sources */,
+				EB1639CC295A243D0090F7D4 /* CUAudioOutput.cpp in Sources */,
+				EBDABE702B4C590D006862AF /* CUPulleyJoint.cpp in Sources */,
+				EB163883295627E20090F7D4 /* CUOrthographicCamera.cpp in Sources */,
+				EBDABBB02B40F35E006862AF /* CUNetcodeConfig.cpp in Sources */,
+				EBDABE6D2B4C58F6006862AF /* CUPrismaticJoint.cpp in Sources */,
+				EB1639C9295A243D0090F7D4 /* CUAudioSynchronizer.cpp in Sources */,
+				EB16386C2956265A0090F7D4 /* CUWidgetLoader.cpp in Sources */,
+				EB1639D7295A326D0090F7D4 /* CUAudioTypes.cpp in Sources */,
+				EB1638692956265A0090F7D4 /* CUTextureLoader.cpp in Sources */,
+				EB16382429561FAE0090F7D4 /* CUPolynomial.cpp in Sources */,
+				EB16385D295626040090F7D4 /* CUMouse.cpp in Sources */,
+				EB16383D295621C00090F7D4 /* CUComplexExtruder.cpp in Sources */,
+				EB16381C29561A440090F7D4 /* CUMat4.cpp in Sources */,
+				EB1638D629563A240090F7D4 /* CUScene2Texture.cpp in Sources */,
+				EB1638A62956346B0090F7D4 /* CUTextField.cpp in Sources */,
+				EB163862295626040090F7D4 /* CUKeyboard.cpp in Sources */,
+				EB16382B29561FE40090F7D4 /* CUSpline2.cpp in Sources */,
+				EB163885295627E20090F7D4 /* CUPerspectiveCamera.cpp in Sources */,
+				EB1638A92956346B0090F7D4 /* CUButton.cpp in Sources */,
+				EBDABE5E2B4C588E006862AF /* CUDistanceJoint.cpp in Sources */,
+				EB163B07295E1BF90090F7D4 /* CUObstacleSelector.cpp in Sources */,
+				EB1638A82956346B0090F7D4 /* CULabel.cpp in Sources */,
+				EB1639BB295A24160090F7D4 /* CUAudioDevices.cpp in Sources */,
+				EB16384F295625BB0090F7D4 /* CUJsonWriter.cpp in Sources */,
+				EB16382329561FAE0090F7D4 /* CUSize.cpp in Sources */,
+				EB1639D3295A243D0090F7D4 /* CUAudioScheduler.cpp in Sources */,
+				EB16389A295634660090F7D4 /* CUPolygonNode.cpp in Sources */,
+				EB1639B6295A24160090F7D4 /* CUAudioDecoder.cpp in Sources */,
+				EB163A65295E14200090F7D4 /* CUActionManager.cpp in Sources */,
+				EB1639B7295A24160090F7D4 /* CUAudioQueue.cpp in Sources */,
+				EBDABE612B4C58A3006862AF /* CUFrictionJoint.cpp in Sources */,
+				EB1638A72956346B0090F7D4 /* CUProgressBar.cpp in Sources */,
+				EBDABD312B42AC97006862AF /* CUButtonGroup.cpp in Sources */,
+				EB9E56EE2B38B62B0074B480 /* clipper.cpp in Sources */,
+				EBDABE762B4C5933006862AF /* CUWheelJoint.cpp in Sources */,
+				EBF2856D2B5CAB3B00E91BB4 /* CUGestureRecognizer.cpp in Sources */,
+				EB16385F295626040090F7D4 /* CUTouchscreen.cpp in Sources */,
+				EB16382929561FE40090F7D4 /* CUPlane.cpp in Sources */,
+				EB1639BA295A24160090F7D4 /* CUSound.cpp in Sources */,
+				EB163897295634660090F7D4 /* CUPathNode.cpp in Sources */,
+				EB163881295627E20090F7D4 /* CUScissor.cpp in Sources */,
+				EB16386D2956265A0090F7D4 /* CUAssetManager.cpp in Sources */,
+				EBDABE732B4C5920006862AF /* CURevoluteJoint.cpp in Sources */,
+				EBF285702B5CAB4A00E91BB4 /* CUGameController.cpp in Sources */,
+				EB163A50295E11680090F7D4 /* CUStencilEffect.cpp in Sources */,
+				EB163884295627E20090F7D4 /* CUCamera.cpp in Sources */,
+				EB16382829561FE40090F7D4 /* CUPath2.cpp in Sources */,
+				EB163B08295E1BF90090F7D4 /* CUBoxObstacle.cpp in Sources */,
+				EBDABEF12B4CDBCF006862AF /* CUNetPhysicsController.cpp in Sources */,
+				EB16382D29561FE40090F7D4 /* CUEasingBezier.cpp in Sources */,
+				EB163838295621BF0090F7D4 /* CUDelaunayTriangulator.cpp in Sources */,
+				EB16383B295621C00090F7D4 /* CUEarclipTriangulator.cpp in Sources */,
+				EB163861295626040090F7D4 /* CUTextInput.cpp in Sources */,
+				EBDABEE52B4CABB4006862AF /* CUPhysObstEvent.cpp in Sources */,
+				EB163B09295E1BF90090F7D4 /* CUPolygonObstacle.cpp in Sources */,
+				EB1638AB2956346B0090F7D4 /* CUSlider.cpp in Sources */,
+				EB16387E295627E20090F7D4 /* CUSpriteSheet.cpp in Sources */,
+				EBDABBAE2B40F35E006862AF /* CUNetcodeConnection.cpp in Sources */,
+				EBDABE672B4C58C3006862AF /* CUMotorJoint.cpp in Sources */,
+				EB16389B295634660090F7D4 /* CUSpriteNode.cpp in Sources */,
+				EB16382C29561FE40090F7D4 /* CUPoly2.cpp in Sources */,
+				EB163899295634660090F7D4 /* CUTexturedNode.cpp in Sources */,
+				EB1638B3295634700090F7D4 /* CUAnchoredLayout.cpp in Sources */,
+				EBDABBAB2B40F35E006862AF /* CUNetcodePeer.cpp in Sources */,
+				EB16383C295621C00090F7D4 /* CUSimpleExtruder.cpp in Sources */,
+				EB1637FC2956195F0090F7D4 /* CUVec4.cpp in Sources */,
+				EB1638A52956346B0090F7D4 /* CUScrollPane.cpp in Sources */,
+				EB163896295634660090F7D4 /* CUSceneNode.cpp in Sources */,
+				EB163886295627E20090F7D4 /* CUVertexBuffer.cpp in Sources */,
+				EB16382029561F650090F7D4 /* CUColor4.cpp in Sources */,
+				EB16383A295621C00090F7D4 /* CUSplinePather.cpp in Sources */,
+				EBBF18111D7486EA008E2001 /* CUDisplay.cpp in Sources */,
+				EB163A69295E14200090F7D4 /* CUAction.cpp in Sources */,
+				EB1639AA295A23E70090F7D4 /* CUSpinGesture.cpp in Sources */,
+				EB16381D29561A440090F7D4 /* CUAffine2.cpp in Sources */,
+				EB163852295625BB0090F7D4 /* CUJsonReader.cpp in Sources */,
+				EB1637F0295613A30090F7D4 /* CUStrings.cpp in Sources */,
+				EB1638B4295634710090F7D4 /* CULayout.cpp in Sources */,
+				EB1638AA2956346B0090F7D4 /* CUNinePatch.cpp in Sources */,
+				EB1637F6295616040090F7D4 /* CUMathBase.cpp in Sources */,
+				EB16383F295621C00090F7D4 /* CUPathSmoother.cpp in Sources */,
+				EBDABD3E2B42ACC4006862AF /* CUMeshNode.cpp in Sources */,
+				EB1639CB295A243D0090F7D4 /* CUAudioMixer.cpp in Sources */,
+				EB163882295627E20090F7D4 /* CUUniformBuffer.cpp in Sources */,
+				EB163A6D295E14200090F7D4 /* CURotateAction.cpp in Sources */,
+				EB1639D2295A243D0090F7D4 /* CUAudioNode.cpp in Sources */,
+				EB16387C295627E20090F7D4 /* CUTextLayout.cpp in Sources */,
+				EB1639B8295A24160090F7D4 /* CUAudioSample.cpp in Sources */,
+				EB16384E295625BB0090F7D4 /* CUTextWriter.cpp in Sources */,
+				EB1638D729563A240090F7D4 /* CUScene2.cpp in Sources */,
+				EBDB2A2329560BD400A4B39C /* cJSON.c in Sources */,
+				EB1638702956265A0090F7D4 /* CUFontLoader.cpp in Sources */,
+				EB163895295634660090F7D4 /* CUWireNode.cpp in Sources */,
+				EB1639CF295A243D0090F7D4 /* CUAudioPanner.cpp in Sources */,
+				EB1637F82956160A0090F7D4 /* CUVec2.cpp in Sources */,
+				EBDABEF32B4DACED006862AF /* CUNetEventController.cpp in Sources */,
+				EB16385E295626040090F7D4 /* CUAccelerometer.cpp in Sources */,
+				EB16387B295627E20090F7D4 /* CUSpriteBatch.cpp in Sources */,
+				EB16383E295621C00090F7D4 /* CUPolyFactory.cpp in Sources */,
+				EB1639CA295A243D0090F7D4 /* CUAudioInput.cpp in Sources */,
+				EB163A6F295E14200090F7D4 /* CUFadeAction.cpp in Sources */,
+				EB1639CD295A243D0090F7D4 /* CUAudioPlayer.cpp in Sources */,
+				EB1637EF295613A30090F7D4 /* CUFiletools.cpp in Sources */,
+				EBDABEE82B4CB720006862AF /* CUPhysSyncEvent.cpp in Sources */,
+				EB1639D0295A243D0090F7D4 /* CUAudioSpinner.cpp in Sources */,
+				EBDABC452B4297A8006862AF /* CUTextureRenderer.cpp in Sources */,
+				EB16382A29561FE40090F7D4 /* CURay.cpp in Sources */,
+				EBDABF9D2B538760006862AF /* CULogger.cpp in Sources */,
+				EB1639AB295A23E70090F7D4 /* CUCoreGesture.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		EB7453DE1D74B0C5002FBAE6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"GLES_SILENCE_DEPRECATION=1",
+					"$(inherited)",
+				);
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
+			};
+			name = Debug;
+		};
+		EB7453DF1D74B0C5002FBAE6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PREPROCESSOR_DEFINITIONS = "GLES_SILENCE_DEPRECATION=1";
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		EBBF180E1D7485D1008E2001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				DEAD_CODE_STRIPPING = YES;
+				EXECUTABLE_PREFIX = lib;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"GL_SILENCE_DEPRECATION=1",
+					"$(inherited)",
+				);
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		EBBF180F1D7485D1008E2001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				DEAD_CODE_STRIPPING = YES;
+				EXECUTABLE_PREFIX = lib;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = "GL_SILENCE_DEPRECATION=1";
+				GCC_WARN_UNUSED_FUNCTION = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		EBFFD71B1CFCA12A00E047D2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BOX2D_INCLUDES = "$(SRCROOT)/../../external/box2d/include";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				CUGL_INCLUDES = "$(SRCROOT)/../../include";
+				DATACHANNEL_INCLUDES = "$(SRCROOT)/../../external/libdatachannel/include";
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SDL_INCLUDES)",
+					"$(CUGL_INCLUDES)",
+					"$(POLY2TRI_INCLUDES)",
+					"$(CLIPPER_INCLUDES)",
+					"$(BOX2D_INCLUDES)",
+					"$(DATACHANNEL_INCLUDES)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(SDL_LIBS)",
+					"$(SDL_TTF_LIBS)",
+					"$(SDL_IMAGE_LIBS)",
+					"$(SDL_MIXER_LIBS)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				POLY2TRI_INCLUDES = "$(SRCROOT)/../../external/poly2tri";
+				SDKROOT = "";
+				SDL_INCLUDES = "\"$(SRCROOT)/../../sdlapp/include\"";
+				TVOS_DEPLOYMENT_TARGET = 12.1;
+				WATCHOS_DEPLOYMENT_TARGET = 6.1;
+			};
+			name = Debug;
+		};
+		EBFFD71C1CFCA12A00E047D2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BOX2D_INCLUDES = "$(SRCROOT)/../../external/box2d/include";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				CUGL_INCLUDES = "$(SRCROOT)/../../include";
+				DATACHANNEL_INCLUDES = "$(SRCROOT)/../../external/libdatachannel/include";
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SDL_INCLUDES)",
+					"$(CUGL_INCLUDES)",
+					"$(POLY2TRI_INCLUDES)",
+					"$(CLIPPER_INCLUDES)",
+					"$(BOX2D_INCLUDES)",
+					"$(DATACHANNEL_INCLUDES)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(SDL_LIBS)",
+					"$(SDL_TTF_LIBS)",
+					"$(SDL_IMAGE_LIBS)",
+					"$(SDL_MIXER_LIBS)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				POLY2TRI_INCLUDES = "$(SRCROOT)/../../external/poly2tri";
+				SDKROOT = "";
+				SDL_INCLUDES = "\"$(SRCROOT)/../../sdlapp/include\"";
+				TVOS_DEPLOYMENT_TARGET = 12.1;
+				WATCHOS_DEPLOYMENT_TARGET = 6.1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EB7453DD1D74B0C5002FBAE6 /* Build configuration list for PBXNativeTarget "cugl-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EB7453DE1D74B0C5002FBAE6 /* Debug */,
+				EB7453DF1D74B0C5002FBAE6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EBBF180D1D7485D1008E2001 /* Build configuration list for PBXNativeTarget "cugl-mac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EBBF180E1D7485D1008E2001 /* Debug */,
+				EBBF180F1D7485D1008E2001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EBFFD7071CFCA12A00E047D2 /* Build configuration list for PBXProject "cugl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EBFFD71B1CFCA12A00E047D2 /* Debug */,
+				EBFFD71C1CFCA12A00E047D2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EBFFD7041CFCA12A00E047D2 /* Project object */;
+}
