@@ -3,7 +3,7 @@
 //  Cornell University Game Library (CUGL)
 //
 //	This module provides support for a slider, which allows the user to drag
-//  a knob to select a value. The slider can be spartan (a circle on a line),
+//  a knob to select a value.  The slider can be spartan (a circle on a line),
 //  or it can have custom images.
 //
 //  The slider can track its own state, relieving you of having to manually
@@ -24,7 +24,7 @@
 //
 //  CUGL MIT License:
 //      This software is provided 'as-is', without any express or implied
-//      warranty. In no event will the authors be held liable for any damages
+//      warranty.  In no event will the authors be held liable for any damages
 //      arising from the use of this software.
 //
 //      Permission is granted to anyone to use this software for any purpose,
@@ -41,8 +41,8 @@
 //
 //      3. This notice may not be removed or altered from any source distribution.
 //
-//  Authors: Walker White and Enze Zhou
-//  Version: 2/5/24
+//  Author: Walker White and Enze Zhou
+//  Version: 8/20/20
 //
 #ifndef __CU_SLIDER_H__
 #define __CU_SLIDER_H__
@@ -75,26 +75,27 @@ namespace cugl {
 /**
  * This class represents a slider, allowing the user to drag a knob to select a value.
  *
- * A slider is defined by a knob and path. Each of these are a distinct scene
- * graph node. If these are not specified, the class constructs a simple slider
+ * A slider is defined by a knob and path.  Each of these are a distinct scene
+ * graph node.  If these are not specified, the class constructs a simple slider
  * with a circle on a line.
  *
- * The most important attribute for a slider is the bounds attribute. This
- * rectangle defines the slideable region inside of the path node. This allows 
- * us to have complex path nodes with tick marks and other features that
- * prevent ths slider from being centered in the node. It also allows us to
- * define sliders with any orientation. The bottom left corner of the bounds
+ * The most important attribute for a slider is the bounds attribute.  This
+ * rectangle defines the slideable region inside of the path node.  This
+ * allows us to have complex path nodes with tick marks and other features that
+ * prevent ths slider from being centered in the node.  It also allows us to
+ * define sliders with any orientation.  The bottom left corner of the bounds
  * rectangle is the minimum value while the top right is the maximum.
  *
- * The user can also specify a tick interval that allows the slider to snap to 
- * predefined values. This is useful in preventing the slider values from being 
- * resolution dependent. However, the class will not automatically display tick 
- * marks. If you wish to display tick marks, you must add them to the path node.
+ * The user can also specify a tick interval that allows the slider to snap
+ * to predefined values.  This is useful in preventing the slider values from
+ * being resolution dependent.  However, the class will not automatically
+ * disolay tick marks.  If you wish to display tick marks, you must add them
+ * to the path node.
  *
  * The slider can track its own state, via the {@link activate()} method,
- * relieving you of having to manually check presses and drags. However, the 
- * appropriate input device must be active before you can activate the slider, 
- * as it needs to attach internal listeners.
+ * relieving you of having to manually check presses and drags. However,
+ * the appropriate input device must be active before you can activate the
+ * slider, as it needs to attach internal listeners.
  */
 class Slider : public SceneNode {
 public:
@@ -105,11 +106,11 @@ public:
      *
      * This type represents a listener for a value change in {@link Slider}.
      *
-     * In CUGL, listeners are implemented as a set of callback functions, not 
-     * as objects. This allows each listener to implement as much or as little
+     * In CUGL, listeners are implemented as a set of callback functions, not as
+     * objects. This allows each listener to implement as much or as little
      * functionality as it wants. For simplicity, Slider nodes only support a
-     * single listener. If you wish for more than one listener, then your 
-     * listener should handle its own dispatch.
+     * single listener. If you wish for more than one listener, then your listener
+     * should handle its own dispatch.
      *
      * The function type is equivalent to
      *
@@ -132,12 +133,10 @@ protected:
     std::shared_ptr<Button> _knob;
 	/** The background widget for this slider */
 	std::shared_ptr<SceneNode> _path;
-    /** The slider path, defined relative to the node coordinates */
+    /** The slider path, defined relative to the background widget  */
     Rect _bounds;
-    /** Key for the knob child */
-    std::string _knobChild;
-    /** Key for the path child */
-    std::string _pathChild;
+    /** The adjusted slider path, if padding is necessary  */
+    Rect _adjust;
     
     /** The (optional) )tick period for this slider */
     float _tick;
@@ -190,8 +189,8 @@ public:
     /**
      * Initializes a slider with the default values.
      *
-     * This initializer will create a horizontal slider from 0 to 100. It will
-     * assign one pixel to each value. The knob radius will be 20.
+     * This initializer will create a horizontal slider from 0 to 100.  It will
+     * assign one pixel to each value.  The knob radius will be 20.
      *
      * @return true if the button is initialized properly, false otherwise.
      */
@@ -202,12 +201,12 @@ public:
     /**
      * Initializes a slider with given bounds.
      *
-     * The slider visuals will be interpretted from bounds. The knob will be
+     * The slider visuals will be interpretted from bounds.  The knob will be
      * a circle whose radius is the maximum of x and y, where (x,y) is the
-     * bounds origin. The path will be a simple line, but it will be surrounded
+     * bounds origin.  The path will be a simple line, but it will be surrounded
      * by a transparent "track" which tightly fits the knob.
      *
-     * The range is the slider value range. The x value is the minimum value
+     * The range is the slider value range.  The x value is the minimum value
      * (corresponding to the bottom left corner of bounds) and the y value is
      * the maximum value (corresponding to the top right corner of bounds).
      * The slider will start at the middle value.
@@ -222,12 +221,12 @@ public:
     /**
      * Initializes a slider with given scene graph nodes.
      *
-     * The slider visuals will be taken from the scene graph nodes knob and 
-     * path. The rectangle bounds should define an interior region of path. 
-     * The knob graph node can be slid from the origing of bounds to the top 
-     * right corner.
+     * The slider visuals will be taken from the scene graph nodes knob and path.
+     * The rectangle bounds should define an interior region of path.  The
+     * knob graph node can be slid from the origing of bounds to the top right
+     * corner.
      *
-     * The range is the slider value range. The x value is the minimum value
+     * The range is the slider value range.  The x value is the minimum value
      * (corresponding to the bottom left corner of bounds) and the y value is
      * the maximum value (corresponding to the top right corner of bounds).
      * The slider will start at the middle value.
@@ -247,8 +246,8 @@ public:
      * Initializes a node with the given JSON specificaton.
      *
      * This initializer is designed to receive the "data" object from the
-     * JSON passed to {@link Scene2Loader}. This JSON format supports all
-     * of the attribute values of its parent class. In addition, it supports
+     * JSON passed to {@link Scene2Loader}.  This JSON format supports all
+     * of the attribute values of its parent class.  In addition, it supports
      * the following additional attributes:
      *
      *      "bounds":   A 4-element array of numbers (x,y,width,height)
@@ -256,10 +255,10 @@ public:
      *      "value':    A number representing the initial value
      *      "tick':     A number greater than 0, representing the tick period
      *      "snap":     A boolean indicating whether to snap to a nearest tick
-     *      "knob":     A string referencing the name of a child node
-     *      "path":     A string referencing the name of a child node
+     *      "knob":     A JSON object defining a scene graph node
+     *      "path":     A JSON object defining a scene graph node OR
      *
-     * The attribute 'bounds' is REQUIRED. All other attributes are optional.
+     * The attribute 'bounds' is REQUIRED.  All other attributes are optional.
      *
      * @param loader    The scene loader passing this JSON file
      * @param data      The JSON object specifying the node
@@ -271,11 +270,12 @@ public:
     
 #pragma mark -
 #pragma mark Static Constructors
+
     /**
      * Returns a newly allocated slider with the default values.
      *
-     * This initializer will create a horizontal slider from 0 to 100. It will
-     * assign one pixel to each value. The knob radius will be 20.
+     * This initializer will create a horizontal slider from 0 to 100.  It will
+     * assign one pixel to each value.  The knob radius will be 20.
      *
      * @return a newly allocated  slider with the default values.
      */
@@ -287,12 +287,12 @@ public:
     /**
      * Returns a newly allocated slider with given bounds.
      *
-     * The slider visuals will be interpretted from bounds. The knob will be
+     * The slider visuals will be interpretted from bounds.  The knob will be
      * a circle whose radius is the maximum of x and y, where (x,y) is the
-     * bounds origin. The path will be a simple line, but it will be surrounded
+     * bounds origin.  The path will be a simple line, but it will be surrounded
      * by a transparent "track" which tightly fits the knob.
      *
-     * The range is the slider value range. The x value is the minimum value
+     * The range is the slider value range.  The x value is the minimum value
      * (corresponding to the bottom left corner of bounds) and the y value is
      * the maximum value (corresponding to the top right corner of bounds).
      * The slider will start at the middle value.
@@ -310,12 +310,12 @@ public:
     /**
      * Returns a newly allocated slider with given scene graph nodes.
      *
-     * The slider visuals will be taken from the scene graph nodes knob and 
-     * path. The rectangle bounds should define an interior region of path. 
-     * The knob graph node can be slid from the origing of bounds to the top 
-     * right corner.
+     * The slider visuals will be taken from the scene graph nodes knob and path.
+     * The rectangle bounds should define an interior region of path.  The
+     * knob graph node can be slid from the origing of bounds to the top right
+     * corner.
      *
-     * The range is the slider value range. The x value is the minimum value
+     * The range is the slider value range.  The x value is the minimum value
      * (corresponding to the bottom left corner of bounds) and the y value is
      * the maximum value (corresponding to the top right corner of bounds).
      * The slider will start at the middle value.
@@ -338,8 +338,8 @@ public:
      * Returns a newly allocated node with the given JSON specificaton.
      *
      * This initializer is designed to receive the "data" object from the
-     * JSON passed to {@link Scene2Loader}. This JSON format supports all
-     * of the attribute values of its parent class. In addition, it supports
+     * JSON passed to {@link Scene2Loader}.  This JSON format supports all
+     * of the attribute values of its parent class.  In addition, it supports
      * the following additional attributes:
      *
      *      "bounds":   A 4-element array of numbers (x,y,width,height)
@@ -347,10 +347,10 @@ public:
      *      "value':    A number representing the initial value
      *      "tick':     A number greater than 0, representing the tick period
      *      "snap":     A boolean indicating whether to snap to a nearest tick
-     *      "knob":     A string referencing the name of a child node
-     *      "path":     A string referencing the name of a child node
+     *      "knob":     A JSON object defining a scene graph node
+     *      "path":     A JSON object defining a scene graph node OR
      *
-     * The attribute 'bounds' is REQUIRED. All other attributes are optional.
+     * The attribute 'bounds' is REQUIRED.  All other attributes are optional.
      *
      * @param loader    The scene loader passing this JSON file
      * @param data      The JSON object specifying the node
@@ -450,7 +450,7 @@ public:
      * Sets the current slider value.
      *
      * If the slider is set to snap to ticks, this will assign the value to
-     * the nearest tick. In addition, if the value is out of range, it will
+     * the nearest tick.  In addition, if the value is out of range, it will
      * snap to the nearest value in range.
      *
      * @param value The slider value
@@ -463,9 +463,8 @@ public:
     /**
      * Returns the scene graph node for the knob.
      *
-     * It is safe to make changes to the knob so long as you do not move it 
-     * or change the anchor. Changing either of these will be reset when the
-     * knob is moved.
+     * It is safe to make changes to the knob so long as you do not resize it
+     * it or scale it.  Doing so will mess up the slider visuals.
      *
      * @return the scene graph node for the knob.
      */
@@ -474,22 +473,22 @@ public:
     /**
      * Sets the scene graph node for the knob.
      *
-     * If this value is nullptr, the method will construct a default knob scene 
-     * graph consisting of a simple circle.
+     * If this value is nullptr, the method will construct a default knob
+     * scene graph consisting of a simple circle.
      *
-     * Changing the knob may resize the bounding box of the slider. The slider
+     * Changing the knob may resize the bounding box of the slider.  The slider
      * tries to ensure that the knob remains inside of the bounding box no
      * matter its position.
      *
      * @param knob  The new scene graph node for the knob.
      */
-    void setKnob(const std::shared_ptr<Button>& knob);
+    void setKnob(const std::shared_ptr<Button>& knob) { placeKnob(knob); reconfigure(); }
 
     /**
      * Returns the scene graph node for the path.
      *
-     * It is safe to make changes to the path, as it is only a visual reference
-     * and does not affect the slider code.
+     * It is safe to make changes to the path so long as you do not resize it
+     * it or scale it.  Doing so will mess up the slider visuals.
      *
      * @return the scene graph node for the path.
      */
@@ -501,19 +500,19 @@ public:
      * If this value is nullptr, the method will construct a default path
      * scene graph consisting of a simple line and a semi-transparent track.
      *
-     * Changing the path will not resize the bounding box of the slider. It
-     * is up to the user to ensure the path aligns with the bounds.
+     * Changing the knob may resize the bounding box of the slider.  The slider
+     * tries to ensure that the entire path remains inside of the bounding box.
      *
      * @param path  The new scene graph node for the path.
      */
-    void setPath(const std::shared_ptr<SceneNode>& path);
+    void setPath(const std::shared_ptr<SceneNode>& path) { placePath(path); reconfigure(); }
 
     /**
      * Returns the sliding bounds
      *
      * This rectangle defines the slideable region inside of the path node. The
      * bottom left corner of the bounds rectangle is the minimum value while
-     * the top right is the maximum. While the origin should have positive
+     * the top right is the maximum.  While the origin should have positive
      * values either the width or height may be negative.
      *
      * The bounds should be inside of the bounding box of the path node.
@@ -528,25 +527,15 @@ public:
      *
      * This rectangle defines the slideable region inside of the path node. The
      * bottom left corner of the bounds rectangle is the minimum value while
-     * the top right is the maximum. While the origin should have positive
+     * the top right is the maximum.  While the origin should have positive
      * values either the width or height may be negative.
      *
-     * The bounds position is relative to the coordinate system of this node.
-     * Ideally, it should also be inside the bounding box of the path node.
+     * The bounds should be inside of the bounding box of the path node.
      * However, this is not enforced.
      *
      * @param value The new sliding bounds
      */
-    void setBounds(const Rect value);
-    
-    /**
-     * Arranges the child of this node using the layout manager.
-     *
-     * This process occurs recursively and top-down. A layout manager may end
-     * up resizing the children. That is why the parent must finish its layout
-     * before we can apply a layout manager to the children.
-     */
-    virtual void doLayout() override;
+    void SetBounds(const Rect value) { _bounds = value; reconfigure(); }
     
 #pragma mark -
 #pragma mark Tick Support
@@ -554,14 +543,14 @@ public:
      * Returns the tick period of this slider.
      *
      * The tick period is used to set a course granularity on the slider.
-     * Without it, each pixel is essentially its own value. However, the
+     * Without it, each pixel is essentially its own value.  However, the
      * tick period is irrelevant unless the slider is set to snap to a tick.
      *
      * When the slider does snap to a tick, it snaps to the nearest value
      * min + k * tick where k is an non-negative integer. If this value is
      * greater than max, then it will snap to the max.
      *
-     * The tick period should be nonnegative, but this is not enforced. A
+     * The tick period should be nonnegative, but this is not enforced.  A
      * negative tick value will always snap to the minimum value.
      *
      * @return the tick period of this slider.
@@ -572,14 +561,14 @@ public:
      * Sets the tick period of this slider.
      *
      * The tick period is used to set a course granularity on the slider.
-     * Without it, each pixel is essentially its own value. However, the
+     * Without it, each pixel is essentially its own value.  However, the
      * tick period is irrelevant unless the slider is set to snap to a tick.
      *
      * When the slider does snap to a tick, it snaps to the nearest value
      * min + k * tick where k is an non-negative integer. If this value is
      * greater than max, then it will snap to the max.
      *
-     * The tick period should be nonnegative, but this is not enforced. A
+     * The tick period should be nonnegative, but this is not enforced.  A
      * negative tick value will always snap to the minimum value.
      *
      * @param value The tick period of this slider.
@@ -646,8 +635,8 @@ public:
      *
      * This listener is invoked when the slider value changes.
      *
-     * C++ cannot hash functions types. Therefore, the listener will
-     * be identified by a unique key, returned by this function. You should
+     * C++ cannot hash functions types.  Therefore, the listener will
+     * be identified by a unique key, returned by this function.  You should
      * remember this key to remove the listener if necessary.
      *
      * @param listener  The listener to add
@@ -735,13 +724,13 @@ protected:
      * @return the nearest correct value.
      */
     float validate(float value) const;
-
-	/**
-	 * Resizes the node to fit the knob and path.
-	 *
-	 * This will adjust the bounds to match the resizing
-	 */
-	void reconfigure();
+    
+    /**
+     * Resizes the node and arranges the position of the knob and path.
+     *
+     * This method is called whenever the bounds or scene graph changes.
+     */
+    void reconfigure();
 
     /**
      * Repositions the knob to reflect a change in value.
@@ -754,7 +743,7 @@ protected:
      * Drags the knob to the given position.
      *
      * This method is called by the touch listeners and assumes that an
-     * initial drag anchor has been set. The position defines a drag
+     * initial drag anchor has been set.  The position defines a drag
      * vector that is projected on to the sliding bounds.
      *
      * @param pos   The position to drag to (if in the sliding bounds)
@@ -772,6 +761,18 @@ protected:
      * @param knob  The new scene graph node for the knob.
      */
     void placeKnob(const std::shared_ptr<Button>& knob);
+    
+    /**
+     * Sets the scene graph node for the path.
+     *
+     * If this value is nullptr, the method will construct a default path
+     * scene graph consisting of a simple line and a semi-transparent track.
+     *
+     * Unlike {@link setPath()}, this does not resize the bounding box.
+     *
+     * @param path  The new scene graph node for the path.
+     */
+    void placePath(const std::shared_ptr<SceneNode>& path);
 };
 	}
 }
