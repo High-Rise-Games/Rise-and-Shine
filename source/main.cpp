@@ -46,8 +46,8 @@ int main(int argc, char * argv[]) {
     ShipApp app;
     
     // Set the properties of your application
-    app.setName("Ship Lab");
-    app.setOrganization("GDIAC");
+    app.setName("Rise and Shine");
+    app.setOrganization("High Rise Games");
     app.setHighDPI(true);
     app.setFPS(60.0f);
 
