@@ -16,6 +16,9 @@
         },
         "asteroid2": {
             "file":  "textures/asteroid2.png"
+        },
+	"window": {
+            "file":  "textures/GenericWindow.png"
         }
 	},
     "fonts": {

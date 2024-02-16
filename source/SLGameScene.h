@@ -21,7 +21,6 @@
 #include "SLInputController.h"
 #include "SLCollisionController.h"
 #include "WindowGrid.h"
-#include "WindowGrid.cpp"
 
 
 
@@ -50,7 +49,8 @@ protected:
     std::shared_ptr<Player> _ship;
     /** The location of all of the active asteroids */
     AsteroidSet _asteroids;
-
+    /** Grid of windows to be drawn in the background */
+    WindowGrid _windows;
     
     // VIEW items are going to be individual variables
     // In the future, we will replace this with the scene graph

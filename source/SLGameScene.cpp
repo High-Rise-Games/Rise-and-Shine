@@ -56,9 +56,14 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _background = assets->get<Texture>("background");
     _constants = assets->get<JsonValue>("constants");
 
+
     // Make a ship and set its texture
     _ship = std::make_shared<Player>(getSize()/2, _constants->get("ship"));
     _ship->setTexture(assets->get<Texture>("ship"));
+
+    // Initialize the window grid
+    _windows.init(3, 6);
+    _windows.setTexture(assets->get<Texture>("window"));
 
     // Initialize the asteroid set
     //_asteroids.init(_constants->get("asteroids"));
@@ -148,7 +153,8 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     
     batch->draw(_background,Rect(Vec2::ZERO,getSize()));
     //_asteroids.draw(batch,getSize());
-    _ship->draw(batch,getSize());
+    _windows.draw(batch, getSize());
+    _ship->draw(batch, getSize());
     
     batch->setColor(Color4::BLACK);
     batch->drawText(_text,Vec2(10,getSize().height-_text->getBounds().size.height));
