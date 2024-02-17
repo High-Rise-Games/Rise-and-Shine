@@ -29,6 +29,7 @@ public:
 	int  getNHorizontal()                 { return _nHorizontal;        };
 	void setNVertical(int n)              { _nVertical = n;             };
 	int  getNVertical()                   { return _nVertical;          };
+    float sideGap;
 
 	WindowGrid(); // constructor
 

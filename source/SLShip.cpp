@@ -38,9 +38,7 @@ Player::Player(const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data) {
     
     // Physics
     _mass = data->getFloat("mass",1.0);
-    _firerate = data->getInt("fire rate",0);
     _shadows  = data->getFloat("shadow",0.0);
-    _thrust   = data->getFloat("thrust factor",0.0);
     _maxvel   = data->getFloat("max velocity",0.0);
     _banking  = data->getFloat("bank factor",0.0);
     _maxbank  = data->getFloat("max bank",0.0);
@@ -155,7 +153,7 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
 
 #pragma mark Movement
 /**
- * Sets the position of this ship, supporting wrap-around.
+ * Sets the position of this ship
  *
  * This is the preferred way to "bump" a ship in a collision.
  *
@@ -164,119 +162,49 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
  */
 void Player::setPosition(cugl::Vec2 value, cugl::Vec2 size) {
     _pos = value;
-    wrapPosition(size);
+
 }
 
 /**
  * Moves the ship by the specified amount.
  *
- * Forward is the amount to move forward, while turn is the angle to turn the ship
- * (used for the "banking" animation. This method performs no collision detection.
- * Collisions are resolved afterwards.
+ * Forward is the amount to move forward, while turn is the angle to turn the ship.
+ * Makes sure that the ship is within the bounds of the window building grid.
+ * Also, can only move along one axis at a time. sideGap argument is the sideGap
+ * property of the window building grid in order to make it eaiser to check bounds
+ * for player movement.
  *
  * @param forward    Amount to move forward
  * @param turn        Amount to turn the ship
  */
-void Player::move(float forward, float turn, Size size) {
+void Player::move(float forward, float turn, Size size, float sideGap) {
     // Process the ship turning.
-    processTurn(turn);
 
-    // Process the ship thrust.
+    // Process forward key press
     if (forward != 0.0f) {
-        // Thrust key pressed; increase the ship velocity.
-        float rads = M_PI*_ang/180.0f+M_PI_2;
-        Vec2 dir(cosf(rads),sinf(rads));
-        _vel += dir * forward * _thrust;
+        Vec2 dir(0,10);
+        _vel = dir * forward;
     }
-    if (_vel.length() > 10.f) {
-        _vel.normalize();
-        _vel = 10.0f*_vel;
+    
+    if (turn != 0.0f && forward == 0.0f) {
+        Vec2 dir(10,0);
+        _vel = dir * turn;
+    }
+    
+    if (turn == 0.0f && forward == 0.0f) {
+        Vec2 dir(0,0);
+        _vel = dir * turn;
+    }
+    
+    
+    // Move the ship position by the ship velocity.
+    // Velocity always remains unchanged.
+    // Also does not add velocity to position in the event that
+    // movement would go beyond the window building grid.
+    if (!(_pos.x + _vel.x <= sideGap) && !(_pos.x + _vel.x >= 3.3*sideGap) && !(_pos.y + _vel.y >= size.height-20) && !(_pos.y + _vel.y <= 40)) {
+        _pos += _vel;
     }
 
-    // Move the ship, updating it.
-    // Adjust the angle by the change in angle
-    setAngle(_ang+_dang);
-    
-    // INVARIANT: 0 <= ang < 360
-    if (_ang > 360)
-        _ang -= 360;
-    if (_ang < 0)
-        _ang += 360;
-    
-    
-    // Move the ship position by the ship velocity
-    _pos += _vel;
-    wrapPosition(size);
-
-    //Increment the refire readiness counter
-    if (_refire <= _firerate) {
-        _refire++;
-    }
 }
 
-/**
- * Update the animation of the ship to process a turn
- *
- * Turning changes the frame of the filmstrip, as we change from a level ship to
- * a hard bank.  This method also updates the field dang cumulatively.
- *
- * @param turn Amount to turn the ship
- */
-void Player::processTurn(float turn) {
-    int frame = (_sprite == nullptr ? 0 : _sprite->getFrame());
-    int fsize = (_sprite == nullptr ? 0 : _sprite->getSize());
-    if (turn != 0.0f) {
-        // The turning factor is cumulative.
-        // The longer it is held down, the harder we bank.
-        _dang -= turn/_banking;
-        if (_dang < -_maxbank) {
-            _dang = -_maxbank;
-        } else if (_dang > _maxbank) {
-            _dang = _maxbank;
-        }
 
-        // SHIP_IMG_RIGHT represents the hardest bank possible.
-        if (turn < 0 && frame < fsize-1) {
-            frame++;
-        } else if (turn > 0 && frame > 0) {
-            frame--;
-        }
-    } else {
-        // If neither key is pressed, slowly flatten out ship.
-        if (_dang != 0) {
-            _dang *= _angdamp;   // Damping factor.
-        }
-        if (frame < _frameflat) {
-            frame++;
-        } else if (frame > _frameflat) {
-            frame--;
-        }
-    }
-    
-    if (_sprite) {
-        _sprite->setFrame(frame);
-    }
-}
-
-/**
- * Applies "wrap around"
- *
- * If the ship goes off one edge of the screen, then it appears across the edge
- * on the opposite side.
- *
- * @param size      The size of the window (for wrap around)
- */
-void Player::wrapPosition(cugl::Size size) {
-    while (_pos.x > size.width) {
-        _pos.x -= size.width;
-    }
-    while (_pos.x < 0) {
-        _pos.x += size.width;
-    }
-    while (_pos.y > size.height) {
-        _pos.y -= size.height;
-    }
-    while (_pos.y < 0) {
-        _pos.y += size.height;
-    }
-}

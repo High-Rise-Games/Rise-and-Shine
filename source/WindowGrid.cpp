@@ -10,6 +10,8 @@ WindowGrid::WindowGrid() {
 	// much wow
 }
 
+float sideGap;
+
 bool WindowGrid::init(int nHorizontal, int nVertical) {
 	_nHorizontal = nHorizontal;
 	_nVertical = nVertical;
@@ -21,7 +23,9 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 	float scaleFactor = std::min( ((float) size.getIWidth() / (float) _texture->getWidth() / (float) _nHorizontal), ((float) size.getIHeight() / (float) _texture->getHeight() / (float) _nVertical) ); // scale applied to each window pane
 	float windowWidth = (float)_texture->getWidth() * scaleFactor; // final width of each window pane
 	float windowHeight = (float)_texture->getHeight() * scaleFactor; // final height of each window pane
-	float sideGap = ( (float)size.getIWidth() - windowWidth * _nHorizontal ) / 2; // final gap width from side of screen to side of building
+	sideGap = ( (float)size.getIWidth() - windowWidth * _nHorizontal ) / 2; // final gap width from side of screen to side of building\
+    
+    
 	
 	// loop over all grid points and draw window panes
 	for (int x = 0; x < _nHorizontal; x++) {
