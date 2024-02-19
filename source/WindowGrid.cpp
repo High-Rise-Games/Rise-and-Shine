@@ -8,17 +8,26 @@ using namespace cugl;
 WindowGrid::WindowGrid() {
 	// such constructor
 	// much wow
+	
+	// incredible work here -cathryn
 }
 
-bool WindowGrid::init(int nHorizontal, int nVertical) {
+bool WindowGrid::init(int nHorizontal, int nVertical, cugl::Size size) {
 	_nHorizontal = nHorizontal;
 	_nVertical = nVertical;
+
 	return true;
 }
 
-bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data) {
+bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 	 _nHorizontal = data->getInt("columns", 2);
 	 _nVertical = data->getInt("rows", 4);
+
+	 // calculate scale and size of window pane drawing
+	 _scaleFactor = std::min(((float)size.getIWidth() / (float)_texture->getWidth() / (float)_nHorizontal), ((float)size.getIHeight() / (float)_texture->getHeight() / (float)_nVertical));
+	 _windowWidth = (float)_texture->getWidth() * _scaleFactor; // final width of each window pane
+	 _windowHeight = (float)_texture->getHeight() * _scaleFactor; // final height of each window pane
+	 sideGap = ((float)size.getIWidth() - _windowWidth * _nHorizontal) / 2; // final gap width from side of screen to side of building
 
 	// Initialize the dirt board
 	_board = std::vector<std::vector<bool>>(_nHorizontal, std::vector<bool>(_nVertical, false));
@@ -45,15 +54,10 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data) {
 // draws an entire grid of _nHorizontal x nVertical windows as large as possible with center (horizontal) alignment
 void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size) {
 	
-	// calculate scale and size of window pane drawing
+	// get scale and size of window pane drawing as transform
 	// scale applied to each window pane
-	float scaleFactor = std::min(((float)size.getIWidth() / (float)_texture->getWidth() / (float)_nHorizontal), ((float)size.getIHeight() / (float)_texture->getHeight() / (float)_nVertical));
-	float windowWidth = (float)_texture->getWidth() * scaleFactor; // final width of each window pane
-	float windowHeight = (float)_texture->getHeight() * scaleFactor; // final height of each window pane
-	sideGap = ( (float)size.getIWidth() - windowWidth * _nHorizontal ) / 2; // final gap width from side of screen to side of building
-	
 	Affine2 trans = Affine2();
-	trans.scale(scaleFactor);
+	trans.scale(_scaleFactor);
 	trans.translate(sideGap, 0);
 
 	// calculate scale and size of dirt drawing in reference to a window pane so that it is centered
@@ -62,8 +66,8 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 	float dirtWidth = (float)_dirt->getWidth() * dirtScaleFactor;
 	float dirtHeight = (float)_dirt->getHeight() * dirtScaleFactor;
 
-	float dirt_horizontal_trans = (windowWidth - dirtWidth) / 2;
-	float dirt_vertical_trans = (windowHeight - dirtHeight) / 2;
+	float dirt_horizontal_trans = (_windowWidth - dirtWidth) / 2;
+	float dirt_vertical_trans = (_windowHeight - dirtHeight) / 2;
 
 	Affine2 dirt_trans = Affine2();
 	dirt_trans.scale(dirtScaleFactor);
@@ -76,16 +80,17 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 			batch->draw(_texture, Vec2(), trans);
 			if (_board[x][y]) {
 				batch->draw(_dirt, Vec2(), dirt_trans);
+				CULog("dirt added to coors: (%d, %d)", x, y);
 			}
 
 			// update vertical translation
-			trans.translate(0, windowHeight);
-			dirt_trans.translate(0, dirtHeight);
+			trans.translate(0, _windowHeight);
+			dirt_trans.translate(0, _windowHeight);
 		}
 
 		// update horizontal translation and reset vertical translation
-		trans.translate(windowWidth, -windowHeight * _nVertical);
-		dirt_trans.translate(windowWidth, -windowHeight * _nVertical);
+		trans.translate(_windowWidth, -_windowHeight * _nVertical);
+		dirt_trans.translate(_windowWidth, -_windowHeight * _nVertical);
 	}
 }
 

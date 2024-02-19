@@ -63,8 +63,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _player->setTexture(assets->get<Texture>("ship"));
 
     // Initialize the window grid
-    _windows.init(_constants->get("easy board"));
-    _windows.setTexture(assets->get<Texture>("window"));
+    _windows.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
+    _windows.init(_constants->get("easy board"), getSize()); // init depends on texture
     _windows.setDirtTexture(assets->get<Texture>("dirt"));
 
     // Initialize the asteroid set
@@ -123,8 +123,16 @@ void GameScene::update(float timestep) {
         reset();
     }
 
-    // Move the ships and photons forward (ignoring collisions)
+    // Move the player, ignoring collisions
     _player->move( _input.getForward(),  _input.getTurn(), getSize(), _windows.sideGap);
+    // remove any dirt the player collides with
+    Vec2 grid_coors = _player->getCoorsFromPos(_windows.getPaneHeight(), _windows.getPaneWidth(), _windows.sideGap);
+    _player->setCoors(grid_coors);
+    CULog("player coors: (%f, %f)", grid_coors.x, grid_coors.y);
+    bool dirtRemoved = _windows.removeDirt(grid_coors.x, grid_coors.y);
+    if (dirtRemoved) {
+        // TODO: implement logic to deal with filling up dirty bucket
+    }
     
     // Move the asteroids
     //_asteroids.update(getSize());

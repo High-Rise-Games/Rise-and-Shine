@@ -32,6 +32,8 @@ private:
     cugl::Vec2 _pos;
     /** Velocity of the ship */
     cugl::Vec2 _vel;
+    /** Coordinates in relation to window grid of the player */
+    cugl::Vec2 _coors;
         
     // The following are protected, because they have no accessors
     /** Current angle of the ship */
@@ -140,6 +142,22 @@ public:
      * @param value the velocity of this ship
      */
     void setVelocity(cugl::Vec2 value) { _vel = value; }
+
+    /**
+     * Returns the coordinates of the player in relation to the window grid.
+     */
+    const cugl::Vec2& getCoors() const { return _coors; }
+
+    /** 
+     * Sets the coordinates of the player in relation to the window grid.
+     */
+    void setCoors(cugl::Vec2 value) { _coors = value; }
+
+    /** 
+     * Calculates the coordinates of the player in relation to the window grid
+     * using the scene position of the player (_pos). 
+     */
+    const cugl::Vec2& getCoorsFromPos(const float windowHeight, const float windowWidth, const float sideGap);
     
     /**
      * Returns the angle that this ship is facing.
