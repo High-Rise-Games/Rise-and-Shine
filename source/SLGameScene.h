@@ -40,16 +40,16 @@ protected:
     /** The controller to manage the ship */
     InputController _input;
     /** The controller for managing collisions */
-    CollisionController _collisions;
+    // CollisionController _collisions;
     
     // MODELS should be shared pointers or a data structure of shared pointers
     /** The JSON value with all of the constants */
     std::shared_ptr<cugl::JsonValue> _constants;
     /** Location and animation information for the ship */
-    std::shared_ptr<Player> _ship;
+    std::shared_ptr<Player> _player;
     /** The location of all of the active asteroids */
-    AsteroidSet _asteroids;
-    /** Grid of windows to be drawn in the background */
+    // AsteroidSet _asteroids;
+    /** Grid of windows and dirt placement to be drawn */
     WindowGrid _windows;
     
     // VIEW items are going to be individual variables

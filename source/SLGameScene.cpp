@@ -13,6 +13,7 @@
 #include <cugl/cugl.h>
 #include <iostream>
 #include <sstream>
+#include <random>
 
 #include "SLGameScene.h"
 //#include "GLCollisionController.h"
@@ -58,12 +59,13 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
 
 
     // Make a ship and set its texture
-    _ship = std::make_shared<Player>(getSize()/2, _constants->get("ship"));
-    _ship->setTexture(assets->get<Texture>("ship"));
+    _player = std::make_shared<Player>(getSize()/2, _constants->get("ship"));
+    _player->setTexture(assets->get<Texture>("ship"));
 
     // Initialize the window grid
-    _windows.init(3, 6);
-    _windows.setTexture(assets->get<Texture>("window"));
+    _windows.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
+    _windows.init(_constants->get("easy board"), getSize()); // init depends on texture
+    _windows.setDirtTexture(assets->get<Texture>("dirt"));
 
     // Initialize the asteroid set
     //_asteroids.init(_constants->get("asteroids"));
@@ -73,7 +75,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _bang = assets->get<Sound>("bang");
 
     // Create and layout the health meter
-    std::string msg = strtool::format("Health %d", _ship->getHealth());
+    std::string msg = strtool::format("Health %d", _player->getHealth());
     _text = TextLayout::allocWithText(msg, assets->get<Font>("pixel32"));
     _text->layout();
     
@@ -100,10 +102,10 @@ void GameScene::dispose() {
  * Resets the status of the game so that we can play again.
  */
 void GameScene::reset() {
-    _ship->setPosition(getSize()/2);
-    _ship->setAngle(0);
-    _ship->setVelocity(Vec2::ZERO);
-    _ship->setHealth(_constants->get("ship")->getInt("health",0));
+    _player->setPosition(getSize()/2);
+    _player->setAngle(0);
+    _player->setVelocity(Vec2::ZERO);
+    _player->setHealth(_constants->get("ship")->getInt("health",0));
     //_asteroids.init(_constants->get("asteroids"));
 }
 
@@ -121,8 +123,16 @@ void GameScene::update(float timestep) {
         reset();
     }
 
-    // Move the ships and photons forward (ignoring collisions)
-    _ship->move( _input.getForward(),  _input.getTurn(), getSize(), _windows.sideGap);
+    // Move the player, ignoring collisions
+    _player->move( _input.getForward(),  _input.getTurn(), getSize(), _windows.sideGap);
+    // remove any dirt the player collides with
+    Vec2 grid_coors = _player->getCoorsFromPos(_windows.getPaneHeight(), _windows.getPaneWidth(), _windows.sideGap);
+    _player->setCoors(grid_coors);
+    CULog("player coors: (%f, %f)", grid_coors.x, grid_coors.y);
+    bool dirtRemoved = _windows.removeDirt(grid_coors.x, grid_coors.y);
+    if (dirtRemoved) {
+        // TODO: implement logic to deal with filling up dirty bucket
+    }
     
     // Move the asteroids
     //_asteroids.update(getSize());
@@ -133,7 +143,7 @@ void GameScene::update(float timestep) {
     //}
     
     // Update the health meter
-    _text->setText(strtool::format("Health %d", _ship->getHealth()));
+    _text->setText(strtool::format("Health %d", _player->getHealth()));
     _text->layout();
 }
 
@@ -154,7 +164,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->draw(_background,Rect(Vec2::ZERO,getSize()));
     //_asteroids.draw(batch,getSize());
     _windows.draw(batch, getSize());
-    _ship->draw(batch, getSize());
+    _player->draw(batch, getSize());
     
     batch->setColor(Color4::BLACK);
     batch->drawText(_text,Vec2(10,getSize().height-_text->getBounds().size.height));

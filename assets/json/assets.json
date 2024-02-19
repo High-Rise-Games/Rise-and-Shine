@@ -17,8 +17,11 @@
         "asteroid2": {
             "file":  "textures/asteroid2.png"
         },
-	"window": {
-            "file":  "textures/GenericWindow.png"
+        "window": {
+            "file": "textures/GenericWindow.png"
+        },
+        "dirt": {
+            "file":  "textures/GenericDirt.png"
         }
 	},
     "fonts": {

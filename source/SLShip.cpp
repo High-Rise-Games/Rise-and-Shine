@@ -31,6 +31,7 @@ using namespace cugl;
  */
 Player::Player(const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data) {
     _pos = pos;
+    _coors = Vec2();
     _ang  = 0;
     _dang = 0;
     _refire = 0;
@@ -90,6 +91,16 @@ void Player::setTexture(const std::shared_ptr<cugl::Texture>& texture) {
         _radius = std::max(_sprite->getFrameSize().width, _sprite->getFrameSize().height)/2;
         _sprite->setOrigin(_sprite->getFrameSize()/2);
     }
+}
+
+/**
+* Calculates the coordinates of the player in relation to the window grid
+* using the scene position of the player (_pos).
+*/
+const cugl::Vec2& Player::getCoorsFromPos(const float windowHeight, const float windowWidth, const float sideGap) {
+    int x_coor = (int)((_pos.x - sideGap) / windowWidth);
+    int y_coor = (int)(_pos.y / windowHeight);
+    return Vec2(x_coor, y_coor);
 }
 
 /**
@@ -199,8 +210,7 @@ void Player::move(float forward, float turn, Size size, float sideGap) {
     
     // Move the ship position by the ship velocity.
     // Velocity always remains unchanged.
-    // Also does not add velocity to position in the event that
-    // movement would go beyond the window building grid.
+    // Also does not add velocity to position in the event that movement would go beyond the window building grid.
     if (!(_pos.x + _vel.x <= sideGap) && !(_pos.x + _vel.x >= 3.3*sideGap) && !(_pos.y + _vel.y >= size.height-20) && !(_pos.y + _vel.y <= 40)) {
         _pos += _vel;
     }
