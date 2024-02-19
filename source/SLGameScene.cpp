@@ -59,8 +59,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
 
 
     // Make a ship and set its texture
-    _ship = std::make_shared<Player>(getSize()/2, _constants->get("ship"));
-    _ship->setTexture(assets->get<Texture>("ship"));
+    _player = std::make_shared<Player>(getSize()/2, _constants->get("ship"));
+    _player->setTexture(assets->get<Texture>("ship"));
 
     // Initialize the window grid
     _windows.init(_constants->get("easy board"));
@@ -75,7 +75,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _bang = assets->get<Sound>("bang");
 
     // Create and layout the health meter
-    std::string msg = strtool::format("Health %d", _ship->getHealth());
+    std::string msg = strtool::format("Health %d", _player->getHealth());
     _text = TextLayout::allocWithText(msg, assets->get<Font>("pixel32"));
     _text->layout();
     
@@ -102,10 +102,10 @@ void GameScene::dispose() {
  * Resets the status of the game so that we can play again.
  */
 void GameScene::reset() {
-    _ship->setPosition(getSize()/2);
-    _ship->setAngle(0);
-    _ship->setVelocity(Vec2::ZERO);
-    _ship->setHealth(_constants->get("ship")->getInt("health",0));
+    _player->setPosition(getSize()/2);
+    _player->setAngle(0);
+    _player->setVelocity(Vec2::ZERO);
+    _player->setHealth(_constants->get("ship")->getInt("health",0));
     //_asteroids.init(_constants->get("asteroids"));
 }
 
@@ -124,7 +124,7 @@ void GameScene::update(float timestep) {
     }
 
     // Move the ships and photons forward (ignoring collisions)
-    _ship->move( _input.getForward(),  _input.getTurn(), getSize(), _windows.sideGap);
+    _player->move( _input.getForward(),  _input.getTurn(), getSize(), _windows.sideGap);
     
     // Move the asteroids
     //_asteroids.update(getSize());
@@ -135,7 +135,7 @@ void GameScene::update(float timestep) {
     //}
     
     // Update the health meter
-    _text->setText(strtool::format("Health %d", _ship->getHealth()));
+    _text->setText(strtool::format("Health %d", _player->getHealth()));
     _text->layout();
 }
 
@@ -156,7 +156,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->draw(_background,Rect(Vec2::ZERO,getSize()));
     //_asteroids.draw(batch,getSize());
     _windows.draw(batch, getSize());
-    _ship->draw(batch, getSize());
+    _player->draw(batch, getSize());
     
     batch->setColor(Color4::BLACK);
     batch->drawText(_text,Vec2(10,getSize().height-_text->getBounds().size.height));

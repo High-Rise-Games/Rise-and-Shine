@@ -46,7 +46,7 @@ protected:
     /** The JSON value with all of the constants */
     std::shared_ptr<cugl::JsonValue> _constants;
     /** Location and animation information for the ship */
-    std::shared_ptr<Player> _ship;
+    std::shared_ptr<Player> _player;
     /** The location of all of the active asteroids */
     // AsteroidSet _asteroids;
     /** Grid of windows and dirt placement to be drawn */
