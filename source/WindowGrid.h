@@ -15,8 +15,13 @@ private:
 	//int windowHeight;
 	int _nHorizontal; // number of columns
 	int _nVertical;   // number of rows
+	/** Dirt placement state */
+	std::vector<std::vector<bool>> _board;
 
+	/** Window texture image */
 	std::shared_ptr<cugl::Texture> _texture;
+	/** Dirt texture image */
+	std::shared_ptr<cugl::Texture> _dirt;
 
 
 public:
@@ -33,15 +38,25 @@ public:
 
 	WindowGrid(); // constructor
 
-	bool init(int nHorizontal, int nVertical); // sets number of windows in grid
+	/** sets number of windows in grid */
+	bool init(int nHorizontal, int nVertical);
 
-	void setTexture(const std::shared_ptr<cugl::Texture>& value) { _texture = value; }; // sets window pane texture
+	/** initializes window based on json data
+		includes number rows, columns, and dirts to be displayed */
+	bool init(std::shared_ptr<cugl::JsonValue> data);
 
-	const std::shared_ptr<cugl::Texture>& getTexture() const { // gets window pane texture
+	/** sets window pane texture */
+	void setTexture(const std::shared_ptr<cugl::Texture>& value) { _texture = value; };
+
+	/** sets dirt texture */
+	void setDirtTexture(const std::shared_ptr<cugl::Texture>& value) { _dirt = value; };
+	
+	/** gets window pane texture */
+	const std::shared_ptr<cugl::Texture>& getTexture() const {
 		return _texture;
 	}
 
-	// draws entire grid of window panes to fit in "size"
+	/** draws entire grid of window panes to fit in "size" */
 	void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size);
 };
 

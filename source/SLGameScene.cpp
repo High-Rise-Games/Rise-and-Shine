@@ -13,6 +13,7 @@
 #include <cugl/cugl.h>
 #include <iostream>
 #include <sstream>
+#include <random>
 
 #include "SLGameScene.h"
 //#include "GLCollisionController.h"
@@ -62,8 +63,9 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _ship->setTexture(assets->get<Texture>("ship"));
 
     // Initialize the window grid
-    _windows.init(3, 6);
+    _windows.init(_constants->get("easy board"));
     _windows.setTexture(assets->get<Texture>("window"));
+    _windows.setDirtTexture(assets->get<Texture>("dirt"));
 
     // Initialize the asteroid set
     //_asteroids.init(_constants->get("asteroids"));
