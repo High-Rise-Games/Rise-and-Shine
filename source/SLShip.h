@@ -300,6 +300,13 @@ public:
      */
     void move(float forward, float turn, cugl::Size size, float sideGap);
     
+    /**
+     * Returns true if player is at the edge of building
+     *
+     * @return true if the player is at edge
+     */
+    bool atEdge(float sideGap);
+    
 private:
     /**
      * Update the animation of the ship to process a turn

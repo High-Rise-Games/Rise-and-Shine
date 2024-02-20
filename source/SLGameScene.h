@@ -51,13 +51,30 @@ protected:
     // AsteroidSet _asteroids;
     /** Grid of windows and dirt placement to be drawn */
     WindowGrid _windows;
+    /** Dirt generation rate, higher means more frequent dirt*/
+    float _dirtGenRate;
+    /** Current timer value for dirt regeneration*/
+    int _dirtThrowTimer;
+    /** Timer threshold for fixed period random dirt generation*/
+    int _fixedDirtUpdateThreshold;
+    /** The max amount of dirt the bucket can hold **/
+    int _maxDirtAmount;
+    /** The amount of dirt player is currently holdinfg in the bucket **/
+    int _currentDirtAmount;
+    
+    
+    cugl::scheduable t;
     
     // VIEW items are going to be individual variables
     // In the future, we will replace this with the scene graph
     /** The backgrounnd image */
     std::shared_ptr<cugl::Texture> _background;
-    /** The text with the current health */
-    std::shared_ptr<cugl::TextLayout> _text;
+    /** Empty bucket texture image */
+    std::shared_ptr<cugl::Texture> _emptyBucket;
+    /** Full bucket texture image */
+    std::shared_ptr<cugl::Texture> _fullBucket;
+    /** The text with the current dirt */
+    std::shared_ptr<cugl::TextLayout> _dirtText;
     /** The sound of a ship-asteroid collision */
     std::shared_ptr<cugl::Sound> _bang;
 
@@ -102,6 +119,15 @@ public:
     
 #pragma mark -
 #pragma mark Gameplay Handling
+    
+    /** sets empty bucket texture */
+    void setEmptyBucket(const std::shared_ptr<cugl::Texture>& value) { _emptyBucket = value; }
+    /** sets full bucket texture */
+    void setFullBucket(const std::shared_ptr<cugl::Texture>& value) { _fullBucket = value; }
+    
+    /** generates dirt in a fair manner */
+    void generateDirt(const WindowGrid wg);
+    
     /**
      * The method called to update the game mode.
      *

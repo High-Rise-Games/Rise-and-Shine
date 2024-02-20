@@ -43,6 +43,11 @@ using namespace std;
 bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Initialize the scene to a locked width
     Size dimen = Application::get()->getDisplaySize();
+    _dirtGenRate = 0.6;
+    _dirtThrowTimer = 0;
+    _fixedDirtUpdateThreshold = 5 * 60;
+    _maxDirtAmount = 1;
+    _currentDirtAmount = 0;
     dimen *= SCENE_HEIGHT/dimen.height;
     if (assets == nullptr) {
         return false;
@@ -66,6 +71,10 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _windows.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
     _windows.init(_constants->get("easy board"), getSize()); // init depends on texture
     _windows.setDirtTexture(assets->get<Texture>("dirt"));
+    
+    // Initialize dirt bucket
+    setEmptyBucket(assets->get<Texture>("bucketempty"));
+    setFullBucket(assets->get<Texture>("bucketfull"));
 
     // Initialize the asteroid set
     //_asteroids.init(_constants->get("asteroids"));
@@ -74,10 +83,10 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Get the bang sound
     _bang = assets->get<Sound>("bang");
 
-    // Create and layout the health meter
-    std::string msg = strtool::format("Health %d", _player->getHealth());
-    _text = TextLayout::allocWithText(msg, assets->get<Font>("pixel32"));
-    _text->layout();
+    // Create and layout the dirt amount
+    std::string msg = strtool::format("%d", _currentDirtAmount);
+    _dirtText = TextLayout::allocWithText(msg, assets->get<Font>("pixel32"));
+    _dirtText->layout();
     
     //_collisions.init(getSize());
     
@@ -123,16 +132,36 @@ void GameScene::update(float timestep) {
         reset();
     }
 
+
     // Move the player, ignoring collisions
     _player->move( _input.getForward(),  _input.getTurn(), getSize(), _windows.sideGap);
     // remove any dirt the player collides with
     Vec2 grid_coors = _player->getCoorsFromPos(_windows.getPaneHeight(), _windows.getPaneWidth(), _windows.sideGap);
     _player->setCoors(grid_coors);
-    CULog("player coors: (%f, %f)", grid_coors.x, grid_coors.y);
+//    CULog("player coors: (%f, %f)", grid_coors.x, grid_coors.y);
     bool dirtRemoved = _windows.removeDirt(grid_coors.x, grid_coors.y);
     if (dirtRemoved) {
         // TODO: implement logic to deal with filling up dirty bucket
+        _currentDirtAmount = min(_maxDirtAmount, _currentDirtAmount + 1);
     }
+    
+    if (_player->atEdge(_windows.sideGap)) {
+        _currentDirtAmount = max(0, _currentDirtAmount - 1);
+    }
+    
+    // fixed dirt generation logic (every 5 seconds)
+    if (_dirtThrowTimer <= _fixedDirtUpdateThreshold) {
+        _dirtThrowTimer++;
+    } else {
+        _dirtThrowTimer = 0;
+        CULog("generating fixed dirt");
+    }
+    
+    // dynamic dirt generation logic (based on generation rate)
+//    std::mt19937 rng(std::time(nullptr));
+//    std::uniform_int_distribution<> distr(0, _fixedDirtUpdateThreshold);
+//    for(int n=0; n<5; ++n)
+//            std::cout << distr(eng) << ' ';
     
     // Move the asteroids
     //_asteroids.update(getSize());
@@ -142,9 +171,9 @@ void GameScene::update(float timestep) {
     //    AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
     //}
     
-    // Update the health meter
-    _text->setText(strtool::format("Health %d", _player->getHealth()));
-    _text->layout();
+    // Update the dirt display
+    _dirtText->setText(strtool::format("%d", _currentDirtAmount));
+    _dirtText->layout();
 }
 
 /**
@@ -166,9 +195,33 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     _windows.draw(batch, getSize());
     _player->draw(batch, getSize());
     
+    
+    //set bucket texture location
+    Affine2 bucket_trans = Affine2();
+    Vec2 origin(_fullBucket->getWidth()/2,_fullBucket->getHeight()/2);
+    float bucketScaleFactor = std::min(((float)getSize().getIWidth() / (float)_fullBucket->getWidth()) /2, ((float)getSize().getIHeight() / (float)_fullBucket->getHeight() /2));
+    bucket_trans.scale(bucketScaleFactor);
+    
+    Vec2 bucketLocation(getSize().width - ((float)_fullBucket->getWidth() * bucketScaleFactor/2),
+                        (float)_fullBucket->getHeight() * bucketScaleFactor/2);
+    bucket_trans.translate(bucketLocation);
+    
+    // draw different bucket based on dirt amount
+    if (_currentDirtAmount == 0) {
+        batch->draw(_emptyBucket, origin, bucket_trans);
+    } else {
+        batch->draw(_fullBucket, origin, bucket_trans);
+    }
+    
+    // draw dirt amount text, centered at bucket
+    Affine2 dirtTextTrans = Affine2();
+    dirtTextTrans.scale(1.2);
+    dirtTextTrans.translate(bucketLocation.x - _dirtText->getBounds().size.width/2,
+                            bucketLocation.y);
     batch->setColor(Color4::BLACK);
-    batch->drawText(_text,Vec2(10,getSize().height-_text->getBounds().size.height));
+    batch->drawText(_dirtText, dirtTextTrans);
     batch->setColor(Color4::WHITE);
+    
     
     batch->end();
 }
