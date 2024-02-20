@@ -13,7 +13,6 @@ class WindowGrid {
 private:
 	int _nHorizontal; // number of columns
 	int _nVertical;   // number of rows
-    bool _boardFull; // board is full or not
 	float _scaleFactor;
 	float _windowHeight;
 	float _windowWidth;
@@ -36,7 +35,6 @@ public:
 	int  getNHorizontal()                 { return _nHorizontal;        };
 	void setNVertical(int n)              { _nVertical = n;             };
 	int  getNVertical()                   { return _nVertical;          };
-    bool getBoardFull()                   { return _boardFull;          };
     float sideGap;
 
 	WindowGrid(); // constructor
@@ -65,8 +63,12 @@ public:
 	/** Returns the window width */
 	const float getPaneWidth() const { return _windowWidth; }
     
-    /** Checks whether board is full */
-    const bool checkBoardFull();
+    /**
+     * Get window state at row and col
+     */
+    bool getWindowState(const int row, const int col) {
+        return _board[row][col];
+    }
     
 	/**
 	 * Add dirt to board at specified location.

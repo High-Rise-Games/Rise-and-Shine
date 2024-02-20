@@ -129,6 +129,9 @@ public:
     /** sets full bucket texture */
     void setFullBucket(const std::shared_ptr<cugl::Texture>& value) { _fullBucket = value; }
     
+    /** Checks whether board is full */
+    const bool checkBoardFull();
+    
     /** update when dirt is generated */
     void updateDirtGenTime();
     

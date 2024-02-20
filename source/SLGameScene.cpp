@@ -136,8 +136,8 @@ void GameScene::update(float timestep) {
         reset();
     }
 
-    //Checks and stores if board is full
-    if (_windows.checkBoardFull()) {
+    //Checks and returns true if board is full besides current player position
+    if (checkBoardFull()) {
         //TODO: implment lose screen here?
     }
 
@@ -204,11 +204,23 @@ void GameScene::generateDirt() {
     std::uniform_int_distribution<int> colDist(0, _windows.getNVertical() - 1);
     int rand_row = rowDist(_rng);
     int rand_col = colDist(_rng);
-    // if add dirt already exists at location and board is not full, repeat
-    while (!_windows.addDirt(rand_row, rand_col) && !_windows.checkBoardFull()) {
+    // if add dirt already exists at location or player at location and board is not full, repeat
+    while ((_player->getCoors() == Vec2(rand_row, rand_col) || !_windows.addDirt(rand_row, rand_col)) && !checkBoardFull()) {
         rand_row = rowDist(_rng);
         rand_col = colDist(_rng);
     }
+}
+
+/** Checks whether board is full except player current location*/
+const bool GameScene::checkBoardFull() {
+    for (int x = 0; x < _windows.getNHorizontal(); x++) {
+        for (int y = 0; y < _windows.getNVertical(); y++) {
+                if (_windows.getWindowState(x, y) == 0 && !(_player->getCoors() != Vec2(x, y))) {
+                    return false; // Found a 0, at least one clean spot
+                }
+            }
+        }
+    return true; // No 0s found, all dirty spots
 }
 
 /**
