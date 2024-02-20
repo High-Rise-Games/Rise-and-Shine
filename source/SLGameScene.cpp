@@ -64,14 +64,18 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _constants = assets->get<JsonValue>("constants");
 
 
-    // Make a ship and set its texture
-    _player = std::make_shared<Player>(getSize()/2, _constants->get("ship"));
-    _player->setTexture(assets->get<Texture>("ship"));
 
     // Initialize the window grid
     _windows.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
     _windows.init(_constants->get("easy board"), getSize()); // init depends on texture
     _windows.setDirtTexture(assets->get<Texture>("dirt"));
+    
+    // Make a ship and set its texture
+    // starting position is most bottom left window
+    Vec2 startingPos = Vec2(_windows.sideGap+(_windows.getPaneWidth()/2), _windows.getPaneHeight());
+    _player = std::make_shared<Player>(startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
+    _player->setTexture(assets->get<Texture>("ship"));
+
     
     // Initialize random dirt generation
     updateDirtGenTime();
@@ -115,7 +119,9 @@ void GameScene::dispose() {
  * Resets the status of the game so that we can play again.
  */
 void GameScene::reset() {
-    _player->setPosition(getSize()/2);
+    // starting position is most bottom left window
+    Vec2 startingPos = Vec2(_windows.sideGap+(_windows.getPaneWidth()/2), _windows.getPaneHeight()/2);
+    _player->setPosition(startingPos);
     _player->setAngle(0);
     _player->setVelocity(Vec2::ZERO);
     _player->setHealth(_constants->get("ship")->getInt("health",0));

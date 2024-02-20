@@ -29,13 +29,19 @@ using namespace cugl;
  * @param pos   The ship position
  * @param data  The data defining the physics constants
  */
-Player::Player(const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data) {
+Player::Player(const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data, const float windowWidth, const float windowHeight) {
     _pos = pos;
     _coors = Vec2();
     _ang  = 0;
     _dang = 0;
     _refire = 0;
     _radius = 0;
+    
+    // height of a window pane of the game board
+    _windowWidth = windowWidth;
+    
+    // width of a window pane of the game board
+    _windowHeight = windowHeight;
     
     // Physics
     _mass = data->getFloat("mass",1.0);
@@ -193,15 +199,17 @@ void Player::move(float forward, float turn, Size size, float sideGap) {
 
     // Process forward key press
     if (forward != 0.0f) {
-        Vec2 dir(0,10);
+        Vec2 dir(0,_windowWidth);
         _vel = dir * forward;
     }
     
+    // Process turn key key press
     if (turn != 0.0f && forward == 0.0f) {
-        Vec2 dir(10,0);
+        Vec2 dir(_windowHeight,0);
         _vel = dir * turn;
     }
     
+    // Process no movement;
     if (turn == 0.0f && forward == 0.0f) {
         Vec2 dir(0,0);
         _vel = dir * turn;

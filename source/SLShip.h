@@ -34,6 +34,14 @@ private:
     cugl::Vec2 _vel;
     /** Coordinates in relation to window grid of the player */
     cugl::Vec2 _coors;
+    
+    // height of a window pane of the game board
+    // used to discretize movement
+    float _windowHeight;
+    
+    // width of a window pane of the game board
+    // used to discretize movement
+    float _windowWidth;
         
     // The following are protected, because they have no accessors
     /** Current angle of the ship */
@@ -86,7 +94,7 @@ public:
      * @param pos   The ship position
      * @param data  The data defining the physics constants
      */
-    Player(const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data);
+    Player(const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data, const float windowWidth, const float windowHeight);
     
     /**
      * Disposes the ship, releasing all resources.
