@@ -55,11 +55,11 @@ protected:
     std::mt19937 _rng;
     /** Dirt random generation time stamp*/
     std::set<int> _dirtGenTimes;
-    /** Dirt generation speed, equals number of dirt generated per update threshold time period*/
+    /** Dirt generation speed, equals number of random dirt generated per _fixedDirtUpdateThreshold period*/
     int _dirtGenSpeed;
-    /** Current timer value for dirt regeneration*/
+    /** Current timer value for dirt regeneration. Increments up to _fixedDirtUpdateThreshold and resets to 0*/
     int _dirtThrowTimer;
-    /** Timer threshold for fixed period random dirt generation*/
+    /** Timer threshold for fixed period random dirt generation in frames. E.g. 300 is one dirt generation per 5 seconds */
     int _fixedDirtUpdateThreshold;
     /** The max amount of dirt the bucket can hold **/
     int _maxDirtAmount;
