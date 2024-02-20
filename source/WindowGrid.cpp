@@ -51,6 +51,20 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 	return true;
 }
 
+/** Checks whether board is full and store result in local  bool*/
+const bool WindowGrid::checkBoardFull() {
+    for (int x = 0; x < _nHorizontal; x++) {
+        for (int y = 0; y < _nVertical; y++) {
+                if (_board[x][y] == 0) {
+                    _boardFull = false;
+                    return false; // Found a 0, at least one clean spot
+                }
+            }
+        }
+    _boardFull = true;
+    return true; // No 0s found, all dirty spots
+}
+
 // draws an entire grid of _nHorizontal x nVertical windows as large as possible with center (horizontal) alignment
 void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size) {
 	

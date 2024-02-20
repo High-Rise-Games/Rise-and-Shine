@@ -51,8 +51,12 @@ protected:
     // AsteroidSet _asteroids;
     /** Grid of windows and dirt placement to be drawn */
     WindowGrid _windows;
-    /** Dirt generation rate, higher means more frequent dirt*/
-    float _dirtGenRate;
+    /** Random number generator for dirt generation */
+    std::mt19937 _rng;
+    /** Dirt random generation time stamp*/
+    std::set<int> _dirtGenTimes;
+    /** Dirt generation speed, equals number of dirt generated per update threshold time period*/
+    int _dirtGenSpeed;
     /** Current timer value for dirt regeneration*/
     int _dirtThrowTimer;
     /** Timer threshold for fixed period random dirt generation*/
@@ -125,8 +129,11 @@ public:
     /** sets full bucket texture */
     void setFullBucket(const std::shared_ptr<cugl::Texture>& value) { _fullBucket = value; }
     
+    /** update when dirt is generated */
+    void updateDirtGenTime();
+    
     /** generates dirt in a fair manner */
-    void generateDirt(const WindowGrid wg);
+    void generateDirt();
     
     /**
      * The method called to update the game mode.

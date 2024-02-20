@@ -43,7 +43,8 @@ using namespace std;
 bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Initialize the scene to a locked width
     Size dimen = Application::get()->getDisplaySize();
-    _dirtGenRate = 0.6;
+    _rng.seed(std::time(nullptr));
+    _dirtGenSpeed = 2;
     _dirtThrowTimer = 0;
     _fixedDirtUpdateThreshold = 5 * 60;
     _maxDirtAmount = 1;
@@ -71,6 +72,9 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _windows.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
     _windows.init(_constants->get("easy board"), getSize()); // init depends on texture
     _windows.setDirtTexture(assets->get<Texture>("dirt"));
+    
+    // Initialize random dirt generation
+    updateDirtGenTime();
     
     // Initialize dirt bucket
     setEmptyBucket(assets->get<Texture>("bucketempty"));
@@ -132,6 +136,10 @@ void GameScene::update(float timestep) {
         reset();
     }
 
+    //Checks and stores if board is full
+    if (_windows.checkBoardFull()) {
+        //TODO: implment lose screen here?
+    }
 
     // Move the player, ignoring collisions
     _player->move( _input.getForward(),  _input.getTurn(), getSize(), _windows.sideGap);
@@ -151,17 +159,22 @@ void GameScene::update(float timestep) {
     
     // fixed dirt generation logic (every 5 seconds)
     if (_dirtThrowTimer <= _fixedDirtUpdateThreshold) {
+        auto search = _dirtGenTimes.find(_dirtThrowTimer);
+        if (search != _dirtGenTimes.end()) {
+            // random dirt generation logic
+            CULog("generating random dirt");
+            generateDirt();
+        }
         _dirtThrowTimer++;
     } else {
         _dirtThrowTimer = 0;
+        updateDirtGenTime();
         CULog("generating fixed dirt");
+        generateDirt();
     }
     
     // dynamic dirt generation logic (based on generation rate)
-//    std::mt19937 rng(std::time(nullptr));
-//    std::uniform_int_distribution<> distr(0, _fixedDirtUpdateThreshold);
-//    for(int n=0; n<5; ++n)
-//            std::cout << distr(eng) << ' ';
+
     
     // Move the asteroids
     //_asteroids.update(getSize());
@@ -174,6 +187,28 @@ void GameScene::update(float timestep) {
     // Update the dirt display
     _dirtText->setText(strtool::format("%d", _currentDirtAmount));
     _dirtText->layout();
+}
+
+/** update when dirt is generated */
+void GameScene::updateDirtGenTime() {
+    _dirtGenTimes.clear();
+    std::uniform_int_distribution<> distr(0, _fixedDirtUpdateThreshold);
+    for(int n=0; n<_dirtGenSpeed; ++n) {
+        _dirtGenTimes.insert(distr(_rng));
+    }
+}
+
+/** handles actual dirt generation */
+void GameScene::generateDirt() {
+    std::uniform_int_distribution<int> rowDist(0, _windows.getNHorizontal() - 1);
+    std::uniform_int_distribution<int> colDist(0, _windows.getNVertical() - 1);
+    int rand_row = rowDist(_rng);
+    int rand_col = colDist(_rng);
+    // if add dirt already exists at location and board is not full, repeat
+    while (!_windows.addDirt(rand_row, rand_col) && !_windows.checkBoardFull()) {
+        rand_row = rowDist(_rng);
+        rand_col = colDist(_rng);
+    }
 }
 
 /**
