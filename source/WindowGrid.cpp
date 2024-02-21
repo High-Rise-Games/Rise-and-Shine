@@ -30,7 +30,7 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 	 sideGap = ((float)size.getIWidth() - _windowWidth * _nHorizontal) / 2; // final gap width from side of screen to side of building
 
 	// Initialize the dirt board
-	_board = std::vector<std::vector<bool>>(_nHorizontal, std::vector<bool>(_nVertical, false));
+	_board = std::vector<std::vector<bool>>(_nVertical, std::vector<bool>(_nHorizontal, false));
 	int n_dirt = data->getInt("number dirts", 1);
 
 	std::mt19937 rng(std::time(nullptr)); // Initializes random number generator

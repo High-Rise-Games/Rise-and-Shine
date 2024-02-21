@@ -85,6 +85,7 @@ public:
 	 * Returns true if the dirt was successfully removed, and false if there is no dirt to remove.
 	 */
 	bool removeDirt(const int row, const int col) { 
+//        CULog("size: %d, %d", _board.size(), board[0].size());
 		bool dirtExisted = _board[row][col];
 		_board[row][col] = false; 
 		return dirtExisted;
