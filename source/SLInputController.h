@@ -35,7 +35,26 @@ private:
 
     /** Did we press the reset button? */
     bool _didReset;
+    
+    /** The position of the touch down event*/
+    cugl::Vec2 _startPos;
+    
+    /** The distance of the last swipe*/
+    cugl::Vec2 _moveDis;
+    
+protected:
+    /** Whether the input device was successfully initialized */
+    bool _active;
+    /** Whether the finger is down*/
+    bool _touchDown;
+    /** Whether the finger is released in this animation frame*/
+    bool _touchReleased;
+    /** The key for the touch listeners*/
+    Uint32 _touchKey;
+    /** The current touch id of the finger*/
+    cugl::TouchID _touchID;
 
+#pragma mark Input Control
 public:
     /**
      * Returns the amount of forward movement.
@@ -92,14 +111,53 @@ public:
     ~InputController() {}
     
     /**
-     * Reads the input for this player and converts the result into game logic.
+     * Initializes the control to support keyboard or touch.
      *
-     * This is an example of polling input.  Instead of registering a listener,
-     * we ask the controller about its current state.  When the game is running,
-     * it is typically best to poll input instead of using listeners.  Listeners
-     * are more appropriate for menus and buttons (like the loading screen).
+     * This method attaches all of the listeners. It tests which
+     * platform we are on (mobile or desktop) to pick the right
+     * listeners.
+     *
+     * This method will fail (return false) if the listeners cannot
+     * be registered or if there is a second attempt to initialize
+     * this controller
+     *
+     * @return true if the initialization was successful
      */
-    void readInput();
+    bool init();
+    
+    /**
+     * Disposes this input controller, deactivating all listeners.
+     *
+     * As the listeners are deactived, the user will not be able to
+     * monitor input until the controller is reinitialized with the
+     * {@link #init} method.
+     */
+    void dispose();
+    
+    /**
+     * Updates the input controller for the latest frame.
+     *
+     * It might seem weird to have this method given that everything
+     * is processed with call back functions.  But we need some way
+     * to synchronize the input with the animation frame.  Otherwise,
+     * how can we know what was the touch location *last frame*?
+     * Maybe there has been no callback function executed since the
+     * last frame. This method guarantees that everything is properly
+     * synchronized.
+     */
+    void update();
+    
+#pragma mark Touch Callbacks
+private:
+    /**
+     * Call back function for touch down
+     */
+    void touchDownCB(const cugl::TouchEvent& event, bool focus);
+    
+    /**
+     * Call back function for touch released
+     */
+    void touchUpCB(const cugl::TouchEvent& event, bool focus);
 };
 
 #endif /* __GL_INPUT_CONTROLLER_H__ */

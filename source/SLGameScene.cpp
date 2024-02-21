@@ -58,6 +58,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     
     // Start up the input handler
     _assets = assets;
+    _input.init();
     
     // Get the background image and constant values
     _background = assets->get<Texture>("background");
@@ -137,7 +138,7 @@ void GameScene::reset() {
  */
 void GameScene::update(float timestep) {
     // Read the keyboard for each controller.
-    _input.readInput();
+    _input.update();
     if (_input.didPressReset()) {
         reset();
     }

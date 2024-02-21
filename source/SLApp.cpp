@@ -32,9 +32,14 @@ void ShipApp::onStartup() {
     _batch  = SpriteBatch::alloc();
     auto cam = OrthographicCamera::alloc(getDisplaySize());
     
+#ifdef CU_TOUCH_SCREEN
+    // Start-up basic input for loading screen (MOBILE ONLY)
+    Input::activate<Touchscreen>();
+#else
     // Start-up basic input (DESKTOP ONLY)
     Input::activate<Mouse>();
     Input::activate<Keyboard>();
+#endif
 
     _assets->attach<Texture>(TextureLoader::alloc()->getHook());
     _assets->attach<Sound>(SoundLoader::alloc()->getHook());
