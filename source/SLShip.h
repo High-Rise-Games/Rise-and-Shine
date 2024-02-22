@@ -313,7 +313,7 @@ public:
      *
      * @return true if the player is at edge
      */
-    bool atEdge(float sideGap);
+    bool atEdge(float sideGap, cugl::Size size);
     
 private:
     /**

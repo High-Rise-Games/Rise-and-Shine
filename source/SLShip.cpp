@@ -219,7 +219,7 @@ void Player::move(float forward, float turn, Size size, float sideGap) {
     // Move the ship position by the ship velocity.
     // Velocity always remains unchanged.
     // Also does not add velocity to position in the event that movement would go beyond the window building grid.
-    if (!atEdge(sideGap) && !(_pos.y + _vel.y >= size.height-20) && !(_pos.y + _vel.y <= 40)) {
+    if (!atEdge(sideGap, size) && !(_pos.y + _vel.y >= size.height-20) && !(_pos.y + _vel.y <= 40)) {
         _pos += _vel;
     }
 
@@ -230,8 +230,8 @@ void Player::move(float forward, float turn, Size size, float sideGap) {
  *
  * @return true if the player is at edge
  */
-bool Player::atEdge(float sideGap) {
-    return (_pos.x + _vel.x <= sideGap) || (_pos.x + _vel.x >= 3.3*sideGap);
+bool Player::atEdge(float sideGap, Size size) {
+    return (_pos.x + _vel.x <= sideGap) || (_pos.x + _vel.x >= size.width - sideGap);
 };
 
 

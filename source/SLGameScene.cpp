@@ -160,7 +160,7 @@ void GameScene::update(float timestep) {
         _currentDirtAmount = min(_maxDirtAmount, _currentDirtAmount + 1);
     }
     
-    if (_player->atEdge(_windows.sideGap)) {
+    if (_player->atEdge(_windows.sideGap, getSize())) {
         _currentDirtAmount = max(0, _currentDirtAmount - 1);
     }
     
