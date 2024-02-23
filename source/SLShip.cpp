@@ -193,8 +193,9 @@ void Player::setPosition(cugl::Vec2 value, cugl::Vec2 size) {
  *
  * @param forward    Amount to move forward
  * @param turn        Amount to turn the ship
+ * @return True if moved
  */
-void Player::move(float forward, float turn, Size size, float sideGap) {
+bool Player::move(float forward, float turn, Size size, float sideGap) {
     // Process the ship turning.
 
     // Process forward key press
@@ -219,19 +220,26 @@ void Player::move(float forward, float turn, Size size, float sideGap) {
     // Move the ship position by the ship velocity.
     // Velocity always remains unchanged.
     // Also does not add velocity to position in the event that movement would go beyond the window building grid.
-    if (!atEdge(sideGap, size) && !(_pos.y + _vel.y >= size.height-20) && !(_pos.y + _vel.y <= 40)) {
+    if (!getEdge(sideGap, size) && !(_pos.y + _vel.y >= size.height-20) && !(_pos.y + _vel.y <= 40)) {
         _pos += _vel;
+        return true;
     }
+    return false;
 
 }
 
 /**
- * Returns true if player is at the edge of building
+ * Returns edge if player is at the edge of building
  *
- * @return true if the player is at edge
+ * @return -1 if the player is at left edge, 0 not at edge, and 1 at right edge
  */
-bool Player::atEdge(float sideGap, Size size) {
-    return (_pos.x + _vel.x <= sideGap) || (_pos.x + _vel.x >= size.width - sideGap);
+int Player::getEdge(float sideGap, Size size) {
+    if (_pos.x + _vel.x <= sideGap) {
+        return -1;
+    } else if (_pos.x + _vel.x >= size.width - sideGap) {
+        return 1;
+    }
+    return 0;
 };
 
 

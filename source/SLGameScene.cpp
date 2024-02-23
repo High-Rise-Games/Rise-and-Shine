@@ -149,7 +149,7 @@ void GameScene::update(float timestep) {
     }
 
     // Move the player, ignoring collisions
-    _player->move( _input.getForward(),  _input.getTurn(), getSize(), _windows.sideGap);
+    bool moved = _player->move( _input.getForward(),  _input.getTurn(), getSize(), _windows.sideGap);
     // remove any dirt the player collides with
     Vec2 grid_coors = _player->getCoorsFromPos(_windows.getPaneHeight(), _windows.getPaneWidth(), _windows.sideGap);
     _player->setCoors(grid_coors);
@@ -160,7 +160,7 @@ void GameScene::update(float timestep) {
         _currentDirtAmount = min(_maxDirtAmount, _currentDirtAmount + 1);
     }
     
-    if (_player->atEdge(_windows.sideGap, getSize())) {
+    if (_player->getEdge(_windows.sideGap, getSize()) && !moved) {
         _currentDirtAmount = max(0, _currentDirtAmount - 1);
     }
     
@@ -222,11 +222,15 @@ void GameScene::generateDirt() {
 const bool GameScene::checkBoardFull() {
     for (int x = 0; x < _windows.getNHorizontal(); x++) {
         for (int y = 0; y < _windows.getNVertical(); y++) {
-                if (_windows.getWindowState(x, y) == 0 && !(_player->getCoors() != Vec2(x, y))) {
-                    return false; // Found a 0, at least one clean spot
+                if (_windows.getWindowState(x, y) == 0) {
+                    if (_player->getCoors() == Vec2(x, y)) {
+                        // consider current place occupied
+                        continue;
+                    }
+                    return false;
                 }
-            }
         }
+    }
     return true; // No 0s found, all dirty spots
 }
 

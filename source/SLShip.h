@@ -305,15 +305,16 @@ public:
      * @param forward   Amount to move forward
      * @param turn      Amount to turn the ship
      * @param size      The size of the window (for wrap around)
+     * @return True if moved
      */
-    void move(float forward, float turn, cugl::Size size, float sideGap);
+    bool move(float forward, float turn, cugl::Size size, float sideGap);
     
     /**
-     * Returns true if player is at the edge of building
+     * Returns edge if player is at the edge of building
      *
-     * @return true if the player is at edge
+     * @return -1 if the player is at left edge, 0 not at edge, and 1 at right edge
      */
-    bool atEdge(float sideGap, cugl::Size size);
+    int getEdge(float sideGap, cugl::Size size);
     
 private:
     /**
