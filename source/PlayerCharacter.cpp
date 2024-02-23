@@ -16,7 +16,7 @@
 //  Based on original GameX Ship Demo by Rama C. Hoetzlein, 2002
 //  Version: 1/20/22
 //
-#include "SLShip.h"
+#include "PlayerCharacter.h"
 
 using namespace cugl;
 

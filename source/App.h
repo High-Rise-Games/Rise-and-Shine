@@ -10,16 +10,16 @@
 //  Author: Walker White
 //  Version: 1/20/22
 //
-#ifndef __SL_APP_H__
-#define __SL_APP_H__
+#ifndef __APP_H__
+#define __APP_H__
 #include <cugl/cugl.h>
-#include "SLGameScene.h"
-#include "SLLoadingScene.h"
+#include "GameScene.h"
+#include "LoadingScene.h"
 
 /**
  * This class represents the application root for the ship demo.
  */
-class ShipApp : public cugl::Application {
+class App : public cugl::Application {
 protected:
     /** The global sprite batch for drawing (only want one of these) */
     std::shared_ptr<cugl::SpriteBatch> _batch;
@@ -45,7 +45,7 @@ public:
      * of initialization from the constructor allows main.cpp to perform
      * advanced configuration of the application before it starts.
      */
-    ShipApp() : cugl::Application(), _loaded(false) {}
+    App() : cugl::Application(), _loaded(false) {}
     
     /**
      * Disposes of this application, releasing all resources.
@@ -54,7 +54,7 @@ public:
      * It simply calls the dispose() method in Application.  There is nothing
      * special to do here.
      */
-    ~ShipApp() { }
+    ~App() { }
     
 #pragma mark Application State
     /**

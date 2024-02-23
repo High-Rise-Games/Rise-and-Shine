@@ -15,11 +15,9 @@
 #include <cugl/cugl.h>
 #include <vector>
 #include <unordered_set>
-#include "SLShip.h"
-#include "SLPhotonSet.h"
-#include "SLAsteroidSet.h"
-#include "SLInputController.h"
-#include "SLCollisionController.h"
+#include "PlayerCharacter.h"
+#include "InputController.h"
+#include "CollisionController.h"
 #include "WindowGrid.h"
 
 

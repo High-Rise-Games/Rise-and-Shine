@@ -13,7 +13,7 @@
 //  Version: 1/20/22
 //
 #include <cugl/cugl.h>
-#include "SLInputController.h"
+#include "InputController.h"
 
 using namespace cugl;
 

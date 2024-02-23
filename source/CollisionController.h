@@ -23,8 +23,7 @@
 #ifndef __SL_COLLISION_CONTROLLER_H__
 #define __SL_COLLISION_CONTROLLER_H__
 #include <cugl/cugl.h>
-#include "SLShip.h"
-#include "SLAsteroidSet.h"
+#include "PlayerCharacter.h"
 
 /**
  * Namespace of functions implementing simple game physics.
@@ -74,23 +73,7 @@ public:
         return true;
     }
         
-    /**
-     * Returns true if there is a ship-asteroid collision
-     *
-     * In addition to checking for the collision, this method also resolves it.
-     * That means it applies damage to the ship for EACH asteroid encountered.
-     * It does not, however, play the sound. That happens in the main controller
-     *
-     * Note that this method must take wrap into consideration as well. If the
-     * asteroid/ship can be drawn at multiple points on the screen, then it can
-     * collide at multiple places as well.
-     *
-     * @param ship  The players ship
-     * @param aset  The asteroid set
-     *
-     * @return true if there is a ship-asteroid collision
-     */
-    bool resolveCollision(const std::shared_ptr<Player>& ship, AsteroidSet& ast);
+
 
 };
 

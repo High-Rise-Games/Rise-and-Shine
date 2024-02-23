@@ -15,7 +15,7 @@
 #include <sstream>
 #include <random>
 
-#include "SLGameScene.h"
+#include "GameScene.h"
 //#include "GLCollisionController.h"
 
 using namespace cugl;
