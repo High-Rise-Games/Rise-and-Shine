@@ -1,27 +1,10 @@
 //
-//  SLCollisionController.h
-//  Programming Lab
+//  CollisionController.h
 //
-//  Unless you are making a point-and-click adventure game, every single
-//  game is going to need some sort of collision detection.  In a later
-//  lab, we will see how to do this with a physics engine. For now, we use
-//  custom physics.
+//  Author: High Rise Games
 //
-//  You might ask why we need this file when we have Box2d. That is because
-//  we are trying to make this code as close to that of 3152 as possible. At
-//  this point in the semester of 3152, we had not covered Box2d.
-//
-//  As you work on this class, there is an interesting thing to note.  The
-//  constructor and the initializer are SEPARATE.  That is because the
-//  constructor is called as soon as the object is created and that happens
-//  BEFORE we know the window size.
-//
-//  Author: Walker M. White
-//  Based on original GameX Ship Demo by Rama C. Hoetzlein, 2002
-//  Version: 1/20/22
-//
-#ifndef __SL_COLLISION_CONTROLLER_H__
-#define __SL_COLLISION_CONTROLLER_H__
+#ifndef __COLLISION_CONTROLLER_H__
+#define __COLLISION_CONTROLLER_H__
 #include <cugl/cugl.h>
 #include "PlayerCharacter.h"
 

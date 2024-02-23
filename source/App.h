@@ -1,11 +1,5 @@
 //
-//  SLApp.h
-//  Ship Lab
-//
-//  This is the root class for your game.  The file main.cpp accesses this class
-//  to run the application.  While you could put most of your game logic in
-//  this class, we prefer to break the game up into player modes and have a
-//  class for each mode.
+//  App.h
 //
 //  Author: Walker White
 //  Version: 1/20/22

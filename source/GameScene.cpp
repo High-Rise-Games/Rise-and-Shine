@@ -1,14 +1,8 @@
+//  GameScene.cpp
 //
-//  SLGameScene.cpp
-//  Ship Lab
+//  This is the primary class file for running the game.
 //
-//  This is the primary class file for running the game.  You should study this file
-//  for ideas on how to structure your own root class. This class is a reimagining of
-//  the first game lab from 3152 in CUGL.
-//
-//  Author: Walker White
-//  Based on original GameX Ship Demo by Rama C. Hoetzlein, 2002
-//  Version: 1/20/22
+//  Author: High Rise Games
 //
 #include <cugl/cugl.h>
 #include <iostream>

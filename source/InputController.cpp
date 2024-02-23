@@ -1,16 +1,7 @@
 //
-//  GLInputController.cpp
-//  Ship Lab
+//  InputController.cpp
 //
-//  This class buffers in input from the devices and converts it into its
-//  semantic meaning. If your game had an option that allows the player to
-//  remap the control keys, you would store this information in this class.
-//  That way, the main game scene does not have to keep track of the current
-//  key mapping.
-//
-//  Author: Walker M. White
-//  Based on original GameX Ship Demo by Rama C. Hoetzlein, 2002
-//  Version: 1/20/22
+//  Author: High Rise Games
 //
 #include <cugl/cugl.h>
 #include "InputController.h"

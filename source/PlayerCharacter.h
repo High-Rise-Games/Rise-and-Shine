@@ -1,23 +1,10 @@
 //
-//  SLShip.h
-//  Ship Lab
+//  PlayerCharacter.h
 //
-//  This class tracks all of the state (position, velocity, rotation) of a
-//  single ship. In order to obey the separation of the model-view-controller
-//  pattern, controller specific code (such as reading the keyboard) is not
-//  present in this class.
+//  Author: High Rise Games
 //
-//  With that said, you will notice several elements that look like they are
-//  part of the view, namely the texture and sound.  But this is the texture
-//  and sound DATA.  The actual view are the sprite batch and audio engine,
-//  respectively, that use this data to provide feedback on the screen.
-//
-//  Author: Walker White
-//  Based on original GameX Ship Demo by Rama C. Hoetzlein, 2002
-//  Version: 1/20/22
-//
-#ifndef __GL_SHIP_H__
-#define __GL_SHIP_H__
+#ifndef __SHIP_H__
+#define __SHIP_H__
 #include <cugl/cugl.h>
 
 /** The number of frames until we can fire again */

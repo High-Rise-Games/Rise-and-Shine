@@ -1,19 +1,10 @@
 //
-//  GLInputController.h
-//  Ship Lab
+//  InputController.h
 //
-//  This class buffers in input from the devices and converts it into its
-//  semantic meaning. If your game had an option that allows the player to
-//  remap the control keys, you would store this information in this class.
-//  That way, the main game scene does not have to keep track of the current
-//  key mapping.
+//  Author: High Rise Games
 //
-//  Author: Walker M. White
-//  Based on original GameX Ship Demo by Rama C. Hoetzlein, 2002
-//  Version: 1/20/22
-//
-#ifndef __SL_INPUT_CONTROLLER_H__
-#define __SL_INPUT_CONTROLLER_H__
+#ifndef __INPUT_CONTROLLER_H__
+#define __INPUT_CONTROLLER_H__
 
 /**
  * Device-independent input manager.
@@ -160,4 +151,4 @@ private:
     void touchUpCB(const cugl::TouchEvent& event, bool focus);
 };
 
-#endif /* __GL_INPUT_CONTROLLER_H__ */
+#endif /* __INPUT_CONTROLLER_H__ */

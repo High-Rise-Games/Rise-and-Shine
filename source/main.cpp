@@ -1,9 +1,6 @@
 //
 //  main.cpp
-//  Ship Lab
 //
-//  This is the main entry class for your application.  You may need to modify
-//  it slightly for your application class or platform.
 //
 //  CUGL MIT License:
 //      This software is provided 'as-is', without any express or implied

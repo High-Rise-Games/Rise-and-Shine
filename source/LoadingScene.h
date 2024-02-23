@@ -14,8 +14,8 @@
 //  Author: Walker White
 //  Version: 1/20/22
 //
-#ifndef __SL_LOADING_SCENE_H__
-#define __SL_LOADING_SCENE_H__
+#ifndef __LOADING_SCENE_H__
+#define __LOADING_SCENE_H__
 #include <cugl/cugl.h>
 
 

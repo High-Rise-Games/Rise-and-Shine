@@ -5,17 +5,8 @@
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
-        "photon": {
-            "file":  "textures/photon.png"
-        },
         "ship": {
             "file":  "textures/ships.png"
-        },
-        "asteroid1": {
-            "file":  "textures/asteroid1.png"
-        },
-        "asteroid2": {
-            "file":  "textures/asteroid2.png"
         },
         "window": {
             "file": "textures/GenericWindow.png"
