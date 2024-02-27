@@ -148,7 +148,7 @@ void GameScene::update(float timestep) {
     Vec2 grid_coors = _player->getCoorsFromPos(_windows.getPaneHeight(), _windows.getPaneWidth(), _windows.sideGap);
     _player->setCoors(grid_coors);
 //    CULog("player coors: (%f, %f)", grid_coors.x, grid_coors.y);
-    bool dirtRemoved = _windows.removeDirt(grid_coors.x, grid_coors.y);
+    bool dirtRemoved = _windows.removeDirt(grid_coors.y, grid_coors.x);
     if (dirtRemoved) {
         // TODO: implement logic to deal with filling up dirty bucket
         _currentDirtAmount = min(_maxDirtAmount, _currentDirtAmount + 1);
@@ -201,8 +201,8 @@ void GameScene::updateDirtGenTime() {
 
 /** handles actual dirt generation */
 void GameScene::generateDirt() {
-    std::uniform_int_distribution<int> rowDist(0, _windows.getNHorizontal() - 1);
-    std::uniform_int_distribution<int> colDist(0, _windows.getNVertical() - 1);
+    std::uniform_int_distribution<int> rowDist(0, _windows.getNVertical() - 1);
+    std::uniform_int_distribution<int> colDist(0, _windows.getNHorizontal() - 1);
     int rand_row = rowDist(_rng);
     int rand_col = colDist(_rng);
     // if add dirt already exists at location or player at location and board is not full, repeat
@@ -214,8 +214,8 @@ void GameScene::generateDirt() {
 
 /** Checks whether board is full except player current location*/
 const bool GameScene::checkBoardFull() {
-    for (int x = 0; x < _windows.getNHorizontal(); x++) {
-        for (int y = 0; y < _windows.getNVertical(); y++) {
+    for (int x = 0; x < _windows.getNVertical(); x++) {
+        for (int y = 0; y < _windows.getNHorizontal(); y++) {
                 if (_windows.getWindowState(x, y) == 0) {
                     if (_player->getCoors() == Vec2(x, y)) {
                         // consider current place occupied

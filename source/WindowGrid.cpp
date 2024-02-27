@@ -78,7 +78,7 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 		for (int y = 0; y < _nVertical; y++) {
 			// draw window panes and dirt
 			batch->draw(_texture, Vec2(), trans);
-			if (_board[x][y]) {
+			if (_board[y][x]) {
 				batch->draw(_dirt, Vec2(), dirt_trans);
 //				CULog("dirt added to coors: (%d, %d)", x, y);
 			}
