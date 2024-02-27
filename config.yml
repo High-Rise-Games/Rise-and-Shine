@@ -1,7 +1,7 @@
 ---
-name:   Ship Lab                    # The application display name
-short:  Ship                        # A shortened name for reference
-appid:  edu.cornell.gdiac.code1     # Application identifier for Mac, iOS, Android
+name:   Rise and Shine                     # The application display name
+short:  Shine                              # A shortened name for reference
+appid:  edu.cornell.gdiac.riseandshine     # Application identifier for Mac, iOS, Android
 suffix: GD2A3920
 
 build:  build                       # The build directory (targets are each a subdirectory)
