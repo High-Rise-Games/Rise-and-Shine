@@ -120,6 +120,10 @@ void GameScene::reset() {
     _player->setAngle(0);
     _player->setVelocity(Vec2::ZERO);
     _player->setHealth(_constants->get("ship")->getInt("health",0));
+    _windows.clearBoard();
+    _windows.generateInitialBoard(_windows.getInitDirtNum());
+    _dirtThrowTimer = 0;
+    _currentDirtAmount = 0;
     //_asteroids.init(_constants->get("asteroids"));
 }
 
@@ -147,7 +151,10 @@ void GameScene::update(float timestep) {
     // remove any dirt the player collides with
     Vec2 grid_coors = _player->getCoorsFromPos(_windows.getPaneHeight(), _windows.getPaneWidth(), _windows.sideGap);
     _player->setCoors(grid_coors);
-//    CULog("player coors: (%f, %f)", grid_coors.x, grid_coors.y);
+//    if (grid_coors == NULL) {
+//        CULog("player coors: NULL");
+//        CULog("player coors: (%f, %f)", grid_coors.y, grid_coors.x);
+//    }
     bool dirtRemoved = _windows.removeDirt(grid_coors.y, grid_coors.x);
     if (dirtRemoved) {
         // TODO: implement logic to deal with filling up dirty bucket
@@ -159,19 +166,21 @@ void GameScene::update(float timestep) {
     }
     
     // fixed dirt generation logic (every 5 seconds)
-    if (_dirtThrowTimer <= _fixedDirtUpdateThreshold) {
-        auto search = _dirtGenTimes.find(_dirtThrowTimer);
-        if (search != _dirtGenTimes.end()) {
-            // random dirt generation logic
-            CULog("generating random dirt");
+    if (!checkBoardEmpty() && !checkBoardFull()) {
+        if (_dirtThrowTimer <= _fixedDirtUpdateThreshold) {
+            auto search = _dirtGenTimes.find(_dirtThrowTimer);
+            if (search != _dirtGenTimes.end()) {
+                // random dirt generation logic
+//                CULog("generating random dirt");
+                generateDirt();
+            }
+            _dirtThrowTimer++;
+        } else {
+            _dirtThrowTimer = 0;
+            updateDirtGenTime();
+//            CULog("generating fixed dirt");
             generateDirt();
         }
-        _dirtThrowTimer++;
-    } else {
-        _dirtThrowTimer = 0;
-        updateDirtGenTime();
-        CULog("generating fixed dirt");
-        generateDirt();
     }
     
     // dynamic dirt generation logic (based on generation rate)
@@ -205,8 +214,10 @@ void GameScene::generateDirt() {
     std::uniform_int_distribution<int> colDist(0, _windows.getNHorizontal() - 1);
     int rand_row = rowDist(_rng);
     int rand_col = colDist(_rng);
+//    CULog("player at: (%f, %f)", _player->getCoors().y, _player->getCoors().x);
+//    CULog("generate at: (%d, %d)", (int)rand_row, (int) rand_col);
     // if add dirt already exists at location or player at location and board is not full, repeat
-    while ((_player->getCoors() == Vec2(rand_row, rand_col) || !_windows.addDirt(rand_row, rand_col)) && !checkBoardFull()) {
+    while (Vec2((int)_player->getCoors().y, (int)_player->getCoors().x) == Vec2((int)rand_row, (int)rand_col) || !_windows.addDirt(rand_row, rand_col)) {
         rand_row = rowDist(_rng);
         rand_col = colDist(_rng);
     }
@@ -214,10 +225,10 @@ void GameScene::generateDirt() {
 
 /** Checks whether board is full except player current location*/
 const bool GameScene::checkBoardFull() {
-    for (int x = 0; x < _windows.getNVertical(); x++) {
-        for (int y = 0; y < _windows.getNHorizontal(); y++) {
-                if (_windows.getWindowState(x, y) == 0) {
-                    if (_player->getCoors() == Vec2(x, y)) {
+    for (int x = 0; x < _windows.getNHorizontal(); x++) {
+        for (int y = 0; y < _windows.getNVertical(); y++) {
+                if (_windows.getWindowState(y, x) == 0) {
+                    if (Vec2((int)_player->getCoors().y, (int)_player->getCoors().x) == Vec2(y, x)) {
                         // consider current place occupied
                         continue;
                     }
@@ -226,6 +237,18 @@ const bool GameScene::checkBoardFull() {
         }
     }
     return true; // No 0s found, all dirty spots
+}
+
+/** Checks whether board is empty except player current location*/
+const bool GameScene::checkBoardEmpty() {
+    for (int x = 0; x < _windows.getNHorizontal(); x++) {
+        for (int y = 0; y < _windows.getNVertical(); y++) {
+                if (_windows.getWindowState(y, x) == 1) {
+                    return false;
+                }
+        }
+    }
+    return true; // No 1s found, board is clear
 }
 
 /**

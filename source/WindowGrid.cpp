@@ -31,24 +31,34 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 
 	// Initialize the dirt board
 	_board = std::vector<std::vector<bool>>(_nVertical, std::vector<bool>(_nHorizontal, false));
-	int n_dirt = data->getInt("number dirts", 1);
-
-	std::mt19937 rng(std::time(nullptr)); // Initializes random number generator
-	std::uniform_int_distribution<int> rowDist(0, _board.size() - 1);
-	std::uniform_int_distribution<int> colDist(0, _board[0].size() - 1);
-	for (int i = 0; i < n_dirt; ++i) {
-		int rand_row = rowDist(rng);
-		int rand_col = colDist(rng);
-
-		// if element is already true, select different element
-		if (_board[rand_row][rand_col]) {
-			--i; // Decrease i to repeat this iteration
-			continue;
-		}
-		_board[rand_row][rand_col] = true;
-	}
+    _initDirtNum = data->getInt("number dirts", 1);
 
 	return true;
+}
+
+void WindowGrid::generateInitialBoard(int dirtNumber) {
+    std::mt19937 rng(std::time(nullptr)); // Initializes random number generator
+    std::uniform_int_distribution<int> rowDist(0, _board.size() - 1);
+    std::uniform_int_distribution<int> colDist(0, _board[0].size() - 1);
+    for (int i = 0; i < dirtNumber; ++i) {
+        int rand_row = rowDist(rng);
+        int rand_col = colDist(rng);
+
+        // if element is already true, select different element
+        if (_board[rand_row][rand_col]) {
+            --i; // Decrease i to repeat this iteration
+            continue;
+        }
+        _board[rand_row][rand_col] = true;
+    }
+}
+
+void WindowGrid::clearBoard() {
+    for (int x = 0; x < _nHorizontal; x++) {
+        for (int y = 0; y < _nVertical; y++) {
+            _board[y][x] = 0;
+        }
+    }
 }
 
 // draws an entire grid of _nHorizontal x nVertical windows as large as possible with center (horizontal) alignment

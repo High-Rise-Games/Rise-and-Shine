@@ -123,6 +123,9 @@ public:
     /** Checks whether board is full */
     const bool checkBoardFull();
     
+    /** Checks whether board is empty */
+    const bool checkBoardEmpty();
+    
     /** update when dirt is generated */
     void updateDirtGenTime();
     

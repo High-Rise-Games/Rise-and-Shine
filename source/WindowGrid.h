@@ -13,6 +13,8 @@ class WindowGrid {
 private:
 	int _nHorizontal; // number of columns
 	int _nVertical;   // number of rows
+    /** initial dirt number */
+    int _initDirtNum;
 	float _scaleFactor;
 	float _windowHeight;
 	float _windowWidth;
@@ -35,6 +37,7 @@ public:
 	int  getNHorizontal()                 { return _nHorizontal;        };
 	void setNVertical(int n)              { _nVertical = n;             };
 	int  getNVertical()                   { return _nVertical;          };
+    int  getInitDirtNum()                 { return _initDirtNum;          };
     float sideGap;
 
 	WindowGrid(); // constructor
@@ -70,6 +73,17 @@ public:
         return _board[row][col];
     }
     
+    /**
+     * Initializes the board by creating dirt
+     *  @param int number of dirt to generate
+     */
+    void generateInitialBoard(int dirtNumber);
+    
+    /**
+     * Remove all dirt on Board
+     */
+    void clearBoard();
+    
 	/**
 	 * Add dirt to board at specified location.
 	 * Returns true if the dirt was successfully added, and false if there is already dirt at the location.
@@ -90,6 +104,7 @@ public:
 		_board[row][col] = false; 
 		return dirtExisted;
 	}
+    
 
 	/** draws entire grid of window panes to fit in "size" */
 	void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size);
