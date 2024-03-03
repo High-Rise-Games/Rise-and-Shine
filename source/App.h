@@ -4,27 +4,62 @@
 //  Author: Walker White
 //  Version: 1/20/22
 //
-#ifndef __APP_H__
-#define __APP_H__
+#ifndef __APP__
+#define __APP__
 #include <cugl/cugl.h>
 #include "GameScene.h"
 #include "LoadingScene.h"
+#include "LobbyScene.h"
+#include "MenuScene.h"
 
 /**
  * This class represents the application root for the ship demo.
  */
 class App : public cugl::Application {
 protected:
+    
+    /**
+     * The current active scene
+     */
+    enum State {
+        /** The loading scene */
+        LOAD,
+        /** The main menu scene */
+        MENU,
+        /** The scene to host or join a game */
+        LOBBY,
+        /** The scene to play the game */
+        GAME
+    };
+    
+
+    
     /** The global sprite batch for drawing (only want one of these) */
     std::shared_ptr<cugl::SpriteBatch> _batch;
     /** The global asset manager */
     std::shared_ptr<cugl::AssetManager> _assets;
 
     // Player modes
-    /** The primary controller for the game world */
-    GameScene _gameplay;
+    
     /** The controller for the loading screen */
     LoadingScene _loading;
+    /** The menu scene to chose what to do */
+    MenuScene _mainmenu;
+    /** The scene for hosting or joining a game */
+    LobbyScene _lobby_host;
+    
+    /** The scene for hosting or joining a game */
+    LobbyScene _lobby_client;
+    
+    /** The scene for hosting or joining a game */
+    LobbyScene _lobby;
+    
+    /** The primary controller for the game world */
+    GameScene _gameplay;
+    
+    
+    /** The current active scene */
+    State _scene;
     
 
     /** Whether or not we have finished loading all assets */
@@ -126,6 +161,49 @@ public:
      * at all. The default implmentation does nothing.
      */
     virtual void draw() override;
+    
+    
+private:
+    /**
+     * Inidividualized update method for the loading scene.
+     *
+     * This method keeps the primary {@link #update} from being a mess of switch
+     * statements. It also handles the transition logic from the loading scene.
+     *
+     * @param timestep  The amount of time (in seconds) since the last frame
+     */
+    void updateLoadingScene(float timestep);
+
+    /**
+     * Inidividualized update method for the menu scene.
+     *
+     * This method keeps the primary {@link #update} from being a mess of switch
+     * statements. It also handles the transition logic from the menu scene.
+     *
+     * @param timestep  The amount of time (in seconds) since the last frame
+     */
+    void updateMenuScene(float timestep);
+
+    /**
+     * Inidividualized update method for the lobby scene.
+     *
+     * This method keeps the primary {@link #update} from being a mess of switch
+     * statements. It also handles the transition logic from the host scene.
+     *
+     * @param timestep  The amount of time (in seconds) since the last frame
+     */
+    void updateLobbyScene(float timestep);
+
+    /**
+     * Inidividualized update method for the game scene.
+     *
+     * This method keeps the primary {@link #update} from being a mess of switch
+     * statements. It also handles the transition logic from the game scene.
+     *
+     * @param timestep  The amount of time (in seconds) since the last frame
+     */
+    void updateGameScene(float timestep);
+    
 };
 
-#endif /* __SL_APP_H__ */
+#endif /* __APP__ */

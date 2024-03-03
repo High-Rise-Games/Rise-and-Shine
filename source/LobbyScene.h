@@ -1,12 +1,18 @@
 //
-//  NetworkConfig.hpp
-//  Ship
+//  LobbyScene.h
+//
+//  This creates the lobby scene, which is handled differently for each player.
+//  For example, if the player is the host, the game code is automatically
+//  generated for them while the client has to enter the game code to join
+//  the game. This is done per Walker White's advice. This scene also
+//  generates the networkcontroller for each player. After the game is started,
+//  the network controller is transfered to the gamescene.
 //
 //  Created by Troy Moslemi on 2/29/24.
 //
 
-#ifndef NetworkConfig_hpp
-#define NetworkConfig_hpp
+#ifndef LobbyScene_h
+#define LobbyScene_h
 
 #include <stdio.h>
 
@@ -21,7 +27,7 @@
  * network controller.  We have separate the host from the client to make the
  * code a little more clear.
  */
-class NetworkConfig {
+class LobbyScene  : public cugl::Scene2 {
 public:
     /**
      * The configuration status
@@ -48,9 +54,20 @@ protected:
 
     std::shared_ptr<cugl::net::NetcodeConnection> _network;
 
-    std::shared_ptr<cugl::scene2::Label> _gameid;
+    /** The game id label (for updating) */
+    std::shared_ptr<cugl::scene2::Label> _gameid_host;
+    
+    /** The game id label (for updating) */
+    std::shared_ptr<cugl::scene2::TextField> _gameid_client;
+    
     /** The players label (for updating) */
     std::shared_ptr<cugl::scene2::Label> _player;
+
+    /** The menu button for starting a game */
+    std::shared_ptr<cugl::scene2::Button> _startgame;
+    
+    /** The back button for the menu scene */
+    std::shared_ptr<cugl::scene2::Button> _backout;
     
     /** The network configuration */
     cugl::net::NetcodeConfig _config;
@@ -60,16 +77,11 @@ protected:
     
     /** If owner of this NetworkConfig object is host. */
     bool _host;
-    
-    /** Whether _network is null pointer or not. True if not. */
-    bool _active;
+
 
 public:
 #pragma mark -
 #pragma mark Constructors
-    
-    NetworkConfig(); // constructor
-    
     
     /**
      * Disposes of all (non-static) resources allocated to this mode.
@@ -77,24 +89,31 @@ public:
      * This method is different from dispose() in that it ALSO shuts off any
      * static resources, like the input controller.
      */
-    ~NetworkConfig() { dispose(); }
+    ~LobbyScene() { dispose(); }
     
     /**
-     * Kill Network connection.
+     * Dispose the scene and its children
      */
-    void dispose();
+    void dispose() override;
     
 
-    // True if host, false if not
-    // Asset manager to access json file for server
-    bool init(const std::shared_ptr<cugl::AssetManager>& assets, bool host);
+    bool init_host(const std::shared_ptr<cugl::AssetManager>& assets);
+
+    
+    bool init_client(const std::shared_ptr<cugl::AssetManager>& assets);
     
     /**
-     * Sets whether the _network is null or not. True if not null.
+     * Sets whether scene is active or not, and whether scene is drawn as host
+     * depending on decision in MenuScene
      */
-    virtual void setActive(bool value);
+    virtual void setActive(bool value) override;
     
-    void isActive();
+    /**
+     * Returns true if the scene is currently active
+     *
+     * @return true if the scene is currently active
+     */
+    bool isActive( ) const { return _active; }
     
     /**
      * Returns the network connection (as made by this scene)
@@ -126,7 +145,7 @@ public:
      *
      * @param timestep  The amount of time (in seconds) since the last frame
      */
-    void update(float timestep);
+    void update(float timestep) override;
     
     /**
      * Disconnects this scene from the network controller.
@@ -136,17 +155,34 @@ public:
      * when ALL scenes have been disconnected.
      */
     void disconnect() { _network = nullptr; }
+    
+    // Sets the NetworkConfig of this object to be host of the network game
+    void setHost(bool host) {_host = host; }
 
 private:
     
-    // Sets the NetworkConfig of this object to be host of the network game
-    void setHost() {_host = true; }
     
     // Check if the player with this NetworkConfig object is host
     bool isHost() {return _host; }
     
+    /**
+     * Updates the text in the given button.
+     *
+     * Techincally a button does not contain text. A button is simply a scene graph
+     * node with one child for the up state and another for the down state. So to
+     * change the text in one of our buttons, we have to descend the scene graph.
+     * This method simplifies this process for you.
+     *
+     * @param button    The button to modify
+     * @param text      The new text value
+     */
+    void updateText(const std::shared_ptr<cugl::scene2::Button>& button, const std::string text);
+
+    
 
     /**
+     * FUNCTION FOR HOST ONLY
+     *
      * Connects to the game server as specified in the assets file
      *
      * The {@link #init} method set the configuration data. This method simply uses
@@ -156,6 +192,21 @@ private:
      * @return true if the connection was successful
      */
     bool connect();
+    
+    /**
+     * FUNCTION FOR CLIENT ONLY
+     *
+     * Connects to the game server as specified in the assets file
+     *
+     * The {@link #init} method set the configuration data. This method simply uses
+     * this to create a new {@Link NetworkConnection}. It also immediately calls
+     * {@link #checkConnection} to determine the scene state.
+     *
+     * @param room  The room ID to use
+     *
+     * @return true if the connection was successful
+     */
+    bool connect(const std::string room);
 
     /**
      * Processes data sent over the network.
@@ -185,6 +236,14 @@ private:
     bool checkConnection();
     
     /**
+     * Reconfigures the start button for this scene
+     *
+     * This is necessary because what the buttons do depends on the state of the
+     * networking.
+     */
+    void configureStartButton();
+    
+    /**
      * Starts the game.
      *
      * This method is called once the requisite number of players have connected.
@@ -195,4 +254,4 @@ private:
     
 };
 
-#endif /* NetworkConfig_hpp */
+#endif /* LobbyScene_h */

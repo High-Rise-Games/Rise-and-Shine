@@ -27,11 +27,25 @@ protected:
     /** The asset manager for this game mode. */
     std::shared_ptr<cugl::AssetManager> _assets;
     
+    /** The network connection (as made by this scene) */
+    std::shared_ptr<cugl::net::NetcodeConnection> _network;
+    
+    /** Whether this player is the host */
+    bool _ishost;
+
+    /** Whether we quit the game */
+    bool _quit;
+    
+    
+    
     // CONTROLLERS are attached directly to the scene (no pointers)
     /** The controller to manage the ship */
     InputController _input;
     /** The controller for managing collisions */
     // CollisionController _collisions;
+    
+    
+    
     
     // MODELS should be shared pointers or a data structure of shared pointers
     /** The JSON value with all of the constants */
@@ -151,6 +165,42 @@ public:
      * @param batch     The SpriteBatch to draw with.
      */
     void render(const std::shared_ptr<cugl::SpriteBatch>& batch) override;
+    
+    /**
+     * Returns the network connection (as made by this scene)
+     *
+     * This value will be reset every time the scene is made active.
+     *
+     * @return the network connection (as made by this scene)
+     */
+    void setConnection(const std::shared_ptr<cugl::net::NetcodeConnection>& network) {
+        _network = network;
+    }
+    
+    /**
+     * Sets whether the player is host.
+     *
+     * We may need to have gameplay specific code for host.
+     *
+     * @param host  Whether the player is host.
+     */
+    void setHost(bool host)  { _ishost = host; }
+    
+    /**
+     * Returns true if the player quits the game.
+     *
+     * @return true if the player quits the game.
+     */
+    bool didQuit() const { return _quit; }
+    
+    /**
+     * Disconnects this scene from the network controller.
+     *
+     * Technically, this method does not actually disconnect the network controller.
+     * Since the network controller is a smart pointer, it is only fully disconnected
+     * when ALL scenes have been disconnected.
+     */
+    void disconnect() { _network = nullptr; }
 
     /**
      * Resets the status of the game so that we can play again.

@@ -30,23 +30,26 @@ void App::onStartup() {
     Input::activate<Touchscreen>();
 #else
     // Start-up basic input (DESKTOP ONLY)
+    Input::activate<TextInput>();
     Input::activate<Mouse>();
     Input::activate<Keyboard>();
 #endif
 
+    _assets->attach<Font>(FontLoader::alloc()->getHook());
     _assets->attach<Texture>(TextureLoader::alloc()->getHook());
     _assets->attach<Sound>(SoundLoader::alloc()->getHook());
-    _assets->attach<Font>(FontLoader::alloc()->getHook());
     _assets->attach<JsonValue>(JsonLoader::alloc()->getHook());
+    _assets->attach<WidgetValue>(WidgetLoader::alloc()->getHook());
     _assets->attach<scene2::SceneNode>(Scene2Loader::alloc()->getHook()); // Needed for loading screen
 
-    // Create a "loading" screen
-    _loaded = false;
+    _scene = State::LOAD;
+//    _loaded = false;
     _loading.init(_assets);
     
     // Queue up the other assets
     _assets->loadDirectoryAsync("json/assets.json",nullptr);
     
+    net::NetworkLayer::start(net::NetworkLayer::Log::INFO);
     AudioEngine::start();
     Application::onStartup(); // YOU MUST END with call to parent
 }
@@ -65,13 +68,15 @@ void App::onStartup() {
 void App::onShutdown() {
     _loading.dispose();
     _gameplay.dispose();
+    _lobby.dispose();
     _assets = nullptr;
     _batch = nullptr;
 
     // Shutdown input
+    Input::deactivate<TextInput>();
     Input::deactivate<Keyboard>();
     Input::deactivate<Mouse>();
-
+    net::NetworkLayer::stop();
     AudioEngine::stop();
     Application::onShutdown();  // YOU MUST END with call to parent
 }
@@ -117,15 +122,37 @@ void App::onResume() {
  * @param timestep  The amount of time (in seconds) since the last frame
  */
 void App::update(float timestep) {
-    if (!_loaded && _loading.isActive()) {
-        _loading.update(0.01f);
-    } else if (!_loaded) {
-        _loading.dispose(); // Disables the input listeners in this mode
-        _gameplay.init(_assets);
-        _loaded = true;
-    } else {
-        _gameplay.update(timestep);
+    
+// OLD CODE IN CASE THINGS BREAK
+//    if (!_loaded && _loading.isActive()) {
+//        _loading.update(0.01f);
+//    } else if (!_loaded) {
+//        _loading.dispose(); // Disables the input listeners in this mode
+//        _gameplay.init(_assets);
+//        _loaded = true;
+//    } else {
+//        _gameplay.update(timestep);
+//    }
+    
+
+// NEW CODE
+    
+    switch (_scene) {
+        case LOAD:
+            updateLoadingScene(timestep);
+            break;
+        case MENU:
+            updateMenuScene(timestep);
+            break;
+        case LOBBY:
+            updateLobbyScene(timestep);
+            break;
+        case GAME:
+            updateGameScene(timestep);
+            break;
     }
+
+
 }
 
 /**
@@ -138,10 +165,143 @@ void App::update(float timestep) {
  * at all. The default implmentation does nothing.
  */
 void App::draw() {
-    if (!_loaded) {
-        _loading.render(_batch);
+    
+// OLD CODE IN CASE THINGS BREAK
+//    if (!_loaded) {
+//        _loading.render(_batch);
+//    } else {
+//        _gameplay.render(_batch);
+//    }
+    
+    
+// NEW CODE
+    
+    switch (_scene) {
+        case LOAD:
+            _loading.render(_batch);
+            break;
+        case MENU:
+            _mainmenu.render(_batch);
+            break;
+        case LOBBY:
+            _lobby.render(_batch);
+            break;
+        case GAME:
+            _gameplay.render(_batch);
+            break;
+    }
+    
+}
+
+/**
+ * Inidividualized update method for the loading scene.
+ *
+ * This method keeps the primary {@link #update} from being a mess of switch
+ * statements. It also handles the transition logic from the loading scene.
+ *
+ * @param timestep  The amount of time (in seconds) since the last frame
+ */
+void App::updateLoadingScene(float timestep) {
+    if (_loading.isActive()) {
+        _loading.update(timestep);
     } else {
-        _gameplay.render(_batch);
+        _loading.dispose(); // Permanently disables the input listeners in this mode
+        _mainmenu.init(_assets);
+        _lobby_host.init_host(_assets);
+        _lobby_client.init_client(_assets);
+        _gameplay.init(_assets);
+        _mainmenu.setActive(true);
+        _scene = State::MENU;
+    }
+}
+
+/**
+ * Inidividualized update method for the menu scene.
+ *
+ * This method keeps the primary {@link #update} from being a mess of switch
+ * statements. It also handles the transition logic from the menu scene.
+ *
+ * @param timestep  The amount of time (in seconds) since the last frame
+ */
+void App::updateMenuScene(float timestep) {
+    _mainmenu.update(timestep);
+    switch (_mainmenu.getChoice()) {
+        case MenuScene::Choice::HOST:
+            _mainmenu.setActive(false);
+            _lobby_host.setHost(true);
+            _lobby_host.setActive(true);
+            _lobby_client.dispose();
+            _lobby_client.setActive(false);
+            _lobby = _lobby_host;
+            _scene = State::LOBBY;
+            break;
+        case MenuScene::Choice::JOIN:
+            _mainmenu.setActive(false);
+            _lobby_client.setHost(false);
+            _lobby_client.setActive(true);
+            _lobby_host.dispose();
+            _lobby_host.setActive(false);
+            _lobby = _lobby_client;
+            _scene = State::LOBBY;
+            break;
+        case MenuScene::Choice::NONE:
+            // DO NOTHING
+            break;
+    }
+}
+
+/**
+ * Inidividualized update method for the host scene.
+ *
+ * This method keeps the primary {@link #update} from being a mess of switch
+ * statements. It also handles the transition logic from the host scene.
+ *
+ * @param timestep  The amount of time (in seconds) since the last frame
+ */
+void App::updateLobbyScene(float timestep) {
+    _lobby.update(timestep);
+    if (_mainmenu.getChoice() == MenuScene::HOST) {
+        switch (_lobby.getStatus()) {
+            case LobbyScene::Status::ABORT:
+                _lobby.setActive(false);
+                _mainmenu.setActive(true);
+                _scene = State::MENU;
+                break;
+            case LobbyScene::Status::START:
+                std::cout << "lobby Status is  STARTED";
+                _lobby.setActive(false);
+                _gameplay.setActive(true);
+                _scene = State::GAME;
+                // Transfer connection ownership
+                _gameplay.setConnection(_lobby.getConnection());
+                _lobby.disconnect();
+                _gameplay.setHost(true);
+                break;
+            case LobbyScene::Status::WAIT:
+            case LobbyScene::Status::IDLE:
+                // DO NOTHING
+                break;
+            case LobbyScene::JOIN:
+                break;
+        }
+    }
+}
+
+/**
+ * Inidividualized update method for the game scene.
+ *
+ * This method keeps the primary {@link #update} from being a mess of switch
+ * statements. It also handles the transition logic from the game scene.
+ *
+ * @param timestep  The amount of time (in seconds) since the last frame
+ */
+void App::updateGameScene(float timestep) {
+    _gameplay.update(timestep);
+    if (_gameplay.didQuit()) {
+        _gameplay.setActive(false);
+        _mainmenu.setActive(true);
+        _gameplay.disconnect();
+        _scene = State::MENU;
     }
 }
 
