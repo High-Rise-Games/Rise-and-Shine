@@ -58,8 +58,6 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _background = assets->get<Texture>("background");
     _constants = assets->get<JsonValue>("constants");
 
-
-
     // Initialize the window grid
     _windows.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
     _windows.init(_constants->get("easy board"), getSize()); // init depends on texture
