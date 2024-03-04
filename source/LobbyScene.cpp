@@ -373,9 +373,8 @@ bool LobbyScene::checkConnection() {
             default:
                 return false;
         }
-        
-        return false;
-    } else {
+    }
+     else if (!isHost()) {
         switch(_network->getState()) {
             case cugl::net::NetcodeConnection::State::CONNECTED:
                 if (_status != START) {
@@ -409,9 +408,9 @@ bool LobbyScene::checkConnection() {
           default:
             return true;
         }
-        
-        return true;
     }
+    
+    return false;
     
 }
 
@@ -455,7 +454,7 @@ void LobbyScene::configureStartButton() {
             updateText(_startgame,"Start Game");
             _startgame->activate();
         }
-    } else {
+    } else if (!isHost()) {
         if (_gameid_client->getText().size() != 0 && !_network) {
             connect(_gameid_client->getText());
         }
@@ -501,7 +500,7 @@ void LobbyScene::setActive(bool value) {
                 _backout->setDown(false);
             }
         }
-    } else {
+    } else if (!isHost()) {
         if (isActive() != value) {
             Scene2::setActive(value);
             if (value) {

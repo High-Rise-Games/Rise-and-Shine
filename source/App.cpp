@@ -68,7 +68,8 @@ void App::onStartup() {
 void App::onShutdown() {
     _loading.dispose();
     _gameplay.dispose();
-    _lobby.dispose();
+    _lobby_host.dispose();
+    _lobby_client.dispose();
     _assets = nullptr;
     _batch = nullptr;
 
@@ -144,7 +145,10 @@ void App::update(float timestep) {
         case MENU:
             updateMenuScene(timestep);
             break;
-        case LOBBY:
+        case LOBBY_CLIENT:
+            updateLobbyScene(timestep);
+            break;
+        case LOBBY_HOST:
             updateLobbyScene(timestep);
             break;
         case GAME:
@@ -183,8 +187,11 @@ void App::draw() {
         case MENU:
             _mainmenu.render(_batch);
             break;
-        case LOBBY:
-            _lobby.render(_batch);
+        case LOBBY_HOST:
+            _lobby_host.render(_batch);
+            break;
+        case LOBBY_CLIENT:
+            _lobby_client.render(_batch);
             break;
         case GAME:
             _gameplay.render(_batch);
@@ -228,21 +235,17 @@ void App::updateMenuScene(float timestep) {
     switch (_mainmenu.getChoice()) {
         case MenuScene::Choice::HOST:
             _mainmenu.setActive(false);
-            _lobby_host.setHost(true);
             _lobby_host.setActive(true);
-            _lobby_client.dispose();
+            _lobby_host.setHost(true);
             _lobby_client.setActive(false);
-            _lobby = _lobby_host;
-            _scene = State::LOBBY;
+            _scene = State::LOBBY_HOST;
             break;
         case MenuScene::Choice::JOIN:
             _mainmenu.setActive(false);
-            _lobby_client.setHost(false);
             _lobby_client.setActive(true);
-            _lobby_host.dispose();
+            _lobby_client.setHost(false);
             _lobby_host.setActive(false);
-            _lobby = _lobby_client;
-            _scene = State::LOBBY;
+            _scene = State::LOBBY_CLIENT;
             break;
         case MenuScene::Choice::NONE:
             // DO NOTHING
@@ -259,29 +262,51 @@ void App::updateMenuScene(float timestep) {
  * @param timestep  The amount of time (in seconds) since the last frame
  */
 void App::updateLobbyScene(float timestep) {
-    _lobby.update(timestep);
     if (_mainmenu.getChoice() == MenuScene::HOST) {
-        switch (_lobby.getStatus()) {
+        _lobby_host.update(timestep);
+        switch (_lobby_host.getStatus()) {
             case LobbyScene::Status::ABORT:
-                _lobby.setActive(false);
+                _lobby_host.setActive(false);
                 _mainmenu.setActive(true);
                 _scene = State::MENU;
                 break;
             case LobbyScene::Status::START:
-                std::cout << "lobby Status is  STARTED";
-                _lobby.setActive(false);
+                _lobby_host.setActive(false);
                 _gameplay.setActive(true);
                 _scene = State::GAME;
                 // Transfer connection ownership
-                _gameplay.setConnection(_lobby.getConnection());
-                _lobby.disconnect();
+                _gameplay.setConnection(_lobby_host.getConnection());
+                _lobby_host.disconnect();
                 _gameplay.setHost(true);
                 break;
             case LobbyScene::Status::WAIT:
+                break;
             case LobbyScene::Status::IDLE:
                 // DO NOTHING
                 break;
             case LobbyScene::JOIN:
+                break;
+        }
+    } else {
+        switch (_lobby_client.getStatus()) {
+            case LobbyScene::Status::ABORT:
+                _lobby_client.setActive(false);
+                _mainmenu.setActive(true);
+                _scene = State::MENU;
+                break;
+            case LobbyScene::Status::START:
+                _lobby_client.setActive(false);
+                _gameplay.setActive(true);
+                _scene = State::GAME;
+                // Transfer connection ownership
+                _gameplay.setConnection(_lobby_client.getConnection());
+                _lobby_client.disconnect();
+                _gameplay.setHost(false);
+                break;
+            case LobbyScene::Status::WAIT:
+            case LobbyScene::Status::IDLE:
+            case LobbyScene::Status::JOIN:
+                // DO NOTHING
                 break;
         }
     }

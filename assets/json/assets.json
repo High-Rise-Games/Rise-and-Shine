@@ -33,6 +33,10 @@
         "gyparody": {
             "file":     "fonts/gyparody-hv.ttf",
             "size":     48
+        },
+        "pixel32": {
+            "file":     "fonts/LightPixel7.ttf",
+            "size":     32
         }
     },
     "sounds" : {

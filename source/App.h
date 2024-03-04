@@ -27,7 +27,8 @@ protected:
         /** The main menu scene */
         MENU,
         /** The scene to host or join a game */
-        LOBBY,
+        LOBBY_CLIENT,
+        LOBBY_HOST,
         /** The scene to play the game */
         GAME
     };

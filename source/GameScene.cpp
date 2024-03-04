@@ -50,6 +50,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
         return false;
     }
     
+    _quit = false;
+    
     // Start up the input handler
     _assets = assets;
     _input.init();
@@ -140,6 +142,8 @@ void GameScene::update(float timestep) {
     if (_input.didPressReset()) {
         reset();
     }
+    
+    
 
     //Checks and returns true if board is full besides current player position
     if (checkBoardFull()) {
