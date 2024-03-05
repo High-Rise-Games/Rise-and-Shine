@@ -6,11 +6,11 @@
 using namespace cugl;
 
 /** Use this constructor to generate flying projectile */
-ProjectileSet::Projectile::Projectile(const cugl::Vec2 p, const cugl::Vec2 v, std::shared_ptr<cugl::Texture> texture) {
+ProjectileSet::Projectile::Projectile(const cugl::Vec2 p, const cugl::Vec2 v, std::shared_ptr<cugl::Texture> texture, float sf) {
     position = p;
     velocity = v;
     type = ProjectileType::POOP;
-    _scaleFactor = 1;
+    _scaleFactor = sf;
     _damage = 1;
     _stunTime = 0;
     _projectileTexture = texture;
@@ -18,19 +18,19 @@ ProjectileSet::Projectile::Projectile(const cugl::Vec2 p, const cugl::Vec2 v, st
 }
 
 /** Use this constructor to generate a specific projectile */
-ProjectileSet::Projectile::Projectile(const cugl::Vec2 p, const cugl::Vec2 v, std::shared_ptr<cugl::Texture> texture, const ProjectileType t) {
+ProjectileSet::Projectile::Projectile(const cugl::Vec2 p, const cugl::Vec2 v, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t) {
     position = p;
     velocity = v;
     type = t;
     _projectileTexture = texture;
     _radius = std::max(texture->getSize().height, texture->getSize().width) / 2;
     if (type == ProjectileType::DIRT) {
-        _scaleFactor = 1;
+        _scaleFactor = sf;
         _damage = 0;
-        _stunTime = 1;
+        _stunTime = 100;
     }
     else if(type == ProjectileType::POOP) {
-        _scaleFactor = 1;
+        _scaleFactor = sf;
         _damage = 1;
         _stunTime = 0;
     }
@@ -86,14 +86,32 @@ bool ProjectileSet::init(std::shared_ptr<cugl::JsonValue> data) {
     return false;
 }
 
+/**
+     * Sets the texture scale factors.
+     *
+     * This must be called during the initialization of projectile set in GameScene
+     * otherwise projectiles may "collide" with the player if it is too large at the
+     * very start of the game
+     *
+     * @param windowHeight  the height of each window grid
+     * @param windowWidth   the width of each window grid
+     */
+void ProjectileSet::setTextureScales(const float windowHeight, const float windowWidth) {
+    _dirtScaleFactor = std::min(windowWidth / _dirtTexture->getWidth(), windowHeight / _dirtTexture->getHeight());
+    _poopScaleFactor = std::min(windowWidth / _poopTexture->getWidth(), windowHeight / _poopTexture->getHeight());
+}
+
+
 
 void ProjectileSet::spawnProjectile(cugl::Vec2 p, cugl::Vec2 v, Projectile::ProjectileType t) {
     // Determine direction and velocity of the projectile.
     std::shared_ptr<cugl::Texture> texture = _dirtTexture;
+    float scale = _dirtScaleFactor;
     if (t == Projectile::ProjectileType::POOP) {
         texture = _poopTexture;
+        scale = _poopScaleFactor;
     }
-    std::shared_ptr<Projectile> proj = std::make_shared<Projectile>(p, v, texture, t);
+    std::shared_ptr<Projectile> proj = std::make_shared<Projectile>(p, v, texture, scale, t);
     _pending.emplace(proj);
 }
 
@@ -130,29 +148,27 @@ void ProjectileSet::update(Size size) {
 void ProjectileSet::draw(const std::shared_ptr<SpriteBatch>& batch, Size size, float windowWidth, float windowHeight) {
     auto it = current.begin();
     while (it != current.end()) {
-        
-        std::shared_ptr<Texture> texture = (*it)->getTexture();
+        std::shared_ptr<Projectile> proj = (*it);
+
+        std::shared_ptr<Texture> texture = proj->getTexture();
         if (texture == nullptr) {
             continue;
         }
 
-        Vec2 pos = (*it)->position;
+        Vec2 pos = proj->position;
 
-        float scaleFactor = std::min(windowWidth / texture->getWidth(), windowHeight / texture->getHeight());
-        (*it)->setScale(scaleFactor);
-        float dirtWidth = (float)texture->getWidth() * scaleFactor;
-        float dirtHeight = (float)texture->getHeight() * scaleFactor;
+        // may need in future? don't need right now
+        // float projWidth = (float)texture->getWidth() * scaleFactor;
+        // float projHeight = (float)texture->getHeight() * scaleFactor;
 
-        (*it)->setRadius((*it)->getRadius() * scaleFactor);
-        Vec2 origin((*it)->getRadius(), (*it)->getRadius());
-
+        float r = proj->getRadius() * proj->getScale();
+        Vec2 origin(r, r);
 
         Affine2 trans;
-        trans.scale(scaleFactor);
+        trans.scale(proj->getScale());
         trans.translate(pos);
-        auto sprite = (*it)->getTexture();
+        auto sprite = proj->getTexture();
 
-        float r = (*it)->getRadius() * scaleFactor;
         batch->draw(texture, origin, trans);
 
         if (pos.x - r > size.width || pos.x + r < 0 || pos.y - r > size.height || pos.y + r < 0) {

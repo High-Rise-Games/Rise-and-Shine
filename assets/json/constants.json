@@ -1,6 +1,6 @@
 {
 	"ship" : {
-        "health": 100,
+        "health": 3,
         "mass": 1.0,
         "thrust factor": 0.4,
         "bank factor":   0.1,

@@ -32,7 +32,7 @@ protected:
     /** The controller to manage the ship */
     InputController _input;
     /** The controller for managing collisions */
-    // CollisionController _collisions;
+    CollisionController _collisions;
     
     // MODELS should be shared pointers or a data structure of shared pointers
     /** The JSON value with all of the constants */
@@ -67,6 +67,8 @@ protected:
     // In the future, we will replace this with the scene graph
     /** The backgrounnd image */
     std::shared_ptr<cugl::Texture> _background;
+    /** The text with the current health */
+    std::shared_ptr<cugl::TextLayout> _text;
     /** Empty bucket texture image */
     std::shared_ptr<cugl::Texture> _emptyBucket;
     /** Full bucket texture image */

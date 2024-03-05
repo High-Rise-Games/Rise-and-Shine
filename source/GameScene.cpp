@@ -66,6 +66,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Initialize projectiles
     _projectiles.setDirtTexture(assets->get<Texture>("dirt"));
     _projectiles.setPoopTexture(assets->get<Texture>("poop"));
+    _projectiles.setTextureScales(_windows.getPaneHeight(), _windows.getPaneWidth());
     _projectiles.init(_constants->get("projectiles"));
     
     // Make a ship and set its texture
@@ -89,12 +90,17 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Get the bang sound
     _bang = assets->get<Sound>("bang");
 
+    // Create and layout the health meter
+    std::string health_msg = strtool::format("Health %d", _player->getHealth());
+    _text = TextLayout::allocWithText(health_msg, assets->get<Font>("pixel32"));
+    _text->layout();
+
     // Create and layout the dirt amount
-    std::string msg = strtool::format("%d", _currentDirtAmount);
-    _dirtText = TextLayout::allocWithText(msg, assets->get<Font>("pixel32"));
+    std::string dirt_msg = strtool::format("%d", _currentDirtAmount);
+    _dirtText = TextLayout::allocWithText(dirt_msg, assets->get<Font>("pixel32"));
     _dirtText->layout();
     
-    //_collisions.init(getSize());
+    _collisions.init(getSize());
     
     reset();
     return true;
@@ -150,8 +156,19 @@ void GameScene::update(float timestep) {
         //TODO: implment lose screen here?
     }
 
-    // Move the player, ignoring collisions
-    bool moved = _player->move( _input.getForward(),  _input.getTurn(), getSize(), _windows.sideGap);
+    bool movedOverEdge = false;
+    // Check if player is stunned for this frame
+    if (_player->getStunFrames() > 0) {
+        _player->decreaseStunFrames();
+    }
+    else {
+        // Move the player, ignoring collisions
+        bool validMove = _player->move(_input.getForward(), _input.getTurn(), getSize(), _windows.sideGap);
+        // Player tried to move over the edge if the above call to move was not "valid", i.e. player tried
+        // to move off of the board (which should constitute a toss dirt action).
+        movedOverEdge = !validMove;
+    }
+        
     // remove any dirt the player collides with
     Vec2 grid_coors = _player->getCoorsFromPos(_windows.getPaneHeight(), _windows.getPaneWidth(), _windows.sideGap);
     _player->setCoors(grid_coors);
@@ -165,7 +182,7 @@ void GameScene::update(float timestep) {
         _currentDirtAmount = min(_maxDirtAmount, _currentDirtAmount + 1);
     }
     
-    if (_player->getEdge(_windows.sideGap, getSize()) && !moved) {
+    if (_player->getEdge(_windows.sideGap, getSize()) && !movedOverEdge) {
         _currentDirtAmount = max(0, _currentDirtAmount - 1);
     }
     
@@ -194,9 +211,13 @@ void GameScene::update(float timestep) {
     _projectiles.update(getSize());
     
     // Check for collisions and play sound
-    //if (_collisions.resolveCollision(_player, _projectiles)) {
-    //    AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
-    //}
+    if (_player->getStunFrames() <= 0 && _collisions.resolveCollision(_player, _projectiles)) {
+        AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
+    }
+
+    // Update the health meter
+    _text->setText(strtool::format("Health %d", _player->getHealth()));
+    _text->layout();
     
     // Update the dirt display
     _dirtText->setText(strtool::format("%d", _currentDirtAmount));
@@ -274,6 +295,9 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     _windows.draw(batch, getSize());
     _player->draw(batch, getSize());
     _projectiles.draw(batch, getSize(), _windows.getPaneWidth(), _windows.getPaneHeight());
+
+    batch->setColor(Color4::BLACK);
+    batch->drawText(_text, Vec2(10, getSize().height - _text->getBounds().size.height));
     
     //set bucket texture location
     Affine2 bucket_trans = Affine2();

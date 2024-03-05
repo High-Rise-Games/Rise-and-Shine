@@ -61,6 +61,13 @@ void Player::setHealth(int value) {
     }
 }
 
+/** Decreases the stun frames by one, unless it is already at 0 then does nothing. */
+void Player::decreaseStunFrames() {
+    if (_stunFrames > 0) {
+        _stunFrames -= 1;
+    }
+}
+
 #pragma mark Graphics
 /**
  * Sets the texture for this ship.

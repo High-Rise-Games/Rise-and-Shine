@@ -24,7 +24,7 @@ Inherits the behaviour of a projectile object.
  * without worrying about an infinite loop.
  */
 class ProjectileSet {
-
+public:
     class Projectile {
     public:
         enum class ProjectileType { DIRT, POOP };
@@ -53,12 +53,12 @@ class ProjectileSet {
     public:
     
         /** Use this constructor to generate a projectile */
-        Projectile(const cugl::Vec2 p, const cugl::Vec2 v, std::shared_ptr<cugl::Texture> texture);
+        Projectile(const cugl::Vec2 p, const cugl::Vec2 v, std::shared_ptr<cugl::Texture> texture, float sf);
 
         /** Use this constructor to generate a specialized projectile 
          * @param t     type of projectile
         */
-        Projectile(const cugl::Vec2 p, const cugl::Vec2 v, std::shared_ptr<cugl::Texture> texture, const ProjectileType t);
+        Projectile(const cugl::Vec2 p, const cugl::Vec2 v, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t);
 
         /** sets projectile scale for drawing */
         void setScale(float s) { _scaleFactor = s; }
@@ -117,6 +117,11 @@ private:
     std::shared_ptr<cugl::Texture> _dirtTexture;
     /** The texture for poop projectiles */
     std::shared_ptr<cugl::Texture> _poopTexture;
+    /** The scale factor for the dirt texture based on window grid size */
+    float _dirtScaleFactor;
+    /** The scale factor for the poop texture based on window grid size */
+    float _poopScaleFactor;
+
 
 public:
     /**
@@ -200,6 +205,18 @@ public:
     void setPoopTexture(const std::shared_ptr<cugl::Texture>& value) {
         _poopTexture = value;
     }
+
+    /** 
+     * Sets the texture scale factors.
+     *
+     * This must be called during the initialization of projectile set in GameScene
+     * otherwise projectiles may "collide" with the player if it is too large at the
+     * very start of the game 
+     * 
+     * @param windowHeight  the height of each window grid
+     * @param windowWidth   the width of each window grid
+     */
+    void setTextureScales(const float windowHeight, const float windowWidth);
 
     /**
      * Adds a projectile to the active queue.
