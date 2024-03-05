@@ -182,22 +182,30 @@ void Player::setPosition(cugl::Vec2 value, cugl::Vec2 size) {
  * @return True if moved
  */
 bool Player::move(float forward, float turn, Size size, float sideGap) {
-    // Process the ship turning.
+    // Process the ship going diagonal.
+    if (turn != 0.0f && forward != 0.0f) {
+        // diagonal movement is same distance traveled as horizontal/vertical movement
+        Vec2 dir(5.0/std::sqrt(2), 5.0/std::sqrt(2));
+        // Vec2 dir(_windowHeight,0);
+        _vel = dir * Vec2(turn, forward);
+    }
 
     // Process forward key press
-    if (forward != 0.0f) {
-        Vec2 dir(0,_windowWidth);
+    else if (forward != 0.0f) {
+        Vec2 dir(0, 5);
+        // Vec2 dir(0,_windowWidth);
         _vel = dir * forward;
     }
     
     // Process turn key key press
-    if (turn != 0.0f && forward == 0.0f) {
-        Vec2 dir(_windowHeight,0);
+    else if (turn != 0.0f) {
+        Vec2 dir(5, 0);
+        // Vec2 dir(_windowHeight,0);
         _vel = dir * turn;
     }
     
     // Process no movement;
-    if (turn == 0.0f && forward == 0.0f) {
+    else if (turn == 0.0f && forward == 0.0f) {
         Vec2 dir(0,0);
         _vel = dir * turn;
     }
@@ -206,7 +214,7 @@ bool Player::move(float forward, float turn, Size size, float sideGap) {
     // Move the ship position by the ship velocity.
     // Velocity always remains unchanged.
     // Also does not add velocity to position in the event that movement would go beyond the window building grid.
-    if (!getEdge(sideGap, size) && !(_pos.y + _vel.y >= size.height-20) && !(_pos.y + _vel.y <= 40)) {
+    if (!getEdge(sideGap, size)) {
         _pos += _vel;
         return true;
     }

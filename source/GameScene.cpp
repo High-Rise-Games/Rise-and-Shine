@@ -150,8 +150,6 @@ void GameScene::update(float timestep) {
         //TODO: implment lose screen here?
     }
 
-    _projectiles.update(getSize());
-
     // Move the player, ignoring collisions
     bool moved = _player->move( _input.getForward(),  _input.getTurn(), getSize(), _windows.sideGap);
     // remove any dirt the player collides with
@@ -192,11 +190,11 @@ void GameScene::update(float timestep) {
     // dynamic dirt generation logic (based on generation rate)
 
     
-    // Move the asteroids
-    //_asteroids.update(getSize());
+    // Move the projectiles
+    _projectiles.update(getSize());
     
     // Check for collisions and play sound
-    //if (_collisions.resolveCollision(_ship, _asteroids)) {
+    //if (_collisions.resolveCollision(_player, _projectiles)) {
     //    AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
     //}
     
