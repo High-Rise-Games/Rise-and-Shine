@@ -18,7 +18,10 @@
             "file": "textures/bucket_empty.png"
         },
         "bucketfull": {
-            "file":  "textures/bucket_full.png"
+            "file": "textures/bucket_full.png"
+        },
+        "poop": {
+            "file":  "textures/bird_poop.png"
         }
 	},
     "fonts": {

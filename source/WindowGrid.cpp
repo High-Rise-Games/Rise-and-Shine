@@ -75,7 +75,9 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 
 	// calculate scale and size of dirt drawing in reference to a window pane so that it is centered
 	// scale applied to each dirt tile
-	float dirtScaleFactor = std::min(((float)size.getIWidth() / (float)_dirt->getWidth() / (float)_nHorizontal), ((float)size.getIHeight() / (float)_dirt->getHeight() / (float)_nVertical));
+	// float dirtScaleFactor = std::min(((float)size.width / (float)_dirt->getWidth() / (float)_nHorizontal), ((float)size.height / (float)_dirt->getHeight() / (float)_nVertical));
+	
+	float dirtScaleFactor = std::min(_windowWidth / _dirt->getWidth(), _windowHeight / _dirt->getHeight());
 	float dirtWidth = (float)_dirt->getWidth() * dirtScaleFactor;
 	float dirtHeight = (float)_dirt->getHeight() * dirtScaleFactor;
 

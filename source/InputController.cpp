@@ -92,6 +92,8 @@ void InputController::update() {
     _didFire = false;
     _didReset = false;
     
+    if()
+
     if (_touchReleased) {
         float absX = abs(_moveDis.x);
         float absY = abs(_moveDis.y);

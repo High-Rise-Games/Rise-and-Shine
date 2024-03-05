@@ -12,6 +12,7 @@
 #include "InputController.h"
 #include "CollisionController.h"
 #include "WindowGrid.h"
+#include "ProjectileSet.h"
 
 
 
@@ -56,6 +57,8 @@ protected:
     int _maxDirtAmount;
     /** The amount of dirt player is currently holdinfg in the bucket **/
     int _currentDirtAmount;
+    /** The projectile set */
+    ProjectileSet _projectiles;
     
     
     cugl::scheduable t;

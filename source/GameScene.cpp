@@ -62,6 +62,11 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _windows.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
     _windows.init(_constants->get("easy board"), getSize()); // init depends on texture
     _windows.setDirtTexture(assets->get<Texture>("dirt"));
+
+    // Initialize projectiles
+    _projectiles.setDirtTexture(assets->get<Texture>("dirt"));
+    _projectiles.setPoopTexture(assets->get<Texture>("poop"));
+    _projectiles.init(_constants->get("projectiles"));
     
     // Make a ship and set its texture
     // starting position is most bottom left window
@@ -120,9 +125,10 @@ void GameScene::reset() {
     _player->setHealth(_constants->get("ship")->getInt("health",0));
     _windows.clearBoard();
     _windows.generateInitialBoard(_windows.getInitDirtNum());
+    _projectiles.current.clear();
+    _projectiles.init(_constants->get("projectiles"));
     _dirtThrowTimer = 0;
     _currentDirtAmount = 0;
-    //_asteroids.init(_constants->get("asteroids"));
 }
 
 /**
@@ -144,6 +150,8 @@ void GameScene::update(float timestep) {
         //TODO: implment lose screen here?
     }
 
+    _projectiles.update(getSize());
+
     // Move the player, ignoring collisions
     bool moved = _player->move( _input.getForward(),  _input.getTurn(), getSize(), _windows.sideGap);
     // remove any dirt the player collides with
@@ -155,7 +163,7 @@ void GameScene::update(float timestep) {
 //    }
     bool dirtRemoved = _windows.removeDirt(grid_coors.y, grid_coors.x);
     if (dirtRemoved) {
-        // TODO: implement logic to deal with filling up dirty bucket
+        // filling up dirty bucket
         _currentDirtAmount = min(_maxDirtAmount, _currentDirtAmount + 1);
     }
     
@@ -267,7 +275,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     //_asteroids.draw(batch,getSize());
     _windows.draw(batch, getSize());
     _player->draw(batch, getSize());
-    
+    _projectiles.draw(batch, getSize(), _windows.getPaneWidth(), _windows.getPaneHeight());
     
     //set bucket texture location
     Affine2 bucket_trans = Affine2();
