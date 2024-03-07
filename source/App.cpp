@@ -30,10 +30,12 @@ void App::onStartup() {
     Input::activate<Touchscreen>();
 #else
     // Start-up basic input (DESKTOP ONLY)
-    Input::activate<TextInput>();
+    
     Input::activate<Mouse>();
-    Input::activate<Keyboard>();
+    
 #endif
+    Input::activate<Keyboard>();
+    Input::activate<TextInput>();
 
     _assets->attach<Font>(FontLoader::alloc()->getHook());
     _assets->attach<Texture>(TextureLoader::alloc()->getHook());
