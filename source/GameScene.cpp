@@ -60,12 +60,16 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _background = assets->get<Texture>("background");
     _constants = assets->get<JsonValue>("constants");
 
-
-
     // Initialize the window grid
     _windows.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
     _windows.init(_constants->get("easy board"), getSize()); // init depends on texture
     _windows.setDirtTexture(assets->get<Texture>("dirt"));
+
+    // Initialize projectiles
+    _projectiles.setDirtTexture(assets->get<Texture>("dirt"));
+    _projectiles.setPoopTexture(assets->get<Texture>("poop"));
+    _projectiles.setTextureScales(_windows.getPaneHeight(), _windows.getPaneWidth());
+    _projectiles.init(_constants->get("projectiles"));
     
     // Make a ship and set its texture
     // starting position is most bottom left window
@@ -88,12 +92,17 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Get the bang sound
     _bang = assets->get<Sound>("bang");
 
+    // Create and layout the health meter
+    std::string health_msg = strtool::format("Health %d", _player->getHealth());
+    _text = TextLayout::allocWithText(health_msg, assets->get<Font>("pixel32"));
+    _text->layout();
+
     // Create and layout the dirt amount
-    std::string msg = strtool::format("%d", _currentDirtAmount);
-    _dirtText = TextLayout::allocWithText(msg, assets->get<Font>("pixel32"));
+    std::string dirt_msg = strtool::format("%d", _currentDirtAmount);
+    _dirtText = TextLayout::allocWithText(dirt_msg, assets->get<Font>("pixel32"));
     _dirtText->layout();
     
-    //_collisions.init(getSize());
+    _collisions.init(getSize());
     
     reset();
     return true;
@@ -124,9 +133,10 @@ void GameScene::reset() {
     _player->setHealth(_constants->get("ship")->getInt("health",0));
     _windows.clearBoard();
     _windows.generateInitialBoard(_windows.getInitDirtNum());
+    _projectiles.current.clear();
+    _projectiles.init(_constants->get("projectiles"));
     _dirtThrowTimer = 0;
     _currentDirtAmount = 0;
-    //_asteroids.init(_constants->get("asteroids"));
 }
 
 /**
@@ -150,8 +160,19 @@ void GameScene::update(float timestep) {
         //TODO: implment lose screen here?
     }
 
-    // Move the player, ignoring collisions
-    bool moved = _player->move( _input.getForward(),  _input.getTurn(), getSize(), _windows.sideGap);
+    bool movedOverEdge = false;
+    // Check if player is stunned for this frame
+    if (_player->getStunFrames() > 0) {
+        _player->decreaseStunFrames();
+    }
+    else {
+        // Move the player, ignoring collisions
+        bool validMove = _player->move(_input.getForward(), _input.getTurn(), getSize(), _windows.sideGap);
+        // Player tried to move over the edge if the above call to move was not "valid", i.e. player tried
+        // to move off of the board (which should constitute a toss dirt action).
+        movedOverEdge = !validMove;
+    }
+        
     // remove any dirt the player collides with
     Vec2 grid_coors = _player->getCoorsFromPos(_windows.getPaneHeight(), _windows.getPaneWidth(), _windows.sideGap);
     _player->setCoors(grid_coors);
@@ -161,11 +182,11 @@ void GameScene::update(float timestep) {
 //    }
     bool dirtRemoved = _windows.removeDirt(grid_coors.y, grid_coors.x);
     if (dirtRemoved) {
-        // TODO: implement logic to deal with filling up dirty bucket
+        // filling up dirty bucket
         _currentDirtAmount = min(_maxDirtAmount, _currentDirtAmount + 1);
     }
     
-    if (_player->getEdge(_windows.sideGap, getSize()) && !moved) {
+    if (_player->getEdge(_windows.sideGap, getSize()) && !movedOverEdge) {
         _currentDirtAmount = max(0, _currentDirtAmount - 1);
     }
     
@@ -190,13 +211,17 @@ void GameScene::update(float timestep) {
     // dynamic dirt generation logic (based on generation rate)
 
     
-    // Move the asteroids
-    //_asteroids.update(getSize());
+    // Move the projectiles
+    _projectiles.update(getSize());
     
     // Check for collisions and play sound
-    //if (_collisions.resolveCollision(_ship, _asteroids)) {
-    //    AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
-    //}
+    if (_player->getStunFrames() <= 0 && _collisions.resolveCollision(_player, _projectiles)) {
+        AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
+    }
+
+    // Update the health meter
+    _text->setText(strtool::format("Health %d", _player->getHealth()));
+    _text->layout();
     
     // Update the dirt display
     _dirtText->setText(strtool::format("%d", _currentDirtAmount));
@@ -273,7 +298,10 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     //_asteroids.draw(batch,getSize());
     _windows.draw(batch, getSize());
     _player->draw(batch, getSize());
-    
+    _projectiles.draw(batch, getSize(), _windows.getPaneWidth(), _windows.getPaneHeight());
+
+    batch->setColor(Color4::BLACK);
+    batch->drawText(_text, Vec2(10, getSize().height - _text->getBounds().size.height));
     
     //set bucket texture location
     Affine2 bucket_trans = Affine2();

@@ -12,6 +12,7 @@
 #include "InputController.h"
 #include "CollisionController.h"
 #include "WindowGrid.h"
+#include "ProjectileSet.h"
 
 
 
@@ -42,7 +43,7 @@ protected:
     /** The controller to manage the ship */
     InputController _input;
     /** The controller for managing collisions */
-    // CollisionController _collisions;
+    CollisionController _collisions;
     
     
     
@@ -70,6 +71,8 @@ protected:
     int _maxDirtAmount;
     /** The amount of dirt player is currently holdinfg in the bucket **/
     int _currentDirtAmount;
+    /** The projectile set */
+    ProjectileSet _projectiles;
     
     
     cugl::scheduable t;
@@ -78,6 +81,8 @@ protected:
     // In the future, we will replace this with the scene graph
     /** The backgrounnd image */
     std::shared_ptr<cugl::Texture> _background;
+    /** The text with the current health */
+    std::shared_ptr<cugl::TextLayout> _text;
     /** Empty bucket texture image */
     std::shared_ptr<cugl::Texture> _emptyBucket;
     /** Full bucket texture image */

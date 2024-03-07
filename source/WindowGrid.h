@@ -8,6 +8,7 @@ with the desired number of rows and columns.
 #define __WINDOW_GRID_H__
 
 #include <cugl/cugl.h>
+#include "StaticFilth.h"
 
 class WindowGrid {
 private:
@@ -18,8 +19,8 @@ private:
 	float _scaleFactor;
 	float _windowHeight;
 	float _windowWidth;
-	/** Dirt placement state */
-	std::vector<std::vector<bool>> _board;
+	/** Filth placement state */
+	std::vector<std::vector<std::shared_ptr<StaticFilth>>> _board;
 
 	/** Window texture image */
 	std::shared_ptr<cugl::Texture> _texture;
@@ -29,10 +30,10 @@ private:
 
 public:
 	// accessors 
-	//void setWindowWidth(int width)        { windowWidth = width;       };
-	//int  getWindowWidth()                 { return windowWidth;        };
-	//void setWindowHeight(int height)      { windowHeight = height;     };
-	//int  getWindowHeight()                { return windowHeight;       };
+//	void setWindowWidth(int width)        { _windowWidth = width;       };
+//	int  getWindowWidth()                 { return _windowWidth;        };
+//	void setWindowHeight(int height)      { _windowHeight = height;     };
+//	int  getWindowHeight()                { return _windowHeight;       };
 	void setNHorizontal(int n)            { _nHorizontal = n;           };
 	int  getNHorizontal()                 { return _nHorizontal;        };
 	void setNVertical(int n)              { _nVertical = n;             };
@@ -70,7 +71,7 @@ public:
      * Get window state at row and col
      */
     bool getWindowState(const int row, const int col) {
-        return _board[row][col];
+        return _board[row][col] != nullptr ;
     }
     
     /**
@@ -89,8 +90,12 @@ public:
 	 * Returns true if the dirt was successfully added, and false if there is already dirt at the location.
 	 */
 	bool addDirt(const int row, const int col) { 
-		bool dirtExisted = _board[row][col];
-		_board[row][col] = true; 
+		bool dirtExisted = _board[row][col] != nullptr;
+        if (!dirtExisted) {
+            std::shared_ptr<StaticFilth> filth = std::make_shared<StaticFilth>(cugl::Vec2(row, col));
+            filth->setStaticTexture(_dirt);
+            _board[row][col] = filth;
+        }
 		return !dirtExisted;
 	}
 
@@ -100,8 +105,11 @@ public:
 	 */
 	bool removeDirt(const int row, const int col) { 
 //        CULog("size: %d, %d", _board.size(), board[0].size());
-		bool dirtExisted = _board[row][col];
-		_board[row][col] = false; 
+        bool dirtExisted = _board[row][col] != nullptr;
+        if (dirtExisted) {
+            _board[row][col].reset();
+            _board[row][col] = nullptr;
+        }
 		return dirtExisted;
 	}
     

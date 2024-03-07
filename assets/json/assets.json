@@ -19,7 +19,8 @@
         },
         "bucketfull": {
             "file":  "textures/bucket_full.png"
-        }, "button": {
+        },
+	"button": {
             "file":  "textures/button.png"
         },
         "frame": {
@@ -27,6 +28,9 @@
         },
         "left": {
             "file":  "textures/left_arrow.png"
+	},
+        "poop": {
+            "file":  "textures/bird_poop.png"
         }
 	},
     "fonts": {

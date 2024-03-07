@@ -30,7 +30,7 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 	 sideGap = ((float)size.getIWidth() - _windowWidth * _nHorizontal) / 2; // final gap width from side of screen to side of building
 
 	// Initialize the dirt board
-	_board = std::vector<std::vector<bool>>(_nVertical, std::vector<bool>(_nHorizontal, false));
+	_board = std::vector<std::vector<std::shared_ptr<StaticFilth>>>(_nVertical, std::vector<std::shared_ptr<StaticFilth>>(_nHorizontal, nullptr));
     _initDirtNum = data->getInt("number dirts", 1);
 
 	return true;
@@ -49,14 +49,17 @@ void WindowGrid::generateInitialBoard(int dirtNumber) {
             --i; // Decrease i to repeat this iteration
             continue;
         }
-        _board[rand_row][rand_col] = true;
+        std::shared_ptr<StaticFilth> dirt = std::make_shared<StaticFilth>(Vec2(rand_row, rand_col));
+        dirt->setStaticTexture(_dirt);
+        _board[rand_row][rand_col] = dirt;
     }
 }
 
 void WindowGrid::clearBoard() {
     for (int x = 0; x < _nHorizontal; x++) {
         for (int y = 0; y < _nVertical; y++) {
-            _board[y][x] = 0;
+            _board[y][x].reset();
+            _board[y][x] = nullptr;
         }
     }
 }
@@ -72,7 +75,9 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 
 	// calculate scale and size of dirt drawing in reference to a window pane so that it is centered
 	// scale applied to each dirt tile
-	float dirtScaleFactor = std::min(((float)size.getIWidth() / (float)_dirt->getWidth() / (float)_nHorizontal), ((float)size.getIHeight() / (float)_dirt->getHeight() / (float)_nVertical));
+	// float dirtScaleFactor = std::min(((float)size.width / (float)_dirt->getWidth() / (float)_nHorizontal), ((float)size.height / (float)_dirt->getHeight() / (float)_nVertical));
+	
+	float dirtScaleFactor = std::min(_windowWidth / _dirt->getWidth(), _windowHeight / _dirt->getHeight());
 	float dirtWidth = (float)_dirt->getWidth() * dirtScaleFactor;
 	float dirtHeight = (float)_dirt->getHeight() * dirtScaleFactor;
 
@@ -88,8 +93,8 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 		for (int y = 0; y < _nVertical; y++) {
 			// draw window panes and dirt
 			batch->draw(_texture, Vec2(), trans);
-			if (_board[y][x]) {
-				batch->draw(_dirt, Vec2(), dirt_trans);
+			if (_board[y][x] != nullptr) {
+				_board[y][x]->drawStatic(batch, size, dirt_trans);
 //				CULog("dirt added to coors: (%d, %d)", x, y);
 			}
 

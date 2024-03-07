@@ -39,6 +39,8 @@ private:
     int _refire;
     /** The amount of health this ship has */
     int _health;
+    /** The amount of time in frames for the player to be stunned */
+    int _stunFrames;
 
     // JSON DEFINED ATTRIBUTES
     /** Mass/weight of the ship. Used in collisions. */
@@ -175,11 +177,11 @@ public:
     void setAngle(float value) { _ang = value; }
     
     /**
-     * Returns the current ship health.
+     * Returns the current player's health.
      * 
-     * When the health of the ship is 0, it is "dead"
+     * When the health of the player is 0, it is "dead"
      *
-     * @return the current ship health.
+     * @return the current player health.
      */
     int getHealth() const { return _health; }
 
@@ -191,6 +193,21 @@ public:
      * @param value The current ship health.
      */
     void setHealth(int value);
+
+    /**
+     * Returns the current player's stunned time in frames.
+     */
+    int getStunFrames() const { return _stunFrames; }
+
+    /**
+     * Sets the player's stun time to the given time in frames to stun the player.
+     *
+     * @param value The time in frames to stun the player.
+     */
+    void setStunFrames(int value) { _stunFrames = value; }
+
+    /** Decreases the stun frames by one, unless it is already at 0 then does nothing. */
+    void decreaseStunFrames();
     
     /**
      * Returns true if the ship can fire its weapon
