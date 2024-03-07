@@ -288,6 +288,7 @@ void App::updateLobbyScene(float timestep) {
                 break;
         }
     } else {
+        _lobby_client.update(timestep);
         switch (_lobby_client.getStatus()) {
             case LobbyScene::Status::ABORT:
                 _lobby_client.setActive(false);

@@ -353,19 +353,19 @@ bool LobbyScene::checkConnection() {
             case cugl::net::NetcodeConnection::State::MISMATCHED:
                 // code block
                 _status = WAIT;
-                return true;
+                return false;
             case cugl::net::NetcodeConnection::State::INVALID:
                 // code block
                 _status = WAIT;
-                return true;
+                return false;
             case cugl::net::NetcodeConnection::State::FAILED:
                 // code block
                 _status = WAIT;
-                return true;
+                return false;
             case cugl::net::NetcodeConnection::State::DENIED:
                 // code block
                 _status = WAIT;
-                return true;
+                return false;
             case cugl::net::NetcodeConnection::State::DISCONNECTED:
                 // code block
                 _status = WAIT;
@@ -384,7 +384,7 @@ bool LobbyScene::checkConnection() {
             case cugl::net::NetcodeConnection::State::MISMATCHED:
             // code block
                 _status = WAIT;
-                return true;
+                return false;
             case cugl::net::NetcodeConnection::State::NEGOTIATING:
             // code block
                 _status = JOIN;
@@ -392,15 +392,15 @@ bool LobbyScene::checkConnection() {
             case cugl::net::NetcodeConnection::State::INVALID:
             // code block
                 _status = IDLE;
-                return true;
+                return false;
             case cugl::net::NetcodeConnection::State::FAILED:
             // code block
                 _status = IDLE;
-                return true;
+                return false;
             case cugl::net::NetcodeConnection::State::DENIED:
             // code block
                 _status = IDLE;
-                return true;
+                return false;
             case cugl::net::NetcodeConnection::State::DISCONNECTED:
             // code block
                 _status = IDLE;
