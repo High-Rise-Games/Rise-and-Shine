@@ -111,7 +111,7 @@ void InputController::dispose() {
         _active = false;
     }
 #else
-    _active = false
+    _active = false;
 #endif
 }
 
@@ -159,6 +159,8 @@ void InputController::update() {
     } else if (keys->keyDown(right) && !keys->keyDown(left)) {
         _turning = 1;
     }
+    
+    _moveDir = Vec2(_turning, _forward).getNormalization();
 
     // Shooting
     if (keys->keyDown(shoot)) {
