@@ -9,6 +9,35 @@
 using namespace cugl;
 
 #pragma mark Input Control
+
+/** How close we need to be for a multi touch */
+#define NEAR_TOUCH      100
+/** The key for the event handlers */
+#define LISTENER_KEY      1
+
+/** This defines the joystick "deadzone" (how far we must move) */
+#define JSTICK_DEADZONE  15
+/** This defines the joystick radial size (for reseting the anchor) */
+#define JSTICK_RADIUS    25
+/** How far to display the virtual joystick above the finger */
+#define JSTICK_OFFSET    80
+
+// The screen is divided into four zones: Left, Bottom, Right and Main/
+// These are all shown in the diagram below.
+//
+//   |---------------|
+//   |   |       |   |
+//   | L |   M   | R |
+//   |   |       |   |
+//   |---------------|
+//
+// The meaning of any touch depends on the zone it begins in.
+
+/** The portion of the screen used for the left zone */
+#define LEFT_ZONE       0.35f
+/** The portion of the screen used for the right zone */
+#define RIGHT_ZONE      0.35f
+
 /**
  * Creates a new input controller with the default settings
  *
@@ -17,11 +46,11 @@ using namespace cugl;
  * do not need an init method.  This constructor is sufficient.
  */
 InputController::InputController() :
+_active(false),
 _forward(0),
 _turning(0),
 _didFire(false),
-_touchDown(false),
-_touchKey(0) {
+_joystick(false) {
 }
 
 /**
@@ -37,16 +66,25 @@ _touchKey(0) {
  *
  * @return true if the initialization was successful
  */
-bool InputController::init() {
+bool InputController::init(const Rect bounds) {
+    _sbounds = bounds;
+    _tbounds = Application::get()->getDisplayBounds();
+    
+    createZones();
+    clearTouchInstance(_ltouch);
+    clearTouchInstance(_rtouch);
+    clearTouchInstance(_mtouch);
 #ifdef CU_TOUCH_SCREEN
     Touchscreen* touch = Input::get<Touchscreen>();
     if (touch) {
-        _touchKey = touch->acquireKey();
-        touch->addBeginListener(_touchKey, [=](const TouchEvent& event, bool focus) {
+        touch->addBeginListener(LISTENER_KEY, [=](const TouchEvent& event, bool focus) {
             this->touchDownCB(event, focus);
         });
-        touch->addEndListener(_touchKey, [=](const TouchEvent& event, bool focus) {
+        touch->addEndListener(LISTENER_KEY, [=](const TouchEvent& event, bool focus) {
             this->touchUpCB(event, focus);
+        });
+        touch->addMotionListener(LISTENER_KEY,[=](const TouchEvent& event, const Vec2& previous, bool focus) {
+            this->touchesMovedCB(event, previous, focus);
         });
         _active = true;
     }
@@ -67,11 +105,13 @@ void InputController::dispose() {
 #ifdef CU_TOUCH_SCREEN
     if (_active) {
         Touchscreen* touch = Input::get<Touchscreen>();
-        touch->removeBeginListener(_touchKey);
-        touch->removeEndListener(_touchKey);
-        touch->removeMotionListener(_touchKey);
+        touch->removeBeginListener(LISTENER_KEY);
+        touch->removeEndListener(LISTENER_KEY);
+        touch->removeMotionListener(LISTENER_KEY);
         _active = false;
     }
+#else
+    _active = false
 #endif
 }
 
@@ -91,27 +131,6 @@ void InputController::update() {
     _forward = _turning = 0;
     _didFire = false;
     _didReset = false;
-    
-    //if()
-
-    if (_touchReleased) {
-        float absX = abs(_moveDis.x);
-        float absY = abs(_moveDis.y);
-        if (absX > absY && absX > 50) {
-            if (_moveDis.x > 0) {
-                _turning = 1;
-            } else {
-                _turning = -1;
-            }
-        } else if (absY >= absX && absY > 50) {
-            if (_moveDis.y > 0) {
-                _forward = -1;
-            } else {
-                _forward = 1;
-            }
-        }
-    }
-    _touchReleased = false;
 #else
     // This makes it easier to change the keys later
     KeyCode up    = KeyCode::ARROW_UP;
@@ -154,21 +173,138 @@ void InputController::update() {
 }
 
 #pragma mark -
+#pragma mark Touch Controls
+
+/**
+ * Defines the zone boundaries, so we can quickly categorize touches.
+ */
+void InputController::createZones() {
+    _lzone = _tbounds;
+    _lzone.size.width *= LEFT_ZONE;
+    _rzone = _tbounds;
+    _rzone.size.width *= RIGHT_ZONE;
+    _rzone.origin.x = _tbounds.origin.x+_tbounds.size.width-_rzone.size.width;
+}
+
+/**
+ * Populates the initial values of the input TouchInstance
+ */
+void InputController::clearTouchInstance(TouchInstance& touchInstance) {
+    touchInstance.touchids.clear();
+    touchInstance.position = Vec2::ZERO;
+}
+
+/**
+ * Returns the correct zone for the given position.
+ *
+ * See the comments above for a description of how zones work.
+ *
+ * @param  pos  a position in screen coordinates
+ *
+ * @return the correct zone for the given position.
+ */
+InputController::Zone InputController::getZone(const Vec2 pos) const {
+    if (_lzone.contains(pos)) {
+        return Zone::LEFT;
+    } else if (_rzone.contains(pos)) {
+        return Zone::RIGHT;
+    } else if (_tbounds.contains(pos)) {
+        return Zone::MAIN;
+    }
+    return Zone::UNDEFINED;
+}
+
+/**
+ * Returns the scene location of a touch
+ *
+ * Touch coordinates are inverted, with y origin in the top-left
+ * corner. This method corrects for this and scales the screen
+ * coordinates down on to the scene graph size.
+ *
+ * @return the scene location of a touch
+ */
+Vec2 InputController::touch2Screen(const Vec2 pos) const {
+    float px = pos.x/_tbounds.size.width -_tbounds.origin.x;
+    float py = pos.y/_tbounds.size.height-_tbounds.origin.y;
+    Vec2 result;
+    result.x = px*_sbounds.size.width +_sbounds.origin.x;
+    result.y = (1-py)*_sbounds.size.height+_sbounds.origin.y;
+    return result;
+}
+
+/**
+ * Processes movement for the floating joystick.
+ *
+ * This will register movement as left or right (or neither).  It
+ * will also move the joystick anchor if the touch position moves
+ * too far.
+ *
+ * @param  pos  the current joystick position
+ */
+void InputController::processJoystick(const cugl::Vec2 pos) {
+    Vec2 diff =  _ltouch.position-pos;
+
+    // Reset the anchor if we drifted too far
+    if (diff.lengthSquared() > JSTICK_RADIUS*JSTICK_RADIUS) {
+        diff.normalize();
+        diff *= (JSTICK_RADIUS+JSTICK_DEADZONE)/2;
+        _ltouch.position = pos+diff;
+    }
+    _joycenter = touch2Screen(_ltouch.position);
+    _joycenter.y += JSTICK_OFFSET;
+    if (std::fabsf(diff.length()) > JSTICK_DEADZONE) {
+        _joystick = true;
+        Vec2 unitVec = diff.getNormalization();
+        _moveDir = unitVec;
+        _moveDir.x = -_moveDir.x;
+    } else {
+        _joystick = false;
+        _moveDir = Vec2::ZERO;
+    }
+}
+
+#pragma mark -
 #pragma mark Touch Callbacks
 
 void InputController::touchDownCB(const cugl::TouchEvent& event, bool focus) {
-    if (!_touchDown) {
-        _touchDown = true;
-        _touchID = event.touch;
-        _startPos = event.position;
+    Vec2 pos = event.position;
+    Zone zone = getZone(pos);
+    switch (zone) {
+        case Zone::LEFT:
+            // Only process if no touch in zone
+            if (_ltouch.touchids.empty()) {
+                // Left is the floating joystick
+                _ltouch.position = event.position;
+                _ltouch.timestamp.mark();
+                _ltouch.touchids.insert(event.touch);
+                
+                _joystick = true;
+                _joycenter = touch2Screen(event.position);
+                _joycenter.y += JSTICK_OFFSET;
+            }
+            break;
+        case Zone::RIGHT:
+            break;
+        case Zone::MAIN:
+            break;
+        default:
+            CUAssertLog(false, "Touch is out of bounds");
+            break;
     }
 }
 
 void InputController::touchUpCB(const cugl::TouchEvent& event, bool focus) {
-    if (_touchDown && _touchID == event.touch) {
-        cugl::Vec2 endPos = event.position;
-        _moveDis = endPos - _startPos;
-        _touchDown = false;
-        _touchReleased = true;
+    Vec2 pos = event.position;
+    if (_ltouch.touchids.find(event.touch) != _ltouch.touchids.end()) {
+        _ltouch.touchids.clear();
+        _moveDir = Vec2::ZERO;
+        _joystick = false;
+    }
+}
+
+void InputController::touchesMovedCB(const TouchEvent& event, const Vec2& previous, bool focus) {
+    Vec2 pos = event.position;
+    if (_ltouch.touchids.find(event.touch) != _ltouch.touchids.end()) {
+        processJoystick(pos);
     }
 }

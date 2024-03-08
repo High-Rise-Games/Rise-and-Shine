@@ -54,7 +54,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     
     // Start up the input handler
     _assets = assets;
-    _input.init();
+    _input.init(getBounds());
     
     // Get the background image and constant values
     _background = assets->get<Texture>("background");
@@ -167,7 +167,7 @@ void GameScene::update(float timestep) {
     }
     else {
         // Move the player, ignoring collisions
-        bool validMove = _player->move(_input.getForward(), _input.getTurn(), getSize(), _windows.sideGap);
+        bool validMove = _player->move(_input.getDir(), getSize(), _windows.sideGap);
         // Player tried to move over the edge if the above call to move was not "valid", i.e. player tried
         // to move off of the board (which should constitute a toss dirt action).
         movedOverEdge = !validMove;

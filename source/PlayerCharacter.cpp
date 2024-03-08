@@ -188,34 +188,10 @@ void Player::setPosition(cugl::Vec2 value, cugl::Vec2 size) {
  * @param turn        Amount to turn the ship
  * @return True if moved
  */
-bool Player::move(float forward, float turn, Size size, float sideGap) {
-    // Process the ship going diagonal.
-    if (turn != 0.0f && forward != 0.0f) {
-        // diagonal movement is same distance traveled as horizontal/vertical movement
-        Vec2 dir(5.0/std::sqrt(2), 5.0/std::sqrt(2));
-        // Vec2 dir(_windowHeight,0);
-        _vel = dir * Vec2(turn, forward);
-    }
+bool Player::move(Vec2 dir, Size size, float sideGap) {
 
-    // Process forward key press
-    else if (forward != 0.0f) {
-        Vec2 dir(0, 5);
-        // Vec2 dir(0,_windowWidth);
-        _vel = dir * forward;
-    }
-    
-    // Process turn key key press
-    else if (turn != 0.0f) {
-        Vec2 dir(5, 0);
-        // Vec2 dir(_windowHeight,0);
-        _vel = dir * turn;
-    }
-    
-    // Process no movement;
-    else if (turn == 0.0f && forward == 0.0f) {
-        Vec2 dir(0,0);
-        _vel = dir * turn;
-    }
+    // Process moving direction
+    _vel = dir * 5;
     
     
     // Move the ship position by the ship velocity.
