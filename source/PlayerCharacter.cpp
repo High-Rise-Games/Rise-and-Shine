@@ -126,38 +126,6 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
         
         _sprite->draw(batch,shadow,shadtrans);
         _sprite->draw(batch,shiptrans);
-        
-        // Duplicate images to support wrap
-        if (_pos.x+_radius > bounds.width) {
-            shiptrans.translate(-bounds.width,0);
-            shadtrans.translate(-bounds.width,0);
-            _sprite->draw(batch,shadow,shadtrans);
-            _sprite->draw(batch,shiptrans);
-            shiptrans.translate(bounds.width,0);
-            shadtrans.translate(bounds.width,0);
-        } else if (_pos.x-_radius < 0) {
-            shiptrans.translate(bounds.width,0);
-            shadtrans.translate(bounds.width,0);
-            _sprite->draw(batch,shadow,shadtrans);
-            _sprite->draw(batch,shiptrans);
-            shiptrans.translate(-bounds.width,0);
-            shadtrans.translate(-bounds.width,0);
-        }
-        if (_pos.y+_radius > bounds.height) {
-            shiptrans.translate(0,-bounds.height);
-            shadtrans.translate(0,-bounds.height);
-            _sprite->draw(batch,shadow,shadtrans);
-            _sprite->draw(batch,shiptrans);
-            shiptrans.translate(0,bounds.height);
-            shadtrans.translate(0,bounds.height);
-        } else if (_pos.y-_radius < 0) {
-            shiptrans.translate(0,bounds.height);
-            shadtrans.translate(0,bounds.height);
-            _sprite->draw(batch,shadow,shadtrans);
-            _sprite->draw(batch,shiptrans);
-            shiptrans.translate(0,-bounds.height);
-            shadtrans.translate(0,-bounds.height);
-        }
     }
 }
 
@@ -178,14 +146,14 @@ void Player::setPosition(cugl::Vec2 value, cugl::Vec2 size) {
 /**
  * Moves the ship by the specified amount.
  *
- * Forward is the amount to move forward, while turn is the angle to turn the ship.
- * Makes sure that the ship is within the bounds of the window building grid.
+ * Dir is the amount to move forward and direction to move for the player.
+ * Makes sure that the player is within the bounds of the window building grid.
  * Also, can only move along one axis at a time. sideGap argument is the sideGap
  * property of the window building grid in order to make it eaiser to check bounds
  * for player movement.
  *
- * @param forward    Amount to move forward
- * @param turn        Amount to turn the ship
+ * @param dir       Amount to move forward
+ * @param size      Size of the game scene
  * @return True if moved
  */
 bool Player::move(Vec2 dir, Size size, float sideGap) {
@@ -197,7 +165,7 @@ bool Player::move(Vec2 dir, Size size, float sideGap) {
     // Move the ship position by the ship velocity.
     // Velocity always remains unchanged.
     // Also does not add velocity to position in the event that movement would go beyond the window building grid.
-    if (!getEdge(sideGap, size)) {
+    if (!getEdge(sideGap, size) && _pos.y + _vel.y >= 0 && _pos.y + _vel.y <= size.height) {
         _pos += _vel;
         return true;
     }
