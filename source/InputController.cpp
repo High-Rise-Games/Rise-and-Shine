@@ -296,7 +296,6 @@ void InputController::touchDownCB(const cugl::TouchEvent& event, bool focus) {
 }
 
 void InputController::touchUpCB(const cugl::TouchEvent& event, bool focus) {
-    Vec2 pos = event.position;
     if (_ltouch.touchids.find(event.touch) != _ltouch.touchids.end()) {
         _ltouch.touchids.clear();
         _moveDir = Vec2::ZERO;

@@ -43,6 +43,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _fixedDirtUpdateThreshold = 5 * 60;
     _maxDirtAmount = 1;
     _currentDirtAmount = 0;
+    _curBoard = -1;
+    _dirtSelected = false;
     dimen *= SCENE_HEIGHT/dimen.height;
     if (assets == nullptr) {
         return false;
@@ -55,6 +57,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Start up the input handler
     _assets = assets;
     _input.init(getBounds());
+    _dirtThrowInput.init();
     
     // Get the background image and constant values
     _background = assets->get<Texture>("background");
@@ -147,85 +150,125 @@ void GameScene::reset() {
  * @param timestep  The amount of time (in seconds) since the last frame
  */
 void GameScene::update(float timestep) {
-    // Read the keyboard for each controller.
-    _input.update();
-    if (_input.didPressReset()) {
-        reset();
-    }
-    
-    
-
-    //Checks and returns true if board is full besides current player position
-    if (checkBoardFull()) {
-        //TODO: implment lose screen here?
-    }
-
-    bool movedOverEdge = false;
-    // Check if player is stunned for this frame
-    if (_player->getStunFrames() > 0) {
-        _player->decreaseStunFrames();
-    }
-    else {
-        // Move the player, ignoring collisions
-        bool validMove = _player->move(_input.getDir(), getSize(), _windows.sideGap);
-        // Player tried to move over the edge if the above call to move was not "valid", i.e. player tried
-        // to move off of the board (which should constitute a toss dirt action).
-        movedOverEdge = !validMove;
-    }
-        
-    // remove any dirt the player collides with
-    Vec2 grid_coors = _player->getCoorsFromPos(_windows.getPaneHeight(), _windows.getPaneWidth(), _windows.sideGap);
-    _player->setCoors(grid_coors);
-//    if (grid_coors == NULL) {
-//        CULog("player coors: NULL");
-//        CULog("player coors: (%f, %f)", grid_coors.y, grid_coors.x);
-//    }
-    bool dirtRemoved = _windows.removeDirt(grid_coors.y, grid_coors.x);
-    if (dirtRemoved) {
-        // filling up dirty bucket
-        _currentDirtAmount = min(_maxDirtAmount, _currentDirtAmount + 1);
-    }
-    
-    if (_player->getEdge(_windows.sideGap, getSize()) && !movedOverEdge) {
-        _currentDirtAmount = max(0, _currentDirtAmount - 1);
-    }
-    
-    // fixed dirt generation logic (every 5 seconds)
-    if (!checkBoardEmpty() && !checkBoardFull()) {
-        if (_dirtThrowTimer <= _fixedDirtUpdateThreshold) {
-            auto search = _dirtGenTimes.find(_dirtThrowTimer);
-            if (search != _dirtGenTimes.end()) {
-                // random dirt generation logic
-//                CULog("generating random dirt");
-                generateDirt();
+    // When the player is on other's board
+    // TODO: now the player is draged as dirt, need to switch to dirt later
+    if (_curBoard != 0) {
+        _dirtThrowInput.update();
+        if (!_dirtSelected) {
+            if (_dirtThrowInput.didPress()) {
+                Vec2 screenPos = _dirtThrowInput.getPosition();
+                Vec3 convertedWorldPos = screenToWorldCoords(screenPos);
+                Vec2 worldPos = Vec2(convertedWorldPos.x, convertedWorldPos.y);
+                std::cout<<"finger: x: "<<worldPos.x<<", y: "<<worldPos.y;
+                std::cout<<"ship: x: "<<_player->getPosition().x<<", y: "<<_player->getPosition().y;
+                float distance = (worldPos - _player->getPosition()).length();
+                if (distance <= _player->getRadius()) {
+                    _dirtSelected = true;
+                    _prevDirtPos = _player->getPosition();
+                }
             }
-            _dirtThrowTimer++;
         } else {
-            _dirtThrowTimer = 0;
-            updateDirtGenTime();
-//            CULog("generating fixed dirt");
-            generateDirt();
+            if (_dirtThrowInput.didRelease()) {
+                _dirtSelected = false;
+                Vec2 currentScreenPos = _dirtThrowInput.getPosition();
+                Vec3 currentWorldPos = screenToWorldCoords(currentScreenPos);
+                Vec2 currentPos = Vec2(currentWorldPos.x, currentWorldPos.y);
+                Vec2 diff = currentPos - _prevDirtPos;
+                // TODO: logic for throwing the dirt
+            } else if (_dirtThrowInput.isDown()) {
+                Vec2 currentScreenPos = _dirtThrowInput.getPosition();
+                Vec3 currentWorldPos = screenToWorldCoords(currentScreenPos);
+                Vec2 currentPos = Vec2(currentWorldPos.x, currentWorldPos.y);
+                _player->setPosition(currentPos);
+            }
         }
     }
     
-    // dynamic dirt generation logic (based on generation rate)
+    // When the player is on his own board
+    else {
+        
+        // Read the keyboard for each controller.
+        _input.update();
+        if (_input.didPressReset()) {
+            reset();
+        }
+        
+        
 
-    
-    // Move the projectiles
-    _projectiles.update(getSize());
-    
-    // Check for collisions and play sound
-    if (_player->getStunFrames() <= 0 && _collisions.resolveCollision(_player, _projectiles)) {
-        AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
+        //Checks and returns true if board is full besides current player position
+        if (checkBoardFull()) {
+            //TODO: implment lose screen here?
+        }
+        
+
+        bool movedOverEdge = false;
+        // Check if player is stunned for this frame
+        if (_player->getStunFrames() > 0) {
+            _player->decreaseStunFrames();
+        }
+        else {
+            // Move the player, ignoring collisions
+            bool validMove = _player->move(_input.getDir(), getSize(), _windows.sideGap);
+            // Player tried to move over the edge if the above call to move was not "valid", i.e. player tried
+            // to move off of the board (which should constitute a toss dirt action).
+            movedOverEdge = !validMove;
+        }
+            
+        // remove any dirt the player collides with
+        Vec2 grid_coors = _player->getCoorsFromPos(_windows.getPaneHeight(), _windows.getPaneWidth(), _windows.sideGap);
+        _player->setCoors(grid_coors);
+    //    if (grid_coors == NULL) {
+    //        CULog("player coors: NULL");
+    //        CULog("player coors: (%f, %f)", grid_coors.y, grid_coors.x);
+    //    }
+        bool dirtRemoved = _windows.removeDirt(grid_coors.y, grid_coors.x);
+        if (dirtRemoved) {
+            // filling up dirty bucket
+            _currentDirtAmount = min(_maxDirtAmount, _currentDirtAmount + 1);
+        }
+        
+        if (_player->getEdge(_windows.sideGap, getSize()) && !movedOverEdge) {
+            _currentDirtAmount = max(0, _currentDirtAmount - 1);
+        }
+        
+        // fixed dirt generation logic (every 5 seconds)
+        if (!checkBoardEmpty() && !checkBoardFull()) {
+            if (_dirtThrowTimer <= _fixedDirtUpdateThreshold) {
+                auto search = _dirtGenTimes.find(_dirtThrowTimer);
+                if (search != _dirtGenTimes.end()) {
+                    // random dirt generation logic
+    //                CULog("generating random dirt");
+                    generateDirt();
+                }
+                _dirtThrowTimer++;
+            } else {
+                _dirtThrowTimer = 0;
+                updateDirtGenTime();
+    //            CULog("generating fixed dirt");
+                generateDirt();
+            }
+        }
+        
+        // dynamic dirt generation logic (based on generation rate)
+
+        
+        // Move the projectiles
+        _projectiles.update(getSize());
+        
+        // Check for collisions and play sound
+        if (_player->getStunFrames() <= 0 && _collisions.resolveCollision(_player, _projectiles)) {
+            AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
+        }
+
+        // Update the health meter
+        _text->setText(strtool::format("Health %d", _player->getHealth()));
+        _text->layout();
+        
+        // Update the dirt display
+        _dirtText->setText(strtool::format("%d", _currentDirtAmount));
+        _dirtText->layout();
     }
-
-    // Update the health meter
-    _text->setText(strtool::format("Health %d", _player->getHealth()));
-    _text->layout();
     
-    // Update the dirt display
-    _dirtText->setText(strtool::format("%d", _currentDirtAmount));
-    _dirtText->layout();
 }
 
 /** update when dirt is generated */

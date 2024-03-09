@@ -10,6 +10,7 @@
 #include <unordered_set>
 #include "PlayerCharacter.h"
 #include "InputController.h"
+#include "DirtThrowInputController.h"
 #include "CollisionController.h"
 #include "WindowGrid.h"
 #include "ProjectileSet.h"
@@ -40,8 +41,10 @@ protected:
     
     
     // CONTROLLERS are attached directly to the scene (no pointers)
-    /** The controller to manage the ship */
+    /** The input controller to manage the character movement */
     InputController _input;
+    /** The input controller to manage the dirt throw logic*/
+    DirtThrowInputController _dirtThrowInput;
     /** The controller for managing collisions */
     CollisionController _collisions;
     
@@ -54,7 +57,15 @@ protected:
     /** Location and animation information for the ship */
     std::shared_ptr<Player> _player;
     /** The location of all of the active asteroids */
-    // AsteroidSet _asteroids;
+    
+    /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
+    int _curBoard;
+    /** Whether the dirt is selected, ONLY active when currently on others board*/
+    bool _dirtSelected;
+    /** The position of the dirt when it is selected*/
+    cugl::Vec2 _prevDirtPos;
+    
+    /** Todo: probably need to change _windows to a vector, length 3 or 4*/
     /** Grid of windows and dirt placement to be drawn */
     WindowGrid _windows;
     /** Random number generator for dirt generation */
