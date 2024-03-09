@@ -43,7 +43,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _fixedDirtUpdateThreshold = 5 * 60;
     _maxDirtAmount = 1;
     _currentDirtAmount = 0;
-    _curBoard = -1;
+    _curBoard = 0;
     _dirtSelected = false;
     dimen *= SCENE_HEIGHT/dimen.height;
     if (assets == nullptr) {
