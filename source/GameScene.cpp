@@ -45,6 +45,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _currentDirtAmount = 0;
     _curBoard = 0;
     _dirtSelected = false;
+    _onAdjacentBoard = false;
     dimen *= SCENE_HEIGHT/dimen.height;
     if (assets == nullptr) {
         return false;
@@ -60,8 +61,11 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _dirtThrowInput.init();
     
     // Get the background image and constant values
-    _background = assets->get<Texture>("background");
-    _constants = assets->get<JsonValue>("constants");
+    _background = _assets->get<Texture>("background");
+    _constants = _assets->get<JsonValue>("constants");
+    auto layer = _assets->get<scene2::SceneNode>("switch");
+    layer->setContentSize(dimen);
+    layer->doLayout(); // This rearranges the children to fit the screen
 
     // Initialize the window grid
     _windows.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
@@ -87,7 +91,12 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Initialize dirt bucket
     setEmptyBucket(assets->get<Texture>("bucketempty"));
     setFullBucket(assets->get<Texture>("bucketfull"));
-
+    
+//    // Initialize switch scene icon
+//    setSwitchSceneButton(assets->get<Texture>("switchSceneButton"));
+//    // Initialize return scene icon
+//    setReturnSceneButton(assets->get<Texture>("returnSceneButton"));
+    
     // Initialize the asteroid set
     //_asteroids.init(_constants->get("asteroids"));
     //_asteroids.setTexture(assets->get<Texture>("asteroid1"));
@@ -108,6 +117,19 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _collisions.init(getSize());
     
     reset();
+    
+    _tn_button = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("switch_play"));
+    _tn_button->addListener([=](const std::string& name, bool down) {
+        if (down && _player->getEdge(_windows.sideGap, getSize())) {
+            if (_onAdjacentBoard) {
+                CULog("leaving other player's board");
+            } else {
+                CULog("entering other player's board");
+            }
+            _onAdjacentBoard = !_onAdjacentBoard;
+        }
+    });
+    addChild(layer);
     return true;
 }
 
@@ -118,6 +140,7 @@ void GameScene::dispose() {
     if (_active) {
         removeAllChildren();
         _active = false;
+        _tn_button = nullptr;
     }
 }
 
@@ -267,8 +290,10 @@ void GameScene::update(float timestep) {
         // Update the dirt display
         _dirtText->setText(strtool::format("%d", _currentDirtAmount));
         _dirtText->layout();
+        
+        _tn_button->setVisible(true);
+        _tn_button->activate();
     }
-    
 }
 
 /** update when dirt is generated */
@@ -347,21 +372,38 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->drawText(_text, Vec2(10, getSize().height - _text->getBounds().size.height));
     
     //set bucket texture location
-    Affine2 bucket_trans = Affine2();
-    Vec2 origin(_fullBucket->getWidth()/2,_fullBucket->getHeight()/2);
+    Affine2 bucketTrans = Affine2();
+    Vec2 bOrigin(_fullBucket->getWidth()/2,_fullBucket->getHeight()/2);
     float bucketScaleFactor = std::min(((float)getSize().getIWidth() / (float)_fullBucket->getWidth()) /2, ((float)getSize().getIHeight() / (float)_fullBucket->getHeight() /2));
-    bucket_trans.scale(bucketScaleFactor);
+    bucketTrans.scale(bucketScaleFactor);
     
     Vec2 bucketLocation(getSize().width - ((float)_fullBucket->getWidth() * bucketScaleFactor/2),
-                        (float)_fullBucket->getHeight() * bucketScaleFactor/2);
-    bucket_trans.translate(bucketLocation);
+                        getSize().height - (float)_fullBucket->getHeight() * bucketScaleFactor/2);
+    bucketTrans.translate(bucketLocation);
+    
+//    //set switch/return scene button texture location
+//    Affine2 sceneButtonTrans = Affine2();
+//    Vec2 sbOrigin(_switchSceneButton->getWidth()/2,_switchSceneButton->getHeight()/2);
+//    float sceneButtonScaleFactor = std::min(((float)getSize().getIWidth() / (float)_switchSceneButton->getWidth()) /2, ((float)getSize().getIHeight() / (float)_switchSceneButton->getHeight() /2));
+//    sceneButtonTrans.scale(sceneButtonScaleFactor);
+//    
+//    Vec2 sceneButtonLocation(getSize().width - ((float)_switchSceneButton->getWidth() * sceneButtonScaleFactor/2),
+//                        (float)_switchSceneButton->getHeight() * sceneButtonScaleFactor/2);
+//    sceneButtonTrans.translate(sceneButtonLocation);
     
     // draw different bucket based on dirt amount
     if (_currentDirtAmount == 0) {
-        batch->draw(_emptyBucket, origin, bucket_trans);
+        batch->draw(_emptyBucket, bOrigin, bucketTrans);
     } else {
-        batch->draw(_fullBucket, origin, bucket_trans);
+        batch->draw(_fullBucket, bOrigin, bucketTrans);
     }
+    
+//    // draw scene button
+//    if (_onAdjacentBoard) {
+//        batch->draw(_returnSceneButton, sbOrigin, sceneButtonTrans);
+//    } else {
+//        batch->draw(_switchSceneButton, sbOrigin, sceneButtonTrans);
+//    }
     
     // draw dirt amount text, centered at bucket
     Affine2 dirtTextTrans = Affine2();
