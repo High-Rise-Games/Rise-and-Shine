@@ -98,7 +98,8 @@ void Player::setTexture(const std::shared_ptr<cugl::Texture>& texture) {
 * using the scene position of the player (_pos).
 */
 const cugl::Vec2& Player::getCoorsFromPos(const float windowHeight, const float windowWidth, const float sideGap) {
-    int x_coor = (int)((_pos.x - sideGap) / windowWidth);
+    // int cast should be inside the bracket, otherwise causes numerical inprecision results in +1 x coord when at right edge
+    int x_coor = ((int)(_pos.x - sideGap) / windowWidth);
     int y_coor = (int)(_pos.y / windowHeight);
     return Vec2(x_coor, y_coor);
 }
@@ -166,10 +167,19 @@ bool Player::move(Vec2 dir, Size size, float sideGap) {
     // Move the ship position by the ship velocity.
     // Velocity always remains unchanged.
     // Also does not add velocity to position in the event that movement would go beyond the window building grid.
-    if (!getEdge(sideGap, size) && _pos.y + _vel.y >= 0 && _pos.y + _vel.y <= size.height) {
+    int atEdge = getEdge(sideGap, size);
+    if (!atEdge && _pos.y + _vel.y >= 0 && _pos.y + _vel.y <= size.height) {
         _pos += _vel;
         return true;
     }
+    
+    //clamp to the left or right if at edge
+    if (atEdge > 0) {
+        _pos.x = size.getIWidth() - sideGap;
+    } else {
+        _pos.x = sideGap;
+    }
+    _pos.y += _vel.y;
     return false;
 
 }
@@ -182,7 +192,7 @@ bool Player::move(Vec2 dir, Size size, float sideGap) {
 int Player::getEdge(float sideGap, Size size) {
     if (_pos.x + _vel.x <= sideGap) {
         return -1;
-    } else if (_pos.x + _vel.x >= size.width - sideGap) {
+    } else if (_pos.x + _vel.x >= size.getIWidth() - sideGap) {
         return 1;
     }
     return 0;

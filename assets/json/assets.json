@@ -20,7 +20,7 @@
         "bucketfull": {
             "file":  "textures/bucket_full.png"
         },
-	"button": {
+        "button": {
             "file":  "textures/button.png"
         },
         "frame": {
@@ -28,7 +28,13 @@
         },
         "left": {
             "file":  "textures/left_arrow.png"
-	},
+        },
+        "switchSceneButton": {
+            "file": "textures/switchSceneButton.png"
+        },
+        "returnSceneButton": {
+            "file": "textures/returnSceneButton.png"
+        },
         "poop": {
             "file":  "textures/bird_poop.png"
         }
@@ -74,6 +80,43 @@
         "labelbox" : "widgets/labelbox.json"
     },
     "scene2s" : {
+        "switch": {
+            "type"      : "Solid",
+            "format"    : {
+                "type" : "Anchored"
+            },
+            "data" : {
+                "color": [239,61,49,255]
+            },
+            "children": {
+                "play"  : {
+                    "type"   : "Button",
+                    "data"   : {
+                        "upnode"   : "up",
+                        "pushable" : [160,280,190,370,280,400,370,370,400,280,370,190,280,160,190,190],
+                        "visible"  : true,
+                        "pushsize" : true,
+                        "anchor"   : [1,0],
+                        "scale"    : 0.6
+                    },
+                    "children" : {
+                        "up"       : {
+                            "type"   : "Image",
+                            "data"   : {
+                                "texture"  : "switchSceneButton"
+                            }
+                        }
+                    },
+                    "layout" : {
+                        "x_anchor" : "right",
+                        "y_anchor" : "bottom",
+                        "y_offset" : -115,
+                        "priority" : 1,
+                        "absolute" : true
+                    }
+                }
+            }
+        },
         "menu": {
             "type"      : "Node",
             "format"    : {

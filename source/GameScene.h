@@ -61,6 +61,9 @@ protected:
     std::shared_ptr<Player> _playerLeft;
     /** Location and animation information for the player to the right */
     std::shared_ptr<Player> _playerRight;
+    /** True if a neighobr player's board is on display */
+    bool _onAdjacentBoard;
+    /** The location of all of the active asteroids */
     
     /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
     int _curBoard;
@@ -112,6 +115,12 @@ protected:
     std::shared_ptr<cugl::Texture> _emptyBucket;
     /** Full bucket texture image */
     std::shared_ptr<cugl::Texture> _fullBucket;
+//    /** Switch scene button texture image */
+//    std::shared_ptr<cugl::Texture> _switchSceneButton;
+//    /** Return scene button texture image */
+//    std::shared_ptr<cugl::Texture> _returnSceneButton;
+    /** Switch scene button */
+    std::shared_ptr<cugl::scene2::Button>    _tn_button;
     /** The text with the current dirt */
     std::shared_ptr<cugl::TextLayout> _dirtText;
     /** The sound of a ship-asteroid collision */
@@ -163,6 +172,11 @@ public:
     void setEmptyBucket(const std::shared_ptr<cugl::Texture>& value) { _emptyBucket = value; }
     /** sets full bucket texture */
     void setFullBucket(const std::shared_ptr<cugl::Texture>& value) { _fullBucket = value; }
+//    /** sets switch scene button texture */
+//    void setSwitchSceneButton(const std::shared_ptr<cugl::Texture>& value) { _switchSceneButton = value; }
+//    /** sets return scene button texture */
+//    void setReturnSceneButton(const std::shared_ptr<cugl::Texture>& value) { _returnSceneButton = value; }
+    
     
     /** Checks whether board is full */
     const bool checkBoardFull();
