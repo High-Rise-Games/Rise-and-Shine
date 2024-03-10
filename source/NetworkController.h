@@ -13,6 +13,7 @@
 #include <cugl/cugl.h>
 #include <vector>
 class NetworkController {
+
 protected:
 	/** The network connection (as made by this scene) */
 	std::shared_ptr<cugl::net::NetcodeConnection> _network;
@@ -28,13 +29,6 @@ public:
      * This allows us to use the object without a heap pointer.
      */
     NetworkController() {}
-
-    /**
-     * The method called to update the scene.
-     *
-     * We need to update this method to constantly talk to the server
-     */
-    void update();
 
     /**
      * Returns the network connection (as made by this scene)
@@ -74,7 +68,6 @@ public:
      */
     void disconnect() { _network = nullptr; }
     
-private:
     /**
      * Processes data sent over the network.
      *
@@ -86,11 +79,35 @@ private:
      * Typically this is where players would communicate their names after being
      * connected. In this lab, we only need it to do one thing: communicate that
      * the host has started the game.
+     * 
+     * We do not handle any gameplay in this method. We simply return the JSON value
+     * representing the board state retrieved from the network.
+     * 
+     * Example board state:
+     * {
+        "player_id":  1,
+        "player_x": 30.2,
+        "player_y": 124.2,
+        "dirts": [ [0, 1], [2, 2], [0, 2] ],
+        "projectiles": [ 
+            { 
+                "pos": [0.5, 1.676],
+                "vel": [2, 3],
+                "type: "DIRT"
+            },
+            {
+                "pos": [1.5, 3.281],
+                "vel": [0, -2], 
+                "type": "POOP
+            }
+        ]
+     * }
      *
      * @param source    The UUID of the sender
      * @param data      The data received
+     * @returns the data as a JSON value representing a board state
      */
-    void processData(const std::string source, const std::vector<std::byte>& data);
+    std::shared_ptr<cugl::JsonValue> processData(const std::string source, const std::vector<std::byte>& data);
 
     /**
      * Checks that the network connection is still active.
@@ -104,14 +121,32 @@ private:
     bool checkConnection();
 
     /**
-     * Transmits a color change to all other devices.
+     * Transmits the board state belonging to the user given by
+     * their id to all other devices.
      *
-     * Because a device does not receive messages from itself, this method should
-     * also set the color.
+     * Example board state:
+     * {
+        "player_id":  1,
+        "player_x": 3,
+        "player_y": 6,
+        "dirts": [ [0, 1], [2, 2], [0, 2] ],
+        "projectiles": [ 
+            { 
+                "pos": [0.5, 1.676],
+                "vel": [2, 3],
+                "type: "DIRT"
+            },
+            {
+                "pos": [1.5, 3.281],
+                "vel": [0, -2], 
+                "type": "POOP
+            }
+        ]
+     * }
      *
-     * @param color The new color
+     * @param state     The user's board state
      */
-    // void transmitColor(cugl::Color4 color);
+    void transmitBoard(const std::shared_ptr<cugl::JsonValue> state);
 };
 
 #endif NetworkController_h

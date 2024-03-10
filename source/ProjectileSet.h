@@ -158,6 +158,11 @@ public:
      */
     bool isEmpty() const { return current.empty() && _pending.empty(); }
 
+    /** Clears the projectile pending set. */
+    void clearPending() { 
+        _pending.clear(); 
+    }
+
     /**
      * Returns the image for a single dirt projectile; reused by all dirt projectiles.
      *

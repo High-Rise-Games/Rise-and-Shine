@@ -11,17 +11,20 @@
 #define RELOAD_RATE 3
 
 /**
- * Model class representing an alien ship.
+ * Model class representing a player.
  */
 class Player {
 private:
-    /** Position of the ship */
+    /** ID of the player to distinguish in multiplayer */
+    int _id;
+    /** Position of the player */
     cugl::Vec2 _pos;
-    /** Velocity of the ship */
+    /** Velocity of the player */
     cugl::Vec2 _vel;
     /** Coordinates in relation to window grid of the player */
     cugl::Vec2 _coors;
     
+    // TODO: do we still need window height and width?
     // height of a window pane of the game board
     // used to discretize movement
     float _windowHeight;
@@ -29,7 +32,8 @@ private:
     // width of a window pane of the game board
     // used to discretize movement
     float _windowWidth;
-        
+       
+    // TODO: remove unnecessary fields from here and constants json file
     // The following are protected, because they have no accessors
     /** Current angle of the ship */
     float _ang;
@@ -80,10 +84,13 @@ public:
      * The JsonValue should be a reference of all of the constants
      * that necessary to set the "hidden physical properties".
      *
-     * @param pos   The ship position
-     * @param data  The data defining the physics constants
+     * @param id    The player id
+     * @param pos   The player position
+     * @param data  The data defining the constants
+     * @param windowWidth   The width of the window panes
+     * @param windowHeight  The height of the window panes
      */
-    Player(const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data, const float windowWidth, const float windowHeight);
+    Player(int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data, const float windowWidth, const float windowHeight);
     
     /**
      * Disposes the ship, releasing all resources.
@@ -92,6 +99,12 @@ public:
 
     
 #pragma mark Properties
+    /** 
+    * Returns the id of this player.
+    * @return the id of this player
+    */
+    const int getId() const { return _id; }
+
     /**
      * Returns the position of this ship.
      *

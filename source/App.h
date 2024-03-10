@@ -11,6 +11,7 @@
 #include "LoadingScene.h"
 #include "LobbyScene.h"
 #include "MenuScene.h"
+#include "NetworkController.h"
 
 /**
  * This class represents the application root for the ship demo.
@@ -57,6 +58,9 @@ protected:
     
     /** The primary controller for the game world */
     GameScene _gameplay;
+
+    /** The controller for network during gameplay */
+    NetworkController _network;
     
     
     /** The current active scene */

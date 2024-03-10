@@ -15,7 +15,8 @@ using namespace cugl;
  * @param pos   The ship position
  * @param data  The data defining the physics constants
  */
-Player::Player(const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data, const float windowWidth, const float windowHeight) {
+Player::Player(int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data, const float windowWidth, const float windowHeight) {
+    _id = id;
     _pos = pos;
     _coors = Vec2();
     _ang  = 0;

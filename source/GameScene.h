@@ -14,7 +14,7 @@
 #include "CollisionController.h"
 #include "WindowGrid.h"
 #include "ProjectileSet.h"
-
+#include "NetworkController.h"
 
 
 /**
@@ -30,7 +30,7 @@ protected:
     std::shared_ptr<cugl::AssetManager> _assets;
     
     /** The network connection (as made by this scene) */
-    std::shared_ptr<cugl::net::NetcodeConnection> _network;
+    // std::shared_ptr<cugl::net::NetcodeConnection> _network;
     
     /** Whether this player is the host */
     bool _ishost;
@@ -47,16 +47,20 @@ protected:
     DirtThrowInputController _dirtThrowInput;
     /** The controller for managing collisions */
     CollisionController _collisions;
-    
+    /** The controller for managing network data */
+    NetworkController _network;
     
     
     
     // MODELS should be shared pointers or a data structure of shared pointers
     /** The JSON value with all of the constants */
     std::shared_ptr<cugl::JsonValue> _constants;
-    /** Location and animation information for the ship */
+    /** Location and animation information for the player */
     std::shared_ptr<Player> _player;
-    /** The location of all of the active asteroids */
+    /** Location and animation information for the player to the left */
+    std::shared_ptr<Player> _playerLeft;
+    /** Location and animation information for the player to the right */
+    std::shared_ptr<Player> _playerRight;
     
     /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
     int _curBoard;
@@ -68,6 +72,11 @@ protected:
     /** Todo: probably need to change _windows to a vector, length 3 or 4*/
     /** Grid of windows and dirt placement to be drawn */
     WindowGrid _windows;
+    /** Grid of windows and dirt placement to be drawn for the left neighbor */
+    WindowGrid _windowsLeft;
+    /** Grid of windows and dirt placement to be drawn for the right neighbor */
+    WindowGrid _windowsRight;
+
     /** Random number generator for dirt generation */
     std::mt19937 _rng;
     /** Dirt random generation time stamp*/
@@ -82,8 +91,13 @@ protected:
     int _maxDirtAmount;
     /** The amount of dirt player is currently holdinfg in the bucket **/
     int _currentDirtAmount;
-    /** The projectile set */
+
+    /** The projectile set of your board */
     ProjectileSet _projectiles;
+    /** The projectile set of your left neighbor */
+    ProjectileSet _projectilesLeft;
+    /** The projectile set of your right neighbor */
+    ProjectileSet _projectilesRight;
     
     
     cugl::scheduable t;
@@ -161,6 +175,19 @@ public:
     
     /** generates dirt in a fair manner */
     void generateDirt();
+
+    /**
+     * Converts game state into a JSON value for sending over the network.
+     * @returns JSON value representing game board state
+     */
+    std::shared_ptr<cugl::JsonValue> getJsonBoard();
+
+    /**
+     * Updates a neighboring board given the JSON value representing its game state
+     * 
+     * @params data     The data to update
+     */
+    void updateNeighborBoard(std::shared_ptr<cugl::JsonValue> data);
     
     /**
      * The method called to update the game mode.
@@ -183,17 +210,6 @@ public:
     void render(const std::shared_ptr<cugl::SpriteBatch>& batch) override;
     
     /**
-     * Returns the network connection (as made by this scene)
-     *
-     * This value will be reset every time the scene is made active.
-     *
-     * @return the network connection (as made by this scene)
-     */
-    void setConnection(const std::shared_ptr<cugl::net::NetcodeConnection>& network) {
-        _network = network;
-    }
-    
-    /**
      * Sets whether the player is host.
      *
      * We may need to have gameplay specific code for host.
@@ -208,15 +224,6 @@ public:
      * @return true if the player quits the game.
      */
     bool didQuit() const { return _quit; }
-    
-    /**
-     * Disconnects this scene from the network controller.
-     *
-     * Technically, this method does not actually disconnect the network controller.
-     * Since the network controller is a smart pointer, it is only fully disconnected
-     * when ALL scenes have been disconnected.
-     */
-    void disconnect() { _network = nullptr; }
 
     /**
      * Resets the status of the game so that we can play again.

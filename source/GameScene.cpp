@@ -73,12 +73,29 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _projectiles.setPoopTexture(assets->get<Texture>("poop"));
     _projectiles.setTextureScales(_windows.getPaneHeight(), _windows.getPaneWidth());
     _projectiles.init(_constants->get("projectiles"));
+
+    _projectilesLeft.setDirtTexture(assets->get<Texture>("dirt"));
+    _projectilesLeft.setPoopTexture(assets->get<Texture>("poop"));
+    _projectilesLeft.setTextureScales(_windows.getPaneHeight(), _windows.getPaneWidth());
+
+    _projectilesRight.setDirtTexture(assets->get<Texture>("dirt"));
+    _projectilesRight.setPoopTexture(assets->get<Texture>("poop"));
+    _projectilesRight.setTextureScales(_windows.getPaneHeight(), _windows.getPaneWidth());
+
     
     // Make a ship and set its texture
     // starting position is most bottom left window
     Vec2 startingPos = Vec2(_windows.sideGap+(_windows.getPaneWidth()/2), _windows.getPaneHeight());
-    _player = std::make_shared<Player>(startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
+    
+    // TODO: host hands out ids, but can't do that until host is in charge of all board states.
+    _player = std::make_shared<Player>(2, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
     _player->setTexture(assets->get<Texture>("ship"));
+
+    _playerLeft = std::make_shared<Player>(1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
+    _playerLeft->setTexture(assets->get<Texture>("ship"));
+
+    _playerRight = std::make_shared <Player>(3, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
+    _playerRight->setTexture(assets->get<Texture>("ship"));
 
     
     // Initialize random dirt generation
@@ -87,10 +104,6 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Initialize dirt bucket
     setEmptyBucket(assets->get<Texture>("bucketempty"));
     setFullBucket(assets->get<Texture>("bucketfull"));
-
-    // Initialize the asteroid set
-    //_asteroids.init(_constants->get("asteroids"));
-    //_asteroids.setTexture(assets->get<Texture>("asteroid1"));
 
     // Get the bang sound
     _bang = assets->get<Sound>("bang");
@@ -142,25 +155,178 @@ void GameScene::reset() {
     _currentDirtAmount = 0;
 }
 
+/** 
+ * Converts game state into a JSON value for sending over the network.
+ * @returns JSON value representing game board state
+ */
+std::shared_ptr<cugl::JsonValue> GameScene::getJsonBoard() {
+    const std::shared_ptr<JsonValue> json;
+    json->init(JsonValue::Type::ObjectType);
+    json->appendValue("player_id", static_cast<double>(_player->getId()));
+    json->appendValue("player_x", _player->getPosition().x);
+    json->appendValue("player_y", _player->getPosition().y);
+
+    const std::shared_ptr<JsonValue> dirtArray;
+    dirtArray->init(JsonValue::Type::ArrayType);
+    for (int row = 0; row < _windows.getNHorizontal(); ++row) {
+        for (int col = 0; col < _windows.getNVertical(); ++col) {
+            bool hasDirt = _windows.getWindowState(row, col);
+            if (hasDirt) {
+                const std::shared_ptr<JsonValue> dirtPos;
+                dirtPos->init(JsonValue::Type::ArrayType);
+                dirtPos->appendValue(static_cast<double>(row));
+                dirtPos->appendValue(static_cast<double>(col));
+                dirtArray->appendChild(dirtPos);
+            }
+        }
+    }
+    
+    const std::shared_ptr<JsonValue> projPosArray;
+    projPosArray->init(JsonValue::Type::ArrayType);
+
+    const std::shared_ptr<JsonValue> projTypeArray;
+    projTypeArray->init(JsonValue::Type::ArrayType);
+
+    for (shared_ptr<ProjectileSet::Projectile> proj : _projectiles.current) {
+        const std::shared_ptr<JsonValue> projPos;
+        projPos->init(JsonValue::Type::ArrayType);
+        projPos->appendValue(proj->position.x);
+        projPos->appendValue(proj->position.y);
+        projPosArray->appendChild(projPos);
+
+        if (proj->type == ProjectileSet::Projectile::ProjectileType::DIRT) {
+            projTypeArray->appendValue("DIRT");
+        }
+        else if (proj->type == ProjectileSet::Projectile::ProjectileType::POOP) {
+            projTypeArray->appendValue("POOP");
+        }
+    }
+
+    return json;
+}
+
+/**
+* Updates a neighboring board given the JSON value representing its game state
+* 
+* * Example board state:
+ * {
+    "player_id":  1,
+    "player_x": 30.2,
+    "player_y": 124.2,
+    "dirts": [ [0, 1], [2, 2], [0, 2] ],
+    "projectiles": [ 
+            { 
+                "pos": [0.5, 1.676],
+                "vel": [2, 3],
+                "type: "DIRT"
+            },
+            {
+                "pos": [1.5, 3.281],
+                "vel": [0, -2], 
+                "type": "POOP"
+            }
+        ]
+ * }
+*
+* @params data     The data to update
+*/
+void GameScene::updateNeighborBoard(std::shared_ptr<JsonValue> data) {
+    int playerId = data->getInt("player_id", 0);;
+    int myId = _player->getId();
+    std::shared_ptr<Player> neighborPlayer = _player;
+    WindowGrid* neighborWindow;
+    ProjectileSet* neighborProjSet;
+    
+    if (playerId == myId + 1 || (myId == 4 && playerId == 1)) {
+        // if assigning ids clockwise, this is the left neighbor
+        neighborPlayer = _playerLeft;
+        neighborWindow = &_windowsLeft;
+        neighborProjSet = &_projectilesLeft;
+    }
+    else if (playerId == myId - 1 || (myId == 1 && playerId == 4)) {
+        // if assigning ids clockwise, this is the right neighbor
+        neighborPlayer = _playerRight;
+        neighborWindow = &_windowsRight;
+        neighborProjSet = &_projectilesRight;
+    }
+    else {
+        // otherwise, player is on the opposite board and we do not need to track their board state.
+        return;
+    }
+
+    // update neighbor's game states
+
+    // get x, y positions of neighbor
+    neighborPlayer->setPosition(Vec2(data->getFloat("player_x", 0), data->getFloat("player_y", 0)));
+
+    // populate neighbor's board with dirt
+    neighborWindow->clearBoard();
+    for (const std::shared_ptr< JsonValue>& jsonDirt : data->get("dirts")->children()) {
+        std::vector<int> dirtPos = jsonDirt->asIntArray();
+        neighborWindow->addDirt(dirtPos[0], dirtPos[1]);
+    }
+
+    // populate neighbor's projectile set
+    neighborProjSet->clearPending(); // clear pending set to rewrite
+    for (const std::shared_ptr<JsonValue>& projNode : data->get("projectiles")->children()) {
+        // get projectile position
+        const std::vector<std::shared_ptr<JsonValue>>& projPos = projNode->get("pos")->children();
+        Vec2 pos(projPos[0]->asFloat(), projPos[1]->asFloat());
+
+        // get projectile velocity
+        const std::vector<std::shared_ptr<JsonValue>>& projVel = projNode->get("vel")->children();
+        Vec2 vel(projVel[0]->asInt(), projVel[1]->asInt());
+
+        // get projectile type
+        string typeStr = projNode->get("type")->asString();
+        auto type = ProjectileSet::Projectile::ProjectileType::POOP;
+        if (typeStr == "DIRT") {
+            type = ProjectileSet::Projectile::ProjectileType::DIRT;
+        }
+
+        // add the projectile to neighbor's projectile set
+        neighborProjSet->spawnProjectile(pos, vel, type);
+    }
+}
+
 /**
  * The method called to update the game mode.
  *
  * This method contains any gameplay code that is not an OpenGL call.
+ * 
+ * We need to update this method to constantly talk to the server.
  *
  * @param timestep  The amount of time (in seconds) since the last frame
  */
 void GameScene::update(float timestep) {
+    if (_network.getConnection()) {
+        _network.getConnection()->receive([this](const std::string source,
+            const std::vector<std::byte>& data) {
+                std::shared_ptr<JsonValue> incomingMsg = _network.processData(source, data);
+                updateNeighborBoard(incomingMsg);
+            });
+        _network.checkConnection();
+
+        _network.transmitBoard(getJsonBoard());
+    }
+
     // When the player is on other's board
     // TODO: now the player is draged as dirt, need to switch to dirt later
     if (_curBoard != 0) {
         _dirtThrowInput.update();
+        if (_curBoard == -1) {
+            _projectilesLeft.update(getSize());
+        }
+        else if (_curBoard == 1) {
+            _projectilesRight.update(getSize());
+        }
         if (!_dirtSelected) {
             if (_dirtThrowInput.didPress()) {
                 Vec2 screenPos = _dirtThrowInput.getPosition();
                 Vec3 convertedWorldPos = screenToWorldCoords(screenPos);
                 Vec2 worldPos = Vec2(convertedWorldPos.x, convertedWorldPos.y);
                 std::cout<<"finger: x: "<<worldPos.x<<", y: "<<worldPos.y;
-                std::cout<<"ship: x: "<<_player->getPosition().x<<", y: "<<_player->getPosition().y;
+                std::cout<<"player: x: "<<_player->getPosition().x<<", y: "<<_player->getPosition().y;
                 float distance = (worldPos - _player->getPosition()).length();
                 if (distance <= _player->getRadius()) {
                     _dirtSelected = true;
@@ -171,10 +337,17 @@ void GameScene::update(float timestep) {
             if (_dirtThrowInput.didRelease()) {
                 _dirtSelected = false;
                 Vec2 currentScreenPos = _dirtThrowInput.getPosition();
-                Vec3 currentWorldPos = screenToWorldCoords(currentScreenPos);
-                Vec2 currentPos = Vec2(currentWorldPos.x, currentWorldPos.y);
-                Vec2 diff = currentPos - _prevDirtPos;
-                // TODO: logic for throwing the dirt
+                Vec2 currentWorldPos = screenToWorldCoords(currentScreenPos);
+                // Vec2 currentPos = Vec2(currentWorldPos.x, currentWorldPos.y);
+                Vec2 diff = currentWorldPos - _prevDirtPos;
+                Vec2 velocity = diff * -0.5;
+                // logic for throwing the dirt = converting to projectile
+                if (_curBoard == -1) {
+                    _projectilesLeft.spawnProjectile(currentWorldPos, velocity, ProjectileSet::Projectile::ProjectileType::DIRT);
+                }
+                else if (_curBoard == 1) {
+                    _projectilesRight.spawnProjectile(currentWorldPos, velocity, ProjectileSet::Projectile::ProjectileType::DIRT);
+                }
             } else if (_dirtThrowInput.isDown()) {
                 Vec2 currentScreenPos = _dirtThrowInput.getPosition();
                 Vec3 currentWorldPos = screenToWorldCoords(currentScreenPos);
@@ -339,10 +512,21 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     
     batch->draw(_background,Rect(Vec2::ZERO,getSize()));
     //_asteroids.draw(batch,getSize());
-    _windows.draw(batch, getSize());
-    _player->draw(batch, getSize());
-    _projectiles.draw(batch, getSize(), _windows.getPaneWidth(), _windows.getPaneHeight());
-
+    if (_curBoard == 0) {
+        _windows.draw(batch, getSize());
+        _player->draw(batch, getSize());
+        _projectiles.draw(batch, getSize(), _windows.getPaneWidth(), _windows.getPaneHeight());
+    }
+    else if (_curBoard == -1) {
+        _windows.draw(batch, getSize());
+        _player->draw(batch, getSize());
+        _projectilesLeft.draw(batch, getSize(), _windows.getPaneWidth(), _windows.getPaneHeight());
+    }
+    else if (_curBoard == 1) {
+        _windows.draw(batch, getSize());
+        _player->draw(batch, getSize());
+        _projectilesRight.draw(batch, getSize(), _windows.getPaneWidth(), _windows.getPaneHeight());
+    }
     batch->setColor(Color4::BLACK);
     batch->drawText(_text, Vec2(10, getSize().height - _text->getBounds().size.height));
     
