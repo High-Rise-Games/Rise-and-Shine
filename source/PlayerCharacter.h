@@ -45,6 +45,9 @@ private:
     int _health;
     /** The amount of time in frames for the player to be stunned */
     int _stunFrames;
+    
+    /** A property to adjust the rotation of the player when player colides. Resets to zero when stun frames is zero. */
+    float _stunRotate;
 
     // JSON DEFINED ATTRIBUTES
     /** Mass/weight of the ship. Used in collisions. */

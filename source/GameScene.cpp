@@ -94,12 +94,14 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     // TODO: host hands out ids, but can't do that until host is in charge of all board states.
     _player = std::make_shared<Player>(2, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
     _player->setTexture(assets->get<Texture>("ship"));
+    
 
     _playerLeft = std::make_shared<Player>(1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
     _playerLeft->setTexture(assets->get<Texture>("ship"));
 
     _playerRight = std::make_shared <Player>(3, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
     _playerRight->setTexture(assets->get<Texture>("ship"));
+    
 
     
     // Initialize random dirt generation
