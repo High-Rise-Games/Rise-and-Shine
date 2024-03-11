@@ -78,6 +78,9 @@ protected:
     /** If owner of this NetworkConfig object is host. */
     bool _host;
 
+    /** The id of this player to be passed into the game controller */
+    int _id;
+
 
 public:
 #pragma mark -
@@ -114,6 +117,12 @@ public:
      * @return true if the scene is currently active
      */
     bool isActive( ) const { return _active; }
+
+    /** Returns the id of this player based on when they joined */
+    int getId() { return _id; }
+
+    /** Returns the number of peers/players currently in this lobby. */
+    int getNumPlayers() { return _network->getPeers().size() + 1; }
     
     /**
      * Returns the network connection (as made by this scene)

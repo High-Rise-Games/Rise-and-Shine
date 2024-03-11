@@ -117,6 +117,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     _gameid_host = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("host_center_game_field_text"));
     _player = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("host_center_players_field_text"));
     _status = Status::WAIT;
+    _id = 1;
     
     // Program the buttons
     _backout->addListener([this](const std::string& name, bool down) {
@@ -173,6 +174,7 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
     _gameid_client = std::dynamic_pointer_cast<scene2::TextField>(_assets->get<scene2::SceneNode>("client_center_game_field_text"));
     _player = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("client_center_players_field_text"));
     _status = Status::IDLE;
+    _id = 0;
     
     _backout->addListener([this](const std::string& name, bool down) {
         if (down) {
@@ -238,7 +240,6 @@ void LobbyScene::update(float timestep) {
         }
         
         _player->setText(std::to_string(_network->getPeers().size()+1));
-        
 
     }
 }
@@ -313,7 +314,6 @@ bool LobbyScene::connect(const std::string room) {
 
     _network = cugl::net::NetcodeConnection().alloc(_config, dec2hex(room));
     _network->open();
-
     
     if (checkConnection()) {
         return true;
@@ -379,6 +379,9 @@ bool LobbyScene::checkConnection() {
             case cugl::net::NetcodeConnection::State::CONNECTED:
                 if (_status != START) {
                     _status = WAIT;
+                }
+                if (_id == 0) {
+                    _id = _network->getPeers().size() + 1;
                 }
                return true;
             case cugl::net::NetcodeConnection::State::MISMATCHED:

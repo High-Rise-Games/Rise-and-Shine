@@ -15,7 +15,7 @@
  */
 class Player {
 private:
-    /** ID of the player to distinguish in multiplayer */
+    /** The player's id */
     int _id;
     /** Position of the player */
     cugl::Vec2 _pos;
@@ -82,18 +82,15 @@ private:
 public:
 #pragma mark Constructors
     /**
-     * Creates a ship wiht the given position and data.
+     * Creates a player with the given fields.
      *
-     * The JsonValue should be a reference of all of the constants
-     * that necessary to set the "hidden physical properties".
-     *
-     * @param id    The player id
+     * @param id    The player's id
      * @param pos   The player position
      * @param data  The data defining the constants
      * @param windowWidth   The width of the window panes
      * @param windowHeight  The height of the window panes
      */
-    Player(int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data, const float windowWidth, const float windowHeight);
+    Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data, const float windowWidth, const float windowHeight);
     
     /**
      * Disposes the ship, releasing all resources.
@@ -102,11 +99,12 @@ public:
 
     
 #pragma mark Properties
-    /** 
-    * Returns the id of this player.
-    * @return the id of this player
-    */
+
+    /** Returns the id of the player. */
     const int getId() const { return _id; }
+
+    /** Sets the id of the player. */
+    void setId(int id) { _id = id; }
 
     /**
      * Returns the position of this ship.

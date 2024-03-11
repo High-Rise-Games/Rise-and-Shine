@@ -7,15 +7,15 @@
 using namespace cugl;
 
 /**
- * Creates a ship wiht the given position and data.
- *
- * The JsonValue should be a reference of all of the constants
- * that necessary to set the "hidden physical properties".
- *
- * @param pos   The ship position
- * @param data  The data defining the physics constants
+ * Creates a player with the given fields.
+ * 
+ * @param id    The player's id
+ * @param pos   The player position
+ * @param data  The data defining the constants
+ * @param windowWidth   The width of the window panes
+ * @param windowHeight  The height of the window panes
  */
-Player::Player(int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data, const float windowWidth, const float windowHeight) {
+Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data, const float windowWidth, const float windowHeight) {
     _id = id;
     _pos = pos;
     _coors = Vec2();
