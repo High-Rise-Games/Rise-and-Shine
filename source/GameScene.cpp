@@ -40,6 +40,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     // time of the game set to 200 seconds
     _gameTime = 200;
     
+    _frame=0;
+    
     // fps as established per App
     _fps = fps;
     
@@ -660,15 +662,19 @@ void GameScene::update(float timestep) {
         // each player manages their own UI elements/text boxes for displaying resource information
         // Update the health meter
         _healthText->setText(strtool::format("Health %d", _player->getHealth()));
-        // Update time
-        _text->setText(strtool::format("Time %d", _gameTime));
-//        gameTime=-1;
-        
-        _frame = _frame+1;
-        if (_frame==_fps) {
+
+        // update time
+        if ((_gameTime>=1)) {
+            _frame = _frame+1;
+        } if (_frame==_fps && (_gameTime>=1)) {
             _gameTime=_gameTime-1;
             _frame = 0;
         }
+        
+        
+        _text->setText(strtool::format("Time %d", _gameTime));
+        
+        
         _healthText->layout();
         _text->layout();
         
@@ -679,6 +685,9 @@ void GameScene::update(float timestep) {
         _tn_button->setVisible(true);
         _tn_button->activate();
     }
+    
+
+    
 }
 
 /**
