@@ -470,7 +470,7 @@ void GameScene::update(float timestep) {
 //        gameTime=-1;
         
         _frame = _frame+1;
-        if (_frame==60) {
+        if (_frame==_fps) {
             _gameTime=_gameTime-1;
             _frame = 0;
         }
