@@ -39,6 +39,7 @@
 #include "CUTextAlignment.h"
 #include "CUTextLayout.h"
 #include "CUShader.h"
+#include "CUVertexBuffer.h"
 #include "CUUniformBuffer.h"
 #include "CURenderTarget.h"
 #include "CUStencilEffect.h"

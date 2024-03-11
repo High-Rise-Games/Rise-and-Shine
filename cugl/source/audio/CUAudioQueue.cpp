@@ -855,12 +855,17 @@ void AudioQueue::setOverlap(float time)  {
 void AudioQueue::advance(unsigned int steps, float fade) {
     CUAssertLog(_cover != nullptr, "Attempt to use a disposed audio queue");
     _queue->setLoops(0);
+    
+    bool didFade = false;
     if (fade > 0.0f) {
         std::shared_ptr<AudioFader> fader = std::dynamic_pointer_cast<AudioFader>(_queue->getCurrent());
         if (fader) {
             fader->fadeOut(fade);
+            didFade = true;
         }
-    } else {
+    }
+    
+    if (!didFade) {
         _queue->skip();
     }
     if (steps) {

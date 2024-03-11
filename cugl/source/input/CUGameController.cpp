@@ -55,55 +55,6 @@ static float Sint16tofloat(Sint16 value) {
 }
 
 #pragma mark -
-#pragma mark Game Controller Events
-/**
- * Constructs a new hat event with the given values
- *
- * @param key   The device UID
- * @param ind   The hat index
- * @param pos   The hat position (in SDL encoding)
- * @param stamp The timestamp for the event
- */
-GameControllerHatEvent::GameControllerHatEvent(const std::string key, Uint8 ind, Uint8 pos,
-                                               const Timestamp& stamp) {
-    uuid = key;
-    index = ind;
-    timestamp = stamp;
-    switch (pos) {
-        case SDL_HAT_CENTERED:
-            state = GameController::Hat::CENTERED;
-            break;
-        case SDL_HAT_LEFTUP:
-            state = GameController::Hat::LEFT_UP;
-            break;
-       case SDL_HAT_UP:
-            state = GameController::Hat::UP;
-            break;
-        case SDL_HAT_RIGHTUP:
-            state = GameController::Hat::RIGHT_UP;
-            break;
-        case SDL_HAT_RIGHT:
-            state = GameController::Hat::RIGHT;
-            break;
-        case SDL_HAT_RIGHTDOWN:
-            state = GameController::Hat::RIGHT_DOWN;
-            break;
-        case SDL_HAT_DOWN:
-            state = GameController::Hat::DOWN;
-            break;
-        case SDL_HAT_LEFTDOWN:
-            state = GameController::Hat::LEFT_DOWN;
-            break;
-        case SDL_HAT_LEFT:
-            state = GameController::Hat::LEFT_DOWN;
-            break;
-        default:
-            state = GameController::Hat::CENTERED;
-            break;
-    }
-}
-
-#pragma mark -
 #pragma mark Game Controller
 /**
  * Creates a degnerate game controller
@@ -112,7 +63,10 @@ GameControllerHatEvent::GameControllerHatEvent(const std::string key, Uint8 ind,
  * activate a game controller, use {@link GameControllerInput#open}
  * instead.
  */
-GameController::GameController() : _input(NULL), _ballCount(0), _focus(0) {}
+GameController::GameController() : _input(NULL), _dpadState(false), _focus(0) {
+    _uid = "";
+    _name = "";
+}
 
 /**
  * Initializes this device, acquiring any necessary resources
@@ -123,21 +77,17 @@ GameController::GameController() : _input(NULL), _ballCount(0), _focus(0) {}
  * @return true if initialization was successful
  */
 bool GameController::init(int index, const std::string uid) {
-    _input = SDL_JoystickOpen(index);
+    _input = SDL_GameControllerOpen(index);
     if (_input != NULL) {
         _uid = uid;
-        _name = SDL_JoystickName(_input);
+        _name = SDL_GameControllerName(_input);
         
-        for(int ii = 0; ii < SDL_JoystickNumAxes(_input); ii++) {
+        for(int ii = 0; ii < SDL_CONTROLLER_AXIS_MAX; ii++) {
             _axisState.push_back(false);
         }
-        for(int ii = 0; ii < SDL_JoystickNumHats(_input); ii++) {
-            _hatState.push_back(false);
-        }
-        for(int ii = 0; ii < SDL_JoystickNumButtons(_input); ii++) {
+        for(int ii = 0; ii < SDL_CONTROLLER_BUTTON_MAX; ii++) {
             _buttonState.push_back(false);
         }
-        _ballCount = SDL_JoystickNumBalls(_input);
         
         return true;
     }
@@ -151,15 +101,14 @@ bool GameController::init(int index, const std::string uid) {
  */
 void GameController::dispose() {
     if (_input) {
-        SDL_JoystickClose(_input);
+        SDL_GameControllerClose(_input);
         _input = NULL;
     }
     _uid = "";
     _name = "";
-    _ballCount = 0;
     _axisState.clear();
-    _hatState.clear();
     _buttonState.clear();
+    _dpadState = false;
 }
 
 #pragma mark Input Methods
@@ -199,12 +148,10 @@ void GameController::clearState() {
     for(auto it = _axisState.begin(); it != _axisState.end(); ++it) {
         *it = false;
     }
-    for(auto it = _hatState.begin(); it != _hatState.end(); ++it) {
-        *it = false;
-    }
     for(auto it = _buttonState.begin(); it != _buttonState.end(); ++it) {
         *it = false;
     }
+    _dpadState = false;
 }
 
 /**
@@ -214,31 +161,43 @@ void GameController::clearState() {
  * @param value The axis value in [-1,1]
  * @param stamp The event timestamp
  */
-void GameController::reportAxis(Uint8 axis, float value, const Timestamp& stamp) {
+void GameController::reportAxis(Axis axis, float value, const Timestamp& stamp) {
     if (!_axisListeners.empty()) {
         GameControllerAxisEvent event(_uid,axis,value,stamp);
         for(auto it = _axisListeners.begin(); it != _axisListeners.end(); ++it) {
             it->second(event,it->first == _focus);
         }
     }
-    _axisState[axis] = true;
+    if (axis != Axis::INVALID) {
+        _axisState[(int)axis] = true;
+    }
 }
 
 /**
- * Records that an {@link GameControllerBallEvent} has occured
+ * Records that an {@link GameControllerButtonEvent} has occured
  *
- * @param ball  The track ball index
- * @param xrel  The movement along the x-axis
- * @param yrel  The movement along the y-axis
- * @param stamp The event timestamp
+ * @param button    The button index
+ * @param down      Whether the button is down
+ * @param stamp     The event timestamp
  */
-void GameController::reportBall(Uint8 ball, float xrel, float yrel,
-                                const Timestamp& stamp) {
-    if (!_ballListeners.empty()) {
-        GameControllerBallEvent event(_uid,ball,xrel,yrel,stamp);
-        for(auto it = _ballListeners.begin(); it != _ballListeners.end(); ++it) {
+void GameController::reportButton(Button button, bool down, const Timestamp& stamp) {
+    if (!_buttonListeners.empty()) {
+        GameControllerButtonEvent event(_uid,button,down,stamp);
+        for(auto it = _buttonListeners.begin(); it != _buttonListeners.end(); ++it) {
             it->second(event,it->first == _focus);
         }
+    }
+    switch (button) {
+        case Button::INVALID:
+            break;
+        case Button::DPAD_UP:
+        case Button::DPAD_DOWN:
+        case Button::DPAD_LEFT:
+        case Button::DPAD_RIGHT:
+            reportDPad(stamp);
+        default:
+            _buttonState[(int)button] = true;
+            break;
     }
 }
 
@@ -249,31 +208,17 @@ void GameController::reportBall(Uint8 ball, float xrel, float yrel,
  * @param value The hat position
  * @param stamp The event timestamp
  */
-void GameController::reportHat(Uint8 hat, Uint8 value, const Timestamp& stamp) {
-    if (!_hatListeners.empty()) {
-        GameControllerHatEvent event(_uid,hat,value,stamp);
-        for(auto it = _hatListeners.begin(); it != _hatListeners.end(); ++it) {
+void GameController::reportDPad(const Timestamp& stamp) {
+    // Determine the correct D-Pad state
+    DPad state = getDPadPosition();
+ 
+    if (!_dpadListeners.empty()) {
+        GameControllerDPadEvent event(_uid,state,stamp);
+        for(auto it = _dpadListeners.begin(); it != _dpadListeners.end(); ++it) {
             it->second(event,it->first == _focus);
         }
     }
-    _hatState[hat] = true;
-}
-
-/**
- * Records that an {@link GameControllerButtonEvent} has occured
- *
- * @param button    The button index
- * @param down      Whether the button is down
- * @param stamp     The event timestamp
- */
-void GameController::reportButton(Uint8 button, bool down, const Timestamp& stamp) {
-    if (!_buttonListeners.empty()) {
-        GameControllerButtonEvent event(_uid,button,down,stamp);
-        for(auto it = _buttonListeners.begin(); it != _buttonListeners.end(); ++it) {
-            it->second(event,it->first == _focus);
-        }
-    }
-    _buttonState[button] = true;
+    _dpadState = true;
 }
 
 #pragma mark Attributes
@@ -283,73 +228,8 @@ void GameController::reportButton(Uint8 button, bool down, const Timestamp& stam
  * @return the internal SDL identifier for this game controller
  */
 SDL_JoystickID GameController::getJoystickID() const {
-    return SDL_JoystickInstanceID(_input);
-}
-
-/**
- * Returns the number of axes.
- *
- * An axis is either a single axis of a analogue joystick (which consists
- * of two perpendicular axes) or a trigger.
- *
- * Axes are refered to by their index. The index of an axis is any positive
- * integer less than the returned value.
- *
- * @return the number of axes.
- */
-Uint8 GameController::numberAxes() const {
-    return _axisState.size();
-}
-
-/**
- * Returns the number of track balls.
- *
- * Trackballs only measure a change in position. They do not have a absolute
- * position like axes do. Most joysticks do not have track balls.
- *
- * Track balls are refered to by their index. The index of a track ball is
- * any positive integer less than the returned value.
- *
- * @return the number of track balls.
- */
-Uint8 GameController::numberBalls() const {
-    return _ballCount;
-}
-
-/**
- * Returns the number of hats.
- *
- * A "hat" is the official name of a D-Pad. Its state can be centered
- * (untouched) or one of the eight cardinal directions. Note that just
- * because a game controller has a D-Pad does not mean it has a hat.
- * Some game controllers treat their D-Pad as four separate buttons
- * (one for each direction).
- *
- * Hats are refered to by their index. The index of a hat is any positive
- * integer less than the returned value.
- *
- * @return the number of hats.
- */
-Uint8 GameController::numberHats() const {
-    return _hatState.size();
-}
-
-/**
- * Returns the number of buttons.
- *
- * A button is simply that -- something that can be pressed.  Most game
- * controllers have the classic 4 buttons (`X`, `Y`, `A`, `B` on XBox
- * controllers). But the start and "back" buttons also count as buttons,
- * as do any bumpers above the triggers. Finally, on some controllers
- * the D-Pad is interpretted as four buttons instead of as hat.
- *
- * Buttons are refered to by their index. The index of a button is any
- * positive integer less than the returned value.
- *
- * @return the number of buttons.
- */
-Uint8 GameController::numberButtons() const {
-    return _buttonState.size();
+    SDL_Joystick* joy = SDL_GameControllerGetJoystick(_input);
+    return SDL_JoystickInstanceID(joy);
 }
 
 #pragma mark Haptics
@@ -362,7 +242,7 @@ bool GameController::hasRumble() const {
     if (_input == NULL) {
         return false;
     }
-    return SDL_JoystickHasRumble(_input) == SDL_TRUE;
+    return SDL_GameControllerHasRumble(_input) == SDL_TRUE;
 }
 
 /**
@@ -374,7 +254,7 @@ bool GameController::hasRumbleTriggers() const {
     if (_input == NULL) {
         return false;
     }
-    return SDL_JoystickHasRumbleTriggers(_input) == SDL_TRUE;
+    return SDL_GameControllerHasRumbleTriggers(_input) == SDL_TRUE;
 }
 
 /**
@@ -389,7 +269,7 @@ void GameController::applyRumble(Uint16 low_freq, Uint16 high_freq, Uint32 durat
         CUAssertLog(_input, "Game controller has been closed");
         return ;
     }
-    SDL_JoystickRumble(_input, low_freq, high_freq, duration);
+    SDL_GameControllerRumble(_input, low_freq, high_freq, duration);
 }
 
 /**
@@ -404,220 +284,8 @@ void GameController::hasRumbleTriggers(Uint16 left, Uint16 right, Uint32 duratio
         CUAssertLog(_input, "Game controller has been closed");
         return ;
     }
-    SDL_JoystickRumbleTriggers(_input, left, right, duration);
+    SDL_GameControllerRumbleTriggers(_input, left, right, duration);
 }
-
-#pragma mark Data Polling
-/**
- * Returns the current axis position.
- *
- * The axis position is a value between -1 and 1, inclusive. It is often
- * either an axis of an analogue joystick or a trigger.  If it is a
- * joystick, then its default value will be near 0. It is a trigger, then
- * its default value will be -1.
- *
- * This class does not implement any dead zones (e.g. axis values to be
- * ignored and treated as the default position). That is the responsibility
- * of the user. A standard recommendation for a deadzone is -0.8 or lower
- * for triggers and -0.2 to 0.2 for joysticks.
- *
- * @param axis  The axis index
- */
-float GameController::getAxisPosition(Uint8 axis) const {
-    if (_input == NULL) {
-        CUAssertLog(_input, "Game controller has been closed");
-        return 0.0f;
-    }
-    
-    CUAssertLog(axis < _axisState.size(), "Axis %d is out of range",axis);
-    Sint16 value = SDL_JoystickGetAxis(_input, axis);
-    return Sint16tofloat(value);
-}
-
-/**
- * Returns true if the given axis changed position this frame.
- *
- * @param axis  The axis index
- *
- * @return true if the given axis changed position this frame.
- */
-bool GameController::axisDidChange(Uint8 axis) const {
-    if (_input == NULL) {
-        CUAssertLog(_input, "Game controller has been closed");
-        return false;
-    }
-
-    CUAssertLog(axis < _axisState.size(), "Axis %d is out of range",axis);
-    return _axisState[axis];
-}
-
-/**
- * Returns true if the given axis is a trigger.
- *
- * Triggers are axes whose default value is -1 (so they are one-sided).
- *
- * @param axis  The axis index
- *
- * @return true if the given axis is a trigger.
- */
-bool GameController::axisIsTrigger(Uint8 axis) const {
-    if (_input == NULL) {
-        CUAssertLog(_input, "Game controller has been closed");
-        return false;
-    }
-    
-    CUAssertLog(axis < _axisState.size(), "Axis %d is out of range",axis);
-    Sint16 state;
-    SDL_bool good = SDL_JoystickGetAxisInitialState(_input,axis,&state);
-    return good && state == -32768;
-}
-
-/**
- * Returns the relative motion of the track ball.
- *
- * The vector coordinates are between -1 and 1, inclusive. The values 1
- * or -1 represent maximum movement in a direction. The values returned
- * are the relative movement since the last animation frame. A zero vector
- * means that the track ball did not move.
- *
- * @param ball  The track ball index
- *
- * @return the relative motion of the track ball.
- */
-Vec2 GameController::getBallOffset(Uint8 ball) const {
-    if (_input == NULL) {
-        CUAssertLog(_input, "Game controller has been closed");
-        return Vec2::ZERO;
-    }
-    
-    CUAssertLog(ball < _ballCount, "Track ball %d is out of range",ball);
-    int x, y;
-    SDL_JoystickGetBall(_input, ball, &x, &y);
-    return Vec2(Sint16tofloat((Sint16)x),Sint16tofloat((Sint16)y));
-}
-  
-/**
- * Returns the hat position
- *
- * A "hat" is the official name of a D-Pad. Its state can be centered
- * (untouched) or one of the eight cardinal directions. Note that just
- * because a game controller has a D-Pad does not mean it has a hat.
- * Some game controllers treat their D-Pad as four separate buttons
- * (one for each direction).
- *
- * @param hat   The hat index
- *
- * @return the hat position
- */
-GameController::Hat GameController::getHatPosition(Uint8 hat) const {
-    if (_input == NULL) {
-        CUAssertLog(_input, "Game controller has been closed");
-        return GameController::Hat::CENTERED;
-    }
-    
-    CUAssertLog(hat < _hatState.size(), "Hat %d is out of range",hat);
-    Uint8 value = SDL_JoystickGetHat(_input, hat);
-    switch (value) {
-        case SDL_HAT_CENTERED:
-            return GameController::Hat::CENTERED;
-        case SDL_HAT_LEFTUP:
-            return GameController::Hat::LEFT_UP;
-        case SDL_HAT_UP:
-            return GameController::Hat::UP;
-        case SDL_HAT_RIGHTUP:
-            return GameController::Hat::RIGHT_UP;
-        case SDL_HAT_RIGHT:
-            return GameController::Hat::RIGHT;
-        case SDL_HAT_RIGHTDOWN:
-            return GameController::Hat::RIGHT_DOWN;
-        case SDL_HAT_DOWN:
-            return GameController::Hat::DOWN;
-        case SDL_HAT_LEFTDOWN:
-            return GameController::Hat::LEFT_DOWN;
-        case SDL_HAT_LEFT:
-            return GameController::Hat::LEFT_DOWN;
-    }
-
-    return GameController::Hat::CENTERED;
-}
-
-/**
- * Returns true if the given hat changed position this frame.
- *
- * @param hat   The hat index
- *
- * @return true if the given hat changed position this frame.
- */
-bool GameController::hatDidChange(Uint8 hat) const {
-    if (_input == NULL) {
-        CUAssertLog(_input, "Game controller has been closed");
-        return false;
-    }
-    
-    CUAssertLog(hat < _hatState.size(), "Hat %d is out of range",hat);
-    return _hatState[hat];
-}
-
-/**
- * Returns true if the given button is currently down.
- *
- * This method does not distinguish presses or releases and will return
- * true the duration of a button hold.
- *
- * @param button    The button index
- *
- * @return true if the given button is currently down.
- */
-bool GameController::isButtonDown(Uint8 button) const {
-    if (_input == NULL) {
-        CUAssertLog(_input, "Game controller has been closed");
-        return false;
-    }
-
-    CUAssertLog(button < _buttonState.size(), "Button %d is out of range",button);
-    return SDL_JoystickGetButton(_input, button) != 0;
-}
-
-/**
- * Returns true if the given button was pressed this frame.
- *
- * A press means that the button is down this animation frame, but was not
- * down the previous frame.
- *
- * @param button    The button index
- *
- * @return true if the given button was pressed this frame.
- */
-bool GameController::isButtonPressed(Uint8 button) const {
-    if (_input == NULL) {
-        CUAssertLog(_input, "Game controller has been closed");
-        return false;
-    }
-
-    CUAssertLog(button < _buttonState.size(), "Button %d is out of range",button);
-    return SDL_JoystickGetButton(_input, button) != 0 && _buttonState[button];
-}
-
-/**
- * Returns true if the given button was released this frame.
- *
- * A release means that the button is up this animation frame, but was not
- * up the previous frame.
- *
- * @param button    The button index
- *
- * @return true if the given button was released this frame.
- */
-bool GameController::isButtonReleased(Uint8 button) const {
-    if (_input == NULL) {
-        CUAssertLog(_input, "Game controller has been closed");
-        return false;
-    }
-
-    CUAssertLog(button < _buttonState.size(), "Button %d is out of range",button);
-    return SDL_JoystickGetButton(_input, button) == 0 && _buttonState[button];
-}
-
 
 #pragma mark Listener Methods
 /**
@@ -652,10 +320,82 @@ bool GameController::requestFocus(Uint32 key)  {
  */
 bool GameController::isListener(Uint32 key) const {
     bool result = _axisListeners.find(key) != _axisListeners.end();
-    result = result || _ballListeners.find(key) != _ballListeners.end();
-    result = result || _hatListeners.find(key) != _hatListeners.end();
     result = result || _buttonListeners.find(key) != _buttonListeners.end();
+    result = result || _dpadListeners.find(key) != _dpadListeners.end();
     return result;
+}
+
+#pragma mark Axis State
+/**
+ * Returns true if this game controller supports the specified axis
+ *
+ * Note that not all game controllers support all axes. In particular, the
+ * classic Nintendo controllers have no axes at all.
+ *
+ * @param axis  The axis to query
+ *
+ * @return true if this game controller supports the specified axis
+ */
+bool GameController::hasAxis(Axis axis) const {
+    if (_input == NULL) {
+        CUAssertLog(_input, "Game controller has been closed");
+        return false;
+    }
+    
+    return SDL_GameControllerHasAxis(_input, (SDL_GameControllerAxis)axis);
+}
+
+/**
+ * Returns the current axis position.
+ *
+ * The default value of any axis is 0. The joysticks all range from -1 to 1
+ * (with negative values being left and down). The triggers all range from
+ * 0 to 1.
+ *
+ * Note that the SDL only guarantees that a trigger at rest will be within
+ * 0.2 of zero. Most applications implement "dead zones" to ignore values
+ * in this range. However, this class does not implement any dead zones;
+ * that is the responsibility of the user.
+ *
+ * If the axis is not supported by this controller, this method will return
+ * 0.
+ *
+ * @param axis  The axis index
+ *
+ * @return the current axis position.
+ */
+float GameController::getAxisPosition(Axis axis) const {
+    if (_input == NULL) {
+        CUAssertLog(_input, "Game controller has been closed");
+        return 0.0f;
+    }
+    
+    SDL_GameControllerAxis internal = (SDL_GameControllerAxis)axis;
+    if (SDL_GameControllerHasAxis(_input,internal)) {
+        Sint16 value = SDL_GameControllerGetAxis(_input, internal);
+        return Sint16tofloat(value);
+    }
+    return 0.0f;
+}
+
+/**
+ * Returns true if the given axis changed position this frame.
+ *
+ * @param axis  The axis index
+ *
+ * @return true if the given axis changed position this frame.
+ */
+bool GameController::axisDidChange(Axis axis) const {
+    if (_input == NULL) {
+        CUAssertLog(_input, "Game controller has been closed");
+        return false;
+    }
+    
+    int index = (int)axis;
+    if (index != -1) {
+        return _axisState[index];
+    }
+    return false;
 }
 
 /**
@@ -672,61 +412,6 @@ bool GameController::isListener(Uint32 key) const {
 const GameController::AxisListener GameController::getAxisListener(Uint32 key) const {
     if (_axisListeners.find(key) != _axisListeners.end()) {
         return (_axisListeners.at(key));
-    }
-    return nullptr;
-}
-
-/**
- * Returns the ball motion listener for the given object key
- *
- * This listener is invoked when a track ball is moved.
- *
- * If there is no listener for the given key, it returns nullptr.
- *
- * @param key   The identifier for the listener
- *
- * @return the ball motion listener for the given object key
- */
-const GameController::BallListener GameController::getBallListener(Uint32 key) const {
-    if (_ballListeners.find(key) != _ballListeners.end()) {
-        return (_ballListeners.at(key));
-    }
-    return nullptr;
-}
-
-/**
- * Returns the hat listener for the given object key
- *
- * This listener is invoked when the hat changes position.
- *
- * If there is no listener for the given key, it returns nullptr.
- *
- * @param key   The identifier for the listener
- *
- * @return the hat listener for the given object key
- */
-const GameController::HatListener GameController::getHatListener(Uint32 key) const {
-    if (_hatListeners.find(key) != _hatListeners.end()) {
-        return (_hatListeners.at(key));
-    }
-    return nullptr;
-}
-
-/**
- * Returns the button listener for the given object key
- *
- * This listener is invoked when the button changes state. So it is
- * invoked on a press or a release, but not a hold.
- *
- * If there is no listener for the given key, it returns nullptr.
- *
- * @param key   The identifier for the listener
- *
- * @return the button listener for the given object key
- */
-const GameController::ButtonListener GameController::getButtonListener(Uint32 key) const {
-    if (_buttonListeners.find(key) != _buttonListeners.end()) {
-        return (_buttonListeners.at(key));
     }
     return nullptr;
 }
@@ -755,51 +440,143 @@ bool GameController::addAxisListener(Uint32 key, AxisListener listener) {
 }
 
 /**
- * Adds a ball motion listener for the given object key
+ * Removes the axis motion listener for the given object key
  *
- * There can only be one ball listener for a given key (though you may
- * share keys across other listener types). If a listener already exists
- * for the key, the method will fail and return false.  You must remove
- * a listener before adding a new one for the same key.
+ * If there is no active listener for the given key, this method fails and
+ * returns false.
  *
- * This listener is invoked when a track ball is moved.
+ * This listener is invoked when an axis changes position.
  *
- * @param key       The identifier for the listener
- * @param listener  The listener to add
+ * @param key   The identifier for the listener
  *
- * @return true if the listener was succesfully added
+ * @return true if the listener was succesfully removed
  */
-bool GameController::addBallListener(Uint32 key, BallListener listener) {
-    if (_ballListeners.find(key) == _ballListeners.end()) {
-        _ballListeners[key] = listener;
+bool GameController::removeAxisListener(Uint32 key) {
+    if (_axisListeners.find(key) != _axisListeners.end()) {
+        _axisListeners.erase(key);
         return true;
+    }
+    return false;
+}
+
+#pragma mark Button State
+/**
+ * Returns true if this game controller supports the specified button
+ *
+ * Note that not all game controllers support all buttons. In the paddles
+ * are currently unique to the XBox Elite controller.
+ *
+ * @param button    The button to query
+ *
+ * @return true if this game controller supports the specified button
+ */
+bool GameController::hasButton(Button button) const {
+    if (_input == NULL) {
+        CUAssertLog(_input, "Game controller has been closed");
+        return false;
+    }
+    
+    return SDL_GameControllerHasButton(_input, (SDL_GameControllerButton)button);
+}
+
+/**
+ * Returns true if the given button is currently down.
+ *
+ * This method does not distinguish presses or releases and will return
+ * true the entire duration of a button hold.
+ *
+ * If the button is not supported by this controller, this method will
+ * return false.
+ *
+ * @param button    The button to query
+ *
+ * @return true if the given button is currently down.
+ */
+bool GameController::isButtonDown(Button button) const {
+    if (_input == NULL) {
+        CUAssertLog(_input, "Game controller has been closed");
+        return false;
+    }
+    
+    SDL_GameControllerButton internal = (SDL_GameControllerButton)button;
+    if (SDL_GameControllerHasButton(_input,internal)) {
+        return SDL_GameControllerGetButton(_input, internal);
     }
     return false;
 }
 
 /**
- * Adds a hat listener for the given object key
+ * Returns true if the given button was pressed this frame.
  *
- * There can only be one hat listener for a given key (though you may
- * share keys across other listener types). If a listener already exists
- * for the key, the method will fail and return false.  You must remove
- * a listener before adding a new one for the same key.
+ * A press means that the button is down this animation frame, but was not
+ * down the previous frame.
  *
- * This listener is invoked when the hat changes position.
+ * If the button is not supported by this controller, this method will
+ * return false.
  *
- * @param key       The identifier for the listener
- * @param listener  The listener to add
+ * @param button    The button to query
  *
- * @return true if the listener was succesfully added
+ * @return true if the given button was pressed this frame.
  */
-bool GameController::addHatListener(Uint32 key, HatListener listener) {
-    if (_hatListeners.find(key) == _hatListeners.end()) {
-        _hatListeners[key] = listener;
-        return true;
+bool GameController::isButtonPressed(Button button) const {
+    if (_input == NULL) {
+        CUAssertLog(_input, "Game controller has been closed");
+        return false;
+    }
+
+    SDL_GameControllerButton internal = (SDL_GameControllerButton)button;
+    int index = (int)button;
+    if (index != -1) {
+        return SDL_GameControllerGetButton(_input, internal) != 0 && _buttonState[index];
     }
     return false;
 }
 
+/**
+ * Returns true if the given button was released this frame.
+ *
+ * A release means that the button is up this animation frame, but was not
+ * up the previous frame.
+ *
+ * If the button is not supported by this controller, this method will
+ * return false.
+ *
+ * @param button    The button to query
+ *
+ * @return true if the given button was released this frame.
+ */
+bool GameController::isButtonReleased(Button button) const {
+    if (_input == NULL) {
+        CUAssertLog(_input, "Game controller has been closed");
+        return false;
+    }
+
+    SDL_GameControllerButton internal = (SDL_GameControllerButton)button;
+    int index = (int)button;
+    if (index != -1) {
+        return SDL_GameControllerGetButton(_input, internal) == 0 && _buttonState[index];
+    }
+    return false;
+}
+
+/**
+ * Returns the button listener for the given object key
+ *
+ * This listener is invoked when the button changes state. So it is
+ * invoked on a press or a release, but not a hold.
+ *
+ * If there is no listener for the given key, it returns nullptr.
+ *
+ * @param key   The identifier for the listener
+ *
+ * @return the button listener for the given object key
+ */
+const GameController::ButtonListener GameController::getButtonListener(Uint32 key) const {
+    if (_buttonListeners.find(key) != _buttonListeners.end()) {
+        return (_buttonListeners.at(key));
+    }
+    return nullptr;
+}
 
 /**
  * Adds a button listener for the given object key
@@ -825,74 +602,11 @@ bool GameController::addButtonListener(Uint32 key, ButtonListener listener) {
     return false;
 }
 
-
-/**
- * Removes the axis motion listener for the given object key
- *
- * If there is no active listener for the given key, this method fails and
- * returns false.
- *
- * This listener is invoked when an axis changes position.
- *
- * @param key   The identifier for the listener
- *
- * @return true if the listener was succesfully removed
- */
-bool GameController::removeAxisListener(Uint32 key) {
-    if (_axisListeners.find(key) != _axisListeners.end()) {
-        _axisListeners.erase(key);
-        return true;
-    }
-    return false;
-}
-
-/**
- * Removes the ball motion listener for the given object key
- *
- * If there is no active listener for the given key, this method fails and
- * returns false.
- *
- * This listener is invoked when a track ball is moved.
- *
- * @param key   The identifier for the listener
- *
- * @return true if the listener was succesfully removed
- */
-bool GameController::removeBallListener(Uint32 key) {
-    if (_ballListeners.find(key) != _ballListeners.end()) {
-        _ballListeners.erase(key);
-        return true;
-    }
-    return false;
-}
-
-/**
- * Removes the hat listener for the given object key
- *
- * If there is no active listener for the given key, this method fails and
- * returns false. This method will succeed if there is a drag listener for
- * the given key, even if the pointer awareness if BUTTON.
- *
- * This listener is invoked when the hat changes position.
- *
- * @param key   The identifier for the listener
- *
- * @return true if the listener was succesfully removed
- */
-bool GameController::removeHatListener(Uint32 key) {
-    if (_hatListeners.find(key) != _hatListeners.end()) {
-        _hatListeners.erase(key);
-        return true;
-    }
-    return false;
-}
-
 /**
  * Removes the button listener for the given object key
  *
  * If there is no active listener for the given key, this method fails and
- * returns false. This method will succeed if there is a motion listener
- * for the given key, even if the pointer awareness if BUTTON or DRAG.
+ * returns false.
  *
  * This listener is invoked when the button changes state. So it is
  * invoked on a press or a release, but not a hold.
@@ -909,15 +623,197 @@ bool GameController::removeButtonListener(Uint32 key) {
     return false;
 }
 
+#pragma mark D-Pad State
+/**
+ * Returns true if the controller has a directional pad.
+ *
+ * This method is the same a querying all four D-pad buttons.
+ *
+ * @return true if the controller has a directional pad.
+ */
+bool GameController::GameController::hasDPad() const {
+    if (_input == NULL) {
+        CUAssertLog(_input, "Game controller has been closed");
+        return false;
+    }
+    
+    bool result = true;
+    result = result && SDL_GameControllerHasButton(_input, SDL_CONTROLLER_BUTTON_DPAD_UP);
+    result = result && SDL_GameControllerHasButton(_input, SDL_CONTROLLER_BUTTON_DPAD_DOWN);
+    result = result && SDL_GameControllerHasButton(_input, SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+    result = result && SDL_GameControllerHasButton(_input, SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+
+    return result;
+}
+
+/**
+ * Returns the D-Pad position
+ *
+ * This method converts the current D-Pad button state into a directional
+ * state. This state can be centered (untouched) or one of the eight
+ * cardinal directions.
+ *
+ * If this controller does not have a D-Pad, this method will always
+ * return CENTERED.
+ *
+ * @return the D-Pad position
+ */
+GameController::DPad GameController::getDPadPosition() const {
+    if (_input == NULL) {
+        CUAssertLog(_input, "Game controller has been closed");
+        return DPad::CENTERED;
+    }
+
+    DPad result = DPad::CENTERED;
+    
+    int x = 0;
+    int y = 0;
+    if (SDL_GameControllerGetButton(_input, SDL_CONTROLLER_BUTTON_DPAD_UP)) {
+        y += 1;
+    }
+    if (SDL_GameControllerGetButton(_input, SDL_CONTROLLER_BUTTON_DPAD_DOWN)) {
+        y -= 1;
+    }
+    if (SDL_GameControllerGetButton(_input, SDL_CONTROLLER_BUTTON_DPAD_LEFT)) {
+        x -= 1;
+    }
+    if (SDL_GameControllerGetButton(_input, SDL_CONTROLLER_BUTTON_DPAD_RIGHT)) {
+        x += 1;
+    }
+    
+    // Just in case
+    SDL_ClearError();
+    
+    switch (x) {
+        case -1:
+            switch (y) {
+                case -1:
+                    result = DPad::LEFT_DOWN;
+                    break;
+                case 0:
+                    result = DPad::LEFT;
+                    break;
+                case 1:
+                    result = DPad::LEFT_UP;
+                    break;
+            }
+            break;
+        case 0:
+            switch (y) {
+                case -1:
+                    result = DPad::DOWN;
+                    break;
+                case 0:
+                    break;
+                case 1:
+                    result = DPad::UP;
+                    break;
+            }
+            break;
+        case 1:
+            switch (y) {
+                case -1:
+                    result = DPad::RIGHT_DOWN;
+                    break;
+                case 0:
+                    result = DPad::RIGHT;
+                    break;
+                case 1:
+                    result = DPad::RIGHT_UP;
+                    break;
+            }
+            break;
+    }
+    
+    return result;
+}
+
+/**
+ * Returns true if the D-Pad changed position this frame.
+ *
+ * @return true if the D-Pad changed position this frame.
+ */
+bool GameController::dPadDidChange() const {
+    if (_input == NULL) {
+        CUAssertLog(_input, "Game controller has been closed");
+        return false;
+    }
+    
+    return _dpadState;
+}
+
+/**
+ * Returns the D-Pad listener for the given object key
+ *
+ * This listener is invoked when the D-Pad changes position.
+ *
+ * If there is no listener for the given key, it returns nullptr.
+ *
+ * @param key   The identifier for the listener
+ *
+ * @return the D-Pad listener for the given object key
+ */
+const GameController::DPadListener GameController::getDPadListener(Uint32 key) const {
+    if (_dpadListeners.find(key) != _dpadListeners.end()) {
+        return (_dpadListeners.at(key));
+    }
+    return nullptr;
+}
+
+/**
+ * Adds a D-Pad listener for the given object key
+ *
+ * There can only be one D-Pad listener for a given key (though you may
+ * share keys across other listener types). If a listener already exists
+ * for the key, the method will fail and return false.  You must remove
+ * a listener before adding a new one for the same key.
+ *
+ * This listener is invoked when the D-Pad changes position.
+ *
+ * @param key       The identifier for the listener
+ * @param listener  The listener to add
+ *
+ * @return true if the listener was succesfully added
+ */
+bool GameController::addDPadListener(Uint32 key, DPadListener listener) {
+    if (_dpadListeners.find(key) == _dpadListeners.end()) {
+        _dpadListeners[key] = listener;
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Removes the D-Pad listener for the given object key
+ *
+ * If there is no active listener for the given key, this method fails and
+ * returns false.
+ *
+ * This listener is invoked when the D-Pad changes position.
+ *
+ * @param key   The identifier for the listener
+ *
+ * @return true if the listener was succesfully removed
+ */
+bool GameController::removeDPadListener(Uint32 key) {
+    if (_dpadListeners.find(key) != _dpadListeners.end()) {
+        _dpadListeners.erase(key);
+        return true;
+    }
+    return false;
+}
+
+
 #pragma mark -
 #pragma mark GameControllerInput
-
 /**
  * Initializes this device, acquiring any necessary resources
  *
  * @return true if initialization was successful
  */
 bool GameControllerInput::init() {
+    SDL_JoystickEventState(SDL_ENABLE);
+    SDL_GameControllerEventState(SDL_ENABLE);
     scanDevices();
     return true;
 }
@@ -928,6 +824,8 @@ bool GameControllerInput::init() {
  * An uninitialized device may not work without reinitialization.
  */
 void GameControllerInput::dispose() {
+    SDL_GameControllerEventState(SDL_IGNORE);
+    SDL_JoystickEventState(SDL_IGNORE);
     for (auto it = _bysdl.begin(); it != _bysdl.end(); ++it) {
         it->second->dispose();
     }
@@ -1336,59 +1234,46 @@ void GameControllerInput::clearState() {
 bool GameControllerInput::updateState(const SDL_Event& event,
                                       const Timestamp& stamp) {
     switch (event.type) {
-        case SDL_JOYAXISMOTION:
+        case SDL_CONTROLLERAXISMOTION:
         {
             SDL_JoyAxisEvent jevt = event.jaxis;
             auto jt = _bysdl.find(jevt.which);
+            GameController::Axis axis = (GameController::Axis)jevt.axis;
             if (jt != _bysdl.end()) {
-                jt->second->reportAxis(jevt.axis,Sint16tofloat(jevt.value),stamp);
+                jt->second->reportAxis(axis,Sint16tofloat(jevt.value),stamp);
             }
         }
             break;
-        case SDL_JOYBALLMOTION:
-        {
-            SDL_JoyBallEvent jevt = event.jball;
-            auto jt = _bysdl.find(jevt.which);
-            if (jt != _bysdl.end()) {
-                jt->second->reportBall(jevt.ball,
-                                       Sint16tofloat(jevt.xrel),
-                                       Sint16tofloat(jevt.yrel),
-                                       stamp);
-            }
-        }
-            break;
-        case SDL_JOYHATMOTION:
-        {
-            SDL_JoyHatEvent jevt = event.jhat;
-            auto jt = _bysdl.find(jevt.which);
-            if (jt != _bysdl.end()) {
-                jt->second->reportHat(jevt.hat, jevt.value, stamp);
-            }
-        }
-            break;
-        case SDL_JOYBUTTONDOWN:
-        case SDL_JOYBUTTONUP:
+        case SDL_CONTROLLERBUTTONDOWN:
+        case SDL_CONTROLLERBUTTONUP:
         {
             SDL_JoyButtonEvent jevt = event.jbutton;
             auto jt = _bysdl.find(jevt.which);
+            GameController::Button button = (GameController::Button)jevt.button;
             if (jt != _bysdl.end()) {
                 bool down = jevt.state == SDL_PRESSED;
-                jt->second->reportButton(jevt.button, down, stamp);
+                jt->second->reportButton(button, down, stamp);
             }
         }
             break;
-        case SDL_JOYDEVICEADDED:
+        case SDL_CONTROLLERDEVICEADDED:
         {
             SDL_JoyDeviceEvent jevt = event.jdevice;
             std::string uid = addDevice(jevt.which);
             GameControllerInputEvent gevent(uid,true,stamp);
+            for(auto it = _listeners.begin(); it != _listeners.end(); ++it) {
+                it->second(gevent,_focus);
+            }
         }
             break;
-        case SDL_JOYDEVICEREMOVED:
+        case SDL_CONTROLLERDEVICEREMOVED:
         {
             SDL_JoyDeviceEvent jevt = event.jdevice;
             std::string uid = removeDevice(jevt.which);
             GameControllerInputEvent gevent(uid,false,stamp);
+            for(auto it = _listeners.begin(); it != _listeners.end(); ++it) {
+                it->second(gevent,_focus);
+            }
         }
             break;
         default:
@@ -1408,13 +1293,11 @@ bool GameControllerInput::updateState(const SDL_Event& event,
  * @param eventset  The set to store the event types.
  */
 void GameControllerInput::queryEvents(std::vector<Uint32>& eventset) {
-    eventset.push_back((Uint32)SDL_JOYAXISMOTION);
-    eventset.push_back((Uint32)SDL_JOYBALLMOTION);
-    eventset.push_back((Uint32)SDL_JOYBUTTONDOWN);
-    eventset.push_back((Uint32)SDL_JOYBUTTONUP);
-    eventset.push_back((Uint32)SDL_JOYHATMOTION);
-    eventset.push_back((Uint32)SDL_JOYDEVICEADDED);
-    eventset.push_back((Uint32)SDL_JOYDEVICEREMOVED);
+    eventset.push_back((Uint32)SDL_CONTROLLERAXISMOTION);
+    eventset.push_back((Uint32)SDL_CONTROLLERBUTTONDOWN);
+    eventset.push_back((Uint32)SDL_CONTROLLERBUTTONUP);
+    eventset.push_back((Uint32)SDL_CONTROLLERDEVICEADDED);
+    eventset.push_back((Uint32)SDL_CONTROLLERDEVICEREMOVED);
 }
 
 
