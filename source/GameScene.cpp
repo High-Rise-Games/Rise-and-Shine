@@ -34,8 +34,15 @@ using namespace std;
  *
  * @return true if the controller is initialized properly, false otherwise.
  */
-bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
+bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps) {
     // Initialize the scene to a locked width
+    
+    // time of the game set to 200 seconds
+    _gameTime = 200;
+    
+    // fps as established per App
+    _fps = fps;
+    
     Size dimen = Application::get()->getDisplaySize();
     _rng.seed(std::time(nullptr));
     _dirtGenSpeed = 2;
@@ -101,14 +108,12 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     // no ids given yet - to be assigned in initPlayers()
     _player = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
     _player->setTexture(assets->get<Texture>("ship"));
-
-    int leftId = _id == 1 ? 4 : _id - 1;
+    
     _playerLeft = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerLeft->setTexture(assets->get<Texture>("left"));
+    _playerLeft->setTexture(assets->get<Texture>("ship"));
 
-    int rightId = _id == 4 ? 1 : _id + 1;
     _playerRight = std::make_shared <Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerRight->setTexture(assets->get<Texture>("left"));
+    _playerRight->setTexture(assets->get<Texture>("ship"));
 
     // Initialize random dirt generation
     updateDirtGenTime();
@@ -134,8 +139,11 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
 
     // Create and layout the health meter
     std::string health_msg = strtool::format("Health %d", _player->getHealth());
-    _text = TextLayout::allocWithText(health_msg, assets->get<Font>("pixel32"));
+    std::string time_msg = strtool::format("Time %d", _player->getHealth());
+    _text = TextLayout::allocWithText(time_msg, assets->get<Font>("pixel32"));
     _text->layout();
+    _healthText = TextLayout::allocWithText(health_msg, assets->get<Font>("pixel32"));
+    _healthText->layout();
     
     reset();
     
@@ -212,7 +220,7 @@ bool GameScene::initHost(const std::shared_ptr<cugl::AssetManager>& assets) {
 
     // player ids for self, right, and left already assigned from earlier initPlayers call
     _playerAcross = std::make_shared<Player>(3, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerAcross->setTexture(assets->get<Texture>("left"));
+    _playerAcross->setTexture(assets->get<Texture>("ship"));
 
     hostReset();
 
@@ -651,7 +659,17 @@ void GameScene::update(float timestep) {
 
         // each player manages their own UI elements/text boxes for displaying resource information
         // Update the health meter
-        _text->setText(strtool::format("Health %d", _player->getHealth()));
+        _healthText->setText(strtool::format("Health %d", _player->getHealth()));
+        // Update time
+        _text->setText(strtool::format("Time %d", _gameTime));
+//        gameTime=-1;
+        
+        _frame = _frame+1;
+        if (_frame==_fps) {
+            _gameTime=_gameTime-1;
+            _frame = 0;
+        }
+        _healthText->layout();
         _text->layout();
         
         // Update the dirt display
@@ -829,7 +847,8 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _projectilesRight.draw(batch, getSize(), _windowsRight.getPaneWidth(), _windowsRight.getPaneHeight());
     }
     batch->setColor(Color4::BLACK);
-    batch->drawText(_text, Vec2(10, getSize().height - _text->getBounds().size.height));
+    batch->drawText(_text, Vec2(getSize().width - 10 - _text->getBounds().size.width, getSize().height - _text->getBounds().size.height));
+    batch->drawText(_healthText, Vec2(10, getSize().height - _healthText->getBounds().size.height));
     
     //set bucket texture location
     Affine2 bucketTrans = Affine2();

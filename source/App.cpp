@@ -218,7 +218,7 @@ void App::updateLoadingScene(float timestep) {
         _mainmenu.init(_assets);
         _lobby_host.init_host(_assets);
         _lobby_client.init_client(_assets);
-        _gameplay.init(_assets);
+        _gameplay.init(_assets, getFPS());
         _mainmenu.setActive(true);
         _scene = State::MENU;
     }

@@ -37,6 +37,15 @@ protected:
     
     /** ID of the player to distinguish in multiplayer */
     int _id;
+    /** Seconds left in the game */
+    int _gameTime;
+    
+    /** The FPS of the game, as set by the App */
+    int _fps;
+    
+    /** The current frame incremeted by 1 every frame (resets to 0 every time we reach 60 frames) */
+    int _frame;
+    
     
     
     // CONTROLLERS are attached directly to the scene (no pointers)
@@ -122,6 +131,8 @@ protected:
     /** The backgrounnd image */
     std::shared_ptr<cugl::Texture> _background;
     /** The text with the current health */
+    std::shared_ptr<cugl::TextLayout> _healthText;
+    /** The text with the current time */
     std::shared_ptr<cugl::TextLayout> _text;
     /** Empty bucket texture image */
     std::shared_ptr<cugl::Texture> _emptyBucket;
@@ -174,7 +185,7 @@ public:
      *
      * @return true if the controller is initialized properly, false otherwise.
      */
-    bool init(const std::shared_ptr<cugl::AssetManager>& assets);
+    bool init(const std::shared_ptr<cugl::AssetManager>& assets, int fps);
 
     /** Initializes the player models for all players, whether host or client. */
     bool initPlayers(const std::shared_ptr<cugl::AssetManager>& assets);

@@ -30,6 +30,9 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     // width of a window pane of the game board
     _windowHeight = windowHeight;
     
+    // rotation property of player when player is stunned
+    _stunRotate = 0;
+    
     // Physics
     _mass = data->getFloat("mass",1.0);
     _shadows  = data->getFloat("shadow",0.0);
@@ -119,12 +122,23 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
     if (_sprite) {
         // Transform to place the ship
         Affine2 shiptrans;
-        shiptrans.rotate(_ang*M_PI/180);
+//        shiptrans.rotate(_ang*M_PI/180);
+        
+        if (getStunFrames()>0) {
+            _stunRotate += 0.1;
+            shiptrans.rotate(_stunRotate*M_PI);
+        } else {
+            _stunRotate = 0;
+            shiptrans.rotate(0);
+        }
+        
         shiptrans.translate(_pos);
         // Transform to place the shadow, and its color
         Affine2 shadtrans = shiptrans;
         shadtrans.translate(_shadows,-_shadows);
         Color4f shadow(0,0,0,0.5f);
+        
+    
         
         _sprite->draw(batch,shadow,shadtrans);
         _sprite->draw(batch,shiptrans);

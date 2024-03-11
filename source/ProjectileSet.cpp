@@ -32,7 +32,7 @@ ProjectileSet::Projectile::Projectile(const cugl::Vec2 p, const cugl::Vec2 v, st
     else if(type == ProjectileType::POOP) {
         _scaleFactor = sf;
         _damage = 1;
-        _stunTime = 0;
+        _stunTime = 100;
     }
 }
 
