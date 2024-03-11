@@ -681,7 +681,12 @@ Uint32 AudioScheduler::read(float* buffer, Uint32 frames) {
                 }
                 _previous = current;
                 previous = _previous;
+                
+                Uint32 size = _qsize.load(std::memory_order_acquire);
+                size = size ? size-1 : 0;
                 _queue.pop(_current,loop);
+                _qsize.store(size,std::memory_order_relaxed);
+
                 current = _current;
             } else {
                 amt += current->read(&(buffer[amt*_channels]),need);
