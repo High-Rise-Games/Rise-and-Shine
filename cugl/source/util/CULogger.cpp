@@ -416,6 +416,7 @@ void Logger::log(const std::string format, ...) {
     va_list args;
     va_start (args, format);
     size_t size = vsnprintf(nullptr, 0, format.c_str(), args)+1;
+    va_end(args);
     if (size < _capacity) {
         expand(size);
     }
@@ -425,7 +426,10 @@ void Logger::log(const std::string format, ...) {
     _buffer[_name.size()+1] = ']';
     _buffer[_name.size()+2] = ' ';
 
-    vsnprintf(_buffer+_name.size()+3, _capacity, format.c_str(), args);
+    va_start (args, format);
+    size_t off = _name.size()+3;
+    vsnprintf(_buffer+off, _capacity-off, format.c_str(), args);
+    va_end(args);
     if ((int)_fileLevel > (int)Level::NO_MSG) {
         stamp_time(_timestamp,STAMP_SIZE);
         _writer->write(_timestamp);
@@ -468,6 +472,7 @@ void Logger::log(const char* format, ...) {
     va_list args;
     va_start (args, format);
     size_t size = vsnprintf(nullptr, 0, format, args)+1;
+    va_end(args);
     if (size < _capacity) {
         expand(size);
     }
@@ -477,7 +482,10 @@ void Logger::log(const char* format, ...) {
     _buffer[_name.size()+1] = ']';
     _buffer[_name.size()+2] = ' ';
 
-    vsnprintf(_buffer+_name.size()+3, _capacity, format, args);
+    va_start (args, format);
+    size_t off = _name.size()+3;
+    vsnprintf(_buffer+off, _capacity-off, format, args);
+    va_end(args);
     if ((int)_fileLevel > (int)Level::NO_MSG) {
         stamp_time(_timestamp,STAMP_SIZE);
         _writer->write(_timestamp);
@@ -520,6 +528,7 @@ void Logger::log(Level level, const std::string format, ...) {
     va_list args;
     va_start (args, format);
     size_t size = vsnprintf(nullptr, 0, format.c_str(), args)+_name.size()+4;
+    va_end(args);
     if (size < _capacity) {
         expand(size);
     }
@@ -529,7 +538,10 @@ void Logger::log(Level level, const std::string format, ...) {
     _buffer[_name.size()+1] = ']';
     _buffer[_name.size()+2] = ' ';
 
-    vsnprintf(_buffer+_name.size()+3, _capacity, format.c_str(), args);
+    va_start (args, format);
+    size_t off = _name.size()+3;
+    vsnprintf(_buffer+off, _capacity-off, format.c_str(), args);
+    va_end(args);
     if ((int)_fileLevel > (int)Level::NO_MSG &&
         (int)level > (int)Level::NO_MSG &&
         (int)level <= (int)_fileLevel) {
@@ -575,6 +587,7 @@ void Logger::log(Level level, const char* format, ...) {
     va_list args;
     va_start (args, format);
     size_t size = vsnprintf(nullptr, 0, format, args)+_name.size()+4;
+    va_end(args);
     if (size < _capacity) {
         expand(size);
     }
@@ -584,7 +597,10 @@ void Logger::log(Level level, const char* format, ...) {
     _buffer[_name.size()+1] = ']';
     _buffer[_name.size()+2] = ' ';
 
-    vsnprintf(_buffer+_name.size()+3, _capacity, format, args);
+    va_start (args, format);
+    size_t off = _name.size()+3;
+    vsnprintf(_buffer+off, _capacity-off, format, args);
+    va_end(args);
     if ((int)_fileLevel > (int)Level::NO_MSG &&
         (int)level > (int)Level::NO_MSG &&
         (int)level <= (int)_fileLevel) {

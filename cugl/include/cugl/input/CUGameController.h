@@ -31,7 +31,7 @@
 //      3. This notice may not be removed or altered from any source distribution.
 //
 //  Author: Walker White
-//  Version: 1/16/24
+//  Version: 3/3/24
 //
 #ifndef __CU_GAME_CONTROLLER_H__
 #define __CU_GAME_CONTROLLER_H__
@@ -43,8 +43,7 @@ namespace cugl {
 
 // Forward declarations
 class GameControllerAxisEvent;
-class GameControllerBallEvent;
-class GameControllerHatEvent;
+class GameControllerDPadEvent;
 class GameControllerButtonEvent;
 
 #pragma mark -
@@ -52,24 +51,25 @@ class GameControllerButtonEvent;
 /**
  * This class is a reference to single game controller.
  *
- * A game controller is a collection of four types of input devices:
+ * This class is built on top of the SDL GameController interface. This allows
+ * the developer to use a uniform input independent of the controller input
+ * type (i.e. D-input vs Xinput). This API is slightly more restrictive than
+ * the SDL joystick interface, in that it does not have support for hats
+ * or track balls). Instead, the types of input are limited to the following:
  *
  *  - Axes: Analogue joysticks and triggers
- *  - Balls: Track balls, which provide relative movement
- *  - Hats: Direction pads
  *  - Buttons: On/off input
  *
- * While individual game controllers (like XBox controllers or PS5 controllers)
- * have a very specific layout, this is a general class that makes no
- * assumptions about the layout of the individual controls. Instead, each
- * attached input device is referred to by an index.
+ * In this interface, D-Pads are treated as buttons and not hats. However, we
+ * do abstract out a D-Pad interface to replicate joystick hat functionality.
  *
- * With that said, the index number an attached device is fixed for all
- * controllers of the same type. For example, and XBox controller uses axes
- * 0 (left-right) and 1 (up-down) for the left analogue stick and axes 2
- * (left-right) and 3 (up-down) for the right analogue stick. With some
- * experimentation, you should be able to figure the layout for any popular
- * controller.
+ * Note that SDL game controllers also support sensors (accelerometers) and
+ * touch pads (such as the PS4 touchpad). None of that is support currently.
+ *
+ * The advantage of the SDL game controller API is that layout is uniform. All
+ * controllers have buttons and axes in the same place. Our API uses the XBox
+ * names of buttons (A, B, X, Y) instead of the Playstation names, as they are
+ * easier to reference.
  *
  * There should only be one instance of a specific controller at any given
  * time. In addition, controllers can be connected and removed while the
@@ -80,29 +80,111 @@ class GameControllerButtonEvent;
 class GameController {
 public:
     /**
-     * An enumeration of the hat positions.
+     * An enumeration of the supported buttons.
      *
-     * A hat is a directional pad. It has nine states -- the center and the
-     * eight cardinal directions.
+     * This is the list of all buttons supported by this interface. Note that
+     * not all game controllers support all buttons. For example, most game
+     * controllers do not support the paddles found on the XBox elite
+     * controller. To determine if a button is supported, use the method
+     * {@link GameController#hasButton}.
      */
-    enum class Hat : int {
-        /** A hat at rest */
+    enum class Button : int {
+        /** An invalid button */
+        INVALID = -1,
+        /** The A/cross button */
+        A = 0,
+        /** The B/circle button */
+        B = 1,
+        /** The X/square button */
+        X = 2,
+        /** The Y/triangle button */
+        Y = 3,
+        /** The back button */
+        BACK = 4,
+        /** The menu/guide button */
+        GUIDE = 5,
+        /** The start button */
+        START = 6,
+        /** The left-stick press */
+        LEFT_STICK = 7,
+        /** The right-stick press */
+        RIGHT_STICK = 8,
+        /** The left shoulder/bumper */
+        LEFT_SHOULDER = 9,
+        /** The right shoulder/bumper */
+        RIGHT_SHOULDER = 10,
+        /** The up D-Pad button */
+        DPAD_UP = 11,
+        /** The down D-Pad button */
+        DPAD_DOWN = 12,
+        /** The left D-Pad button */
+        DPAD_LEFT = 13,
+        /** The right D-Pad button */
+        DPAD_RIGHT = 14,
+        /** A miscellaneous button (X-Box share button, PS5 mike button) */
+        MISC = 15,
+        /* Xbox Elite paddle P1 (upper left, facing the back) */
+        UPPER_LEFT_PADDLE = 16,
+        /* Xbox Elite paddle P3 (upper right, facing the back) */
+        UPPER_RIGHT_PADDLE = 17,
+        /* Xbox Elite paddle P2 (lower left, facing the back) */
+        LOWER_LEFT_PADDLE = 18,
+        /* Xbox Elite paddle P4 (lower right, facing the back) */
+        LOWER_RIGHT_PADDLE = 19,
+        /* PS4/PS5 touchpad button (UNSUPPORTED) */
+        TOUCHPAD = 20
+    };
+        
+    /**
+     * An enumeration of the supported axes.
+     *
+     * This is the list of all axes supported by this interface. Note that
+     * not all game controllers support all axes. For example, classic Nintendo
+     * gamepads have no axes at all! To determine if an axis is supported, use
+     * the method {@link GameController#hasAxis}.
+     */
+    enum class Axis : int {
+        /** An invalid axis */
+        INVALID = -1,
+        /** The horizontal component of the left analog joystick */
+        LEFT_X = 0,
+        /** The vertical component of the left analog joystick */
+        LEFT_Y = 1,
+        /** The horizontal component of the right analog joystick */
+        RIGHT_X = 2,
+        /** The vertical component of the right analog joystick */
+        RIGHT_Y = 3,
+        /** The left trigger */
+        TRIGGER_LEFT = 4,
+        /** The right trigger */
+        TRIGGER_RIGHT = 5
+    };
+
+    /**
+     * An enumeration of the D-Pad positions.
+     *
+     * Even though D-Pads are buttons, we allow the user to query the current
+     * direction as a function of the (cumulative) pressed buttons. A D-Pad has
+     * nine states -- the center and the eight cardinal directions.
+     */
+    enum class DPad : int {
+        /** A D-Pad at rest */
         CENTERED = 0,
-        /** A hat pressed upwards to the left */
+        /** A D-Pad pressed upwards to the left */
         LEFT_UP = 1,
-        /** A hat pressed entirely upwards */
+        /** A D-Pad pressed entirely upwards */
         UP = 2,
-        /** A hat pressed upwards to the right */
+        /** A D-Pad pressed upwards to the right */
         RIGHT_UP = 3,
-        /** A hat pressed entirely to the right */
+        /** A D-Pad pressed entirely to the right */
         RIGHT = 4,
-        /** A hat pressed downwards to the right */
+        /** A D-Pad pressed downwards to the right */
         RIGHT_DOWN = 5,
-        /** A hat pressed entirely downwards */
+        /** A D-Pad pressed entirely downwards */
         DOWN = 6,
-        /** A hat pressed downwards to the left */
+        /** A D-Pad pressed downwards to the left */
         LEFT_DOWN = 7,
-        /** A hat pressed upwards to the left */
+        /** A D-Pad pressed upwards to the left */
         LEFT = 8
     };
 
@@ -112,8 +194,8 @@ public:
      *
      * This type represents an axis listener for the {@link GameController} class.
      *
-     * In CUGL, listeners are implemented as a set of callback functions, not as
-     * objects. This allows each listener to implement as much or as little
+     * In CUGL, listeners are implemented as a set of callback functions, not 
+     * as objects. This allows each listener to implement as much or as little
      * functionality as it wants. A listener is identified by a key which should
      * be a globally unique unsigned int.
      *
@@ -138,47 +220,20 @@ public:
     typedef std::function<void(const GameControllerAxisEvent& event, bool focus)> AxisListener;
 
     /**
-     * @typedef BallListener
+     * @typedef DPadListener
      *
-     * This type represents a track ball listener for the {@link GameController} class.
+     * This type represents a DPad listener for the {@link GameController} class.
      *
-     * In CUGL, listeners are implemented as a set of callback functions, not as
-     * objects. This allows each listener to implement as much or as little
+     * In CUGL, listeners are implemented as a set of callback functions, not 
+     * as objects. This allows each listener to implement as much or as little
      * functionality as it wants. A listener is identified by a key which should
      * be a globally unique unsigned int.
      *
-     * An event is delivered whenever a track ball moves. See the method
-     * {@link GameController#getBallOffset} for more information.
-     *
-     * Listeners are guaranteed to be called at the start of an animation frame,
-     * before the method {@link Application#update(float) }.
-     *
-     * While game controller listeners do not traditionally require focus like
-     * a keyboard does, we have included that functionality. While only one
-     * listener can have focus at a time, all listeners will receive input from
-     * the game controller.
-     *
-     * The function type is equivalent to
-     *
-     *      std::function<void(const GameControllerBallEvent event, bool focus)>
-     *
-     * @param event     The track ball event
-     * @param focus     Whether the listener currently has focus
-     */
-    typedef std::function<void(const GameControllerBallEvent& event, bool focus)> BallListener;
-
-    /**
-     * @typedef HatListener
-     *
-     * This type represents a hat listener for the {@link GameController} class.
-     *
-     * In CUGL, listeners are implemented as a set of callback functions, not as
-     * objects. This allows each listener to implement as much or as little
-     * functionality as it wants. A listener is identified by a key which should
-     * be a globally unique unsigned int.
-     *
-     * A hat event is delivered whenever a hat changes position. See the method
-     * {@link GameController#getHatPosition} for more information.
+     * A DPad event is delivered whenever a D-Pad button is pressed or released,
+     * changing the overall direction of the D-pad. See the method
+     * {@link GameController#getDPadPosition} for more information. Note that
+     * this listener is ptotentially redundant to the {@link ButtonListener},
+     * as that listener will also report D-Pad state (as they are buttons).
      *
      * Listeners are guaranteed to be called at the start of an animation frame,
      * before the method {@link Application#update(float) }.
@@ -195,21 +250,23 @@ public:
      * @param event     The hat event
      * @param focus     Whether the listener currently has focus
      */
-    typedef std::function<void(const GameControllerHatEvent& event, bool focus)> HatListener;
+    typedef std::function<void(const GameControllerDPadEvent& event, bool focus)> DPadListener;
 
     /**
      * @typedef ButtonListener
      *
      * This type represents a button listener for the {@link GameController} class.
      *
-     * In CUGL, listeners are implemented as a set of callback functions, not as
-     * objects. This allows each listener to implement as much or as little
+     * In CUGL, listeners are implemented as a set of callback functions, not 
+     * as objects. This allows each listener to implement as much or as little
      * functionality as it wants. A listener is identified by a key which should
      * be a globally unique unsigned int.
      *
      * A button event is delivered whenever a buttons changes state between up
      * and/or down. See the methods {@link GameController#isButtonPressed} and
-     * {@link GameController#isButtonReleased} for more information.
+     * {@link GameController#isButtonReleased} for more information. Note that
+     * this listener is ptotentially redundant to the {@link DPadListener}, as
+     * that listener will also report D-Pad state.
      *
      * Listeners are guaranteed to be called at the start of an animation frame,
      * before the method {@link Application#update(float) }.
@@ -229,8 +286,8 @@ public:
     typedef std::function<void(const GameControllerButtonEvent& event, bool focus)> ButtonListener;
     
 protected:
-    /** The SDL joystick for the accelerometer */
-    SDL_Joystick* _input;
+    /** The SDL game controller reference */
+    SDL_GameController* _input;
     /** The joystick UID assigned by GameControllerInput */
     std::string _uid;
     /** The game controller description */
@@ -238,24 +295,20 @@ protected:
     
     /** Whether an axis changed state this animation frame */
     std::vector<bool> _axisState;
-    /** The number of track balls */
-    Uint32 _ballCount;
-    /** Whether a hat changed state this animation frame */
-    std::vector<bool> _hatState;
     /** Whether a button changed state this animation frame */
     std::vector<bool> _buttonState;
-    
+    /** Whether the D-Pad changed state this animation frame */
+    bool _dpadState;
+
     /** The listener with focus */
    	Uint32 _focus;
    	 
     /** The set of listeners called on axis movement */
     std::unordered_map<Uint32, AxisListener> _axisListeners;
-    /** The set of listeners called on track ball movement */
-    std::unordered_map<Uint32, BallListener> _ballListeners;
-    /** The set of listeners called on hat movement */
-    std::unordered_map<Uint32, HatListener> _hatListeners;
     /** The set of listeners called on button state changes */
     std::unordered_map<Uint32, ButtonListener> _buttonListeners;
+    /** The set of listeners called on D-Pad movement */
+    std::unordered_map<Uint32, DPadListener> _dpadListeners;
 
 #pragma mark Constructors
 public:
@@ -322,27 +375,8 @@ private:
      * @param value The axis value in [-1,1]
      * @param stamp The event timestamp
      */
-    void reportAxis(Uint8 axis, float value, const Timestamp& stamp);
-
-    /**
-     * Records that an {@link GameControllerBallEvent} has occured
-     *
-     * @param ball  The track ball index
-     * @param xrel  The movement along the x-axis
-     * @param yrel  The movement along the y-axis
-     * @param stamp The event timestamp
-     */
-    void reportBall(Uint8 ball, float xrel, float yrel, const Timestamp& stamp);
-
-    /**
-     * Records that an {@link GameControllerHatEvent} has occured
-     *
-     * @param hat   The hat index
-     * @param value The hat position
-     * @param stamp The event timestamp
-     */
-    void reportHat(Uint8 hat, Uint8 value, const Timestamp& stamp);
-    
+    void reportAxis(Axis axis, float value, const Timestamp& stamp);
+        
     /**
      * Records that an {@link GameControllerButtonEvent} has occured
      *
@@ -350,9 +384,15 @@ private:
      * @param down      Whether the button is down
      * @param stamp     The event timestamp
      */
-    void reportButton(Uint8 button, bool down, const Timestamp& stamp);
+    void reportButton(Button button, bool down, const Timestamp& stamp);
     
-    
+    /**
+     * Records that an {@link GameControllerDPadEvent} has occured
+     *
+     * @param stamp The event timestamp
+     */
+    void reportDPad(const Timestamp& stamp);
+
     friend class GameControllerInput;
 
 public:
@@ -390,64 +430,6 @@ public:
      */
     std::string getUID() const { return _uid; }
     
-    /**
-     * Returns the number of axes.
-     *
-     * An axis is either a single axis of a analogue joystick (which consists
-     * of two perpendicular axes) or a trigger.
-     *
-     * Axes are refered to by their index. The index of an axis is any positive
-     * integer less than the returned value.
-     *
-     * @return the number of axes.
-     */
-    Uint8 numberAxes() const;
-
-    /**
-     * Returns the number of track balls.
-     *
-     * Trackballs only measure a change in position. They do not have a absolute
-     * position like axes do. Most joysticks do not have track balls.
-     *
-     * Track balls are refered to by their index. The index of a track ball is
-     * any positive integer less than the returned value.
-     *
-     * @return the number of track balls.
-     */
-    Uint8 numberBalls() const;
-
-    /**
-     * Returns the number of hats.
-     *
-     * A "hat" is the official name of a D-Pad. Its state can be centered
-     * (untouched) or one of the eight cardinal directions. Note that just
-     * because a game controller has a D-Pad does not mean it has a hat.
-     * Some game controllers treat their D-Pad as four separate buttons
-     * (one for each direction).
-     *
-     * Hats are refered to by their index. The index of a hat is any positive
-     * integer less than the returned value.
-     *
-     * @return the number of hats.
-     */
-    Uint8 numberHats() const;
-
-    /**
-     * Returns the number of buttons.
-     *
-     * A button is simply that -- something that can be pressed.  Most game
-     * controllers have the classic 4 buttons (`X`, `Y`, `A`, `B` on XBox
-     * controllers). But the start and "back" buttons also count as buttons,
-     * as do any bumpers above the triggers. Finally, on some controllers
-     * the D-Pad is interpretted as four buttons instead of as hat.
-     *
-     * Buttons are refered to by their index. The index of a button is any
-     * positive integer less than the returned value.
-     *
-     * @return the number of buttons.
-     */
-    Uint8 numberButtons() const;
-
 #pragma mark Haptics
     /**
      * Returns true if this controller supports general rumble effects
@@ -481,118 +463,6 @@ public:
      */
     void hasRumbleTriggers(Uint16 left, Uint16 right, Uint32 duration) const;
 
-#pragma mark Data Polling
-    /**
-     * Returns the current axis position.
-     *
-     * The axis position is a value between -1 and 1, inclusive. It is often
-     * either an axis of an analogue joystick or a trigger.  If it is a
-     * joystick, then its default value will be near 0. It is a trigger, then
-     * its default value will be -1.
-     *
-     * This class does not implement any dead zones (e.g. axis values to be
-     * ignored and treated as the default position). That is the responsibility
-     * of the user. A standard recommendation for a deadzone is -0.8 or lower
-     * for triggers and -0.2 to 0.2 for joysticks.
-     *
-     * @param axis  The axis index
-     */
-    float getAxisPosition(Uint8 axis) const;
-    
-    /**
-     * Returns true if the given axis changed position this frame.
-     *
-     * @param axis  The axis index
-     *
-     * @return true if the given axis changed position this frame.
-     */
-    bool axisDidChange(Uint8 axis) const;
-    
-    /**
-     * Returns true if the given axis is a trigger.
-     *
-     * Triggers are axes whose default value is -1 (so they are one-sided).
-     *
-     * @param axis  The axis index
-     *
-     * @return true if the given axis is a trigger.
-     */
-    bool axisIsTrigger(Uint8 axis) const;
-
-    /**
-     * Returns the relative motion of the track ball.
-     *
-     * The vector coordinates are between -1 and 1, inclusive. The values 1
-     * or -1 represent maximum movement in a direction. The values returned
-     * are the relative movement since the last animation frame. A zero vector
-     * means that the track ball did not move.
-     *
-     * @param ball  The track ball index
-     *
-     * @return the relative motion of the track ball.
-     */
-    Vec2 getBallOffset(Uint8 ball) const;
-        
-    /**
-     * Returns the hat position
-     *
-     * A "hat" is the official name of a D-Pad. Its state can be centered
-     * (untouched) or one of the eight cardinal directions. Note that just
-     * because a game controller has a D-Pad does not mean it has a hat.
-     * Some game controllers treat their D-Pad as four separate buttons
-     * (one for each direction).
-     *
-     * @param hat   The hat index
-     *
-     * @return the hat position
-     */
-    Hat getHatPosition(Uint8 hat) const;
-    
-    /**
-     * Returns true if the given hat changed position this frame.
-     *
-     * @param hat   The hat index
-     *
-     * @return true if the given hat changed position this frame.
-     */
-    bool hatDidChange(Uint8 hat) const;
-    
-    /**
-     * Returns true if the given button is currently down.
-     *
-     * This method does not distinguish presses or releases and will return
-     * true the duration of a button hold.
-     *
-     * @param button    The button index
-     *
-     * @return true if the given button is currently down.
-     */
-    bool isButtonDown(Uint8 button) const;
-
-    /**
-     * Returns true if the given button was pressed this frame.
-     *
-     * A press means that the button is down this animation frame, but was not
-     * down the previous frame.
-     *
-     * @param button    The button index
-     *
-     * @return true if the given button was pressed this frame.
-     */
-    bool isButtonPressed(Uint8 button) const;
-    
-    /**
-     * Returns true if the given button was released this frame.
-     *
-     * A release means that the button is up this animation frame, but was not
-     * up the previous frame.
-     *
-     * @param button    The button index
-     *
-     * @return true if the given button was released this frame.
-     */
-    bool isButtonReleased(Uint8 button) const;
-
 #pragma mark Listener Methods
     /**
      * Requests focus for the given identifier
@@ -611,14 +481,58 @@ public:
     /**
      * Returns true if key represents a listener object
      *
-     * An object is a listener if it is a listener for any of the four actions:
-     * axis movement, ball movement, hat movement, or button press/release.
+     * An object is a listener if it is a listener for any of the three actions:
+     * axis movement, button press/release, or D-Pad movement
      *
      * @param key   The identifier for the listener
      *
      * @return true if key represents a listener object
      */
     bool isListener(Uint32 key) const;
+    
+
+#pragma mark Axis State
+    /**
+     * Returns true if this game controller supports the specified axis
+     *
+     * Note that not all game controllers support all axes. In particular, the
+     * classic Nintendo controllers have no axes at all.
+     *
+     * @param axis  The axis to query
+     *
+     * @return true if this game controller supports the specified axis
+     */
+    bool hasAxis(Axis axis) const;
+    
+    /**
+     * Returns the current axis position.
+     *
+     * The default value of any axis is 0. The joysticks all range from -1 to 1
+     * (with negative values being left and down). The triggers all range from
+     * 0 to 1.
+     *
+     * Note that the SDL only guarantees that a trigger at rest will be within
+     * 0.2 of zero. Most applications implement "dead zones" to ignore values
+     * in this range. However, this class does not implement any dead zones;
+     * that is the responsibility of the user.
+     *
+     * If the axis is not supported by this controller, this method will return
+     * 0.
+     *
+     * @param axis  The axis index
+     *
+     * @return the current axis position.
+     */
+    float getAxisPosition(Axis axis) const;
+    
+    /**
+     * Returns true if the given axis changed position this frame.
+     *
+     * @param axis  The axis index
+     *
+     * @return true if the given axis changed position this frame.
+     */
+    bool axisDidChange(Axis axis) const;
     
     /**
      * Returns the axis motion listener for the given object key
@@ -632,46 +546,6 @@ public:
      * @return the axis motion listener for the given object key
      */
     const AxisListener getAxisListener(Uint32 key) const;
-    
-    /**
-     * Returns the ball motion listener for the given object key
-     *
-     * This listener is invoked when a track ball is moved.
-     *
-     * If there is no listener for the given key, it returns nullptr.
-     *
-     * @param key   The identifier for the listener
-     *
-     * @return the ball motion listener for the given object key
-     */
-    const BallListener getBallListener(Uint32 key) const;
-
-    /**
-     * Returns the hat listener for the given object key
-     *
-     * This listener is invoked when the hat changes position.
-     *
-     * If there is no listener for the given key, it returns nullptr.
-     *
-     * @param key   The identifier for the listener
-     *
-     * @return the hat listener for the given object key
-     */
-    const HatListener getHatListener(Uint32 key) const;
-
-    /**
-     * Returns the button listener for the given object key
-     *
-     * This listener is invoked when the button changes state. So it is
-     * invoked on a press or a release, but not a hold.
-     *
-     * If there is no listener for the given key, it returns nullptr.
-     *
-     * @param key   The identifier for the listener
-     *
-     * @return the button listener for the given object key
-     */
-    const ButtonListener getButtonListener(Uint32 key) const;
 
     /**
      * Adds an axis motion listener for the given object key
@@ -689,40 +563,92 @@ public:
      * @return true if the listener was succesfully added
      */
     bool addAxisListener(Uint32 key, AxisListener listener);
+    
+    /**
+     * Removes the axis motion listener for the given object key
+     *
+     * If there is no active listener for the given key, this method fails and
+     * returns false.
+     *
+     * This listener is invoked when an axis changes position.
+     *
+     * @param key   The identifier for the listener
+     *
+     * @return true if the listener was succesfully removed
+     */
+    bool removeAxisListener(Uint32 key);
+    
+#pragma mark Button State
+    /**
+     * Returns true if this game controller supports the specified button
+     *
+     * Note that not all game controllers support all buttons. In the paddles
+     * are currently unique to the XBox Elite controller.
+     *
+     * @param button    The button to query
+     *
+     * @return true if this game controller supports the specified button
+     */
+    bool hasButton(Button button) const;
+    
+    /**
+     * Returns true if the given button is currently down.
+     *
+     * This method does not distinguish presses or releases and will return
+     * true the entire duration of a button hold.
+     *
+     * If the button is not supported by this controller, this method will
+     * return false.
+     *
+     * @param button    The button to query
+     *
+     * @return true if the given button is currently down.
+     */
+    bool isButtonDown(Button button) const;
 
     /**
-     * Adds a ball motion listener for the given object key
+     * Returns true if the given button was pressed this frame.
      *
-     * There can only be one ball listener for a given key (though you may
-     * share keys across other listener types). If a listener already exists
-     * for the key, the method will fail and return false.  You must remove
-     * a listener before adding a new one for the same key.
+     * A press means that the button is down this animation frame, but was not
+     * down the previous frame.
      *
-     * This listener is invoked when a track ball is moved.
+     * If the button is not supported by this controller, this method will
+     * return false.
      *
-     * @param key       The identifier for the listener
-     * @param listener  The listener to add
+     * @param button    The button to query
      *
-     * @return true if the listener was succesfully added
+     * @return true if the given button was pressed this frame.
      */
-    bool addBallListener(Uint32 key, BallListener listener);
-
+    bool isButtonPressed(Button button) const;
+    
     /**
-     * Adds a hat listener for the given object key
+     * Returns true if the given button was released this frame.
      *
-     * There can only be one hat listener for a given key (though you may
-     * share keys across other listener types). If a listener already exists
-     * for the key, the method will fail and return false.  You must remove
-     * a listener before adding a new one for the same key.
+     * A release means that the button is up this animation frame, but was not
+     * up the previous frame.
      *
-     * This listener is invoked when the hat changes position.
+     * If the button is not supported by this controller, this method will
+     * return false.
      *
-     * @param key       The identifier for the listener
-     * @param listener  The listener to add
+     * @param button    The button to query
      *
-     * @return true if the listener was succesfully added
+     * @return true if the given button was released this frame.
      */
-    bool addHatListener(Uint32 key, HatListener listener);
+    bool isButtonReleased(Button button) const;
+    
+    /**
+     * Returns the button listener for the given object key
+     *
+     * This listener is invoked when the button changes state. So it is
+     * invoked on a press or a release, but not a hold.
+     *
+     * If there is no listener for the given key, it returns nullptr.
+     *
+     * @param key   The identifier for the listener
+     *
+     * @return the button listener for the given object key
+     */
+    const ButtonListener getButtonListener(Uint32 key) const;
 
     /**
      * Adds a button listener for the given object key
@@ -741,56 +667,12 @@ public:
      * @return true if the listener was succesfully added
      */
     bool addButtonListener(Uint32 key, ButtonListener listener);
-
-    /**
-     * Removes the axis motion listener for the given object key
-     *
-     * If there is no active listener for the given key, this method fails and
-     * returns false.
-     *
-     * This listener is invoked when an axis changes position.
-     *
-     * @param key   The identifier for the listener
-     *
-     * @return true if the listener was succesfully removed
-     */
-    bool removeAxisListener(Uint32 key);
-
-    /**
-     * Removes the ball motion listener for the given object key
-     *
-     * If there is no active listener for the given key, this method fails and
-     * returns false.
-     *
-     * This listener is invoked when a track ball is moved.
-     *
-     * @param key   The identifier for the listener
-     *
-     * @return true if the listener was succesfully removed
-     */
-    bool removeBallListener(Uint32 key);
-
-    /**
-     * Removes the hat listener for the given object key
-     *
-     * If there is no active listener for the given key, this method fails and
-     * returns false. This method will succeed if there is a drag listener for
-     * the given key, even if the pointer awareness if BUTTON.
-     *
-     * This listener is invoked when the hat changes position.
-     *
-     * @param key   The identifier for the listener
-     *
-     * @return true if the listener was succesfully removed
-     */
-    bool removeHatListener(Uint32 key);
-
+    
     /**
      * Removes the button listener for the given object key
      *
      * If there is no active listener for the given key, this method fails and
-     * returns false. This method will succeed if there is a motion listener
-     * for the given key, even if the pointer awareness if BUTTON or DRAG.
+     * returns false.
      *
      * This listener is invoked when the button changes state. So it is
      * invoked on a press or a release, but not a hold.
@@ -801,6 +683,81 @@ public:
      */
     bool removeButtonListener(Uint32 key);
     
+#pragma mark D-Pad State
+    /**
+     * Returns true if the controller has a directional pad.
+     *
+     * This method is the same a querying all four D-pad buttons.
+     *
+     * @return true if the controller has a directional pad.
+     */
+    bool hasDPad() const;
+    
+    /**
+     * Returns the D-Pad position
+     *
+     * This method converts the current D-Pad button state into a directional
+     * state. This state can be centered (untouched) or one of the eight
+     * cardinal directions.
+     *
+     * If this controller does not have a D-Pad, this method will always
+     * return CENTERED.
+     *
+     * @return the D-Pad position
+     */
+    DPad getDPadPosition() const;
+    
+    /**
+     * Returns true if the D-Pad changed position this frame.
+     *
+     * @return true if the D-Pad changed position this frame.
+     */
+    bool dPadDidChange() const;
+    
+    /**
+     * Returns the D-Pad listener for the given object key
+     *
+     * This listener is invoked when the D-Pad changes position.
+     *
+     * If there is no listener for the given key, it returns nullptr.
+     *
+     * @param key   The identifier for the listener
+     *
+     * @return the D-Pad listener for the given object key
+     */
+    const DPadListener getDPadListener(Uint32 key) const;
+
+    /**
+     * Adds a D-Pad listener for the given object key
+     *
+     * There can only be one D-Pad listener for a given key (though you may
+     * share keys across other listener types). If a listener already exists
+     * for the key, the method will fail and return false.  You must remove
+     * a listener before adding a new one for the same key.
+     *
+     * This listener is invoked when the D-Pad changes position.
+     *
+     * @param key       The identifier for the listener
+     * @param listener  The listener to add
+     *
+     * @return true if the listener was succesfully added
+     */
+    bool addDPadListener(Uint32 key, DPadListener listener);
+
+    /**
+     * Removes the D-Pad listener for the given object key
+     *
+     * If there is no active listener for the given key, this method fails and
+     * returns false.
+     *
+     * This listener is invoked when the D-Pad changes position.
+     *
+     * @param key   The identifier for the listener
+     *
+     * @return true if the listener was succesfully removed
+     */
+    bool removeDPadListener(Uint32 key);
+
 };
 
 #pragma mark -
@@ -818,15 +775,15 @@ public:
     Timestamp timestamp;
     /** The UID of the relevant device */
     std::string uuid;
-    /** The axis index */
-    Uint8 index;
+    /** The axis reference */
+    GameController::Axis axis;
     /** The value in the range [-1,1] */
     float value;
     
     /**
      * Constructs a new axis event with the default values
      */
-    GameControllerAxisEvent() : index(0), value(0) {}
+    GameControllerAxisEvent() : axis(GameController::Axis::INVALID), value(0) {}
     
     /**
      * Constructs a new axis event with the given values
@@ -836,87 +793,10 @@ public:
      * @param pos   The axis position in [-1,1]
      * @param stamp The timestamp for the event
      */
-    GameControllerAxisEvent(const std::string key, Uint8 ind, float pos,
-                            const Timestamp& stamp) {
-        uuid = key; index = ind; value = pos; timestamp = stamp;
+    GameControllerAxisEvent(const std::string key, GameController::Axis index,
+                            float pos, const Timestamp& stamp) {
+        uuid = key; axis = index; value = pos; timestamp = stamp;
     }
-    
-};
-
-/**
- * This simple class is a struct to hold information about track ball movement
- *
- * All track ball movement is relative. Unlike the other input devices there is
- * no absolute state for a track ball. As such this even will be continuously
- * generated as long as a track ball is moving, and will not fire when it is
- * still.
- */
-class GameControllerBallEvent {
-public:
-    /** The time of the input event */
-    Timestamp timestamp;
-    /** The UID of the relevant device */
-    std::string uuid;
-    /** The track ball index */
-    Uint8 index;
-    /** The relative change in the track ball position */
-    Vec2 offset;
-    
-    /**
-     * Constructs a new track ball event with the default values
-     */
-    GameControllerBallEvent() : index(0) {}
-    
-    /**
-     * Constructs a new track ball event with the given values
-     *
-     * @param key   The device UID
-     * @param ind   The track ball index
-     * @param dx    The change in x position
-     * @param dy    The change in y position
-     * @param stamp The timestamp for the event
-     */
-    GameControllerBallEvent(const std::string key, Uint8 ind, float dx, float dy,
-                             const Timestamp& stamp) {
-        uuid = key; index = ind;
-        offset.set(dx,dy); timestamp = stamp;
-    }
-    
-};
-
-
-/**
- * This simple class is a struct to hold information about hat movement
- *
- * A hat is a directional pad with 9 different states. This event will fire
- * only when this state changes.
- */
-class GameControllerHatEvent {
-public:
-    /** The time of the input event */
-    Timestamp timestamp;
-    /** The UID of the relevant device */
-    std::string uuid;
-    /** The hat index */
-    Uint8 index;
-    /** The new hat position */
-    GameController::Hat state;
-    
-    /**
-     * Constructs a new acceleration event with the default values
-     */
-    GameControllerHatEvent() : index(0), state(GameController::Hat::CENTERED) {}
-    
-    /**
-     * Constructs a new hat event with the given values
-     *
-     * @param key   The device UID
-     * @param ind   The hat index
-     * @param pos   The hat position (in SDL encoding)
-     * @param stamp The timestamp for the event
-     */
-    GameControllerHatEvent(const std::string key, Uint8 ind, Uint8 pos,
-                           const Timestamp& stamp);
     
 };
 
@@ -932,15 +812,15 @@ public:
     Timestamp timestamp;
     /** The UID of the relevant device */
     std::string uuid;
-    /** The button index */
-    Uint8 index;
+    /** The button reference */
+    GameController::Button button;
     /** Whether the button event is from a press (not a release) */
     bool down;
     
     /**
      * Constructs a new button event with the default values
      */
-    GameControllerButtonEvent() : index(0), down(false) {}
+    GameControllerButtonEvent() : button(GameController::Button::INVALID), down(false) {}
     
     /**
      * Constructs a new button event with the given values
@@ -950,16 +830,48 @@ public:
      * @param dwn   Whether the button is pressed
      * @param stamp The timestamp for the event
      */
-    GameControllerButtonEvent(const std::string key, Uint8 ind, bool dwn,
-                             const Timestamp& stamp) {
-        uuid = key; index = ind; down = dwn; timestamp = stamp;
+    GameControllerButtonEvent(const std::string key, GameController::Button index,
+                              bool dwn, const Timestamp& stamp) {
+        uuid = key; button = index; down = dwn; timestamp = stamp;
     }
 };
 
+/**
+ * This simple class is a struct to hold information about hat movement
+ *
+ * A hat is a directional pad with 9 different states. This event will fire
+ * only when this state changes.
+ */
+class GameControllerDPadEvent {
+public:
+    /** The time of the input event */
+    Timestamp timestamp;
+    /** The UID of the relevant device */
+    std::string uuid;
+    /** The new D-Pad position */
+    GameController::DPad state;
+    
+    /**
+     * Constructs a new acceleration event with the default values
+     */
+    GameControllerDPadEvent() : state(GameController::DPad::CENTERED) {}
+    
+    /**
+     * Constructs a new hat event with the given values
+     *
+     * @param key   The device UID
+     * @param pos   The hat position
+     * @param stamp The timestamp for the event
+     */
+    GameControllerDPadEvent(const std::string key, GameController::DPad pos,
+                           const Timestamp& stamp) {
+    	uuid = key; state = pos; timestamp = stamp;                       
+    }
+    
+};
     
 #pragma mark -
 #pragma mark GameControllerInputEvent
-
 /**
  * This simple class is a struct to hold information about a device change.
  *

@@ -178,6 +178,6 @@ void SpriteSheet::draw(const std::shared_ptr<cugl::SpriteBatch>& batch,
  */
 void SpriteSheet::draw(const std::shared_ptr<cugl::SpriteBatch>& batch,
                        cugl::Color4 color, Vec2 origin, const cugl::Affine2& transform) const {
-    batch->draw(_texture,color,_region,_bounds.origin+_origin,transform);
+    batch->draw(_texture,color,_region,_bounds.origin+origin,transform);
 }
 
