@@ -42,15 +42,18 @@ public:
     }
 
     /**
-     * Returns the network connection (as made by this scene)
+     * Sets the network connection (as made by this scene)
      *
      * This value will be reset every time the scene is made active.
      *
-     * @return the network connection (as made by this scene)
+     * @param network   the network connection (as made by this scene)
      */
     void setConnection(const std::shared_ptr<cugl::net::NetcodeConnection>& network) {
         _network = network;
     }
+
+    /** Returns the number of players on this network. */
+    int getNumPlayers() { return _network->getPeers().size() + 1; }
 
     /**
      * Returns true if the player quits the game.
@@ -86,6 +89,8 @@ public:
      * Example board state:
      * {
         "player_id":  1,
+        "num_dirt": 1,
+        "curr_board": 0,
         "player_x": 30.2,
         "player_y": 124.2,
         "dirts": [ [0, 1], [2, 2], [0, 2] ],
@@ -102,12 +107,20 @@ public:
             }
         ]
      * }
+     * 
+     *
+     * Example movement message:
+     * {
+     *    "player_id":  1,
+     *    "vel": [0.234, 1.153]
+     * }
+     * 
      *
      * @param source    The UUID of the sender
      * @param data      The data received
-     * @returns the data as a JSON value representing a board state
+     * @returns the data as a JSON value representing a message
      */
-    std::shared_ptr<cugl::JsonValue> processData(const std::string source, const std::vector<std::byte>& data);
+    std::shared_ptr<cugl::JsonValue> processMessage(const std::string source, const std::vector<std::byte>& data);
 
     /**
      * Checks that the network connection is still active.
@@ -127,6 +140,8 @@ public:
      * Example board state:
      * {
         "player_id":  1,
+        "num_dirt": 1,
+        "curr_board": 0,
         "player_x": 3,
         "player_y": 6,
         "dirts": [ [0, 1], [2, 2], [0, 2] ],
@@ -146,7 +161,7 @@ public:
      *
      * @param state     The user's board state
      */
-    void transmitBoard(const std::shared_ptr<cugl::JsonValue> state);
+    void transmitMessage(const std::shared_ptr<cugl::JsonValue> state);
 };
 
 #endif NetworkController_h

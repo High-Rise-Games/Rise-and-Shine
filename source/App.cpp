@@ -277,9 +277,10 @@ void App::updateLobbyScene(float timestep) {
                 _gameplay.setActive(true);
                 _scene = State::GAME;
                 // Transfer connection ownership
-                _network.setConnection(_lobby_host.getConnection());
+                _gameplay.setConnection(_lobby_host.getConnection());
                 _lobby_host.disconnect();
                 _gameplay.setHost(true);
+                _gameplay.initHost(_assets);
                 break;
             case LobbyScene::Status::WAIT:
                 break;
@@ -302,10 +303,10 @@ void App::updateLobbyScene(float timestep) {
                 _gameplay.setActive(true);
                 _scene = State::GAME;
                 // Transfer connection ownership
-                _network.setConnection(_lobby_client.getConnection());
+                _gameplay.setConnection(_lobby_client.getConnection());
                 _lobby_client.disconnect();
                 _gameplay.setHost(false);
-                break;
+               break;
             case LobbyScene::Status::WAIT:
             case LobbyScene::Status::IDLE:
             case LobbyScene::Status::JOIN:
@@ -328,7 +329,7 @@ void App::updateGameScene(float timestep) {
     if (_gameplay.didQuit()) {
         _gameplay.setActive(false);
         _mainmenu.setActive(true);
-        _network.disconnect();
+        _gameplay.disconnect();
         _scene = State::MENU;
     }
 }

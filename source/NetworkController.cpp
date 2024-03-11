@@ -51,10 +51,16 @@ using namespace std;
         ]
  * }
  *
+ * Example movement message:
+ * {
+ *    "player_id":  1,
+ *    "vel": [0.234, 1.153]
+ * }
+ * 
  * @param source    The UUID of the sender
  * @param data      The data received
  */
-std::shared_ptr<JsonValue> NetworkController::processData(const std::string source, const std::vector<std::byte>& data) {
+std::shared_ptr<JsonValue> NetworkController::processMessage(const std::string source, const std::vector<std::byte>& data) {
     NetcodeDeserializer netDeserializer;
     netDeserializer.receive(data);
     std::shared_ptr<JsonValue> jsonData = netDeserializer.readJson();
@@ -76,7 +82,6 @@ bool NetworkController::checkConnection() {
     // _player->setText(to_string(_network->getNumPlayers()));
     if (s == net::NetcodeConnection::State::FAILED || s == net::NetcodeConnection::State::DISCONNECTED) {
         _network->close();
-        Application::get()->setClearColor(Color4("#c0c0c0"));
         // _quit = true;
         return false;
     }
@@ -85,6 +90,9 @@ bool NetworkController::checkConnection() {
 
 
 /**
+ * This method is used to transmit board state, movement message, or any other action messages such
+ * throwing dirt.
+ *
  * Transmits the board state belonging to the user given by
  * their id to all other devices.
  * 
@@ -107,13 +115,22 @@ bool NetworkController::checkConnection() {
             }
         ]
  * }
+ * 
+ * Transmits the movement by the user given by their id to
+ * all other devices, only to be handled by the host.
  *
- * @param state     The user's board state
+ * Example movement message:
+ * {
+ *    "player_id":  1,
+ *    "vel": [0.234, 1.153]
+ * }
+ *
+ * @param state     The message to be sent
  */
-void NetworkController::transmitBoard(const std::shared_ptr<cugl::JsonValue> state) {
+void NetworkController::transmitMessage(const std::shared_ptr<cugl::JsonValue> msg) {
     NetcodeSerializer netSerializer;
-    netSerializer.writeJson(state);
+    netSerializer.writeJson(msg);
     const std::vector<std::byte>& byteState = netSerializer.serialize();
-    netSerializer.reset();
     _network->broadcast(byteState);
+    netSerializer.reset();
 } 

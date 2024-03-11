@@ -114,6 +114,9 @@ public:
      * @return true if the scene is currently active
      */
     bool isActive( ) const { return _active; }
+
+    /** Returns the number of peers/players currently in this lobby. */
+    int getNumPlayers() { return _network->getPeers().size() + 1; }
     
     /**
      * Returns the network connection (as made by this scene)

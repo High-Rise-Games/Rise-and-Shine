@@ -60,7 +60,7 @@ protected:
     GameScene _gameplay;
 
     /** The controller for network during gameplay */
-    NetworkController _network;
+    // std::shared_ptr<NetworkController> _network;
     
     
     /** The current active scene */

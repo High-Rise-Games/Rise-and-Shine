@@ -28,10 +28,7 @@ class GameScene : public cugl::Scene2 {
 protected:
     /** The asset manager for this game mode. */
     std::shared_ptr<cugl::AssetManager> _assets;
-    
-    /** The network connection (as made by this scene) */
-    // std::shared_ptr<cugl::net::NetcodeConnection> _network;
-    
+        
     /** Whether this player is the host */
     bool _ishost;
 
@@ -51,19 +48,21 @@ protected:
     NetworkController _network;
     
     
-    
     // MODELS should be shared pointers or a data structure of shared pointers
     /** The JSON value with all of the constants */
     std::shared_ptr<cugl::JsonValue> _constants;
+
     /** Location and animation information for the player */
     std::shared_ptr<Player> _player;
     /** Location and animation information for the player to the left */
     std::shared_ptr<Player> _playerLeft;
     /** Location and animation information for the player to the right */
     std::shared_ptr<Player> _playerRight;
+    /** Location and animation information for the player across the building. Only non-null for host. */
+    std::shared_ptr<Player> _playerAcross;
+
     /** True if a neighobr player's board is on display */
     bool _onAdjacentBoard;
-    /** The location of all of the active asteroids */
     
     /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
     int _curBoard;
@@ -79,6 +78,8 @@ protected:
     WindowGrid _windowsLeft;
     /** Grid of windows and dirt placement to be drawn for the right neighbor */
     WindowGrid _windowsRight;
+    /** Grid of windows and dirt placement to be drawn for neighbor across the building. Only non-null for host. */
+    WindowGrid _windowsAcross;
 
     /** Random number generator for dirt generation */
     std::mt19937 _rng;
@@ -101,7 +102,16 @@ protected:
     ProjectileSet _projectilesLeft;
     /** The projectile set of your right neighbor */
     ProjectileSet _projectilesRight;
+    /** The projectile set of the neighbor across the building. Only non-null if host */
+    ProjectileSet _projectilesAcross;
     
+    // for host only
+    /** Number of players in the lobby */
+    int _numPlayers;
+    /** The amount of dirt held by each player in the lobby */
+    std::vector<int> _allDirtAmounts;
+    /** The current board being displayed for each player in the lobby */
+    std::vector<int> _allCurBoards;
     
     cugl::scheduable t;
     
@@ -164,6 +174,19 @@ public:
      */
     bool init(const std::shared_ptr<cugl::AssetManager>& assets);
 
+    /**
+     * Initializes the extra controllers needed for the host of the game.
+     *
+     * The constructor does not allocate any objects or memory.  This allows
+     * us to have a non-pointer reference to this controller, reducing our
+     * memory allocation.  Instead, allocation happens in this method.
+     *
+     * @param assets    The (loaded) assets for this game mode
+     *
+     * @return true if the controller is initialized properly, false otherwise.
+     */
+    bool initHost(const std::shared_ptr<cugl::AssetManager>& assets);
+
     
 #pragma mark -
 #pragma mark Gameplay Handling
@@ -191,17 +214,35 @@ public:
     void generateDirt();
 
     /**
-     * Converts game state into a JSON value for sending over the network.
+     * Converts game state into a JSON value for sending over the network
+     * 
+     * @param id    the id of the player of the board state to get
      * @returns JSON value representing game board state
      */
-    std::shared_ptr<cugl::JsonValue> getJsonBoard();
+    std::shared_ptr<cugl::JsonValue> getJsonBoard(int id);
 
     /**
-     * Updates a neighboring board given the JSON value representing its game state
+     * Converts a movement vector into a JSON value for sending over the network.
+     * 
+     * @param move    the movement vector
+     * @returns JSON value representing a movement
+     */
+    std::shared_ptr<cugl::JsonValue> getJsonMove(const cugl::Vec2 move);
+
+    /**
+     * Updates a neighboring or own board given the JSON value representing its game state
      * 
      * @params data     The data to update
      */
-    void updateNeighborBoard(std::shared_ptr<cugl::JsonValue> data);
+    void updateBoard(std::shared_ptr<cugl::JsonValue> data);
+
+    /**
+     * Called by the host only. Updates a client player's board for player at player_id
+     * based on the movement or other action data stored in the JSON value.
+     *
+     * @params data     The data to update
+     */
+    void updateFromAction(std::shared_ptr<cugl::JsonValue> data);
     
     /**
      * The method called to update the game mode.
@@ -211,6 +252,12 @@ public:
      * @param timestep  The amount of time (in seconds) since the last frame
      */
     void update(float timestep) override;
+
+    /**
+     * This method does all the heavy lifting work for update.
+     * The host steps forward each player's game state, given references to the player, board, and projectile set.
+     */
+    void stepForward(std::shared_ptr<Player>& player, const cugl::Vec2 moveVec, WindowGrid& windows, ProjectileSet& projectiles);
 
     /**
      * Draws all this scene to the given SpriteBatch.
@@ -230,7 +277,7 @@ public:
      *
      * @param host  Whether the player is host.
      */
-    void setHost(bool host)  { _ishost = host; }
+    void setHost(bool host) { _ishost = host; }
     
     /**
      * Returns true if the player quits the game.
@@ -243,6 +290,23 @@ public:
      * Resets the status of the game so that we can play again.
      */
     void reset() override;
+
+    /**
+     * Resets the status of the game so that we can play again.
+     */
+    void hostReset();
+
+    /**
+     * Sets the network connection for this scene's network controller.
+     */
+    void setConnection(const std::shared_ptr<cugl::net::NetcodeConnection>& network) {
+        _network.setConnection(network);
+    }
+
+    /**
+     * Disconnects this scene from the network controller.
+     */
+    void disconnect() { _network.disconnect(); }
 };
 
 #endif /* __SG_GAME_SCENE_H__ */
