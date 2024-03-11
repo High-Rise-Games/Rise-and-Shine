@@ -280,7 +280,9 @@ void App::updateLobbyScene(float timestep) {
                 _gameplay.setConnection(_lobby_host.getConnection());
                 _lobby_host.disconnect();
                 _gameplay.setHost(true);
+                _gameplay.setId(_lobby_host.getId());
                 _gameplay.initHost(_assets);
+                CULog("my id: %d", _gameplay.getId());
                 break;
             case LobbyScene::Status::WAIT:
                 break;
@@ -306,6 +308,8 @@ void App::updateLobbyScene(float timestep) {
                 _gameplay.setConnection(_lobby_client.getConnection());
                 _lobby_client.disconnect();
                 _gameplay.setHost(false);
+                _gameplay.setId(_lobby_client.getId());
+                CULog("my id: %d", _gameplay.getId());
                break;
             case LobbyScene::Status::WAIT:
             case LobbyScene::Status::IDLE:

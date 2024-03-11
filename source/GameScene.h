@@ -35,6 +35,8 @@ protected:
     /** Whether we quit the game */
     bool _quit;
     
+    /** ID of the player to distinguish in multiplayer */
+    int _id;
     
     
     // CONTROLLERS are attached directly to the scene (no pointers)
@@ -190,6 +192,18 @@ public:
     
 #pragma mark -
 #pragma mark Gameplay Handling
+
+    /**
+    * Returns the id of this player.
+    * @return the id of this player
+    */
+    const int getId() const { return _id; }
+
+    /**
+    * Sets the id of this player.
+    * @param id     the id of this player to set
+    */
+    void setId(int id) { _id = id; }
     
     /** sets empty bucket texture */
     void setEmptyBucket(const std::shared_ptr<cugl::Texture>& value) { _emptyBucket = value; }

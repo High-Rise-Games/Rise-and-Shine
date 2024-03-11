@@ -99,14 +99,16 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     // starting position is most bottom left window
     Vec2 startingPos = Vec2(_windows.sideGap+(_windows.getPaneWidth()/2), _windows.getPaneHeight());
     
-    // host hands out ids, which updates all player ids once first message is transmitted from host.
-    _player = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
+    // id of self is set while connecting to the lobby. all other players have ids set, even if they don't exist.
+    _player = std::make_shared<Player>(_id, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
     _player->setTexture(assets->get<Texture>("ship"));
 
-    _playerLeft = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
+    int leftId = _id == 1 ? 4 : _id - 1;
+    _playerLeft = std::make_shared<Player>(leftId, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
     _playerLeft->setTexture(assets->get<Texture>("left"));
 
-    _playerRight = std::make_shared <Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
+    int rightId = _id == 4 ? 1 : _id + 1;
+    _playerRight = std::make_shared <Player>(rightId, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
     _playerRight->setTexture(assets->get<Texture>("left"));
 
     
@@ -190,32 +192,9 @@ bool GameScene::initHost(const std::shared_ptr<cugl::AssetManager>& assets) {
     // starting position is most bottom left window
     Vec2 startingPos = Vec2(_windows.sideGap + (_windows.getPaneWidth() / 2), _windows.getPaneHeight());
 
-    // assigning player ids clockwise
-    // overwriting playerRight and playerLeft from earlier init call
-    _player = std::make_shared<Player>(1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _player->setTexture(assets->get<Texture>("left"));
-
-    if (_numPlayers >= 2) {
-        _playerRight = std::make_shared<Player>(2, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-        _playerRight->setTexture(assets->get<Texture>("left"));
-    }
-
-    if (_numPlayers >= 3) {
-        _playerAcross = std::make_shared<Player>(3, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-        _playerAcross->setTexture(assets->get<Texture>("left"));
-    }
-    else {
-        // still initiate player across, but with id of -1 to indicate that they do not exist.
-        // helpful for knowing which boards to transmit later on - can just check if the player's id == -1
-        // player right and player left already have id = -1 by default, set in the earlier init call.
-        _playerAcross = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-        _playerAcross->setTexture(assets->get<Texture>("left"));
-    }
-    
-    if (_numPlayers >= 4) {
-        _playerLeft = std::make_shared<Player>(4, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-        _playerLeft->setTexture(assets->get<Texture>("left"));
-    }
+    // player ids for self, right, and left already assigned from earlier init call
+    _playerAcross = std::make_shared<Player>(3, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
+    _playerAcross->setTexture(assets->get<Texture>("left"));
 
     hostReset();
 
@@ -331,9 +310,9 @@ std::shared_ptr<cugl::JsonValue> GameScene::getJsonBoard(int id) {
 
     const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
     json->init(JsonValue::Type::ObjectType);
-    json->appendValue("player_id", static_cast<double>(player->getId()));
-    json->appendValue("num_dirt", static_cast<double>(_allDirtAmounts[player->getId() - 1]));
-    json->appendValue("curr_board", static_cast<double>(_allCurBoards[player->getId() - 1]));
+    json->appendValue("player_id", static_cast<double>(_id));
+    json->appendValue("num_dirt", static_cast<double>(_allDirtAmounts[_id - 1]));
+    json->appendValue("curr_board", static_cast<double>(_allCurBoards[_id - 1]));
     json->appendValue("player_x", player->getPosition().x);
     json->appendValue("player_y", player->getPosition().y);
 
@@ -413,16 +392,13 @@ std::shared_ptr<cugl::JsonValue> GameScene::getJsonBoard(int id) {
 */
 void GameScene::updateBoard(std::shared_ptr<JsonValue> data) {
     int playerId = data->getInt("player_id", 0);
-    int myId = _player->getId();
-    if (myId == -1) {
 
-    }
     std::shared_ptr<Player> player;
     WindowGrid* windows;
     ProjectileSet* projectiles;
     CULog("playerId: %d", playerId);
     
-    if (playerId == myId) {
+    if (playerId == _id) {
         // update own board info
         player = _player;
         windows = &_windows;
@@ -430,13 +406,13 @@ void GameScene::updateBoard(std::shared_ptr<JsonValue> data) {
         _currentDirtAmount = data->getInt("num_dirt", 0);
         _curBoard = data->getInt("curr_board", 0);
     }
-    else if (playerId == myId + 1 || (myId == 4 && playerId == 1)) {
+    else if (playerId == _id + 1 || (_id == 4 && playerId == 1)) {
         // if assigning ids clockwise, this is the left neighbor
         player = _playerLeft;
         windows = &_windowsLeft;
         projectiles = &_projectilesLeft;
     }
-    else if (playerId == myId - 1 || (myId == 1 && playerId == 4)) {
+    else if (playerId == _id - 1 || (_id == 1 && playerId == 4)) {
         // if assigning ids clockwise, this is the right neighbor
         player = _playerRight;
         windows = &_windowsRight;
@@ -491,7 +467,7 @@ void GameScene::updateBoard(std::shared_ptr<JsonValue> data) {
 std::shared_ptr<cugl::JsonValue> GameScene::getJsonMove(const cugl::Vec2 move) {
     const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
     json->init(JsonValue::Type::ObjectType);
-    json->appendValue("player_id", static_cast<double>(_player->getId()));
+    json->appendValue("player_id", static_cast<double>(_id));
 
     const std::shared_ptr<JsonValue> vel = std::make_shared<JsonValue>();
     vel->init(JsonValue::Type::ArrayType);
@@ -522,6 +498,7 @@ std::shared_ptr<cugl::JsonValue> GameScene::getJsonMove(const cugl::Vec2 move) {
 */
 void GameScene::updateFromAction(std::shared_ptr<cugl::JsonValue> data) {
     // TODO: add conditional check here for movement action or other action
+    
     int playerId = data->getInt("player_id", 0);
     const std::vector<std::shared_ptr<JsonValue>>& vel = data->get("vel")->children();
     Vec2 moveVec(vel[0]->asFloat(), vel[1]->asFloat());
@@ -555,22 +532,26 @@ void GameScene::update(float timestep) {
             const std::vector<std::byte>& data) {
                 if (!_ishost) {
                     std::shared_ptr<JsonValue> incomingMsg = _network.processMessage(source, data);
-                    CULog("got board state message");
-                    updateBoard(incomingMsg);
+                    if (incomingMsg->has("dirts")) {
+                        CULog("got board state message");
+                        updateBoard(incomingMsg);
+                    }
                 }
                 else { // is host
                     // process action data - movement or dirt throw
                     std::shared_ptr<JsonValue> incomingMsg = _network.processMessage(source, data);
-                    CULog("got action message");
-                    updateFromAction(incomingMsg);
+                    if (incomingMsg->has("vel")) {
+                        CULog("got movement message");
+                        updateFromAction(incomingMsg);
+                    }
                 }
             });
         _network.checkConnection();
 
         if (_ishost) {
-            CULog("transmitting all board states");
-            for (int i = 1; i <= _numPlayers; ++i) {
+            for (int i = 1; i <= _numPlayers; i++) {
                 _network.transmitMessage(getJsonBoard(i));
+                CULog("transmitting board state for player %d", i);
             }
         }
     }
@@ -629,9 +610,11 @@ void GameScene::update(float timestep) {
             // pass movement over network for host to process
             if (_network.getConnection()) {
                 _network.checkConnection();
-                if (!_ishost) {
-                    CULog("transmitting movement message over network for player %d", _player->getId());
-                    _network.transmitMessage(getJsonMove(_input.getDir()));
+                if (_input.getDir().length() > 0 && !_ishost) {
+                    CULog("transmitting movement message over network for player %d", _id);
+                    std::shared_ptr<JsonValue> m = getJsonMove(_input.getDir());
+                    std::string s = m->toString();
+                    _network.transmitMessage(m);
                 }
             }
         }
@@ -696,13 +679,13 @@ void GameScene::stepForward(std::shared_ptr<Player>& player, const Vec2 moveVec,
     bool dirtRemoved = windows.removeDirt(grid_coors.y, grid_coors.x);
     if (dirtRemoved) {
         // filling up dirty bucket
-        _allDirtAmounts[player->getId()-1] = min(_maxDirtAmount, _allDirtAmounts[player->getId() - 1] + 1);
+        _allDirtAmounts[_id -1] = min(_maxDirtAmount, _allDirtAmounts[_id - 1] + 1);
     }
 
     if (player->getEdge(windows.sideGap, getSize()) && !movedOverEdge) {
-        _allDirtAmounts[player->getId()-1] = max(0, _allDirtAmounts[player->getId() - 1] - 1);
+        _allDirtAmounts[_id -1] = max(0, _allDirtAmounts[_id - 1] - 1);
         // TODO: currently moving to either edge sends user to the left.
-        _allCurBoards[player->getId() - 1] = -1;
+        _allCurBoards[_id - 1] = -1;
     }
 
     // fixed dirt generation logic (every 5 seconds)
