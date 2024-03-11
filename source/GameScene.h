@@ -38,6 +38,15 @@ protected:
     /** Whether we quit the game */
     bool _quit;
     
+    /** Seconds left in the game */
+    int _gameTime;
+    
+    /** The FPS of the game, as set by the App */
+    int _fps;
+    
+    /** The current frame incremeted by 1 every frame (resets to 0 every time we reach 60 frames) */
+    int _frame;
+    
     
     
     // CONTROLLERS are attached directly to the scene (no pointers)
@@ -162,7 +171,7 @@ public:
      *
      * @return true if the controller is initialized properly, false otherwise.
      */
-    bool init(const std::shared_ptr<cugl::AssetManager>& assets);
+    bool init(const std::shared_ptr<cugl::AssetManager>& assets, int fps);
 
     
 #pragma mark -

@@ -34,8 +34,15 @@ using namespace std;
  *
  * @return true if the controller is initialized properly, false otherwise.
  */
-bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
+bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps) {
     // Initialize the scene to a locked width
+    
+    // time of the game set to 200 seconds
+    _gameTime = 200;
+    
+    // fps as established per App
+    _fps = fps;
+    
     Size dimen = Application::get()->getDisplaySize();
     _rng.seed(std::time(nullptr));
     _dirtGenSpeed = 2;
@@ -458,8 +465,15 @@ void GameScene::update(float timestep) {
             AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
         }
 
-        // Update the health meter
-        _text->setText(strtool::format("Health %d", _player->getHealth()));
+        // Update time
+        _text->setText(strtool::format("Time %d", _gameTime));
+//        gameTime=-1;
+        
+        _frame = _frame+1;
+        if (_frame==60) {
+            _gameTime=_gameTime-1;
+            _frame = 0;
+        }
         _text->layout();
         
         // Update the dirt display
