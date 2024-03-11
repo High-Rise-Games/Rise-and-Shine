@@ -94,24 +94,22 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _projectilesRight.setPoopTexture(assets->get<Texture>("poop"));
     _projectilesRight.setTextureScales(_windows.getPaneHeight(), _windows.getPaneWidth());
 
-    
     // Make a ship and set its texture
     // starting position is most bottom left window
-    Vec2 startingPos = Vec2(_windows.sideGap+(_windows.getPaneWidth()/2), _windows.getPaneHeight());
-    
-    // id of self is set while connecting to the lobby. all other players have ids set, even if they don't exist.
-    _player = std::make_shared<Player>(_id, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
+    Vec2 startingPos = Vec2(_windows.sideGap + (_windows.getPaneWidth() / 2), _windows.getPaneHeight());
+
+    // no ids given yet - to be assigned in initPlayers()
+    _player = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
     _player->setTexture(assets->get<Texture>("ship"));
 
     int leftId = _id == 1 ? 4 : _id - 1;
-    _playerLeft = std::make_shared<Player>(leftId, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
+    _playerLeft = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
     _playerLeft->setTexture(assets->get<Texture>("left"));
 
     int rightId = _id == 4 ? 1 : _id + 1;
-    _playerRight = std::make_shared <Player>(rightId, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
+    _playerRight = std::make_shared <Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
     _playerRight->setTexture(assets->get<Texture>("left"));
 
-    
     // Initialize random dirt generation
     updateDirtGenTime();
     
@@ -124,6 +122,13 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
 //    // Initialize return scene icon
 //    setReturnSceneButton(assets->get<Texture>("returnSceneButton"));
 
+    // Create and layout the dirt amount
+    std::string dirt_msg = strtool::format("%d", _currentDirtAmount);
+    _dirtText = TextLayout::allocWithText(dirt_msg, assets->get<Font>("pixel32"));
+    _dirtText->layout();
+
+    _collisions.init(getSize());
+
     // Get the bang sound
     _bang = assets->get<Sound>("bang");
 
@@ -131,13 +136,6 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     std::string health_msg = strtool::format("Health %d", _player->getHealth());
     _text = TextLayout::allocWithText(health_msg, assets->get<Font>("pixel32"));
     _text->layout();
-
-    // Create and layout the dirt amount
-    std::string dirt_msg = strtool::format("%d", _currentDirtAmount);
-    _dirtText = TextLayout::allocWithText(dirt_msg, assets->get<Font>("pixel32"));
-    _dirtText->layout();
-    
-    _collisions.init(getSize());
     
     reset();
     
@@ -153,6 +151,25 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
         }
     });
     addChild(layer);
+    return true;
+}
+
+/** 
+ * Initializes the player models for all players, whether host or client. 
+ * Sets IDs (corresponds to side of building - TODO: change?), textures (TODO)
+ */
+bool GameScene::initPlayers(const std::shared_ptr<cugl::AssetManager>& assets) {
+    if (assets == nullptr) {
+        return false;
+    }
+
+    // id of self is set while connecting to the lobby. all other players have ids set, even if they don't exist.
+    _player->setId(_id);
+    int leftId = _id == 1 ? 4 : _id - 1;
+    _playerLeft->setId(leftId);
+    int rightId = _id == 4 ? 1 : _id + 1;
+    _playerRight->setId(rightId);
+
     return true;
 }
 
@@ -178,8 +195,9 @@ bool GameScene::initHost(const std::shared_ptr<cugl::AssetManager>& assets) {
     if (assets == nullptr) {
         return false;
     }
-    
+
     _numPlayers = _network.getNumPlayers();
+    initPlayers(assets);
 
     _windowsAcross.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
     _windowsAcross.init(_constants->get("easy board"), getSize()); // init depends on texture
@@ -192,7 +210,7 @@ bool GameScene::initHost(const std::shared_ptr<cugl::AssetManager>& assets) {
     // starting position is most bottom left window
     Vec2 startingPos = Vec2(_windows.sideGap + (_windows.getPaneWidth() / 2), _windows.getPaneHeight());
 
-    // player ids for self, right, and left already assigned from earlier init call
+    // player ids for self, right, and left already assigned from earlier initPlayers call
     _playerAcross = std::make_shared<Player>(3, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
     _playerAcross->setTexture(assets->get<Texture>("left"));
 
@@ -310,9 +328,9 @@ std::shared_ptr<cugl::JsonValue> GameScene::getJsonBoard(int id) {
 
     const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
     json->init(JsonValue::Type::ObjectType);
-    json->appendValue("player_id", static_cast<double>(_id));
-    json->appendValue("num_dirt", static_cast<double>(_allDirtAmounts[_id - 1]));
-    json->appendValue("curr_board", static_cast<double>(_allCurBoards[_id - 1]));
+    json->appendValue("player_id", static_cast<double>(id));
+    json->appendValue("num_dirt", static_cast<double>(_allDirtAmounts[id - 1]));
+    json->appendValue("curr_board", static_cast<double>(_allCurBoards[id - 1]));
     json->appendValue("player_x", player->getPosition().x);
     json->appendValue("player_y", player->getPosition().y);
 
@@ -646,7 +664,7 @@ void GameScene::update(float timestep) {
 }
 
 /**
-* This method does all the heavy lifting work for update.
+* FOR HOST ONLY. This method does all the heavy lifting work for update.
 * The host steps forward each player's game state, given references to the player, board, and projectile set.
 */
 void GameScene::stepForward(std::shared_ptr<Player>& player, const Vec2 moveVec, WindowGrid& windows, ProjectileSet& projectiles) {
@@ -676,16 +694,21 @@ void GameScene::stepForward(std::shared_ptr<Player>& player, const Vec2 moveVec,
     //        CULog("player coors: NULL");
     //        CULog("player coors: (%f, %f)", grid_coors.y, grid_coors.x);
     //    }
+
+    int player_id = player->getId();
     bool dirtRemoved = windows.removeDirt(grid_coors.y, grid_coors.x);
     if (dirtRemoved) {
         // filling up dirty bucket
-        _allDirtAmounts[_id -1] = min(_maxDirtAmount, _allDirtAmounts[_id - 1] + 1);
+        _allDirtAmounts[player_id -1] = min(_maxDirtAmount, _allDirtAmounts[player_id - 1] + 1);
     }
 
     if (player->getEdge(windows.sideGap, getSize()) && !movedOverEdge) {
-        _allDirtAmounts[_id -1] = max(0, _allDirtAmounts[_id - 1] - 1);
-        // TODO: currently moving to either edge sends user to the left.
-        _allCurBoards[_id - 1] = -1;
+        _allDirtAmounts[player_id -1] = max(0, _allDirtAmounts[player_id - 1] - 1);
+        // TODO: currently moving to either edge sends user to the right, only if a user exists to the right.
+        if (player_id + 1 <= _numPlayers || player_id == 4) {
+            _allCurBoards[player_id - 1] = 1;
+        }
+        
     }
 
     // fixed dirt generation logic (every 5 seconds)

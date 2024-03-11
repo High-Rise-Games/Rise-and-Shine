@@ -97,6 +97,12 @@ public:
     
 #pragma mark Properties
 
+    /** Returns the id of the player. */
+    const int getId() const { return _id; }
+
+    /** Sets the id of the player. */
+    void setId(int id) { _id = id; }
+
     /**
      * Returns the position of this ship.
      *

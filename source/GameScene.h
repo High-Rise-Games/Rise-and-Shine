@@ -176,6 +176,9 @@ public:
      */
     bool init(const std::shared_ptr<cugl::AssetManager>& assets);
 
+    /** Initializes the player models for all players, whether host or client. */
+    bool initPlayers(const std::shared_ptr<cugl::AssetManager>& assets);
+
     /**
      * Initializes the extra controllers needed for the host of the game.
      *

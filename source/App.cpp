@@ -309,6 +309,7 @@ void App::updateLobbyScene(float timestep) {
                 _lobby_client.disconnect();
                 _gameplay.setHost(false);
                 _gameplay.setId(_lobby_client.getId());
+                _gameplay.initPlayers(_assets);
                 CULog("my id: %d", _gameplay.getId());
                break;
             case LobbyScene::Status::WAIT:
