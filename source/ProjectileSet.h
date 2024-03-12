@@ -159,9 +159,9 @@ public:
      */
     bool isEmpty() const { return current.empty() && _pending.empty(); }
 
-    /** Clears the projectile pending set. */
-    void clearPending() { 
-        _pending.clear(); 
+    /** Clears the projectile current/active set. */
+    void clearCurrentSet() { 
+        current.clear(); 
     }
 
     /**
@@ -233,9 +233,26 @@ public:
      *
      * @param p     The projectile position.
      * @param v     The projectile velocity.
+     * @param dest  The projectile's destination.
      * @param t     The projectile type.
      */
     void spawnProjectile(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2 dest, Projectile::ProjectileType t);
+
+    /**
+     * ONLY CALLED ON CLIENT SIDE. Adds a projectile directly to the current set. 
+     *
+     * We do not need to add it to a pending set because the only thing the client needs to do is draw
+     * projectiles in the current set.
+     * 
+     * If we only added projectiles to the pending set, then projectiles will never be drawn as the 
+     * pending set will repeatedly be cleared then repopulated before any move to the current set.
+     *
+     * @param p     The projectile position.
+     * @param v     The projectile velocity.
+     * @param dest  The projectile's destination.
+     * @param t     The projectile type.
+     */
+    void spawnProjectileClient(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2 dest, Projectile::ProjectileType t);
 
     /**
      * Moves all the projectiles in the active set.

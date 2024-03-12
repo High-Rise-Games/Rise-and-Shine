@@ -87,7 +87,8 @@ void Player::decreaseStunFrames() {
  */
 void Player::setTexture(const std::shared_ptr<cugl::Texture>& texture) {
     _texture = texture;
-    _radius = _windowHeight / 2;
+    float scale = _windowHeight / texture->getHeight();
+    _radius = texture->getWidth() * scale / 2;
     /*
     if (_framecols > 0) {
         int rows = _framesize/_framecols;

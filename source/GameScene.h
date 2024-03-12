@@ -266,7 +266,7 @@ public:
     void generateDirt();
 
     /** generates poo before bird is ready */
-    void generatePoo();
+    void generatePoo(ProjectileSet& projectiles);
     /**
      * Called by host only. Converts game state into a JSON value for sending over the network
      * 
@@ -349,7 +349,7 @@ public:
      * This method does all the heavy lifting work for update.
      * The host steps forward each player's game state, given references to the player, board, and projectile set.
      */
-    void stepForward(std::shared_ptr<Player>& player, const cugl::Vec2 moveVec, WindowGrid& windows, ProjectileSet& projectiles);
+    void stepForward(std::shared_ptr<Player>& player, WindowGrid& windows, ProjectileSet& projectiles);
 
     /**
      * Draws all this scene to the given SpriteBatch.

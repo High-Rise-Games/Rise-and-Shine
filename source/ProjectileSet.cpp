@@ -12,7 +12,7 @@ ProjectileSet::Projectile::Projectile(const cugl::Vec2 p, const cugl::Vec2 v, co
     destination = dest;
     type = t;
     _projectileTexture = texture;
-    _radius = std::max(texture->getSize().height, texture->getSize().width) / 2;
+    _radius = std::min(texture->getSize().height, texture->getSize().width) / 2;
     if (type == ProjectileType::DIRT) {
         _scaleFactor = sf;
         _damage = 0;
@@ -28,7 +28,7 @@ ProjectileSet::Projectile::Projectile(const cugl::Vec2 p, const cugl::Vec2 v, co
 /** sets projectile texture */
 void ProjectileSet::Projectile::setProjectileTexture(const std::shared_ptr<cugl::Texture>& value) {
     Size size = value->getSize();
-    _radius = std::max(size.width, size.height) / 2;
+    _radius = std::min(size.width, size.height) / 2;
     _projectileTexture = value;
 }
 
@@ -88,18 +88,18 @@ bool ProjectileSet::init(std::shared_ptr<cugl::JsonValue> data) {
 }
 
 /**
-     * Sets the texture scale factors.
-     *
-     * This must be called during the initialization of projectile set in GameScene
-     * otherwise projectiles may "collide" with the player if it is too large at the
-     * very start of the game
-     *
-     * @param windowHeight  the height of each window grid
-     * @param windowWidth   the width of each window grid
-     */
+* Sets the texture scale factors to be smaller than size of the window.
+*
+* This must be called during the initialization of projectile set in GameScene
+* otherwise projectiles may "collide" with the player if it is too large at the
+* very start of the game
+*
+* @param windowHeight  the height of each window grid
+* @param windowWidth   the width of each window grid
+*/
 void ProjectileSet::setTextureScales(const float windowHeight, const float windowWidth) {
-    _dirtScaleFactor = std::min(windowWidth / _dirtTexture->getWidth(), windowHeight / _dirtTexture->getHeight());
-    _poopScaleFactor = std::min(windowWidth / _poopTexture->getWidth(), windowHeight / _poopTexture->getHeight());
+    _dirtScaleFactor = std::min(windowWidth / _dirtTexture->getWidth(), windowHeight / _dirtTexture->getHeight()) / 1.5;
+    _poopScaleFactor = std::min(windowWidth / _poopTexture->getWidth(), windowHeight / _poopTexture->getHeight()) / 1.5;
 }
 
 
@@ -114,6 +114,18 @@ void ProjectileSet::spawnProjectile(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2 dest,
     }
     std::shared_ptr<Projectile> proj = std::make_shared<Projectile>(p, v, dest, texture, scale, t);
     _pending.emplace(proj);
+}
+
+void ProjectileSet::spawnProjectileClient(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2 dest, Projectile::ProjectileType t) {
+    // Determine direction and velocity of the projectile.
+    std::shared_ptr<cugl::Texture> texture = _dirtTexture;
+    float scale = _dirtScaleFactor;
+    if (t == Projectile::ProjectileType::POOP) {
+        texture = _poopTexture;
+        scale = _poopScaleFactor;
+    }
+    std::shared_ptr<Projectile> proj = std::make_shared<Projectile>(p, v, dest, texture, scale, t);
+    current.emplace(proj);
 }
 
 /**
