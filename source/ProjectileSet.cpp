@@ -5,22 +5,11 @@
 
 using namespace cugl;
 
-/** Use this constructor to generate flying projectile */
-ProjectileSet::Projectile::Projectile(const cugl::Vec2 p, const cugl::Vec2 v, std::shared_ptr<cugl::Texture> texture, float sf) {
-    position = p;
-    velocity = v;
-    type = ProjectileType::POOP;
-    _scaleFactor = sf;
-    _damage = 1;
-    _stunTime = 0;
-    _projectileTexture = texture;
-    _radius = std::max(texture->getSize().height, texture->getSize().width) / 2;
-}
-
 /** Use this constructor to generate a specific projectile */
-ProjectileSet::Projectile::Projectile(const cugl::Vec2 p, const cugl::Vec2 v, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t) {
+ProjectileSet::Projectile::Projectile(const cugl::Vec2 p, const cugl::Vec2 v, const cugl::Vec2 dest, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t) {
     position = p;
     velocity = v;
+    destination = dest;
     type = t;
     _projectileTexture = texture;
     _radius = std::max(texture->getSize().height, texture->getSize().width) / 2;
@@ -49,8 +38,20 @@ void ProjectileSet::Projectile::setProjectileTexture(const std::shared_ptr<cugl:
 * This method performs no collision detection.
 * Collisions are resolved afterwards.
 */
-void ProjectileSet::Projectile::update(Size size) {
-    position += velocity;
+bool ProjectileSet::Projectile::update(Size size) {
+    Vec2 newPosition = position + velocity;
+    // when the new position is over the destination, remove it
+    if (type == ProjectileType::DIRT && std::min(position.x, newPosition.x) <= destination.x && destination.x <= std::max(position.x, newPosition.x) && std::min(position.y, newPosition.y) <= destination.y && destination.y <= std::max(position.y, newPosition.y)) {
+        return true;
+    }
+    // when the projectile move over the edge, remove it
+    position = newPosition;
+    float r = getRadius() * getScale();
+    if (position.x - r > size.width || position.x + r < 0 || position.y - r > size.height || position.y + r < 0) {
+        // delete the projectile once it goes completely off screen
+        return true;
+    }
+    return false;
 }
 
 
@@ -73,10 +74,10 @@ bool ProjectileSet::init(std::shared_ptr<cugl::JsonValue> data) {
                 vel.y = entry->get(1)->get(1)->asFloat(0);
                 std::string type = entry->get(2)->asString();
                 if (type == "DIRT") {
-                    spawnProjectile(pos, vel, Projectile::ProjectileType::DIRT);
+                    spawnProjectile(pos, vel, Vec2::ZERO, Projectile::ProjectileType::DIRT);
                 }
                 else if (type == "POOP") {
-                    spawnProjectile(pos, vel, Projectile::ProjectileType::POOP);
+                    spawnProjectile(pos, vel, Vec2::ZERO, Projectile::ProjectileType::POOP);
                 }
                 
             }
@@ -103,7 +104,7 @@ void ProjectileSet::setTextureScales(const float windowHeight, const float windo
 
 
 
-void ProjectileSet::spawnProjectile(cugl::Vec2 p, cugl::Vec2 v, Projectile::ProjectileType t) {
+void ProjectileSet::spawnProjectile(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2 dest, Projectile::ProjectileType t) {
     // Determine direction and velocity of the projectile.
     std::shared_ptr<cugl::Texture> texture = _dirtTexture;
     float scale = _dirtScaleFactor;
@@ -111,7 +112,7 @@ void ProjectileSet::spawnProjectile(cugl::Vec2 p, cugl::Vec2 v, Projectile::Proj
         texture = _poopTexture;
         scale = _poopScaleFactor;
     }
-    std::shared_ptr<Projectile> proj = std::make_shared<Projectile>(p, v, texture, scale, t);
+    std::shared_ptr<Projectile> proj = std::make_shared<Projectile>(p, v, dest, texture, scale, t);
     _pending.emplace(proj);
 }
 
@@ -127,8 +128,15 @@ void ProjectileSet::spawnProjectile(cugl::Vec2 p, cugl::Vec2 v, Projectile::Proj
 */
 void ProjectileSet::update(Size size) {
     // Move projectiles, updating the animation frame
-    for (auto it = current.begin(); it != current.end(); ++it) {
-        (*it)->update(size);
+    auto it = current.begin();
+    while (it != current.end()) {
+        bool erased = (*it)->update(size);
+        if (erased) {
+            // delete the projectile once it goes completely off screen
+            it = current.erase(it);
+        } else {
+            it++;
+        }
     }
 
     // Move from pending to current
@@ -146,8 +154,7 @@ void ProjectileSet::update(Size size) {
 * @param batch     The sprite batch to draw to
 */
 void ProjectileSet::draw(const std::shared_ptr<SpriteBatch>& batch, Size size, float windowWidth, float windowHeight) {
-    auto it = current.begin();
-    while (it != current.end()) {
+    for (auto it = current.begin(); it != current.end(); ++it) {
         std::shared_ptr<Projectile> proj = (*it);
 
         std::shared_ptr<Texture> texture = proj->getTexture();
@@ -170,14 +177,6 @@ void ProjectileSet::draw(const std::shared_ptr<SpriteBatch>& batch, Size size, f
         auto sprite = proj->getTexture();
 
         batch->draw(texture, origin, trans);
-
-        if (pos.x - r > size.width || pos.x + r < 0 || pos.y - r > size.height || pos.y + r < 0) {
-            // delete the projectile once it goes completely off screen
-            it = current.erase(it);
-        }
-        else {
-            it++;
-        }
     }
     
 }

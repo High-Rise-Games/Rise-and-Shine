@@ -54,6 +54,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _currentDirtAmount = 0;
     _curBoard = 0;
     _dirtSelected = false;
+    _dirtPath = Path2();
     _onAdjacentBoard = false;
     dimen *= SCENE_HEIGHT/dimen.height;
     if (assets == nullptr) {
@@ -473,6 +474,10 @@ void GameScene::updateBoard(std::shared_ptr<JsonValue> data) {
         // get projectile velocity
         const std::vector<std::shared_ptr<JsonValue>>& projVel = projNode->get("vel")->children();
         Vec2 vel(projVel[0]->asInt(), projVel[1]->asInt());
+        
+        // get projectile velocity
+        const std::vector<std::shared_ptr<JsonValue>>& projDest = projNode->get("dest")->children();
+        Vec2 dest(projDest[0]->asInt(), projDest[1]->asInt());
 
         // get projectile type
         string typeStr = projNode->get("type")->asString();
@@ -482,7 +487,7 @@ void GameScene::updateBoard(std::shared_ptr<JsonValue> data) {
         }
 
         // add the projectile to neighbor's projectile set
-        projectiles->spawnProjectile(pos, vel, type);
+        projectiles->spawnProjectile(pos, vel, dest, type);
     }
 }
 
@@ -675,8 +680,6 @@ void GameScene::update(float timestep) {
                 Vec2 screenPos = _dirtThrowInput.getPosition();
                 Vec3 convertedWorldPos = screenToWorldCoords(screenPos);
                 Vec2 worldPos = Vec2(convertedWorldPos.x, convertedWorldPos.y);
-                std::cout<<"finger: x: "<<worldPos.x<<", y: "<<worldPos.y;
-                std::cout<<"player: x: "<<_player->getPosition().x<<", y: "<<_player->getPosition().y;
                 float distance = (worldPos - _player->getPosition()).length();
                 if (distance <= _player->getRadius()) {
                     _dirtSelected = true;
@@ -687,22 +690,28 @@ void GameScene::update(float timestep) {
             if (_dirtThrowInput.didRelease()) {
                 _dirtSelected = false;
                 Vec2 currentScreenPos = _dirtThrowInput.getPosition();
-                Vec2 currentWorldPos = screenToWorldCoords(currentScreenPos);
-                // Vec2 currentPos = Vec2(currentWorldPos.x, currentWorldPos.y);
-                Vec2 diff = currentWorldPos - _prevDirtPos;
-                Vec2 velocity = diff * -0.5;
+                Vec3 currentWorldPos = screenToWorldCoords(currentScreenPos);
+                Vec2 currentPos = Vec2(currentWorldPos.x, currentWorldPos.y);
+                Vec2 diff = currentPos - _prevDirtPos;
+                Vec2 velocity = diff.getNormalization() * -5;
+                Vec2 destination = currentPos - diff * 5;
                 // logic for throwing the dirt = converting to projectile
                 if (_curBoard == -1) {
-                    _projectilesLeft.spawnProjectile(currentWorldPos, velocity, ProjectileSet::Projectile::ProjectileType::DIRT);
+                    _projectilesLeft.spawnProjectile(currentPos, velocity, destination, ProjectileSet::Projectile::ProjectileType::DIRT);
                 }
                 else if (_curBoard == 1) {
-                    _projectilesRight.spawnProjectile(currentWorldPos, velocity, ProjectileSet::Projectile::ProjectileType::DIRT);
+                    _projectilesRight.spawnProjectile(currentPos, velocity, destination, ProjectileSet::Projectile::ProjectileType::DIRT);
                 }
             } else if (_dirtThrowInput.isDown()) {
                 Vec2 currentScreenPos = _dirtThrowInput.getPosition();
                 Vec3 currentWorldPos = screenToWorldCoords(currentScreenPos);
                 Vec2 currentPos = Vec2(currentWorldPos.x, currentWorldPos.y);
                 _player->setPosition(currentPos);
+                std::vector<Vec2> vertices = {currentPos};
+                Vec2 diff = currentPos - _prevDirtPos;
+                Vec2 destination = currentPos - diff * 5;
+                vertices.push_back(destination);
+                _dirtPath = Path2(vertices);
             }
         }
     }
@@ -926,12 +935,20 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _playerLeft->draw(batch, getSize());
         _player->draw(batch, getSize());
         _projectilesLeft.draw(batch, getSize(), _windowsLeft.getPaneWidth(), _windowsLeft.getPaneHeight());
+        if (_dirtSelected && _dirtPath.size() != 0) {
+            batch->setColor(Color4::BLACK);
+            batch->outline(_dirtPath);
+        }
     }
     else if (_curBoard == 1) {
         _windowsRight.draw(batch, getSize());
         _playerRight->draw(batch, getSize());
         _player->draw(batch, getSize());
         _projectilesRight.draw(batch, getSize(), _windowsRight.getPaneWidth(), _windowsRight.getPaneHeight());
+        if (_dirtSelected && _dirtPath.size() != 0) {
+            batch->setColor(Color4::BLACK);
+            batch->outline(_dirtPath);
+        }
     }
     batch->setColor(Color4::BLACK);
     batch->drawText(_text, Vec2(getSize().width - 10 - _text->getBounds().size.width, getSize().height - _text->getBounds().size.height));

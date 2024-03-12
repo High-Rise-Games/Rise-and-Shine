@@ -33,6 +33,8 @@ public:
         cugl::Vec2 position;
         /** projectile velocity */
         cugl::Vec2 velocity;
+        /** projectile destination, ONLY active for dirt*/
+        cugl::Vec2 destination;
         /** type of projectile */
         ProjectileType type;
     
@@ -51,14 +53,11 @@ public:
 
 
     public:
-    
-        /** Use this constructor to generate a projectile */
-        Projectile(const cugl::Vec2 p, const cugl::Vec2 v, std::shared_ptr<cugl::Texture> texture, float sf);
 
         /** Use this constructor to generate a specialized projectile 
          * @param t     type of projectile
         */
-        Projectile(const cugl::Vec2 p, const cugl::Vec2 v, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t);
+        Projectile(const cugl::Vec2 p, const cugl::Vec2 v, const cugl::Vec2 dest, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t);
 
         /** sets projectile scale for drawing */
         void setScale(float s) { _scaleFactor = s; }
@@ -101,8 +100,10 @@ public:
          *
          * This method performs no collision detection.
          * Collisions are resolved afterwards.
+         *
+         * @return whether the projectile should be removed
          */
-        void update(cugl::Size size);
+        bool update(cugl::Size size);
     
     };
 
@@ -234,7 +235,7 @@ public:
      * @param v     The projectile velocity.
      * @param t     The projectile type.
      */
-    void spawnProjectile(cugl::Vec2 p, cugl::Vec2 v, Projectile::ProjectileType t);
+    void spawnProjectile(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2 dest, Projectile::ProjectileType t);
 
     /**
      * Moves all the projectiles in the active set.
