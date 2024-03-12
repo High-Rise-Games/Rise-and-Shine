@@ -47,6 +47,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     
     Size dimen = Application::get()->getDisplaySize();
     _rng.seed(std::time(nullptr));
+    _projectileGenChance = 0.1;
+    _projectileGenCountDown = 120;
     _dirtGenSpeed = 2;
     _dirtThrowTimer = 0;
     _fixedDirtUpdateThreshold = 5 * 60;
@@ -94,7 +96,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _projectiles.setDirtTexture(assets->get<Texture>("dirt"));
     _projectiles.setPoopTexture(assets->get<Texture>("poop"));
     _projectiles.setTextureScales(_windows.getPaneHeight(), _windows.getPaneWidth());
-    _projectiles.init(_constants->get("projectiles"));
+//    _projectiles.init(_constants->get("projectiles"));
 
     _projectilesLeft.setDirtTexture(assets->get<Texture>("dirt"));
     _projectilesLeft.setPoopTexture(assets->get<Texture>("poop"));
@@ -276,6 +278,8 @@ void GameScene::reset() {
     _projectilesRight.init(_constants->get("projectiles"));
 
     _dirtThrowTimer = 0;
+    _projectileGenChance = 0.1;
+    _projectileGenCountDown = 120;
     _currentDirtAmount = 0;
     _curBoard = 0;
 }
@@ -755,6 +759,7 @@ void GameScene::update(float timestep) {
             _frame = _frame+1;
         } if (_frame==_fps && (_gameTime>=1)) {
             _gameTime=_gameTime-1;
+           _projectileGenChance = max(0.8, _projectileGenChance + (200 - _gameTime) * 0.002);
             _frame = 0;
         }
         
@@ -845,8 +850,21 @@ void GameScene::stepForward(std::shared_ptr<Player>& player, const Vec2 moveVec,
     // }
 
     // dynamic dirt generation logic (based on generation rate)
-
-
+    
+    // Generate falling hazard based on chance
+    if (_projectileGenCountDown == 0) {
+        std::bernoulli_distribution dist(_projectileGenChance);
+        if (dist(_rng)) {
+            // random dirt generation logic
+            CULog("generating random poo");
+            generatePoo();
+         }
+        _projectileGenCountDown = 120;
+     }
+     else {
+         _projectileGenCountDown -= 1;
+     }
+        
     // Move the projectiles
     projectiles.update(getSize());
 
@@ -865,7 +883,7 @@ void GameScene::updateDirtGenTime() {
     }
 }
 
-/** handles actual dirt generation */
+/** handles dirt generation */
 void GameScene::generateDirt() {
     std::uniform_int_distribution<int> rowDist(0, _windows.getNVertical() - 1);
     std::uniform_int_distribution<int> colDist(0, _windows.getNHorizontal() - 1);
@@ -878,6 +896,16 @@ void GameScene::generateDirt() {
         rand_row = rowDist(_rng);
         rand_col = colDist(_rng);
     }
+}
+
+/** handles poo generation */
+void GameScene::generatePoo() {
+    std::uniform_real_distribution<float> rowDist(_windows.sideGap + 40, (float)getSize().getIWidth() - _windows.sideGap - 60);
+    float rand_row = rowDist(_rng);
+//    CULog("player at: (%f, %f)", _player->getCoors().y, _player->getCoors().x);
+//    CULog("generate at: %d", (int)rand_row);
+    // if add dirt already exists at location or player at location and board is not full, repeat
+    _projectiles.spawnProjectile(Vec2(rand_row, getSize().height - 50), Vec2(0, min(-2.4f,-2-_projectileGenChance)), ProjectileSet::Projectile::ProjectileType::POOP);
 }
 
 /** Checks whether board is full except player current location*/

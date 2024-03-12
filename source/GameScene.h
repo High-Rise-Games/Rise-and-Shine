@@ -109,6 +109,10 @@ protected:
     /** The amount of dirt player is currently holdinfg in the bucket **/
     int _currentDirtAmount;
 
+    /** Projectile generation chance, increases over time */
+    float _projectileGenChance;
+    /** Projectile generation timer, on timer generate projectile based on chance, then reset timer*/
+    float _projectileGenCountDown;
     /** The projectile set of your board */
     ProjectileSet _projectiles;
     /** The projectile set of your left neighbor */
@@ -267,6 +271,8 @@ public:
     /** generates dirt in a fair manner */
     void generateDirt();
 
+    /** generates poo before bird is ready */
+    void generatePoo();
     /**
      * Converts game state into a JSON value for sending over the network
      * 

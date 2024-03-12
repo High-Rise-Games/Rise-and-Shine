@@ -193,7 +193,9 @@ bool Player::move(Vec2 dir, Size size, float sideGap) {
     } else {
         _pos.x = sideGap;
     }
-    _pos.y += _vel.y;
+    if (_pos.y + _vel.y >= 0 && _pos.y + _vel.y <= size.height) {
+        _pos.y += _vel.y;
+    }
     return false;
 
 }
