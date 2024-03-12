@@ -47,7 +47,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     
     Size dimen = Application::get()->getDisplaySize();
     _rng.seed(std::time(nullptr));
-    _projectileGenChance = 0.1;
+    _projectileGenChance = 0.6;
     _projectileGenCountDown = 120;
     _dirtGenSpeed = 2;
     _dirtThrowTimer = 0;
@@ -278,7 +278,7 @@ void GameScene::reset() {
     _projectilesRight.init(_constants->get("projectiles"));
 
     _dirtThrowTimer = 0;
-    _projectileGenChance = 0.1;
+    _projectileGenChance = 0.6;
     _projectileGenCountDown = 120;
     _currentDirtAmount = 0;
     _curBoard = 0;
@@ -759,7 +759,7 @@ void GameScene::update(float timestep) {
             _frame = _frame+1;
         } if (_frame==_fps && (_gameTime>=1)) {
             _gameTime=_gameTime-1;
-           _projectileGenChance = max(0.8, _projectileGenChance + (200 - _gameTime) * 0.002);
+           _projectileGenChance = min(0.9, _projectileGenChance + (200 - _gameTime) * 0.002);
             _frame = 0;
         }
         
