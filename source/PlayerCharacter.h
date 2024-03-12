@@ -6,6 +6,7 @@
 #ifndef __SHIP_H__
 #define __SHIP_H__
 #include <cugl/cugl.h>
+#include "WindowGrid.h"
 
 /** The number of frames until we can fire again */
 #define RELOAD_RATE 3
@@ -36,11 +37,11 @@ private:
     // TODO: remove unnecessary fields from here and constants json file
     // The following are protected, because they have no accessors
     /** Current angle of the ship */
-    float _ang;
+    //float _ang;
     /** Accumulator variable to turn faster as key is held down */
-    float _dang;
+    //float _dang;
     /** Countdown to limit refire rate */
-    int _refire;
+    //int _refire;
     /** The amount of health this ship has */
     int _health;
     /** The amount of time in frames for the player to be stunned */
@@ -53,29 +54,31 @@ private:
     /** Mass/weight of the ship. Used in collisions. */
     float _mass;
     /** The number of frames until we can fire again */
-    int _firerate;
+    //int _firerate;
     /** The number of columns in the sprite sheet */
-    int _framecols;
+    //int _framecols;
     /** The number of frames in the sprite sheet */
-    int _framesize;
+    //int _framesize;
     /** The sprite sheet frame for being at rest */
-    int _frameflat;
+    //int _frameflat;
     /** The shadow offset in pixels */
-    float _shadows;
+    //float _shadows;
     /** Amount to adjust forward movement from input */
     float _thrust;
     /** The maximum allowable velocity */
     float _maxvel;
     /** The banking factor */
-    float _banking;
+    //float _banking;
     /** The maximum banking amount */
-    float _maxbank;
+    //float _maxbank;
     /** Amount to dampedn angular movement over time */
-    float _angdamp;
+    //float _angdamp;
     
     // Asset references. These should be set by GameScene
+    /** player texture */
+    std::shared_ptr<cugl::Texture> _texture;
     /** Reference to the ships sprite sheet */
-    std::shared_ptr<cugl::SpriteSheet> _sprite;
+    //std::shared_ptr<cugl::SpriteSheet> _sprite;
     /** Radius of the ship in pixels (derived from sprite sheet) */
     float _radius;
 
@@ -178,7 +181,7 @@ public:
      *
      * @return the angle of the ship
      */
-    float getAngle() const { return _ang; }
+    //float getAngle() const { return _ang; }
     
     /**
      * Sets the angle that this ship is facing.
@@ -188,7 +191,7 @@ public:
      *
      * @param value the angle of the ship
      */
-    void setAngle(float value) { _ang = value; }
+    //void setAngle(float value) { _ang = value; }
     
     /**
      * Returns the current player's health.
@@ -231,9 +234,9 @@ public:
      *
      * @return true if the ship can fire
      */
-    bool canFireWeapon() const {
-        return (_refire > _firerate);
-    }
+    //bool canFireWeapon() const {
+    //    return (_refire > _firerate);
+    //}
     
     /**
      * Resets the reload counter so the ship cannot fire again immediately.
@@ -241,9 +244,9 @@ public:
      * The ship must wait a number of frames before it can fire. This
      * value is set by "fire rate" in the JSON file
      */
-    void reloadWeapon() {
-        _refire = 0;
-    }
+    //void reloadWeapon() {
+    //    _refire = 0;
+    //}
 
     /**
      * Returns the mass of the ship.
@@ -271,15 +274,15 @@ public:
     
 #pragma mark Graphics
     /**
-     * Returns the sprite sheet for the ship
+     * Returns the texture for the ship
      *
-     * The size and layout of the sprite sheet should already be specified
-     * in the initializing JSON. Otherwise, the contents of the sprite sheet
-     * will be ignored.     *
-     * @return the sprite sheet for the ship
+     * //The size and layout of the sprite sheet should already be specified
+     * //in the initializing JSON. Otherwise, the contents of the sprite sheet
+     * //will be ignored.     *
+     * @return the texture for the ship
      */
-    const std::shared_ptr<cugl::SpriteSheet>& getSprite() const {
-        return _sprite;
+    const std::shared_ptr<cugl::Texture>& getTexture() const {
+        return _texture;
     }
 
     /**
@@ -304,7 +307,7 @@ public:
      * @param batch     The sprite batch to draw to
      * @param size      The size of the window (for wrap around)
      */
-    void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size);
+    void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, WindowGrid windows);
 
 #pragma mark Movement
     /**

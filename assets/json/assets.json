@@ -8,6 +8,9 @@
         "ship": {
             "file":  "textures/ships.png"
         },
+	"player_1": {
+            "file":  "textures/player_1.png"
+        },
         "window": {
             "file": "textures/GenericWindow.png"
         },
