@@ -733,6 +733,8 @@ std::shared_ptr<cugl::JsonValue> GameScene::getJsonDirtThrow(const int target, c
     dirtDest->appendValue(static_cast<double>(dest.x));
     json->appendChild("dirt_dest", dirtDest);
 
+    CULog("dirt throw from player %d to %d", _id, target);
+
     return json;
 }
 
@@ -803,6 +805,10 @@ void GameScene::update(float timestep) {
                         CULog("got switch scene request message");
                         processSceneSwitchRequest(incomingMsg);
                     }
+                    else if (incomingMsg->has("player_id_target")) {
+                        CULog("got dirt throw message");
+                        processDirtThrowRequest(incomingMsg);
+                    }
                 }
             });
         _network.checkConnection();
@@ -825,6 +831,7 @@ void GameScene::update(float timestep) {
                 Vec3 convertedWorldPos = screenToWorldCoords(screenPos);
                 Vec2 worldPos = Vec2(convertedWorldPos.x, convertedWorldPos.y);
                 float distance = (worldPos - _player->getPosition()).length();
+                CULog("player radius: %f", _player->getRadius());
                 if (distance <= _player->getRadius()) {
                     _dirtSelected = true;
                     _prevDirtPos = _player->getPosition();
@@ -847,6 +854,7 @@ void GameScene::update(float timestep) {
                 if (targetId == 5) {
                     targetId = 1;
                 }
+
                 _network.transmitMessage(getJsonDirtThrow(targetId, currentPos, velocity, destination));
                 _player->setPosition(_prevDirtPos);
 

@@ -22,7 +22,6 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     //_ang  = 0;
     //_dang = 0;
     //_refire = 0;
-    _radius = 0;
     
     // height of a window pane of the game board
     _windowWidth = windowWidth;
@@ -88,6 +87,7 @@ void Player::decreaseStunFrames() {
  */
 void Player::setTexture(const std::shared_ptr<cugl::Texture>& texture) {
     _texture = texture;
+    _radius = _windowHeight / 2;
     /*
     if (_framecols > 0) {
         int rows = _framesize/_framecols;
