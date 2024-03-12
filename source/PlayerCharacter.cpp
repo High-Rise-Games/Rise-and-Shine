@@ -212,4 +212,3 @@ int Player::getEdge(float sideGap, Size size) {
     return 0;
 };
 
-

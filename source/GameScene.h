@@ -212,6 +212,8 @@ public:
     * @return the id of this player
     */
     const int getId() const { return _id; }
+    
+    
 
     /**
     * Sets the id of this player.
@@ -228,6 +230,28 @@ public:
 //    /** sets return scene button texture */
 //    void setReturnSceneButton(const std::shared_ptr<cugl::Texture>& value) { _returnSceneButton = value; }
     
+    /**
+    * Called by the client only. Client calls this function to transmit message
+    * to request from the host to switch scenes.
+    *
+    * Player ids assigned clockwise with host at top
+    *
+    *          host: 1
+    * left: 4            right: 2
+    *         across: 3
+    *
+     * Example Scene Request Message:
+     * {
+     *    "player_id":  1,
+     *    "vel": [0.234, 1.153]
+     * }
+    *
+    */
+    void SceneSwitchRequest();
+    
+    
+    /** Host function to process switch scene requests */
+    void ProcessSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data);
     
     /** Checks whether board is full */
     const bool checkBoardFull();

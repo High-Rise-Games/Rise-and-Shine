@@ -519,7 +519,7 @@ std::shared_ptr<cugl::JsonValue> GameScene::getJsonMove(const cugl::Vec2 move) {
  * Example movement message:
  * {
  *    "player_id":  1,
- *    "vel": [0.234, 1.153]
+ *    "switch_destination": 1
  * }
 *
 * @params data     The data to update
@@ -527,21 +527,92 @@ std::shared_ptr<cugl::JsonValue> GameScene::getJsonMove(const cugl::Vec2 move) {
 void GameScene::updateFromAction(std::shared_ptr<cugl::JsonValue> data) {
     // TODO: add conditional check here for movement action or other action
     
-    int playerId = data->getInt("player_id", 0);
-    const std::vector<std::shared_ptr<JsonValue>>& vel = data->get("vel")->children();
-    Vec2 moveVec(vel[0]->asFloat(), vel[1]->asFloat());
-
-    // playerId can't be 1, since host cannot send action message over network to itself
-    if (playerId == 2) {
-        stepForward(_playerRight, moveVec, _windowsRight, _projectilesRight);
-    }
-    else if (playerId == 3) {
-        stepForward(_playerAcross, moveVec, _windowsAcross, _projectilesAcross);
-    }
-    else if (playerId == 4) {
-        stepForward(_playerLeft, moveVec, _windowsLeft, _projectilesLeft);
+    // check if action is about scene switching
+    if (!(data->has("switch_destination"))) {
+        
+        int playerId = data->getInt("player_id", 0);
+        const std::vector<std::shared_ptr<JsonValue>>& vel = data->get("vel")->children();
+        Vec2 moveVec(vel[0]->asFloat(), vel[1]->asFloat());
+        
+        // playerId can't be 1, since host cannot send action message over network to itself
+        if (playerId == 2) {
+            stepForward(_playerRight, moveVec, _windowsRight, _projectilesRight);
+        }
+        else if (playerId == 3) {
+            stepForward(_playerAcross, moveVec, _windowsAcross, _projectilesAcross);
+        }
+        else if (playerId == 4) {
+            stepForward(_playerLeft, moveVec, _windowsLeft, _projectilesLeft);
+        }
+    } // logic for switch scene requests
+    else {
+        ProcessSceneSwitchRequest(data);
     }
 }
+
+
+/**
+* Called by the client only. Client calls this function to transmit message
+* to request from the host to switch scenes.
+*
+* Player ids assigned clockwise with host at top
+*
+*          host: 1
+* left: 4            right: 2
+*         across: 3
+*
+ * Example Scene Request Message:
+ * {
+ *    "player_id":  1,
+ *    "vel": [0.234, 1.153]
+ * }
+*
+*/
+void GameScene::SceneSwitchRequest() {
+    
+    
+    // first check that we are on an edge
+    // to make a valid scene switch request
+    
+    if (_player->getEdge(_windows.sideGap, getSize()) == -1 ||
+        _player->getEdge(_windows.sideGap, getSize()) == 0) {
+        
+        const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+        json->init(JsonValue::Type::ObjectType);
+        json->appendValue("player_id", static_cast<double>(_id));
+        
+        // the id of the player that we want to switch scene into
+        int switch_destination = 0;
+        
+        if (_player->getEdge(_windows.sideGap, getSize()) == -1) {
+            switch_destination = -1;
+        }
+        
+        if (_player->getEdge(_windows.sideGap, getSize()) == 0) {
+            switch_destination = 1;
+        }
+        
+        json->appendValue("switch_destination", static_cast<double>(switch_destination));
+        
+        _network.transmitMessage(json);
+        
+    }
+}
+
+
+/**
+* HOST ONLY. Logic to process switch scene requests.
+*/
+void GameScene::ProcessSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data) {
+    
+    int playerId = data->getInt("player_id", 0);
+    int switchDestination = data->getInt("switch_destination", 1);
+    
+    // update the board of the player to their switch destination
+    _allCurBoards[playerId-1] = switchDestination;
+    
+}
+
 
 /**
  * The method called to update the game mode.
@@ -570,6 +641,9 @@ void GameScene::update(float timestep) {
                     std::shared_ptr<JsonValue> incomingMsg = _network.processMessage(source, data);
                     if (incomingMsg->has("vel")) {
                         CULog("got movement message");
+                        updateFromAction(incomingMsg);
+                    } else if (incomingMsg->has("switch_destination")) {
+                        CULog("got switch scene request message");
                         updateFromAction(incomingMsg);
                     }
                 }
@@ -644,6 +718,8 @@ void GameScene::update(float timestep) {
                     std::string s = m->toString();
                     _network.transmitMessage(m);
                 }
+                // send over scene switch requests if necessary
+                SceneSwitchRequest();
             }
         }
         if (_ishost) {
