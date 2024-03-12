@@ -581,7 +581,9 @@ void GameScene::SceneSwitchRequest() {
         json->init(JsonValue::Type::ObjectType);
         json->appendValue("player_id", static_cast<double>(_id));
         
-        // the id of the player that we want to switch scene into
+        // the left or right board we want to switch into
+        // initialized to zero or xcode will bother me
+        // about it.
         int switch_destination = 0;
         
         if (_player->getEdge(_windows.sideGap, getSize()) == -1) {
