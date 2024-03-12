@@ -144,14 +144,20 @@ protected:
     std::shared_ptr<cugl::Texture> _emptyBucket;
     /** Full bucket texture image */
     std::shared_ptr<cugl::Texture> _fullBucket;
+    /** The text with the current dirt */
+    std::shared_ptr<cugl::TextLayout> _dirtText;
+
+    /** The scene node for the UI elements (buttons, labels) */
+    std::shared_ptr<cugl::scene2::SceneNode> _scene_UI;
+    /** The back button for the menu scene */
+    std::shared_ptr<cugl::scene2::Button> _backout;
 //    /** Switch scene button texture image */
 //    std::shared_ptr<cugl::Texture> _switchSceneButton;
 //    /** Return scene button texture image */
 //    std::shared_ptr<cugl::Texture> _returnSceneButton;
     /** Switch scene button */
-    std::shared_ptr<cugl::scene2::Button>    _tn_button;
-    /** The text with the current dirt */
-    std::shared_ptr<cugl::TextLayout> _dirtText;
+    std::shared_ptr<cugl::scene2::Button> _tn_button;
+
     /** The sound of a ship-asteroid collision */
     std::shared_ptr<cugl::Sound> _bang;
 
@@ -179,6 +185,17 @@ public:
      * Disposes of all (non-static) resources allocated to this mode.
      */
     void dispose() override;
+
+    /**
+     * Sets whether the scene is currently active
+     *
+     * This method should be used to toggle all the UI elements.  Buttons
+     * should be activated when it is made active and deactivated when
+     * it is not.
+     *
+     * @param value whether the scene is currently active
+     */
+    void setActive(bool value) override;
     
     /**
      * Initializes the controller contents, and starts the game
@@ -251,9 +268,9 @@ public:
      *    "player_id":  1,
      *    "vel": [0.234, 1.153]
      * }
-    *
+    * @param returning  whether the player is returning to their board
     */
-    void SceneSwitchRequest();
+    void SceneSwitchRequest(bool returning);
     
     
     /** Host function to process switch scene requests */
