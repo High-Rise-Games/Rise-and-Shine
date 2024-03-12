@@ -53,6 +53,7 @@
 
 #include <stdexcept>
 #include <sstream>
+#include <cugl/util/CUDebug.h>
 
 using namespace cugl;
 using namespace cugl::net;
@@ -648,9 +649,11 @@ double NetcodeDeserializer::readDouble() {
         return 0.0;
     }
     _pos++;
-    const double* r = reinterpret_cast<const double*>(_data.data() + _pos);
+    //const double* r = reinterpret_cast<const double*>(_data.data() + _pos);
     _pos += sizeof(double);
-    return marshall(*r);
+    double temp;
+    memcpy(&temp, _data.data() + _pos, sizeof(double));
+    return marshall(temp);
 }
 
 /**
