@@ -29,6 +29,9 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     
     // width of a window pane of the game board
     _windowHeight = windowHeight;
+
+    // number of frames the player is unable to move due to taking a hit
+    _stunFrames = 0;
     
     // rotation property of player when player is stunned
     _stunRotate = 0;
