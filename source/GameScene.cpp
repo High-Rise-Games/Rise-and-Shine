@@ -112,13 +112,13 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
 
     // no ids given yet - to be assigned in initPlayers()
     _player = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _player->setTexture(assets->get<Texture>("ship"));
+    _player->setTexture(assets->get<Texture>("player_1"));
     
     _playerLeft = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerLeft->setTexture(assets->get<Texture>("ship"));
+    _playerLeft->setTexture(assets->get<Texture>("player_1"));
 
     _playerRight = std::make_shared <Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerRight->setTexture(assets->get<Texture>("ship"));
+    _playerRight->setTexture(assets->get<Texture>("player_1"));
 
     // Initialize random dirt generation
     updateDirtGenTime();
@@ -225,7 +225,7 @@ bool GameScene::initHost(const std::shared_ptr<cugl::AssetManager>& assets) {
 
     // player ids for self, right, and left already assigned from earlier initPlayers call
     _playerAcross = std::make_shared<Player>(3, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerAcross->setTexture(assets->get<Texture>("ship"));
+    _playerAcross->setTexture(assets->get<Texture>("player_1"));
 
     hostReset();
 
@@ -249,17 +249,17 @@ void GameScene::dispose() {
 void GameScene::reset() {
     Vec2 startingPos = Vec2(_windows.sideGap + (_windows.getPaneWidth() / 2), _windows.getPaneHeight() / 2);
     _player->setPosition(startingPos);
-    _player->setAngle(0);
+    //_player->setAngle(0);
     _player->setVelocity(Vec2::ZERO);
     _player->setHealth(_constants->get("ship")->getInt("health", 0));
 
     _playerLeft->setPosition(startingPos);
-    _playerLeft->setAngle(0);
+    //_playerLeft->setAngle(0);
     _playerLeft->setVelocity(Vec2::ZERO);
     _playerLeft->setHealth(_constants->get("ship")->getInt("health", 0));
 
     _playerRight->setPosition(startingPos);
-    _playerRight->setAngle(0);
+    //_playerRight->setAngle(0);
     _playerRight->setVelocity(Vec2::ZERO);
     _playerRight->setHealth(_constants->get("ship")->getInt("health", 0));
 
@@ -293,7 +293,7 @@ void GameScene::hostReset() {
     Vec2 startingPos = Vec2(_windows.sideGap+(_windows.getPaneWidth()/2), _windows.getPaneHeight()/2);
 
     _playerAcross->setPosition(startingPos);
-    _playerAcross->setAngle(0);
+    //_playerAcross->setAngle(0);
     _playerAcross->setVelocity(Vec2::ZERO);
     _playerAcross->setHealth(_constants->get("ship")->getInt("health", 0));
     
@@ -955,13 +955,13 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     //_asteroids.draw(batch,getSize());
     if (_curBoard == 0) {
         _windows.draw(batch, getSize());
-        _player->draw(batch, getSize());
+        _player->draw(batch, getSize(), _windows);
         _projectiles.draw(batch, getSize(), _windows.getPaneWidth(), _windows.getPaneHeight());
     }
     else if (_curBoard == -1) {
         _windowsLeft.draw(batch, getSize());
-        _playerLeft->draw(batch, getSize());
-        _player->draw(batch, getSize());
+        _playerLeft->draw(batch, getSize(), _windows);
+        _player->draw(batch, getSize(), _windows);
         _projectilesLeft.draw(batch, getSize(), _windowsLeft.getPaneWidth(), _windowsLeft.getPaneHeight());
         if (_dirtSelected && _dirtPath.size() != 0) {
             batch->setColor(Color4::BLACK);
@@ -970,8 +970,8 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     }
     else if (_curBoard == 1) {
         _windowsRight.draw(batch, getSize());
-        _playerRight->draw(batch, getSize());
-        _player->draw(batch, getSize());
+        _playerRight->draw(batch, getSize(), _windows);
+        _player->draw(batch, getSize(), _windows);
         _projectilesRight.draw(batch, getSize(), _windowsRight.getPaneWidth(), _windowsRight.getPaneHeight());
         if (_dirtSelected && _dirtPath.size() != 0) {
             batch->setColor(Color4::BLACK);

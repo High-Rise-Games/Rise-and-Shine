@@ -19,9 +19,9 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     _id = id;
     _pos = pos;
     _coors = Vec2();
-    _ang  = 0;
-    _dang = 0;
-    _refire = 0;
+    //_ang  = 0;
+    //_dang = 0;
+    //_refire = 0;
     _radius = 0;
     
     // height of a window pane of the game board
@@ -38,16 +38,16 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     
     // Physics
     _mass = data->getFloat("mass",1.0);
-    _shadows  = data->getFloat("shadow",0.0);
+    //_shadows  = data->getFloat("shadow",0.0);
     _maxvel   = data->getFloat("max velocity",0.0);
-    _banking  = data->getFloat("bank factor",0.0);
-    _maxbank  = data->getFloat("max bank",0.0);
-    _angdamp  = data->getFloat("angular damp",0.0);
+    //_banking  = data->getFloat("bank factor",0.0);
+    //_maxbank  = data->getFloat("max bank",0.0);
+    //_angdamp  = data->getFloat("angular damp",0.0);
 
     // Sprite sheet information
-    _framecols = data->getInt("sprite cols",0);
-    _framesize = data->getInt("sprite size",0);
-    _frameflat = data->getInt("sprite frame",0);
+    //_framecols = data->getInt("sprite cols",0);
+    //_framesize = data->getInt("sprite size",0);
+    //_frameflat = data->getInt("sprite frame",0);
     
     _health = data->getInt("health",0);
 }
@@ -87,6 +87,8 @@ void Player::decreaseStunFrames() {
  * @param texture   The texture for the sprite sheet
  */
 void Player::setTexture(const std::shared_ptr<cugl::Texture>& texture) {
+    _texture = texture;
+    /*
     if (_framecols > 0) {
         int rows = _framesize/_framecols;
         if (_framesize % _framecols != 0) {
@@ -97,6 +99,7 @@ void Player::setTexture(const std::shared_ptr<cugl::Texture>& texture) {
         _radius = std::max(_sprite->getFrameSize().width, _sprite->getFrameSize().height)/2;
         _sprite->setOrigin(_sprite->getFrameSize()/2);
     }
+    */
 }
 
 /**
@@ -120,31 +123,34 @@ const cugl::Vec2& Player::getCoorsFromPos(const float windowHeight, const float 
  * @param batch     The sprite batch to draw to
  * @param size      The size of the window (for wrap around)
  */
-void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) {
-    // Don't draw if sprite not set
-    if (_sprite) {
-        // Transform to place the ship
-        Affine2 shiptrans;
-//        shiptrans.rotate(_ang*M_PI/180);
-        
+void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds, WindowGrid windows) {
+    // Don't draw if texture not set
+    if (_texture) {
+        // Transform to place the ship, start with centered version
+        Affine2 player_trans;
+        player_trans.translate( -(int)(_texture->getWidth())/2 , 0);
+        player_trans.translate(0, -(int)(_texture->getHeight()) / 2);
+        double player_scale = windows.getPaneHeight() / _texture->getHeight();
+        player_trans.scale(player_scale);
+        //player_trans.rotate(_ang*M_PI/180);
+
         if (getStunFrames()>0) {
             _stunRotate += 0.1;
-            shiptrans.rotate(_stunRotate*M_PI);
+            player_trans.rotate(_stunRotate*M_PI);
         } else {
             _stunRotate = 0;
-            shiptrans.rotate(0);
+            player_trans.rotate(0);
         }
         
-        shiptrans.translate(_pos);
+        player_trans.translate(_pos);
         // Transform to place the shadow, and its color
-        Affine2 shadtrans = shiptrans;
-        shadtrans.translate(_shadows,-_shadows);
-        Color4f shadow(0,0,0,0.5f);
+        //Affine2 shadtrans = player_trans;
+        //shadtrans.translate(_shadows,-_shadows);
+        //Color4f shadow(0,0,0,0.5f);
         
-    
-        
-        _sprite->draw(batch,shadow,shadtrans);
-        _sprite->draw(batch,shiptrans);
+        batch->draw(_texture, Vec2(), player_trans);
+        //_sprite->draw(batch,shadow,shadtrans);
+        //_sprite->draw(batch,player_trans);
     }
 }
 
