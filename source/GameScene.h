@@ -253,29 +253,6 @@ public:
 //    /** sets return scene button texture */
 //    void setReturnSceneButton(const std::shared_ptr<cugl::Texture>& value) { _returnSceneButton = value; }
     
-    /**
-    * Called by the client only. Client calls this function to transmit message
-    * to request from the host to switch scenes.
-    *
-    * Player ids assigned clockwise with host at top
-    *
-    *          host: 1
-    * left: 4            right: 2
-    *         across: 3
-    *
-     * Example Scene Request Message:
-     * {
-     *    "player_id":  1,
-     *    "vel": [0.234, 1.153]
-     * }
-    * @param returning  whether the player is returning to their board
-    */
-    void SceneSwitchRequest(bool returning);
-    
-    
-    /** Host function to process switch scene requests */
-    void ProcessSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data);
-    
     /** Checks whether board is full */
     const bool checkBoardFull();
     
@@ -307,6 +284,25 @@ public:
     std::shared_ptr<cugl::JsonValue> getJsonMove(const cugl::Vec2 move);
 
     /**
+    * Called by the client only. Client calls this function to transmit message
+    * to request from the host to switch scenes.
+    *
+    * Player ids assigned clockwise with host at top
+    *
+    *          host: 1
+    * left: 4            right: 2
+    *         across: 3
+    *
+     * Example Scene Request Message:
+     * {
+     *    "player_id":  1,
+     *    "vel": [0.234, 1.153]
+     * }
+    * @param returning  whether the player is returning to their board
+    */
+    std::shared_ptr<cugl::JsonValue> getJsonSceneSwitch(bool returning);
+
+    /**
      * Updates a neighboring or own board given the JSON value representing its game state
      * 
      * @params data     The data to update
@@ -319,7 +315,10 @@ public:
      *
      * @params data     The data to update
      */
-    void updateFromAction(std::shared_ptr<cugl::JsonValue> data);
+    void processMovementRequest(std::shared_ptr<cugl::JsonValue> data);
+
+    /** Host function to process switch scene requests */
+    void processSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data);
     
     /**
      * The method called to update the game mode.

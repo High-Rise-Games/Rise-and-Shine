@@ -171,18 +171,20 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
             CULog("leaving other player's board");
             if (_ishost) {
                 _allCurBoards[0] = 0;
+                _curBoard = 0;
             }
             else {
-                SceneSwitchRequest(true);
+                _network.transmitMessage(getJsonSceneSwitch(true));
             }
         }
         else if (down && edge != 0) {
             CULog("entering other player's board: %d", edge);
             if (_ishost) {
                 _allCurBoards[0] = edge;
+                _curBoard = edge;
             }
             else {
-                SceneSwitchRequest(false);
+                _network.transmitMessage(getJsonSceneSwitch(false));
             }
             
         }
@@ -585,20 +587,14 @@ std::shared_ptr<cugl::JsonValue> GameScene::getJsonMove(const cugl::Vec2 move) {
  *    "player_id":  1,
  *    "vel": [0.42, 0.66]
  * }
- * 
- * Example scene switch message:
- * {
- *    "player_id":  1,
- *    "switch_destination": 1
- * }
 *
 * @params data     The data to update
 */
-void GameScene::updateFromAction(std::shared_ptr<cugl::JsonValue> data) {
+void GameScene::processMovementRequest(std::shared_ptr<cugl::JsonValue> data) {
     // TODO: add conditional check here for movement action or other action
     
-    // check if action is about scene switching
-    if (!(data->has("switch_destination"))) {
+    // check if action is about moving
+    if (data->has("vel")) {
         
         int playerId = data->getInt("player_id", 0);
         const std::vector<std::shared_ptr<JsonValue>>& vel = data->get("vel")->children();
@@ -614,10 +610,7 @@ void GameScene::updateFromAction(std::shared_ptr<cugl::JsonValue> data) {
         else if (playerId == 4) {
             stepForward(_playerLeft, moveVec, _windowsLeft, _projectilesLeft);
         }
-    } // logic for switch scene requests
-    else {
-        ProcessSceneSwitchRequest(data);
-    }
+    } 
 }
 
 
@@ -638,14 +631,14 @@ void GameScene::updateFromAction(std::shared_ptr<cugl::JsonValue> data) {
  * }
  * @param returning  whether the player is returning to their board
 */
-void GameScene::SceneSwitchRequest(bool returning) {
+std::shared_ptr<cugl::JsonValue> GameScene::getJsonSceneSwitch(bool returning) {
     if (returning) {
         const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
         json->init(JsonValue::Type::ObjectType);
         json->appendValue("player_id", static_cast<double>(_id));
         json->appendValue("switch_destination", static_cast<double>(0));
 
-        _network.transmitMessage(json);
+        return json;
     }
     else {
         // first check that we are on an edge
@@ -657,7 +650,7 @@ void GameScene::SceneSwitchRequest(bool returning) {
             json->appendValue("player_id", static_cast<double>(_id));
             json->appendValue("switch_destination", static_cast<double>(edge));
 
-            _network.transmitMessage(json);
+            return json;
         }
     }
 }
@@ -666,7 +659,7 @@ void GameScene::SceneSwitchRequest(bool returning) {
 /**
 * HOST ONLY. Logic to process switch scene requests.
 */
-void GameScene::ProcessSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data) {
+void GameScene::processSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data) {
     
     int playerId = data->getInt("player_id", 0);
     int switchDestination = data->getInt("switch_destination", 0);
@@ -704,10 +697,10 @@ void GameScene::update(float timestep) {
                     std::shared_ptr<JsonValue> incomingMsg = _network.processMessage(source, data);
                     if (incomingMsg->has("vel")) {
                         // CULog("got movement message");
-                        updateFromAction(incomingMsg);
+                        processMovementRequest(incomingMsg);
                     } else if (incomingMsg->has("switch_destination")) {
                         CULog("got switch scene request message");
-                        updateFromAction(incomingMsg);
+                        processSceneSwitchRequest(incomingMsg);
                     }
                 }
             });
@@ -752,11 +745,17 @@ void GameScene::update(float timestep) {
                 Vec2 velocity = diff.getNormalization() * -5;
                 Vec2 destination = currentPos - diff * 5;
                 // logic for throwing the dirt = converting to projectile
-                if (_curBoard == -1) {
-                    _projectilesLeft.spawnProjectile(currentPos, velocity, destination, ProjectileSet::Projectile::ProjectileType::DIRT);
+                if (_ishost) {
+                    if (_curBoard == -1) {
+                        _projectilesLeft.spawnProjectile(currentPos, velocity, destination, ProjectileSet::Projectile::ProjectileType::DIRT);
+                    }
+                    else if (_curBoard == 1) {
+                        _projectilesRight.spawnProjectile(currentPos, velocity, destination, ProjectileSet::Projectile::ProjectileType::DIRT);
+                    }
+                    _allDirtAmounts[0] = max(0, _allDirtAmounts[0] - 1);
                 }
-                else if (_curBoard == 1) {
-                    _projectilesRight.spawnProjectile(currentPos, velocity, destination, ProjectileSet::Projectile::ProjectileType::DIRT);
+                else {
+                    // _network.transmitMessage();
                 }
             } else if (_dirtThrowInput.isDown()) {
                 Vec2 currentScreenPos = _dirtThrowInput.getPosition();
@@ -794,7 +793,7 @@ void GameScene::update(float timestep) {
                 // host resets game for all players
                 hostReset();
             }
-            // update the game state for self (host). Updates for the rest of the players are done in updateFromAction(),
+            // update the game state for self (host). Updates for the rest of the players are done in processMovementRequest(),
             // called whenever the host recieves a movement or other action message.
             _currentDirtAmount = _allDirtAmounts[0];
             _curBoard = _allCurBoards[0];
@@ -858,10 +857,6 @@ void GameScene::stepForward(std::shared_ptr<Player>& player, const Vec2 moveVec,
     // remove any dirt the player collides with
     Vec2 grid_coors = player->getCoorsFromPos(windows.getPaneHeight(), windows.getPaneWidth(), windows.sideGap);
     player->setCoors(grid_coors);
-    //    if (grid_coors == NULL) {
-    //        CULog("player coors: NULL");
-    //        CULog("player coors: (%f, %f)", grid_coors.y, grid_coors.x);
-    //    }
 
     int player_id = player->getId();
     bool dirtRemoved = windows.removeDirt(grid_coors.y, grid_coors.x);
@@ -872,7 +867,6 @@ void GameScene::stepForward(std::shared_ptr<Player>& player, const Vec2 moveVec,
 
     // if (player->getEdge(windows.sideGap, getSize()) && !movedOverEdge) {
         //_allDirtAmounts[player_id -1] = max(0, _allDirtAmounts[player_id - 1] - 1);
-        // TODO: currently moving to either edge sends user to the right, only if a user exists to the right.
         //if (player_id + 1 <= _numPlayers || player_id == 4) {
         //    _allCurBoards[player_id - 1] = 1;
         //}
