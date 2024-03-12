@@ -271,7 +271,7 @@ void GameScene::reset() {
     _windowsRight.generateInitialBoard(_windows.getInitDirtNum());
 
     _projectiles.current.clear();
-    _projectiles.init(_constants->get("projectiles"));
+//    _projectiles.init(_constants->get("projectiles"));
     _projectilesLeft.current.clear();
     _projectilesLeft.init(_constants->get("projectiles"));
     _projectilesRight.current.clear();
