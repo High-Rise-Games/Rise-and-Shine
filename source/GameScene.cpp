@@ -180,11 +180,18 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
         else if (down && edge != 0) {
             CULog("entering other player's board: %d", edge);
             if (_ishost) {
-                _allCurBoards[0] = edge;
-                _curBoard = edge;
+                // if move is valid
+                if ((edge == 1 && _numPlayers >= 2) || (edge == -1 && _numPlayers == 4)) {
+                    _allCurBoards[0] = edge;
+                    _curBoard = edge;
+                }
             }
             else {
-                _network.transmitMessage(getJsonSceneSwitch(false));
+                // first check that we are on an edge
+                // to make a valid scene switch request
+                if (_player->getEdge(_windows.sideGap, getSize()) != 0) {
+                    _network.transmitMessage(getJsonSceneSwitch(false));
+                }
             }
             
         }
@@ -498,15 +505,15 @@ void GameScene::updateBoard(std::shared_ptr<JsonValue> data) {
     }
     else if (playerId == _id + 1 || (_id == 4 && playerId == 1)) {
         // if assigning ids clockwise, this is the left neighbor
-        player = _playerLeft;
-        windows = &_windowsLeft;
-        projectiles = &_projectilesLeft;
-    }
-    else if (playerId == _id - 1 || (_id == 1 && playerId == 4)) {
-        // if assigning ids clockwise, this is the right neighbor
         player = _playerRight;
         windows = &_windowsRight;
         projectiles = &_projectilesRight;
+    }
+    else if (playerId == _id - 1 || (_id == 1 && playerId == 4)) {
+        // if assigning ids clockwise, this is the right neighbor
+        player = _playerLeft;
+        windows = &_windowsLeft;
+        projectiles = &_projectilesLeft;
     }
     else {
         // otherwise, player is on the opposite board and we do not need to track their board state.
@@ -600,7 +607,7 @@ void GameScene::processMovementRequest(std::shared_ptr<cugl::JsonValue> data) {
         const std::vector<std::shared_ptr<JsonValue>>& vel = data->get("vel")->children();
         Vec2 moveVec(vel[0]->asFloat(), vel[1]->asFloat());
         
-        // playerId can't be 1, since host cannot send action message over network to itself
+        // playerId can't be 1, since host does not send action message over network to itself
         if (playerId == 2) {
             stepForward(_playerRight, moveVec, _windowsRight, _projectilesRight);
         }
@@ -614,61 +621,155 @@ void GameScene::processMovementRequest(std::shared_ptr<cugl::JsonValue> data) {
 }
 
 
+
 /**
-* Called by the client only. Client calls this function to transmit message
-* to request from the host to switch scenes.
-*
+* Called by the client only. Returns a JSON value representing a scene switch request
+* for sending over the network.
+* 
+* pre-condition: if not returning, guarantee that the player is on an edge
+* 
 * Player ids assigned clockwise with host at top
 *
 *          host: 1
 * left: 4            right: 2
 *         across: 3
 *
- * Example Scene Switch Request Message:
- * {
- *    "player_id":  1,
- *    "switch_destination": 1
- * }
- * @param returning  whether the player is returning to their board
+* Example Scene Switch Request Message:
+* {
+*    "player_id":  1,
+*    "switch_destination": 1
+* }
+*
+* @param returning  whether the player is returning to their board
+* @returns JSON value representing a scene switch
 */
 std::shared_ptr<cugl::JsonValue> GameScene::getJsonSceneSwitch(bool returning) {
-    if (returning) {
-        const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-        json->init(JsonValue::Type::ObjectType);
-        json->appendValue("player_id", static_cast<double>(_id));
-        json->appendValue("switch_destination", static_cast<double>(0));
+    const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+    json->init(JsonValue::Type::ObjectType);
+    json->appendValue("player_id", static_cast<double>(_id));
 
-        return json;
+    if (returning) {
+        json->appendValue("switch_destination", static_cast<double>(0));
     }
     else {
-        // first check that we are on an edge
-        // to make a valid scene switch request
+        // pre-condition: if not returning, guarantee that the player is on an edge
         int edge = _player->getEdge(_windows.sideGap, getSize());
-        if (edge != 0) {
-            const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-            json->init(JsonValue::Type::ObjectType);
-            json->appendValue("player_id", static_cast<double>(_id));
-            json->appendValue("switch_destination", static_cast<double>(edge));
+        json->appendValue("switch_destination", static_cast<double>(edge));
+    }
+    return json;
+}
 
-            return json;
+/**
+* Called by host only to process switch scene requests. Updates a client player's
+* currently viewed board for the player at player_id based on the current board
+* value stored in the JSON value.
+*
+* @params data     The data to update
+*/
+void GameScene::processSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data) {
+
+    int playerId = data->getInt("player_id", 0);
+    int switchDestination = data->getInt("switch_destination", 0);
+
+    // update the board of the player to their switch destination
+    if (switchDestination == 0) {
+        _allCurBoards[playerId - 1] = switchDestination;
+    }
+    else {
+        int destinationId = playerId + switchDestination;
+        if (destinationId == 0) {
+            destinationId = 4;
+        }
+        else if (destinationId == 5) {
+            destinationId == 1;
+        }
+
+        if (destinationId <= _numPlayers) {
+            _allCurBoards[playerId - 1] = switchDestination;
         }
     }
 }
 
-
 /**
-* HOST ONLY. Logic to process switch scene requests.
+* Called by client only. Represents a dirt throw action as a JSON value for sending over the network.
+* 
+* Example Dirt Throw Message
+* {
+    "player_id_source":  1,
+    "player_id_target":  2,
+    "dirt_pos": [0, 14.76],
+    "dirt_vel": [0.0, 5.0],
+    "dirt_dest": [30.2, 122.4]
+* }
+*
+* @param target The id of the player whose board the current player is sending dirt to
+* @param pos    The starting position of the dirt projectile
+* @param vel    The velocity vector of the dirt projectile
+* @param dest   The destination coordinates of the dirt projectile
+*
+* @returns JSON value representing a dirt throw action
 */
-void GameScene::processSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data) {
+std::shared_ptr<cugl::JsonValue> GameScene::getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest) {
+    const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+    json->init(JsonValue::Type::ObjectType);
+    json->appendValue("player_id_source", static_cast<double>(_id));
+    json->appendValue("player_id_target", static_cast<double>(target));
     
-    int playerId = data->getInt("player_id", 0);
-    int switchDestination = data->getInt("switch_destination", 0);
-    
-    // update the board of the player to their switch destination
-    _allCurBoards[playerId-1] = switchDestination;
-    
+    const std::shared_ptr<JsonValue> dirtPos = std::make_shared<JsonValue>();
+    dirtPos->init(JsonValue::Type::ArrayType);
+    dirtPos->appendValue(static_cast<double>(pos.y));
+    dirtPos->appendValue(static_cast<double>(pos.x));
+    json->appendChild("dirt_pos", dirtPos);
+
+    const std::shared_ptr<JsonValue> dirtVel = std::make_shared<JsonValue>();
+    dirtVel->init(JsonValue::Type::ArrayType);
+    dirtVel->appendValue(static_cast<double>(vel.y));
+    dirtVel->appendValue(static_cast<double>(vel.x));
+    json->appendChild("dirt_vel", dirtVel);
+
+    const std::shared_ptr<JsonValue> dirtDest = std::make_shared<JsonValue>();
+    dirtDest->init(JsonValue::Type::ArrayType);
+    dirtDest->appendValue(static_cast<double>(dest.y));
+    dirtDest->appendValue(static_cast<double>(dest.x));
+    json->appendChild("dirt_dest", dirtDest);
+
+    return json;
 }
 
+/**
+* Called by host only. Updates the boards of both the dirt thrower and the player
+* receiving the dirt projectile given the information stored in the JSON value.
+*
+* @params data     The data to update
+*/
+void GameScene::processDirtThrowRequest(std::shared_ptr<cugl::JsonValue> data) {
+    int source_id = data->getInt("player_id_source", 0);
+    int target_id = data->getInt("player_id_target", 0);
+
+    const std::vector<std::shared_ptr<JsonValue>>& pos = data->get("dirt_pos")->children();
+    Vec2 dirt_pos(pos[0]->asFloat(), pos[1]->asFloat());
+
+    const std::vector<std::shared_ptr<JsonValue>>& vel = data->get("dirt_vel")->children();
+    Vec2 dirt_vel(vel[0]->asFloat(), vel[1]->asFloat());
+
+    const std::vector<std::shared_ptr<JsonValue>>& dest = data->get("dirt_dest")->children();
+    Vec2 dirt_dest(dest[0]->asFloat(), dest[1]->asFloat());
+
+    _allDirtAmounts[source_id - 1] = max(0, _allDirtAmounts[source_id - 1] - 1);
+
+    if (source_id == 1 || target_id == 1) {
+        _projectiles.spawnProjectile(dirt_pos, dirt_vel, dirt_dest, ProjectileSet::Projectile::ProjectileType::DIRT);
+    }
+    if (source_id == 2 || target_id == 2) {
+        _projectilesRight.spawnProjectile(dirt_pos, dirt_vel, dirt_dest, ProjectileSet::Projectile::ProjectileType::DIRT);
+    }
+    else if (source_id == 3 || target_id == 3) {
+        _projectilesAcross.spawnProjectile(dirt_pos, dirt_vel, dirt_dest, ProjectileSet::Projectile::ProjectileType::DIRT);
+    }
+    else if (source_id == 4 || target_id == 4) {
+        _projectilesLeft.spawnProjectile(dirt_pos, dirt_vel, dirt_dest, ProjectileSet::Projectile::ProjectileType::DIRT);
+    }
+}
 
 /**
  * The method called to update the game mode.
@@ -718,12 +819,6 @@ void GameScene::update(float timestep) {
     // TODO: now the player is draged as dirt, need to switch to dirt later
     if (_curBoard != 0) {
         _dirtThrowInput.update();
-        if (_curBoard == -1) {
-            _projectilesLeft.update(getSize());
-        }
-        else if (_curBoard == 1) {
-            _projectilesRight.update(getSize());
-        }
         if (!_dirtSelected) {
             if (_dirtThrowInput.didPress()) {
                 Vec2 screenPos = _dirtThrowInput.getPosition();
@@ -744,19 +839,17 @@ void GameScene::update(float timestep) {
                 Vec2 diff = currentPos - _prevDirtPos;
                 Vec2 velocity = diff.getNormalization() * -5;
                 Vec2 destination = currentPos - diff * 5;
-                // logic for throwing the dirt = converting to projectile
-                if (_ishost) {
-                    if (_curBoard == -1) {
-                        _projectilesLeft.spawnProjectile(currentPos, velocity, destination, ProjectileSet::Projectile::ProjectileType::DIRT);
-                    }
-                    else if (_curBoard == 1) {
-                        _projectilesRight.spawnProjectile(currentPos, velocity, destination, ProjectileSet::Projectile::ProjectileType::DIRT);
-                    }
-                    _allDirtAmounts[0] = max(0, _allDirtAmounts[0] - 1);
+
+                int targetId = _id + _curBoard;
+                if (targetId == 0) {
+                    targetId = 4;
                 }
-                else {
-                    // _network.transmitMessage();
+                if (targetId == 5) {
+                    targetId = 1;
                 }
+                _network.transmitMessage(getJsonDirtThrow(targetId, currentPos, velocity, destination));
+                _player->setPosition(_prevDirtPos);
+
             } else if (_dirtThrowInput.isDown()) {
                 Vec2 currentScreenPos = _dirtThrowInput.getPosition();
                 Vec3 currentWorldPos = screenToWorldCoords(currentScreenPos);
@@ -947,7 +1040,7 @@ void GameScene::generatePoo() {
 //    CULog("player at: (%f, %f)", _player->getCoors().y, _player->getCoors().x);
 //    CULog("generate at: %d", (int)rand_row);
     // if add dirt already exists at location or player at location and board is not full, repeat
-    _projectiles.spawnProjectile(Vec2(rand_row, getSize().height - 50), Vec2(0, min(-2.4f,-2-_projectileGenChance)),Vec2(rand_row, 0), ProjectileSet::Projectile::ProjectileType::POOP);
+    _projectiles.spawnProjectile(Vec2(rand_row, getSize().height - 50), Vec2(0, min(-2.4f,-2-_projectileGenChance)), Vec2(rand_row, 0), ProjectileSet::Projectile::ProjectileType::POOP);
 }
 
 /** Checks whether board is full except player current location*/

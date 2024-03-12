@@ -268,7 +268,7 @@ public:
     /** generates poo before bird is ready */
     void generatePoo();
     /**
-     * Converts game state into a JSON value for sending over the network
+     * Called by host only. Converts game state into a JSON value for sending over the network
      * 
      * @param id    the id of the player of the board state to get
      * @returns JSON value representing game board state
@@ -276,7 +276,7 @@ public:
     std::shared_ptr<cugl::JsonValue> getJsonBoard(int id);
 
     /**
-     * Converts a movement vector into a JSON value for sending over the network.
+     * Called by client only. Converts a movement vector into a JSON value for sending over the network.
      * 
      * @param move    the movement vector
      * @returns JSON value representing a movement
@@ -284,23 +284,25 @@ public:
     std::shared_ptr<cugl::JsonValue> getJsonMove(const cugl::Vec2 move);
 
     /**
-    * Called by the client only. Client calls this function to transmit message
-    * to request from the host to switch scenes.
+    * Called by the client only. Returns a JSON value representing a scene switch request
+    * for sending over the network.
     *
-    * Player ids assigned clockwise with host at top
-    *
-    *          host: 1
-    * left: 4            right: 2
-    *         across: 3
-    *
-     * Example Scene Request Message:
-     * {
-     *    "player_id":  1,
-     *    "vel": [0.234, 1.153]
-     * }
     * @param returning  whether the player is returning to their board
+    * @returns JSON value representing a scene switch
     */
     std::shared_ptr<cugl::JsonValue> getJsonSceneSwitch(bool returning);
+
+    /**
+     * Called by client only. Represents a dirt throw action as a JSON value for sending over the network.
+     *
+     * @param target The id of the player whose board the current player is sending dirt to
+     * @param pos   The starting position of the dirt projectile
+     * @param vel   The velocity vector of the dirt projectile
+     * @param dest  The destination coordinates of the dirt projectile
+     * 
+     * @returns JSON value representing a dirt throw action
+     */
+    std::shared_ptr<cugl::JsonValue> getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest);
 
     /**
      * Updates a neighboring or own board given the JSON value representing its game state
@@ -311,14 +313,28 @@ public:
 
     /**
      * Called by the host only. Updates a client player's board for player at player_id
-     * based on the movement or other action data stored in the JSON value.
+     * based on the movement stored in the JSON value.
      *
      * @params data     The data to update
      */
     void processMovementRequest(std::shared_ptr<cugl::JsonValue> data);
 
-    /** Host function to process switch scene requests */
+    /** 
+     * Called by host only to process switch scene requests. Updates a client player's
+     * currently viewed board for the player at player_id based on the current board
+     * value stored in the JSON value.
+     * 
+     * @params data     The data to update
+     */
     void processSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data);
+
+    /**
+     * Called by host only. Updates the boards of both the dirt thrower and the player 
+     * receiving the dirt projectile given the information stored in the JSON value.
+     *
+     * @params data     The data to update
+     */
+    void processDirtThrowRequest(std::shared_ptr<cugl::JsonValue> data);
     
     /**
      * The method called to update the game mode.
