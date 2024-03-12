@@ -34,7 +34,7 @@ bool CollisionController::resolveCollision(const std::shared_ptr<Player>& player
         float distance = norm.length();
         float impactDistance = (player->getRadius() + proj->getRadius() * proj->getScale());
 
-        // This loop finds the NEAREST collision if we include wrap for the asteroid/ship
+        // finds the NEAREST collision 
         Vec2 pos = proj->position;
         pos = player->getPosition() - pos;
         float dist = pos.length();
