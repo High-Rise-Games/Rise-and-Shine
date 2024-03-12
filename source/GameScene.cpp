@@ -905,7 +905,7 @@ void GameScene::generatePoo() {
 //    CULog("player at: (%f, %f)", _player->getCoors().y, _player->getCoors().x);
 //    CULog("generate at: %d", (int)rand_row);
     // if add dirt already exists at location or player at location and board is not full, repeat
-    _projectiles.spawnProjectile(Vec2(rand_row, getSize().height - 50), Vec2(0, min(-2.4f,-2-_projectileGenChance)), ProjectileSet::Projectile::ProjectileType::POOP);
+    _projectiles.spawnProjectile(Vec2(rand_row, getSize().height - 50), Vec2(0, min(-2.4f,-2-_projectileGenChance)),Vec2(rand_row, 0), ProjectileSet::Projectile::ProjectileType::POOP);
 }
 
 /** Checks whether board is full except player current location*/
