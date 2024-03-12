@@ -144,14 +144,20 @@ protected:
     std::shared_ptr<cugl::Texture> _emptyBucket;
     /** Full bucket texture image */
     std::shared_ptr<cugl::Texture> _fullBucket;
+    /** The text with the current dirt */
+    std::shared_ptr<cugl::TextLayout> _dirtText;
+
+    /** The scene node for the UI elements (buttons, labels) */
+    std::shared_ptr<cugl::scene2::SceneNode> _scene_UI;
+    /** The back button for the menu scene */
+    std::shared_ptr<cugl::scene2::Button> _backout;
 //    /** Switch scene button texture image */
 //    std::shared_ptr<cugl::Texture> _switchSceneButton;
 //    /** Return scene button texture image */
 //    std::shared_ptr<cugl::Texture> _returnSceneButton;
     /** Switch scene button */
-    std::shared_ptr<cugl::scene2::Button>    _tn_button;
-    /** The text with the current dirt */
-    std::shared_ptr<cugl::TextLayout> _dirtText;
+    std::shared_ptr<cugl::scene2::Button> _tn_button;
+
     /** The sound of a ship-asteroid collision */
     std::shared_ptr<cugl::Sound> _bang;
 
@@ -179,6 +185,17 @@ public:
      * Disposes of all (non-static) resources allocated to this mode.
      */
     void dispose() override;
+
+    /**
+     * Sets whether the scene is currently active
+     *
+     * This method should be used to toggle all the UI elements.  Buttons
+     * should be activated when it is made active and deactivated when
+     * it is not.
+     *
+     * @param value whether the scene is currently active
+     */
+    void setActive(bool value) override;
     
     /**
      * Initializes the controller contents, and starts the game
@@ -236,29 +253,6 @@ public:
 //    /** sets return scene button texture */
 //    void setReturnSceneButton(const std::shared_ptr<cugl::Texture>& value) { _returnSceneButton = value; }
     
-    /**
-    * Called by the client only. Client calls this function to transmit message
-    * to request from the host to switch scenes.
-    *
-    * Player ids assigned clockwise with host at top
-    *
-    *          host: 1
-    * left: 4            right: 2
-    *         across: 3
-    *
-     * Example Scene Request Message:
-     * {
-     *    "player_id":  1,
-     *    "vel": [0.234, 1.153]
-     * }
-    *
-    */
-    void SceneSwitchRequest();
-    
-    
-    /** Host function to process switch scene requests */
-    void ProcessSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data);
-    
     /** Checks whether board is full */
     const bool checkBoardFull();
     
@@ -290,6 +284,25 @@ public:
     std::shared_ptr<cugl::JsonValue> getJsonMove(const cugl::Vec2 move);
 
     /**
+    * Called by the client only. Client calls this function to transmit message
+    * to request from the host to switch scenes.
+    *
+    * Player ids assigned clockwise with host at top
+    *
+    *          host: 1
+    * left: 4            right: 2
+    *         across: 3
+    *
+     * Example Scene Request Message:
+     * {
+     *    "player_id":  1,
+     *    "vel": [0.234, 1.153]
+     * }
+    * @param returning  whether the player is returning to their board
+    */
+    std::shared_ptr<cugl::JsonValue> getJsonSceneSwitch(bool returning);
+
+    /**
      * Updates a neighboring or own board given the JSON value representing its game state
      * 
      * @params data     The data to update
@@ -302,7 +315,10 @@ public:
      *
      * @params data     The data to update
      */
-    void updateFromAction(std::shared_ptr<cugl::JsonValue> data);
+    void processMovementRequest(std::shared_ptr<cugl::JsonValue> data);
+
+    /** Host function to process switch scene requests */
+    void processSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data);
     
     /**
      * The method called to update the game mode.
