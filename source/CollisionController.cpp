@@ -35,18 +35,12 @@ bool CollisionController::resolveCollision(const std::shared_ptr<Player>& player
         float impactDistance = (player->getRadius() + proj->getRadius() * proj->getScale());
 
         // This loop finds the NEAREST collision if we include wrap for the asteroid/ship
-        for (int ii = -1; ii <= 1; ii++) {
-            for (int jj = -1; jj <= 1; jj++) {
-                Vec2 pos = proj->position;
-                pos.x += (ii)*_size.width;
-                pos.y += (jj)*_size.height;
-                pos = player->getPosition() - pos;
-                float dist = pos.length();
-                if (dist < distance) {
-                    distance = dist;
-                    norm = pos;
-                }
-            }
+        Vec2 pos = proj->position;
+        pos = player->getPosition() - pos;
+        float dist = pos.length();
+        if (dist < distance) {
+            distance = dist;
+            norm = pos;
         }
 
         // If this normal is too small, there was a collision
