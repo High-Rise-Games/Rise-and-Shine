@@ -563,7 +563,6 @@ void GameScene::updateBoard(std::shared_ptr<JsonValue> data) {
             type = ProjectileSet::Projectile::ProjectileType::DIRT;
         }
 
-        CULog("spawning projectile in update board call from client");
         // add the projectile to neighbor's projectile set
         projectiles->spawnProjectileClient(pos, vel, dest, type);
     }
@@ -732,8 +731,8 @@ std::shared_ptr<cugl::JsonValue> GameScene::getJsonDirtThrow(const int target, c
     
     const std::shared_ptr<JsonValue> dirtPos = std::make_shared<JsonValue>();
     dirtPos->init(JsonValue::Type::ArrayType);
-    dirtPos->appendValue(static_cast<double>(pos.y));
     dirtPos->appendValue(static_cast<double>(pos.x));
+    dirtPos->appendValue(static_cast<double>(pos.y));
     json->appendChild("dirt_pos", dirtPos);
 
     const std::shared_ptr<JsonValue> dirtVel = std::make_shared<JsonValue>();
@@ -744,8 +743,8 @@ std::shared_ptr<cugl::JsonValue> GameScene::getJsonDirtThrow(const int target, c
 
     const std::shared_ptr<JsonValue> dirtDest = std::make_shared<JsonValue>();
     dirtDest->init(JsonValue::Type::ArrayType);
-    dirtDest->appendValue(static_cast<double>(dest.y));
     dirtDest->appendValue(static_cast<double>(dest.x));
+    dirtDest->appendValue(static_cast<double>(dest.y));
     json->appendChild("dirt_dest", dirtDest);
 
     CULog("dirt throw from player %d to %d", _id, target);
@@ -845,6 +844,16 @@ void GameScene::update(float timestep) {
             _network.transmitMessage(getJsonBoard(i));
             // CULog("transmitting board state for player %d", i);
         }
+
+        _input.update();
+        if (_input.didPressReset()) {
+            // host resets game for all players
+            hostReset();
+        }
+        // update the game state for self (host). Updates for the rest of the players are done in processMovementRequest(),
+        // called whenever the host recieves a movement or other action message.
+        _currentDirtAmount = _allDirtAmounts[0];
+        _curBoard = _allCurBoards[0];
     }
 
     // When the player is on other's board
@@ -879,8 +888,12 @@ void GameScene::update(float timestep) {
                 if (targetId == 5) {
                     targetId = 1;
                 }
-
-                _network.transmitMessage(getJsonDirtThrow(targetId, currentPos, velocity, destination));
+                if (_ishost) {
+                    processDirtThrowRequest(getJsonDirtThrow(targetId, _prevDirtPos, velocity, destination));
+                }
+                else {
+                    _network.transmitMessage(getJsonDirtThrow(targetId, _prevDirtPos, velocity, destination));
+                }
                 _player->setPosition(_prevDirtPos);
 
             } else if (_dirtThrowInput.isDown()) {
@@ -897,7 +910,7 @@ void GameScene::update(float timestep) {
         }
     }
     // When a player is on their own board
-    else { 
+    else {
         if (!_ishost) {
             // Read the keyboard for each controller.
             _input.update();
@@ -914,50 +927,36 @@ void GameScene::update(float timestep) {
             }
         }
         if (_ishost) {
-            _input.update();
-            if (_input.didPressReset()) {
-                // host resets game for all players
-                hostReset();
-            }
-            // update the game state for self (host). Updates for the rest of the players are done in processMovementRequest(),
-            // called whenever the host recieves a movement or other action message.
-            _currentDirtAmount = _allDirtAmounts[0];
-            _curBoard = _allCurBoards[0];
             // Check if player is stunned for this frame
             if (_player->getStunFrames() == 0) {
                 // Move the player, ignoring collisions
                 bool validMove = _player->move(_input.getDir(), getSize(), _windows.sideGap);
             }
         }
-
-        // each player manages their own UI elements/text boxes for displaying resource information
-        // Update the health meter
-        _healthText->setText(strtool::format("Health %d", _player->getHealth()));
-
-        // update time
-        if ((_gameTime>=1)) {
-            _frame = _frame+1;
-        } if (_frame==_fps && (_gameTime>=1)) {
-            _gameTime=_gameTime-1;
-           _projectileGenChance = min(0.9, _projectileGenChance + (200 - _gameTime) * 0.002);
-            _frame = 0;
-        }
-        
-        
-        _text->setText(strtool::format("Time %d", _gameTime));
-        
-        
-        _healthText->layout();
-        _text->layout();
-        
-        // Update the dirt display
-        _dirtText->setText(strtool::format("%d", _currentDirtAmount));
-        _dirtText->layout();
-       
     }
-    
+    // each player manages their own UI elements/text boxes for displaying resource information
+    // Update the health meter
+    _healthText->setText(strtool::format("Health %d", _player->getHealth()));
 
-    
+    // update time
+    if ((_gameTime>=1)) {
+        _frame = _frame+1;
+    } if (_frame==_fps && (_gameTime>=1)) {
+        _gameTime=_gameTime-1;
+        _projectileGenChance = min(0.9, _projectileGenChance + (200 - _gameTime) * 0.002);
+        _frame = 0;
+    }
+        
+        
+    _text->setText(strtool::format("Time %d", _gameTime));
+        
+        
+    _healthText->layout();
+    _text->layout();
+        
+    // Update the dirt display
+    _dirtText->setText(strtool::format("%d", _currentDirtAmount));
+    _dirtText->layout();
 }
 
 /**
