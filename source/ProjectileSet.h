@@ -263,8 +263,10 @@ public:
      * This movement code does not support "wrap around".
      * This method performs no collision detection. Collisions
      * are resolved afterwards.
+     * 
+     * @returns list of destinations to spawn filth objects
      */
-    void update(cugl::Size size);
+    std::vector<cugl::Vec2> update(cugl::Size size);
 
     /**
      * Draws all active projectiles to the sprite batch within the given bounds.

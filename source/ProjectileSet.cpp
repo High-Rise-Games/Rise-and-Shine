@@ -137,14 +137,20 @@ void ProjectileSet::spawnProjectileClient(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2
 * This movement code does not support "wrap around".
 * This method performs no collision detection. Collisions
 * are resolved afterwards.
+* 
+* @returns list of destinations to spawn filth objects
 */
-void ProjectileSet::update(Size size) {
+std::vector<cugl::Vec2> ProjectileSet::update(Size size) {
     // Move projectiles, updating the animation frame
+    std::vector<cugl::Vec2> dirtDests;
     auto it = current.begin();
     while (it != current.end()) {
         bool erased = (*it)->update(size);
         if (erased) {
             // delete the projectile once it goes completely off screen
+            if ((*it)->type == Projectile::ProjectileType::DIRT) {
+                dirtDests.push_back((*it)->destination);
+            }
             it = current.erase(it);
         } else {
             it++;
@@ -156,6 +162,7 @@ void ProjectileSet::update(Size size) {
         current.emplace(*it);
     }
     _pending.clear();
+    return dirtDests;
 }
 
 /**

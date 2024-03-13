@@ -873,7 +873,6 @@ void GameScene::update(float timestep) {
     }
 
     // When the player is on other's board
-    // TODO: now the player is draged as dirt, need to switch to dirt later
     if (_curBoard != 0) {
         _dirtThrowInput.update();
         if (!_dirtSelected) {
@@ -1011,7 +1010,15 @@ void GameScene::stepForward(std::shared_ptr<Player>& player, WindowGrid& windows
     }
 
     // Move the projectiles
-    projectiles.update(getSize());
+    std::vector<cugl::Vec2> landedDirts = projectiles.update(getSize());
+    // Add any landed dirts
+    for (auto dirtPos : landedDirts) {
+        int x_coor = ((int)(dirtPos.x - windows.sideGap) / windows.getPaneWidth());
+        int y_coor = (int)(dirtPos.y / windows.getPaneHeight());
+        x_coor = std::clamp(x_coor, 0, windows.getNHorizontal());
+        y_coor = std::clamp(y_coor, 0, windows.getNVertical());
+        windows.addDirt(y_coor, x_coor);
+    }
 
     // Check for collisions and play sound
     if (player->getStunFrames() <= 0 && _collisions.resolveCollision(player, projectiles)) {
