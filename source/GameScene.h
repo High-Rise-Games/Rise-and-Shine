@@ -77,6 +77,10 @@ protected:
     
     /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
     int _curBoard;
+    /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
+    int _curBoardRight;
+    /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
+    int _curBoardLeft;
     /** Whether the dirt is selected, ONLY active when currently on others board*/
     bool _dirtSelected;
     /** The path from player to the dirt throw destination, ONLY active when currently on player's own board*/

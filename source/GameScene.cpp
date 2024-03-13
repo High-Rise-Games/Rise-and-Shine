@@ -54,7 +54,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _fixedDirtUpdateThreshold = 5 * 60;
     _maxDirtAmount = 1;
     _currentDirtAmount = 0;
-    _curBoard = 0;
+    
     _dirtSelected = false;
     _dirtPath = Path2();
     dimen *= SCENE_HEIGHT/dimen.height;
@@ -74,6 +74,11 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     // Get the background image and constant values
     _background = _assets->get<Texture>("background");
     _constants = _assets->get<JsonValue>("constants");
+
+    // Initialize all starting current boards
+    _curBoard = 0;
+    _curBoardRight = 0;
+    _curBoardLeft = 0;
     
     // Initialize the window grids
     _windows.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
@@ -419,6 +424,7 @@ std::shared_ptr<cugl::JsonValue> GameScene::getJsonBoard(int id) {
     json->appendValue("curr_board", static_cast<double>(_allCurBoards[id - 1]));
     json->appendValue("player_x", player->getPosition().x);
     json->appendValue("player_y", player->getPosition().y);
+    json->appendValue("health", static_cast<double>(player->getHealth()));
     json->appendValue("stun_frames", static_cast<double>(player->getStunFrames()));
     json->appendValue("timer", static_cast<double>(_gameTime));
 
@@ -486,6 +492,7 @@ std::shared_ptr<cugl::JsonValue> GameScene::getJsonBoard(int id) {
     "curr_board": 0,
     "player_x": 30.2,
     "player_y": 124.2,
+    "health": 3,
     "stun_frames": 0,
     "timer": 145,
     "dirts": [ [0, 1], [2, 2], [0, 2] ],
@@ -528,12 +535,14 @@ void GameScene::updateBoard(std::shared_ptr<JsonValue> data) {
         player = _playerRight;
         windows = &_windowsRight;
         projectiles = &_projectilesRight;
+        _curBoardRight = data->getInt("curr_board", 0);
     }
     else if (playerId == _id - 1 || (_id == 1 && playerId == 4)) {
         // if assigning ids clockwise, this is the right neighbor
         player = _playerLeft;
         windows = &_windowsLeft;
         projectiles = &_projectilesLeft;
+        _curBoardLeft = data->getInt("curr_board", 0);
     }
     else {
         // otherwise, player is on the opposite board and we do not need to track their board state.
@@ -544,6 +553,7 @@ void GameScene::updateBoard(std::shared_ptr<JsonValue> data) {
 
     // get x, y positions of neighbor
     player->setPosition(Vec2(data->getFloat("player_x", 0), data->getFloat("player_y", 0)));
+    player->setHealth(data->getInt("health", 3));
 
     // populate neighbor's board with dirt
     windows->clearBoard();
