@@ -181,7 +181,14 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
             CULog("entering other player's board: %d", edge);
             if (_ishost) {
                 // if move is valid
-                if ((edge == 1 && _numPlayers >= 2) || (edge == -1 && _numPlayers == 4)) {
+                int destinationId = _id + edge;
+                if (destinationId == 0) {
+                    destinationId = 4;
+                }
+                else if (destinationId == 5) {
+                    destinationId == 1;
+                }
+                if (destinationId <= _numPlayers) {
                     _allCurBoards[0] = edge;
                     _curBoard = edge;
                 }
@@ -412,6 +419,8 @@ std::shared_ptr<cugl::JsonValue> GameScene::getJsonBoard(int id) {
     json->appendValue("curr_board", static_cast<double>(_allCurBoards[id - 1]));
     json->appendValue("player_x", player->getPosition().x);
     json->appendValue("player_y", player->getPosition().y);
+    json->appendValue("stun_frames", static_cast<double>(player->getStunFrames()));
+    json->appendValue("timer", static_cast<double>(_gameTime));
 
     const std::shared_ptr<JsonValue> dirtArray = std::make_shared<JsonValue>();
     dirtArray->init(JsonValue::Type::ArrayType);
@@ -477,6 +486,8 @@ std::shared_ptr<cugl::JsonValue> GameScene::getJsonBoard(int id) {
     "curr_board": 0,
     "player_x": 30.2,
     "player_y": 124.2,
+    "stun_frames": 0,
+    "timer": 145,
     "dirts": [ [0, 1], [2, 2], [0, 2] ],
     "projectiles": [ 
             { 
@@ -540,6 +551,9 @@ void GameScene::updateBoard(std::shared_ptr<JsonValue> data) {
         std::vector<int> dirtPos = jsonDirt->asIntArray();
         windows->addDirt(dirtPos[0], dirtPos[1]);
     }
+
+    player->setStunFrames(data->getInt("stun_frames"));
+    _gameTime = data->getInt("timer");
         
     // populate neighbor's projectile set
     projectiles->clearCurrentSet(); // clear current set to rewrite
@@ -561,6 +575,7 @@ void GameScene::updateBoard(std::shared_ptr<JsonValue> data) {
         auto type = ProjectileSet::Projectile::ProjectileType::POOP;
         if (typeStr == "DIRT") {
             type = ProjectileSet::Projectile::ProjectileType::DIRT;
+            CULog("is dirt");
         }
 
         // add the projectile to neighbor's projectile set
@@ -684,6 +699,7 @@ void GameScene::processSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data)
 
     int playerId = data->getInt("player_id", 0);
     int switchDestination = data->getInt("switch_destination", 0);
+    CULog("player %d switching to %d", playerId, switchDestination);
 
     // update the board of the player to their switch destination
     if (switchDestination == 0) {
