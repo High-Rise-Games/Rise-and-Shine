@@ -614,7 +614,7 @@ void GameScene::processMovementRequest(std::shared_ptr<cugl::JsonValue> data) {
     WindowGrid* windows;
         
     // playerId can't be 1, since host does not send action message over network to itself
-    if (playerId == 2) {
+    if (playerId == 0) { //TODO help me
         player = _playerRight;
         windows = &_windowsRight;
     }

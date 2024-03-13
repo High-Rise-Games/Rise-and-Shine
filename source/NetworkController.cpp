@@ -128,9 +128,18 @@ bool NetworkController::checkConnection() {
  * @param state     The message to be sent
  */
 void NetworkController::transmitMessage(const std::shared_ptr<cugl::JsonValue> msg) {
+    if (msg->has("vel")) {
+        CULog("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIID before: %d", msg->getInt("player_id", 69));
+    }
     NetcodeSerializer netSerializer;
     netSerializer.writeJson(msg);
     const std::vector<std::byte>& byteState = netSerializer.serialize();
     _network->broadcast(byteState);
+    if (msg->has("vel")) {
+        NetcodeDeserializer netDeserializer;
+        netDeserializer.receive(byteState);
+        std::shared_ptr<JsonValue> temp = netDeserializer.readJson();
+        CULog("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIID: %d", temp->getInt("player_id", 69));
+    }
     netSerializer.reset();
 } 
