@@ -788,6 +788,7 @@ void GameScene::processDirtThrowRequest(std::shared_ptr<cugl::JsonValue> data) {
     Vec2 dirt_dest(dest[0]->asFloat(), dest[1]->asFloat());
 
     _allDirtAmounts[source_id - 1] = max(0, _allDirtAmounts[source_id - 1] - 1);
+    _currentDirtAmount = _allDirtAmounts[0];
 
     if (source_id == 1 || target_id == 1) {
         _projectiles.spawnProjectile(dirt_pos, dirt_vel, dirt_dest, ProjectileSet::Projectile::ProjectileType::DIRT);
@@ -872,8 +873,8 @@ void GameScene::update(float timestep) {
         _curBoard = _allCurBoards[0];
     }
 
-    // When the player is on other's board
-    if (_curBoard != 0) {
+    // When the player is on other's board and are able to throw dirt
+    if (_curBoard != 0 && _currentDirtAmount > 0) {
         _dirtThrowInput.update();
         if (!_dirtSelected) {
             if (_dirtThrowInput.didPress()) {
@@ -925,7 +926,7 @@ void GameScene::update(float timestep) {
         }
     }
     // When a player is on their own board
-    else {
+    else if (_curBoard == 0) {
         if (!_ishost) {
             // Read the keyboard for each controller.
             _input.update();
@@ -979,22 +980,32 @@ void GameScene::update(float timestep) {
 * The host steps forward each player's game state, given references to the player, board, and projectile set.
 */
 void GameScene::stepForward(std::shared_ptr<Player>& player, WindowGrid& windows, ProjectileSet& projectiles) {
-    if (player->getStunFrames() > 0) {
-        player->decreaseStunFrames();
-    }
-    // remove any dirt the player collides with
-    Vec2 grid_coors = player->getCoorsFromPos(windows.getPaneHeight(), windows.getPaneWidth(), windows.sideGap);
-    player->setCoors(grid_coors);
-
     int player_id = player->getId();
-    int clamped_y = std::clamp(static_cast<int>(grid_coors.y), 0, windows.getNVertical() - 1);
-    int clamped_x = std::clamp(static_cast<int>(grid_coors.x), 0, windows.getNHorizontal() - 1);
-    bool dirtRemoved = windows.removeDirt(clamped_y, clamped_x);
-    if (dirtRemoved) {
-        // filling up dirty bucket
-        _allDirtAmounts[player_id - 1] = min(_maxDirtAmount, _allDirtAmounts[player_id - 1] + 1);
-    }
 
+    if (_allCurBoards[player_id - 1] == 0) {
+        // only check if player is stunned, has removed dirt, or collided with projectile
+        // if they are on their own board.
+        if (player->getStunFrames() > 0) {
+            player->decreaseStunFrames();
+        }
+        // remove any dirt the player collides with
+        Vec2 grid_coors = player->getCoorsFromPos(windows.getPaneHeight(), windows.getPaneWidth(), windows.sideGap);
+        player->setCoors(grid_coors);
+
+        int clamped_y = std::clamp(static_cast<int>(grid_coors.y), 0, windows.getNVertical() - 1);
+        int clamped_x = std::clamp(static_cast<int>(grid_coors.x), 0, windows.getNHorizontal() - 1);
+        bool dirtRemoved = windows.removeDirt(clamped_y, clamped_x);
+        if (dirtRemoved) {
+            // filling up dirty bucket
+            _allDirtAmounts[player_id - 1] = min(_maxDirtAmount, _allDirtAmounts[player_id - 1] + 1);
+        }
+
+        // Check for collisions and play sound
+        if (player->getStunFrames() <= 0 && _collisions.resolveCollision(player, projectiles)) {
+            AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
+        }
+    }
+    
     // Generate falling hazard based on chance
     if (_projectileGenCountDown == 0) {
         std::bernoulli_distribution dist(_projectileGenChance);
@@ -1015,14 +1026,9 @@ void GameScene::stepForward(std::shared_ptr<Player>& player, WindowGrid& windows
     for (auto dirtPos : landedDirts) {
         int x_coor = ((int)(dirtPos.x - windows.sideGap) / windows.getPaneWidth());
         int y_coor = (int)(dirtPos.y / windows.getPaneHeight());
-        x_coor = std::clamp(x_coor, 0, windows.getNHorizontal());
-        y_coor = std::clamp(y_coor, 0, windows.getNVertical());
+        x_coor = std::clamp(x_coor, 0, windows.getNHorizontal()-1);
+        y_coor = std::clamp(y_coor, 0, windows.getNVertical()-1);
         windows.addDirt(y_coor, x_coor);
-    }
-
-    // Check for collisions and play sound
-    if (player->getStunFrames() <= 0 && _collisions.resolveCollision(player, projectiles)) {
-        AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
     }
 
     // fixed dirt generation logic (every 5 seconds)
