@@ -37,6 +37,7 @@ protected:
     
     /** ID of the player to distinguish in multiplayer */
     int _id;
+    
     /** Seconds left in the game */
     int _gameTime;
     
@@ -45,6 +46,8 @@ protected:
     
     /** The current frame incremeted by 1 every frame (resets to 0 every time we reach 60 frames) */
     int _frame;
+    
+    int _countdownFrame;
     
     
     
@@ -143,13 +146,17 @@ protected:
     /** The text with the current health */
     std::shared_ptr<cugl::TextLayout> _healthText;
     /** The text with the current time */
-    std::shared_ptr<cugl::TextLayout> _text;
+    std::shared_ptr<cugl::TextLayout> _timeText;
     /** Empty bucket texture image */
     std::shared_ptr<cugl::Texture> _emptyBucket;
     /** Full bucket texture image */
     std::shared_ptr<cugl::Texture> _fullBucket;
     /** The text with the current dirt */
     std::shared_ptr<cugl::TextLayout> _dirtText;
+    
+    
+    /** texture for number 1 */
+    std::shared_ptr<cugl::Texture> _countdown1;
 
     /** The scene node for the UI elements (buttons, labels) */
     std::shared_ptr<cugl::scene2::SceneNode> _scene_UI;
@@ -240,8 +247,8 @@ public:
     */
     const int getId() const { return _id; }
     
+    void renderCountdown(std::shared_ptr<cugl::SpriteBatch> batch);
     
-
     /**
     * Sets the id of this player.
     * @param id     the id of this player to set
@@ -259,6 +266,31 @@ public:
     
     /** Checks whether board is full */
     const bool checkBoardFull();
+    
+    /** Checks whether the player is a host in the network*/
+    const bool isHost() {return _ishost;}
+    
+    /** Host process movement and calls step forward for all players on the network */
+    void hostStepForoward();
+    
+    /** Processes Dirt Throw actions for borh when player is on their own board or when they are
+     on another player's board */
+    void processDirtThrow();
+    
+    /** Updates the time of the game, which is also shown on the screen during gameplay */
+    void updateGameTime();
+    
+    /** Process incomming message over the network
+     *
+     * @param source  the string source of the data
+     * @param data  the data of the incomming message
+     */
+    void processIncomingMessage(const std::string source,
+                                 const std::vector<std::byte>& data);
+    
+    /** Updates the time displayed in _timeText */
+    void updateTimeText() {_timeText->setText(cugl::strtool::format("Time %d", _gameTime));};
+    
     
     /** Checks whether board is empty */
     const bool checkBoardEmpty();

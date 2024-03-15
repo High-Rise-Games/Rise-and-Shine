@@ -40,6 +40,9 @@
         },
         "poop": {
             "file":  "textures/bird_poop.png"
+        }, 
+        "countdown1": {
+            "file":  "textures/countdown1.png"
         }
 	},
     "fonts": {

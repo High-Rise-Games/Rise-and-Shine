@@ -128,6 +128,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     setEmptyBucket(assets->get<Texture>("bucketempty"));
     setFullBucket(assets->get<Texture>("bucketfull"));
     
+    _countdown1 =assets->get<Texture>("countdown1");
+    
 //    // Initialize switch scene icon
 //    setSwitchSceneButton(assets->get<Texture>("switchSceneButton"));
 //    // Initialize return scene icon
@@ -146,8 +148,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     // Create and layout the health meter
     std::string health_msg = strtool::format("Health %d", _player->getHealth());
     std::string time_msg = strtool::format("Time %d", _player->getHealth());
-    _text = TextLayout::allocWithText(time_msg, assets->get<Font>("pixel32"));
-    _text->layout();
+    _timeText = TextLayout::allocWithText(time_msg, assets->get<Font>("pixel32"));
+    _timeText->layout();
     _healthText = TextLayout::allocWithText(health_msg, assets->get<Font>("pixel32"));
     _healthText->layout();
     
@@ -814,49 +816,10 @@ void GameScene::processDirtThrowRequest(std::shared_ptr<cugl::JsonValue> data) {
     }
 }
 
-/**
- * The method called to update the game mode.
- *
- * This method contains any gameplay code that is not an OpenGL call.
- * 
- * We need to update this method to constantly talk to the server.
- *
- * @param timestep  The amount of time (in seconds) since the last frame
- */
-void GameScene::update(float timestep) {
 
-    // get or transmit board states over network
-    if (_network.getConnection()) {
-        _network.getConnection()->receive([this](const std::string source,
-            const std::vector<std::byte>& data) {
-                if (!_ishost) {
-                    std::shared_ptr<JsonValue> incomingMsg = _network.processMessage(source, data);
-                    if (incomingMsg->has("dirts")) {
-                        // CULog("got board state message");
-                        updateBoard(incomingMsg);
-                    }
-                }
-                else { // is host
-                    // process action data - movement or dirt throw
-                    std::shared_ptr<JsonValue> incomingMsg = _network.processMessage(source, data);
-                    if (incomingMsg->has("vel")) {
-                        // CULog("got movement message");
-                        processMovementRequest(incomingMsg);
-                    } else if (incomingMsg->has("switch_destination")) {
-                        CULog("got switch scene request message");
-                        processSceneSwitchRequest(incomingMsg);
-                    }
-                    else if (incomingMsg->has("player_id_target")) {
-                        CULog("got dirt throw message");
-                        processDirtThrowRequest(incomingMsg);
-                    }
-                }
-            });
-        _network.checkConnection();
-    }
-
-    // host steps all boards forward
-    if (_ishost) {
+void GameScene::hostStepForoward() {
+    
+    if (isHost()) {
         stepForward(_player, _windows, _projectiles);
         if (_numPlayers > 1) {
             stepForward(_playerRight, _windowsRight, _projectilesRight);
@@ -882,7 +845,37 @@ void GameScene::update(float timestep) {
         _currentDirtAmount = _allDirtAmounts[0];
         _curBoard = _allCurBoards[0];
     }
+    
+}
 
+void GameScene::processIncomingMessage(const std::string source,
+                                        const std::vector<std::byte>& data) {
+    if (!_ishost) {
+        std::shared_ptr<JsonValue> incomingMsg = _network.processMessage(source, data);
+        if (incomingMsg->has("dirts")) {
+            // CULog("got board state message");
+            updateBoard(incomingMsg);
+        }
+    }
+    else { // is host
+        // process action data - movement or dirt throw
+        std::shared_ptr<JsonValue> incomingMsg = _network.processMessage(source, data);
+        if (incomingMsg->has("vel")) {
+            // CULog("got movement message");
+            processMovementRequest(incomingMsg);
+        } else if (incomingMsg->has("switch_destination")) {
+            CULog("got switch scene request message");
+            processSceneSwitchRequest(incomingMsg);
+        }
+        else if (incomingMsg->has("player_id_target")) {
+            CULog("got dirt throw message");
+            processDirtThrowRequest(incomingMsg);
+        }
+    }
+}
+
+void GameScene::processDirtThrow() {
+    
     // When the player is on other's board and are able to throw dirt
     if (_curBoard != 0 && _currentDirtAmount > 0) {
         _dirtThrowInput.update();
@@ -897,45 +890,8 @@ void GameScene::update(float timestep) {
                     _prevDirtPos = _player->getPosition();
                 }
             }
-        } else {
-            if (_dirtThrowInput.didRelease()) {
-                _dirtSelected = false;
-                Vec2 currentScreenPos = _dirtThrowInput.getPosition();
-                Vec3 currentWorldPos = screenToWorldCoords(currentScreenPos);
-                Vec2 currentPos = Vec2(currentWorldPos.x, currentWorldPos.y);
-                Vec2 diff = currentPos - _prevDirtPos;
-                Vec2 velocity = diff.getNormalization() * -5;
-                Vec2 destination = currentPos - diff * 5;
-
-                int targetId = _id + _curBoard;
-                if (targetId == 0) {
-                    targetId = 4;
-                }
-                if (targetId == 5) {
-                    targetId = 1;
-                }
-                if (_ishost) {
-                    processDirtThrowRequest(getJsonDirtThrow(targetId, _prevDirtPos, velocity, destination));
-                }
-                else {
-                    _network.transmitMessage(getJsonDirtThrow(targetId, _prevDirtPos, velocity, destination));
-                }
-                _player->setPosition(_prevDirtPos);
-
-            } else if (_dirtThrowInput.isDown()) {
-                Vec2 currentScreenPos = _dirtThrowInput.getPosition();
-                Vec3 currentWorldPos = screenToWorldCoords(currentScreenPos);
-                Vec2 currentPos = Vec2(currentWorldPos.x, currentWorldPos.y);
-                _player->setPosition(currentPos);
-                std::vector<Vec2> vertices = {currentPos};
-                Vec2 diff = currentPos - _prevDirtPos;
-                Vec2 destination = currentPos - diff * 5;
-                vertices.push_back(destination);
-                _dirtPath = Path2(vertices);
-            }
         }
     }
-    // When a player is on their own board
     else if (_curBoard == 0) {
         if (!_ishost) {
             // Read the keyboard for each controller.
@@ -960,10 +916,10 @@ void GameScene::update(float timestep) {
             }
         }
     }
-    // each player manages their own UI elements/text boxes for displaying resource information
-    // Update the health meter
-    _healthText->setText(strtool::format("Health %d", _player->getHealth()));
+    
+}
 
+void GameScene::updateGameTime() {
     // update time
     if ((_gameTime>=1)) {
         _frame = _frame+1;
@@ -972,13 +928,49 @@ void GameScene::update(float timestep) {
         _projectileGenChance = min(0.9, _projectileGenChance + (200 - _gameTime) * 0.002);
         _frame = 0;
     }
-        
-        
-    _text->setText(strtool::format("Time %d", _gameTime));
-        
+    
+    if (_countdownFrame+1 <= getSize().height/20) {
+        _countdownFrame=_countdownFrame+1;
+    }
+    
+    updateTimeText();
+}
+
+/**
+ * The method called to update the game mode.
+ *
+ * This method contains any gameplay code that is not an OpenGL call.
+ * 
+ * We need to update this method to constantly talk to the server.
+ *
+ * @param timestep  The amount of time (in seconds) since the last frame
+ */
+void GameScene::update(float timestep) {
+
+    // get or transmit board states over network
+    if (_network.getConnection()) {
+        _network.getConnection()->receive([this](const std::string source,
+            const std::vector<std::byte>& data) {
+                processIncomingMessage(source, data);
+            });
+        _network.checkConnection();
+    }
+
+    // host steps all boards forward
+    hostStepForoward();
+
+    // process dirt throw actions of player
+    processDirtThrow();
+   
+    // each player manages their own UI elements/text boxes for displaying resource information
+    // Update the health meter
+    _healthText->setText(strtool::format("Health %d", _player->getHealth()));
+
+    // update time
+    updateGameTime();
         
     _healthText->layout();
-    _text->layout();
+    _timeText->layout();
         
     // Update the dirt display
     _dirtText->setText(strtool::format("%d", _currentDirtAmount));
@@ -1138,6 +1130,8 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     // CULog("current board: %d", _curBoard);
     batch->begin(getCamera()->getCombined());
     
+    
+    
     batch->draw(_background,Rect(Vec2::ZERO,getSize()));
     //_asteroids.draw(batch,getSize());
     if (_curBoard == 0) {
@@ -1166,7 +1160,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         }
     }
     batch->setColor(Color4::BLACK);
-    batch->drawText(_text, Vec2(getSize().width - 10 - _text->getBounds().size.width, getSize().height - _text->getBounds().size.height));
+    batch->drawText(_timeText, Vec2(getSize().width - 10 - _timeText->getBounds().size.width, getSize().height - _timeText->getBounds().size.height));
     batch->drawText(_healthText, Vec2(10, getSize().height - _healthText->getBounds().size.height));
     
     //set bucket texture location
@@ -1178,6 +1172,11 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     Vec2 bucketLocation(getSize().width - ((float)_fullBucket->getWidth() * bucketScaleFactor/2),
                         getSize().height - (float)_fullBucket->getHeight() * bucketScaleFactor/2);
     bucketTrans.translate(bucketLocation);
+    
+    // set the countdown location
+//    renderCountdown(batch);
+    
+    
     
 //    //set switch/return scene button texture location
 //    Affine2 sceneButtonTrans = Affine2();
@@ -1215,5 +1214,18 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     _scene_UI->render(batch);
     
     batch->end();
+}
+
+void GameScene::renderCountdown(std::shared_ptr<cugl::SpriteBatch> batch) {
+    Affine2 countdown1Trans = Affine2();
+    Vec2 countdown1Origin(_countdown1->getWidth()/2,_countdown1->getHeight()/2);
+    float countdown1ScaleFactor = std::min(((float)getSize().getIWidth() / (float)_countdown1->getWidth()) /2, ((float)getSize().getIHeight() / (float)_countdown1->getHeight() /2));
+    countdown1Trans.scale(countdown1ScaleFactor);
+    
+    Vec2 countdown1Location(getSize().width/2,
+                        getSize().height - 10*_countdownFrame);
+    countdown1Trans.translate(countdown1Location);
+    
+    batch->draw(_countdown1, countdown1Origin, countdown1Trans);
 }
 
