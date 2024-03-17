@@ -147,20 +147,20 @@ void InputController::update() {
     
     // Movement forward/backward
     Keyboard* keys = Input::get<Keyboard>();
-    if (keys->keyDown(up) && !keys->keyDown(down)) {
+    if (keys->keyPressed(up) && !keys->keyDown(down)) {
         _forward = 1;
-    } else if (keys->keyDown(down) && !keys->keyDown(up)) {
+    } else if (keys->keyPressed(down) && !keys->keyDown(up)) {
         _forward = -1;
     }
     
     // Movement left/right
-    if (!keys->keyDown(right) && (keys->keyDown(left))) {
+    if (!keys->keyDown(right) && (keys->keyPressed(left))) {
         _turning = -1;
-    } else if (keys->keyDown(right) && !keys->keyDown(left)) {
+    } else if (keys->keyPressed(right) && !keys->keyDown(left)) {
         _turning = 1;
     }
     
-    _moveDir = Vec2(_turning, _forward).getNormalization();
+    _moveDir = Vec2(_turning, _forward);
 
     // Shooting
     if (keys->keyDown(shoot)) {

@@ -19,6 +19,7 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     _id = id;
     _pos = pos;
     _coors = Vec2();
+    _speed = 10;
     //_ang  = 0;
     //_dang = 0;
     //_refire = 0;
@@ -185,26 +186,37 @@ void Player::setPosition(cugl::Vec2 value, cugl::Vec2 size) {
 bool Player::move(Vec2 dir, Size size, float sideGap) {
 
     // Process moving direction
-    _vel = dir * 5;
-    
-    
-    // Move the ship position by the ship velocity.
-    // Velocity always remains unchanged.
-    // Also does not add velocity to position in the event that movement would go beyond the window building grid.
-    int atEdge = getEdge(sideGap, size);
-    if (!atEdge && _pos.y + _vel.y >= 0 && _pos.y + _vel.y <= size.height) {
-        _pos += _vel;
+    if (!_targetDist.isZero()) {
+        CULog("(%f, %f)", _targetDist.x, _targetDist.y);
+        CULog("(%f, %f)", _vel.x, _vel.y);
+        if (abs(_targetDist.x - _vel.x) > abs(_vel.x) || abs(_targetDist.y - _vel.y) > abs(_vel.y)) {
+            _targetDist = _targetDist - _vel;
+            _pos += _vel;
+        } else {
+            _pos += _targetDist;
+            _targetDist.setZero();
+        }
         return true;
-    }
-    
-    //clamp to the left or right if at edge
-    if (atEdge > 0) {
-        _pos.x = size.getIWidth() - sideGap;
     } else {
-        _pos.x = sideGap;
-    }
-    if (_pos.y + _vel.y >= 0 && _pos.y + _vel.y <= size.height) {
-        _pos.y += _vel.y;
+        _vel.setZero();
+        if (dir.x != 0.0f) {
+            _targetDist = dir * _windowHeight;
+            _vel = dir * _speed;
+        } else if (dir.y != 0.0f) {
+            _targetDist = dir * _windowWidth;
+            _vel = dir * _speed;
+        }
+        
+        // Move the ship position by the ship velocity.
+        // Velocity always remains unchanged.
+        // Also does not add velocity to position in the event that movement would go beyond the window building grid.
+        int atEdge = getEdge(sideGap, size);
+        if (!atEdge && _pos.y + _targetDist.y >= 0 && _pos.y + _targetDist.y <= size.height) {
+            return true;
+        } else {
+            _targetDist.setZero();
+            _vel.setZero();
+        }
     }
     return false;
 
@@ -216,9 +228,9 @@ bool Player::move(Vec2 dir, Size size, float sideGap) {
  * @return -1 if the player is at left edge, 0 not at edge, and 1 at right edge
  */
 int Player::getEdge(float sideGap, Size size) {
-    if (_pos.x + _vel.x <= sideGap) {
+    if (_pos.x + _targetDist.x <= sideGap) {
         return -1;
-    } else if (_pos.x + _vel.x >= size.getIWidth() - sideGap) {
+    } else if (_pos.x + _targetDist.x >= size.getIWidth() - sideGap) {
         return 1;
     }
     return 0;

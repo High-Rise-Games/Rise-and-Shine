@@ -18,6 +18,10 @@ class Player {
 private:
     /** The player's id */
     int _id;
+    /** Player movement speed*/
+    float _speed;
+    /** Player distance to target of movement, set to 0 when reaches target*/
+    cugl::Vec2 _targetDist;
     /** Position of the player */
     cugl::Vec2 _pos;
     /** Velocity of the player */
