@@ -187,8 +187,6 @@ bool Player::move(Vec2 dir, Size size, float sideGap) {
 
     // Process moving direction
     if (!_targetDist.isZero()) {
-        CULog("(%f, %f)", _targetDist.x, _targetDist.y);
-        CULog("(%f, %f)", _vel.x, _vel.y);
         if (abs(_targetDist.x - _vel.x) > abs(_vel.x) || abs(_targetDist.y - _vel.y) > abs(_vel.y)) {
             _targetDist = _targetDist - _vel;
             _pos += _vel;
