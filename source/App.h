@@ -8,6 +8,7 @@
 #define __APP__
 #include <cugl/cugl.h>
 #include "GameScene.h"
+#include "GameplayController.h"
 #include "LoadingScene.h"
 #include "LobbyScene.h"
 #include "MenuScene.h"
@@ -56,8 +57,10 @@ protected:
     /** The scene for hosting or joining a game */
     LobbyScene _lobby;
     
+    /** The scene for the game world */
+    GameScene _gamescene;
     /** The primary controller for the game world */
-    GameScene _gameplay;
+    std::shared_ptr<GameplayController> _gameplay;
 
     /** The controller for network during gameplay */
     // std::shared_ptr<NetworkController> _network;
