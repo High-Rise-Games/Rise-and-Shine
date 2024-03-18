@@ -64,7 +64,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
         
     // Start up the input handler
     _assets = assets;
-    _input.init(bounds);
+    _input.init();
     // _dirtThrowInput.init();
     
     // Get the constant values

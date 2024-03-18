@@ -21,73 +21,32 @@ private:
     /** How much are we turning? */
     float _turning;
     
+    /** The unit vector of the character moving direction*/
+    cugl::Vec2 _moveDir;
+    
     /** Did we press the fire button? */
     bool _didFire;
 
     /** Did we press the reset button? */
     bool _didReset;
     
-    /** The unit vector of the character moving direction*/
-    cugl::Vec2 _moveDir;
+    /** The position of the touch down event*/
+    cugl::Vec2 _startPos;
+    
+    /** The distance of the last swipe*/
+    cugl::Vec2 _moveDis;
     
 protected:
     /** Whether the input device was successfully initialized */
     bool _active;
-    
-    // The screen is divided into four zones: Left, Bottom, Right and Main/
-    // These are all shown in the diagram below.
-    //
-    //   |---------------|
-    //   |   |       |   |
-    //   | L |   M   | R |
-    //   |   |       |   |
-    //   -----------------
-    //
-    // The meaning of any touch depends on the zone it begins in.
-
-    /** Information representing a single "touch" (possibly multi-finger) */
-    struct TouchInstance {
-        /** The anchor touch position (on start) */
-        cugl::Vec2 position;
-        /** The current touch time */
-        cugl::Timestamp timestamp;
-        /** The touch id(s) for future reference */
-        std::unordered_set<Uint64> touchids;
-    };
-
-    /** Enumeration identifying a zone for the current touch */
-    enum class Zone {
-        /** The touch was not inside the screen bounds */
-        UNDEFINED,
-        /** The touch was in the left zone (as shown above) */
-        LEFT,
-        /** The touch was in the right zone (as shown above) */
-        RIGHT,
-        /** The touch was in the main zone (as shown above) */
-        MAIN
-    };
-
-    /** The bounds of the entire game screen (in touch coordinates) */
-    cugl::Rect _tbounds;
-    /** The bounds of the entire game screen (in scene coordinates) */
-    cugl::Rect _sbounds;
-    /** The bounds of the left touch zone */
-    cugl::Rect _lzone;
-    /** The bounds of the right touch zone */
-    cugl::Rect _rzone;
-
-    // Each zone can have only one touch
-    /** The current touch location for the left zone */
-    TouchInstance _ltouch;
-    /** The current touch location for the right zone */
-    TouchInstance _rtouch;
-    /** The current touch location for the bottom zone */
-    TouchInstance _mtouch;
-    
-    /** Whether the virtual joystick is active */
-    bool _joystick;
-    /** The position of the virtual joystick */
-    cugl::Vec2 _joycenter;
+    /** Whether the finger is down*/
+    bool _touchDown;
+    /** Whether the finger is released in this animation frame*/
+    bool _touchReleased;
+    /** The key for the touch listeners*/
+    Uint32 _touchKey;
+    /** The current touch id of the finger*/
+    cugl::TouchID _touchID;
 
 #pragma mark Input Control
 public:
@@ -139,20 +98,6 @@ public:
     bool didPressReset() const {
         return _didReset;
     }
-    
-    /**
-     * Returns true if the virtual joystick is in use (touch only)
-     *
-     * @return true if the virtual joystick is in use (touch only)
-     */
-    bool withJoystick() const { return _joystick; }
-
-    /**
-     * Returns the scene graph position of the virtual joystick
-     *
-     * @return the scene graph position of the virtual joystick
-     */
-    cugl::Vec2 getJoystick() const { return _joycenter; }
 
     /**
      * Creates a new input controller with the default settings
@@ -169,17 +114,19 @@ public:
     ~InputController() {}
     
     /**
-     * Initializes the input control for the given bounds
+     * Initializes the control to support keyboard or touch.
      *
-     * The bounds are the bounds of the scene graph.  This is necessary because
-     * the bounds of the scene graph do not match the bounds of the display.
-     * This allows the input device to do the proper conversion for us.
+     * This method attaches all of the listeners. It tests which
+     * platform we are on (mobile or desktop) to pick the right
+     * listeners.
      *
-     * @param bounds    the scene graph bounds
+     * This method will fail (return false) if the listeners cannot
+     * be registered or if there is a second attempt to initialize
+     * this controller
      *
-     * @return true if the controller was initialized successfully
+     * @return true if the initialization was successful
      */
-    bool init(const cugl::Rect bounds);
+    bool init();
     
     /**
      * Disposes this input controller, deactivating all listeners.
@@ -203,7 +150,7 @@ public:
      */
     void update();
     
-#pragma mark Touch Management
+#pragma mark Touch Callbacks
 private:
     /**
      * Call back function for touch down
@@ -214,58 +161,6 @@ private:
      * Call back function for touch released
      */
     void touchUpCB(const cugl::TouchEvent& event, bool focus);
-    
-    /**
-     * Callback for a mouse release event.
-     *
-     * @param event The associated event
-     * @param previous The previous position of the touch
-     * @param focus    Whether the listener currently has focus
-     */
-    void touchesMovedCB(const cugl::TouchEvent& event, const cugl::Vec2& previous, bool focus);
-    
-    /**
-     * Defines the zone boundaries, so we can quickly categorize touches.
-     */
-    void createZones();
-  
-    /**
-     * Populates the initial values of the TouchInstances
-     */
-    void clearTouchInstance(TouchInstance& touchInstance);
-
-    /**
-     * Returns the correct zone for the given position.
-     *
-     * See the comments above for a description of how zones work.
-     *
-     * @param  pos  a position in screen coordinates
-     *
-     * @return the correct zone for the given position.
-     */
-    Zone getZone(const cugl::Vec2 pos) const;
-    
-    /**
-     * Returns the scene location of a touch
-     *
-     * Touch coordinates are inverted, with y origin in the top-left
-     * corner. This method corrects for this and scales the screen
-     * coordinates down on to the scene graph size.
-     *
-     * @return the scene location of a touch
-     */
-    cugl::Vec2 touch2Screen(const cugl::Vec2 pos) const;
-    
-    /**
-     * Processes movement for the floating joystick.
-     *
-     * This will register movement as left or right (or neither).  It
-     * will also move the joystick anchor if the touch position moves
-     * too far.
-     *
-     * @param  pos  the current joystick position
-     */
-    void processJoystick(const cugl::Vec2 pos);
 };
 
 #endif /* __INPUT_CONTROLLER_H__ */
