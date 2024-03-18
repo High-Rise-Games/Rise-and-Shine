@@ -148,6 +148,9 @@ public:
      */
     void update(float timestep) override;
 
+    /** method for drawing the countdown upon game start */
+    void renderCountdown(std::shared_ptr<cugl::SpriteBatch> batch);
+
     /** sets empty bucket texture */
     void setEmptyBucket(const std::shared_ptr<cugl::Texture>& value) { _emptyBucket = value; }
     /** sets full bucket texture */

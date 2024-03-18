@@ -172,11 +172,11 @@ void GameScene::update(float timestep) {
     // each player manages their own UI elements/text boxes for displaying resource information
     // Update the health meter
     _healthText->setText(strtool::format("Health %d", _gameController->getPlayerHealth()));
-    _text->setText(strtool::format("Time %d", _gameController->getTime()));
+    _timeText->setText(strtool::format("Time %d", _gameController->getTime()));
         
         
     _healthText->layout();
-    _text->layout();
+    _timeText->layout();
         
     // Update the dirt display
     _dirtText->setText(strtool::format("%d", _gameController->getCurDirtAmount()));
@@ -219,9 +219,9 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
                         getSize().height - (float)_fullBucket->getHeight() * bucketScaleFactor/2);
     bucketTrans.translate(bucketLocation);
     
-//    //set switch/return scene button texture location
-//    Affine2 sceneButtonTrans = Affine2();
-//    Vec2 sbOrigin(_switchSceneButton->getWidth()/2,_switchSceneButton->getHeight()/2);
+    // draw different bucket based on dirt amount
+    if (_gameController->getCurDirtAmount() == 0) {
+        batch->draw(_emptyBucket, bOrigin, bucketTrans);
     } else {
         batch->draw(_fullBucket, bOrigin, bucketTrans);
     }
