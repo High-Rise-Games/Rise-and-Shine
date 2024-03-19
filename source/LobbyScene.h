@@ -54,6 +54,12 @@ protected:
 
     std::shared_ptr<cugl::net::NetcodeConnection> _network;
 
+    /** Character select buttons */
+    std::shared_ptr<cugl::scene2::Button> _select_red;
+    std::shared_ptr<cugl::scene2::Button> _select_blue;
+    std::shared_ptr<cugl::scene2::Button> _select_green;
+    std::shared_ptr<cugl::scene2::Button> _select_yellow;
+
     /** The game id label (for updating) */
     std::shared_ptr<cugl::scene2::Label> _gameid_host;
     
