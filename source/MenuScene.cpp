@@ -50,11 +50,10 @@ bool MenuScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
         return false;
     }
     
-    // Start up the input handler
+    // Acquire the scene built by the asset loader and resize it the scene
     _assets = assets;
     
-    // Acquire the scene built by the asset loader and resize it the scene
-    std::shared_ptr<scene2::SceneNode> scene = _assets->get<scene2::SceneNode>("menu");
+    std::shared_ptr<scene2::SceneNode> scene = assets->get<scene2::SceneNode>("menu");
     scene->setContentSize(dimen);
     scene->doLayout(); // Repositions the HUD
     _choice = Choice::NONE;
