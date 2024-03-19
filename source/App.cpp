@@ -4,6 +4,7 @@
 //  Author: High Rise Games
 //
 #include "App.h"
+#include "AudioController.h"
 
 using namespace cugl;
 
@@ -24,6 +25,7 @@ void App::onStartup() {
     _assets = AssetManager::alloc();
     _batch  = SpriteBatch::alloc();
     auto cam = OrthographicCamera::alloc(getDisplaySize());
+
     
 #ifdef CU_TOUCH_SCREEN
     // Start-up basic input for loading screen (MOBILE ONLY)
@@ -47,6 +49,7 @@ void App::onStartup() {
     _scene = State::LOAD;
 //    _loaded = false;
     _loading.init(_assets);
+    
     
     // Queue up the other assets
     _assets->loadDirectoryAsync("json/assets.json",nullptr);
@@ -214,6 +217,8 @@ void App::updateLoadingScene(float timestep) {
     if (_loading.isActive()) {
         _loading.update(timestep);
     } else {
+        _audioController.init(_assets);
+        _audioController.playBackgroundMusic();
         _loading.dispose(); // Permanently disables the input listeners in this mode
         _mainmenu.init(_assets);
         _lobby_host.init_host(_assets);

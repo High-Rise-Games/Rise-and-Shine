@@ -73,6 +73,11 @@
             "type": "sample",
             "file": "sounds/bang.ogg",
             "volume": 0.8
+        },
+        "tower_of_dragons" : {
+            "type": "sample",
+            "file": "sounds/TOWER_OF_TWIN_DRAGONS1.mp3",
+            "volume": 0.4
         }
     },
     "jsons" : {

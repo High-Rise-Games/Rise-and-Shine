@@ -12,6 +12,7 @@
 #include "LoadingScene.h"
 #include "LobbyScene.h"
 #include "MenuScene.h"
+#include "AudioController.h"
 #include "NetworkController.h"
 
 /**
@@ -54,6 +55,7 @@ protected:
     /** The scene for hosting or joining a game */
     LobbyScene _lobby_client;
     
+    
     /** The scene for hosting or joining a game */
     LobbyScene _lobby;
     
@@ -72,6 +74,9 @@ protected:
 
     /** Whether or not we have finished loading all assets */
     bool _loaded;
+    
+    // Audio Controller
+    AudioController _audioController;
     
 public:
     /**

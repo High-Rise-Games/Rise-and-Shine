@@ -10,6 +10,7 @@
 #include <random>
 
 #include "GameplayController.h"
+#include "AudioController.h"
 
 using namespace cugl;
 using namespace std;
