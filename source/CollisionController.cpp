@@ -45,11 +45,6 @@ bool CollisionController::resolveCollision(const std::shared_ptr<Player>& player
 
         // If this normal is too small, there was a collision
         if (distance < impactDistance) {
-            // "Roll back" time so that the ships are barely touching (e.g. point of impact).
-            norm.normalize();
-            Vec2 temp = norm * ((impactDistance - distance) / 2);
-            player->setPosition(player->getPosition() + temp);
-            proj->position = proj->position - temp;
 
             // Damage and/or stun the player as the last step
             player->setHealth(player->getHealth() - proj->getDamage());
@@ -63,6 +58,31 @@ bool CollisionController::resolveCollision(const std::shared_ptr<Player>& player
         else {
             ++it;
         }
+    }
+    return collision;
+}
+
+/** Returns true if there is a player bird collision*/
+bool CollisionController::resolveBirdCollision(const std::shared_ptr<Player>& player, Bird& bird, float radiusMultiplier) {
+    bool collision = false;
+    CULog("here");
+
+    Vec2 norm = player->getPosition() - bird.birdPosition;
+    float distance = norm.length();
+    float impactDistance = (player->getRadius() + bird.getRadius() * bird.getScale() * radiusMultiplier);
+
+    // finds the NEAREST collision
+    Vec2 pos = bird.birdPosition;
+    pos = player->getPosition() - pos;
+    float dist = pos.length();
+    if (dist < distance) {
+        distance = dist;
+        norm = pos;
+    }
+
+    // If this normal is too small, there was a collision
+    if (distance < impactDistance) {
+        collision = true;
     }
     return collision;
 }

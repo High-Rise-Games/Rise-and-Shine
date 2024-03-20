@@ -47,7 +47,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     
     Size dimen = Application::get()->getDisplaySize();
     _rng.seed(std::time(nullptr));
-    _projectileGenChance = 0.6;
+    _projectileGenChance = 0.4;
     _projectileGenCountDown = 120;
     _dirtGenSpeed = 2;
     _dirtThrowTimer = 0;
@@ -103,6 +103,12 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _projectilesRight.setPoopTexture(assets->get<Texture>("poop"));
     _projectilesRight.setTextureScales(_windowsRight.getPaneHeight(), _windowsRight.getPaneWidth());
 
+    // Initialize bird if host for testing, later on randomize for multiplayer
+    _bird.setTexture(assets->get<Texture>("bird"));
+    _bird.init(cugl::Vec2(_windows.sideGap, (_windows.getNVertical() -1) * _windows.getPaneHeight()),
+               cugl::Vec2(size.getIWidth() - _windows.sideGap, (_windows.getNVertical() -1) * _windows.getPaneHeight()), 2, 0.05);
+    _birdActive = true;
+    
     // Make a ship and set its texture
     // starting position is most bottom left window
     Vec2 startingPos = Vec2(_windows.sideGap + (_windows.getPaneWidth() / 2), _windows.getPaneHeight());
@@ -229,7 +235,7 @@ void GameplayController::reset() {
     _projectilesRight.init(_constants->get("projectiles"));
 
     _dirtThrowTimer = 0;
-    _projectileGenChance = 0.6;
+    _projectileGenChance = 0.4;
     _projectileGenCountDown = 120;
     _currentDirtAmount = 0;
     _curBoard = 0;
@@ -772,6 +778,18 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             });
         _network.checkConnection();
     }
+    
+    // update bird if active
+    if (_birdActive) {
+        _bird.move();
+        if (_bird.atColCenter(_windows.getNHorizontal(), _windows.getPaneWidth(), _windows.sideGap) >= 0) {
+            std::bernoulli_distribution dist(_projectileGenChance);
+            if (dist(_rng)) {
+                // random chance to generate bird poo at column center
+                generatePoo(_projectiles);
+            }
+        }
+    }
 
     // host steps all boards forward
     if (_ishost) {
@@ -875,7 +893,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         _frame = _frame+1;
     } if (_frame==_fps && (_gameTime>=1)) {
         _gameTime=_gameTime-1;
-        _projectileGenChance = min(0.9, _projectileGenChance + (200 - _gameTime) * 0.002);
+        _projectileGenChance = 0.8 / (1 + exp(-0.05 * (_gameTime - 50)));
         _frame = 0;
     }
 }
@@ -909,21 +927,25 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
         if (player->getStunFrames() <= 0 && _collisions.resolveCollision(player, projectiles)) {
             AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
         }
+        
+        if (_birdActive && _collisions.resolveBirdCollision(player, _bird, 0.01)) {
+            CULog("collided with bird");
+        }
     }
     
     // Generate falling hazard based on chance
-    if (_projectileGenCountDown == 0) {
-        std::bernoulli_distribution dist(_projectileGenChance);
-        if (dist(_rng)) {
-            // random projectile generation logic
-            // CULog("generating random poo");
-            generatePoo(projectiles);
-        }
-        _projectileGenCountDown = 120;
-    }
-    else {
-        _projectileGenCountDown -= 1;
-    }
+//    if (_projectileGenCountDown == 0) {
+//        std::bernoulli_distribution dist(_projectileGenChance);
+//        if (dist(_rng)) {
+//            // random projectile generation logic
+//            // CULog("generating random poo");
+//            generatePoo(projectiles);
+//        }
+//        _projectileGenCountDown = 120;
+//    }
+//    else {
+//        _projectileGenCountDown -= 1;
+//    }
 
     // Move the projectiles
     std::vector<cugl::Vec2> landedDirts = projectiles.update(getSize());
@@ -980,14 +1002,22 @@ void GameplayController::generateDirt() {
     }
 }
 
+///** handles random poo generation */
+//void GameplayController::generateRandomPoo(ProjectileSet& projectiles) {
+//    std::uniform_real_distribution<float> rowDist(_windows.sideGap + 40, (float)getSize().getIWidth() - _windows.sideGap - 60);
+//    float rand_row = rowDist(_rng);
+////    CULog("player at: (%f, %f)", _player->getCoors().y, _player->getCoors().x);
+////    CULog("generate at: %d", (int)rand_row);
+//    // if add dirt already exists at location or player at location and board is not full, repeat
+//    projectiles.spawnProjectile(Vec2(rand_row, getSize().height - 50), Vec2(0, min(-2.4f,-2-_projectileGenChance)), Vec2(rand_row, 0), ProjectileSet::Projectile::ProjectileType::POOP);
+//}
+
 /** handles poo generation */
 void GameplayController::generatePoo(ProjectileSet& projectiles) {
-    std::uniform_real_distribution<float> rowDist(_windows.sideGap + 40, (float)getSize().getIWidth() - _windows.sideGap - 60);
-    float rand_row = rowDist(_rng);
 //    CULog("player at: (%f, %f)", _player->getCoors().y, _player->getCoors().x);
 //    CULog("generate at: %d", (int)rand_row);
     // if add dirt already exists at location or player at location and board is not full, repeat
-    projectiles.spawnProjectile(Vec2(rand_row, getSize().height - 50), Vec2(0, min(-2.4f,-2-_projectileGenChance)), Vec2(rand_row, 0), ProjectileSet::Projectile::ProjectileType::POOP);
+    projectiles.spawnProjectile(_bird.birdPosition, Vec2(0, min(-2.4f,-2-_projectileGenChance)), Vec2(_bird.birdPosition.x, 0), ProjectileSet::Projectile::ProjectileType::POOP);
 }
 
 /** Checks whether board is full except player current location*/
@@ -1032,6 +1062,9 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _windows.draw(batch, getSize());
         _player->draw(batch, getSize(), _windows);
         _projectiles.draw(batch, getSize(), _windows.getPaneWidth(), _windows.getPaneHeight());
+        if (_birdActive) {
+            _bird.draw(batch, getSize());
+        }
     }
     else if (_curBoard == -1) {
         _windowsLeft.draw(batch, getSize());

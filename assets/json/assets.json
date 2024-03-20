@@ -66,6 +66,9 @@
         "returnSceneButton": {
             "file": "textures/returnSceneButton.png"
         },
+        "bird": {
+            "file": "textures/bird.png"
+        },
         "poop": {
             "file": "textures/bird_poop.png"
         },

@@ -150,6 +150,7 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds, 
         //shadtrans.translate(_shadows,-_shadows);
         //Color4f shadow(0,0,0,0.5f);
         
+        CULog("drawing player at (%f, %f)", _pos.x, _pos.y);
         batch->draw(_texture, Vec2(), player_trans);
         //_sprite->draw(batch,shadow,shadtrans);
         //_sprite->draw(batch,player_trans);

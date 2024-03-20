@@ -15,6 +15,7 @@
 #include "WindowGrid.h"
 #include "ProjectileSet.h"
 #include "NetworkController.h"
+#include "Bird.h"
 
 
 /**
@@ -125,6 +126,11 @@ protected:
     ProjectileSet _projectilesRight;
     /** The projectile set of the neighbor across the building. Only non-null if host */
     ProjectileSet _projectilesAcross;
+    
+    /** Bird for current player*/
+    Bird _bird;
+    /** True if bird is on current player screen*/;
+    bool _birdActive;
     
     // for host only
     /** Number of players in the lobby */
