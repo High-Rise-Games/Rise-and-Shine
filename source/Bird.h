@@ -47,7 +47,11 @@ public:
     bool init(const cugl::Vec2 startP, const cugl::Vec2 endP, const float speed, const float sf);
 
     float getRadius() {return _radius;}
+
     float getScale() {return _scaleFactor;}
+
+    bool isFacingRight() { return _toRight; }
+
     /** sets bird texture */
     void setTexture(const std::shared_ptr<cugl::Texture>& value) {
         cugl::Size s = value->getSize();
@@ -58,7 +62,7 @@ public:
     const std::shared_ptr<cugl::Texture>& getTexture() const { return _birdTexture; }
     
     /** draws the bird on game board */
-    void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size);
+    void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, cugl::Vec2 birdPos);
     
     /** moves the bird on game board in direction based on current position. */
     void move();

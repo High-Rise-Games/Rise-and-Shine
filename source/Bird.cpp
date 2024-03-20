@@ -17,14 +17,14 @@ bool Bird::init(const cugl::Vec2 startP, const cugl::Vec2 endP, const float spee
 }
 
 // draws a static filth on the screen on window pane at location windowPos
-void Bird::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size) {
+void Bird::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, cugl::Vec2 birdPos) {
     // calculate origin of bird
     float r = _radius * _scaleFactor;
     Vec2 origin(r, r);
     
     Affine2 birdTrans;
     birdTrans.scale(_scaleFactor);
-    birdTrans.translate(birdPosition);
+    birdTrans.translate(birdPos);
     
     batch->draw(_birdTexture, origin, birdTrans);
 }

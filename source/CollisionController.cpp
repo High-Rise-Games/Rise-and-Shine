@@ -65,7 +65,6 @@ bool CollisionController::resolveCollision(const std::shared_ptr<Player>& player
 /** Returns true if there is a player bird collision*/
 bool CollisionController::resolveBirdCollision(const std::shared_ptr<Player>& player, Bird& bird, float radiusMultiplier) {
     bool collision = false;
-    CULog("here");
 
     Vec2 norm = player->getPosition() - bird.birdPosition;
     float distance = norm.length();

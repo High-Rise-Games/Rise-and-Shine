@@ -76,12 +76,16 @@ protected:
     /** True if a neighobr player's board is on display */
     bool _onAdjacentBoard;
     
-    /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
+    /** Which board is the player currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor */
     int _curBoard;
-    /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
+    /** Which board is the player currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor */
     int _curBoardRight;
-    /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
+    /** Which board is the player currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor */
     int _curBoardLeft;
+    /** Which board the bird enemy is currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor, 2 for none of these */
+    int _curBirdBoard;
+    /** The position of the bird enemy for drawing, if they are on your board */
+    cugl::Vec2 _curBirdPos;
     /** Whether the dirt is selected, ONLY active when currently on others board*/
     bool _dirtSelected;
     /** The path from player to the dirt throw destination, ONLY active when currently on player's own board*/
@@ -127,10 +131,7 @@ protected:
     /** The projectile set of the neighbor across the building. Only non-null if host */
     ProjectileSet _projectilesAcross;
     
-    /** Bird for current player*/
-    Bird _bird;
-    /** True if bird is on current player screen*/;
-    bool _birdActive;
+    
     
     // for host only
     /** Number of players in the lobby */
@@ -139,6 +140,12 @@ protected:
     std::vector<int> _allDirtAmounts;
     /** The current board being displayed for each player in the lobby */
     std::vector<int> _allCurBoards;
+    /** Bird enemy for entire game */
+    Bird _bird;
+    /** True if bird exists in this level */;
+    bool _birdActive;
+    /** The current board that the bird is on */
+    int _boardWithBird;
     
     cugl::scheduable t;
     
@@ -255,7 +262,7 @@ public:
     void generateDirt();
 
     /** generates poo before bird is ready */
-    void generatePoo(ProjectileSet& projectiles);
+    void generatePoo(ProjectileSet* projectiles);
 
     /**
      * Called by host only. Converts game state into a JSON value for sending over the network
