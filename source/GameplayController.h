@@ -244,6 +244,18 @@ public:
     /** Returns the current game time */
     int getTime() { return _gameTime; }
 
+    /** 
+     * Given the world positions, convert it to the board position
+     * based off of grid coordinates. Ex. [2, 3] or [2.3, 3] if the
+     * player is in the process of moving in between x = 2 and x = 3.
+     */
+    cugl::Vec2 getBoardPosition(cugl::Vec2 worldPos);
+
+    /**
+     * Given the board positions, convert it to the world position.
+     */
+    cugl::Vec2 getWorldPosition(cugl::Vec2 boardPos);
+
     /**
      * Method for the scene switch listener used in GameScene
      */
