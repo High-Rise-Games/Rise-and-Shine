@@ -755,10 +755,11 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonDirtThrow(const int 
     json->appendValue("player_id_source", static_cast<double>(_id));
     json->appendValue("player_id_target", static_cast<double>(target));
     
+    cugl::Vec2 boardPos = getBoardPosition(pos);
     const std::shared_ptr<JsonValue> dirtPos = std::make_shared<JsonValue>();
     dirtPos->init(JsonValue::Type::ArrayType);
-    dirtPos->appendValue(static_cast<double>(pos.x));
-    dirtPos->appendValue(static_cast<double>(pos.y));
+    dirtPos->appendValue(static_cast<double>(boardPos.x));
+    dirtPos->appendValue(static_cast<double>(boardPos.y));
     json->appendChild("dirt_pos", dirtPos);
 
     const std::shared_ptr<JsonValue> dirtVel = std::make_shared<JsonValue>();
@@ -767,10 +768,11 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonDirtThrow(const int 
     dirtVel->appendValue(static_cast<double>(vel.y));
     json->appendChild("dirt_vel", dirtVel);
 
+    cugl::Vec2 boardDest = getBoardPosition(dest);
     const std::shared_ptr<JsonValue> dirtDest = std::make_shared<JsonValue>();
     dirtDest->init(JsonValue::Type::ArrayType);
-    dirtDest->appendValue(static_cast<double>(dest.x));
-    dirtDest->appendValue(static_cast<double>(dest.y));
+    dirtDest->appendValue(static_cast<double>(boardDest.x));
+    dirtDest->appendValue(static_cast<double>(boardDest.y));
     json->appendChild("dirt_dest", dirtDest);
 
     CULog("dirt throw from player %d to %d", _id, target);
@@ -801,16 +803,16 @@ void GameplayController::processDirtThrowRequest(std::shared_ptr<cugl::JsonValue
     _currentDirtAmount = _allDirtAmounts[0];
 
     if (target_id == 1) {
-        _projectiles.spawnProjectile(dirt_pos, dirt_vel, dirt_dest, ProjectileSet::Projectile::ProjectileType::DIRT);
+        _projectiles.spawnProjectile(getWorldPosition(dirt_pos), dirt_vel, getWorldPosition(dirt_dest), ProjectileSet::Projectile::ProjectileType::DIRT);
     }
     if (target_id == 2) {
-        _projectilesRight.spawnProjectile(dirt_pos, dirt_vel, dirt_dest, ProjectileSet::Projectile::ProjectileType::DIRT);
+        _projectilesRight.spawnProjectile(getWorldPosition(dirt_pos), dirt_vel, getWorldPosition(dirt_dest), ProjectileSet::Projectile::ProjectileType::DIRT);
     }
     if (target_id == 3) {
-        _projectilesAcross.spawnProjectile(dirt_pos, dirt_vel, dirt_dest, ProjectileSet::Projectile::ProjectileType::DIRT);
+        _projectilesAcross.spawnProjectile(getWorldPosition(dirt_pos), dirt_vel, getWorldPosition(dirt_dest), ProjectileSet::Projectile::ProjectileType::DIRT);
     }
     if (target_id == 4) {
-        _projectilesLeft.spawnProjectile(dirt_pos, dirt_vel, dirt_dest, ProjectileSet::Projectile::ProjectileType::DIRT);
+        _projectilesLeft.spawnProjectile(getWorldPosition(dirt_pos), dirt_vel, getWorldPosition(dirt_dest), ProjectileSet::Projectile::ProjectileType::DIRT);
     }
 }
 
