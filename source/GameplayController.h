@@ -15,6 +15,7 @@
 #include "WindowGrid.h"
 #include "ProjectileSet.h"
 #include "NetworkController.h"
+#include "GameAudioController.h"
 
 
 /**
@@ -74,6 +75,9 @@ protected:
 
     /** True if a neighobr player's board is on display */
     bool _onAdjacentBoard;
+    
+    /** True if game scene is active and that gameplay is currently active */
+    bool _isActive;
     
     /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
     int _curBoard;
@@ -164,6 +168,9 @@ protected:
 
     /** The sound of a ship-asteroid collision */
     std::shared_ptr<cugl::Sound> _bang;
+    
+    /** Gameplay Audio Controller */
+    GameAudioController _audioController;
 
     
 public:
@@ -192,6 +199,17 @@ public:
 
     /** Initializes the player models for all players, whether host or client. */
     bool initPlayers(const std::shared_ptr<cugl::AssetManager>& assets);
+    
+    /** Returns true if gameplay is active, and false if not. Tells us if the game is running */
+    bool isActive() {
+        return _isActive;
+    }
+    
+    /** Sets the gameplay controller as active or inactive, letting us know if the game is in session */
+    void setActive(bool f) {
+        _isActive = f;
+    };
+    
 
     /**
      * Initializes the extra controllers needed for the host of the game.

@@ -12,7 +12,6 @@
 #include "LoadingScene.h"
 #include "LobbyScene.h"
 #include "MenuScene.h"
-#include "AudioController.h"
 #include "NetworkController.h"
 
 /**
@@ -76,7 +75,7 @@ protected:
     bool _loaded;
     
     // Audio Controller
-    AudioController _audioController;
+
     
 public:
     /**

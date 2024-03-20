@@ -10,7 +10,7 @@
 #include <random>
 
 #include "GameplayController.h"
-#include "AudioController.h"
+#include "GameAudioController.h"
 
 using namespace cugl;
 using namespace std;
@@ -42,6 +42,11 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     
     _frame=0;
     
+    // Initialize a game audio controller
+    _audioController.init(assets);
+    
+    
+
     // fps as established per App
     _fps = fps;
     
@@ -525,6 +530,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonMove(const cugl::Vec
     vel->appendValue(move.x);
     vel->appendValue(move.y);
     json->appendChild("vel", vel);
+    
 
     return json;
 }
@@ -742,6 +748,9 @@ void GameplayController::processDirtThrowRequest(std::shared_ptr<cugl::JsonValue
  * @param dirtCon   The dirt throw input controller used by the game scene
  */
 void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputController& dirtCon) {
+    
+    // update the audio controller
+    _audioController.update(isActive());
 
     // get or transmit board states over network
     if (_network.getConnection()) {

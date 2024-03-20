@@ -4,8 +4,6 @@
 //  Author: High Rise Games
 //
 #include "App.h"
-#include "AudioController.h"
-
 using namespace cugl;
 
 #pragma mark -
@@ -217,8 +215,6 @@ void App::updateLoadingScene(float timestep) {
     if (_loading.isActive()) {
         _loading.update(timestep);
     } else {
-        _audioController.init(_assets);
-        _audioController.playBackgroundMusic();
         _loading.dispose(); // Permanently disables the input listeners in this mode
         _mainmenu.init(_assets);
         _lobby_host.init_host(_assets);
@@ -288,6 +284,7 @@ void App::updateLobbyScene(float timestep) {
                 _gameplay->setConnection(_lobby_host.getConnection());
                 _lobby_host.disconnect();
                 _gameplay->setHost(true);
+                _gameplay->setActive(true);
                 _gameplay->setId(_lobby_host.getId());
                 _gameplay->initHost(_assets);
                 CULog("my id: %d", _gameplay->getId());
@@ -341,6 +338,7 @@ void App::updateGameScene(float timestep) {
     _gamescene.update(timestep);
     if (_gamescene.didQuit()) {
         _gamescene.setActive(false);
+        _gameplay->setActive(false);
         _mainmenu.setActive(true);
         _gameplay->disconnect();
         _scene = State::MENU;
