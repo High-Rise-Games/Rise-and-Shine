@@ -332,6 +332,9 @@ public:
      * @return True if moved
      */
     bool move(cugl::Vec2 dir, cugl::Size size, float sideGap);
+
+    /** Continues a movement between two grid spots */
+    bool move();
     
     /**
      * Returns edge if player is at the edge of building

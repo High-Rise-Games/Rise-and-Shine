@@ -218,7 +218,22 @@ bool Player::move(Vec2 dir, Size size, float sideGap) {
         }
     }
     return false;
+}
 
+/** Continues a movement between two grid spots */
+bool Player::move() {
+    if (!_targetDist.isZero()) {
+        if (abs(_targetDist.x - _vel.x) > abs(_vel.x) || abs(_targetDist.y - _vel.y) > abs(_vel.y)) {
+            _targetDist = _targetDist - _vel;
+            _pos += _vel;
+        }
+        else {
+            _pos += _targetDist;
+            _targetDist.setZero();
+        }
+        return true;
+    }
+    return false;
 }
 
 /**

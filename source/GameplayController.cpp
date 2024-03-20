@@ -996,6 +996,9 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
         if (player->getStunFrames() > 0) {
             player->decreaseStunFrames();
         }
+        else {
+            player->move();
+        }
         // remove any dirt the player collides with
         Vec2 grid_coors = player->getCoorsFromPos(windows.getPaneHeight(), windows.getPaneWidth(), windows.sideGap);
         player->setCoors(grid_coors);
