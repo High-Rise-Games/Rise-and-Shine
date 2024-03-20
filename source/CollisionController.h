@@ -8,6 +8,7 @@
 #include <cugl/cugl.h>
 #include "PlayerCharacter.h"
 #include "ProjectileSet.h"
+#include "Bird.h"
 
 /**
  * Namespace of functions implementing simple game physics.
@@ -71,6 +72,8 @@ public:
      */
     bool resolveCollision(const std::shared_ptr<Player>& player, ProjectileSet& pset);
 
+    /** Returns true if there is a player bird collision*/
+    bool resolveBirdCollision(const std::shared_ptr<Player>& player, Bird& bird, float radiusMultiplier);
 };
 
 #endif /* __SL_COLLISION_CONTROLLER_H__ */

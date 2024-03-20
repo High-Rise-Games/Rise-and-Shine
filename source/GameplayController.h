@@ -16,6 +16,8 @@
 #include "ProjectileSet.h"
 #include "NetworkController.h"
 #include "GameAudioController.h"
+#include "Bird.h"
+
 
 
 /**
@@ -76,15 +78,23 @@ protected:
     /** True if a neighobr player's board is on display */
     bool _onAdjacentBoard;
     
+
     /** True if game scene is active and that gameplay is currently active */
     bool _isActive;
     
     /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
+
+    /** Which board is the player currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor */
+
     int _curBoard;
-    /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
+    /** Which board is the player currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor */
     int _curBoardRight;
-    /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
+    /** Which board is the player currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor */
     int _curBoardLeft;
+    /** Which board the bird enemy is currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor, 2 for none of these */
+    int _curBirdBoard;
+    /** The position of the bird enemy for drawing, if they are on your board */
+    cugl::Vec2 _curBirdPos;
     /** Whether the dirt is selected, ONLY active when currently on others board*/
     bool _dirtSelected;
     /** The path from player to the dirt throw destination, ONLY active when currently on player's own board*/
@@ -130,6 +140,8 @@ protected:
     /** The projectile set of the neighbor across the building. Only non-null if host */
     ProjectileSet _projectilesAcross;
     
+    
+    
     // for host only
     /** Number of players in the lobby */
     int _numPlayers;
@@ -137,6 +149,12 @@ protected:
     std::vector<int> _allDirtAmounts;
     /** The current board being displayed for each player in the lobby */
     std::vector<int> _allCurBoards;
+    /** Bird enemy for entire game */
+    Bird _bird;
+    /** True if bird exists in this level */;
+    bool _birdActive;
+    /** The current board that the bird is on */
+    int _boardWithBird;
     
     cugl::scheduable t;
     
@@ -249,6 +267,18 @@ public:
     /** Returns the current game time */
     int getTime() { return _gameTime; }
 
+    /** 
+     * Given the world positions, convert it to the board position
+     * based off of grid coordinates. Ex. [2, 3] or [2.3, 3] if the
+     * player is in the process of moving in between x = 2 and x = 3.
+     */
+    cugl::Vec2 getBoardPosition(cugl::Vec2 worldPos);
+
+    /**
+     * Given the board positions, convert it to the world position.
+     */
+    cugl::Vec2 getWorldPosition(cugl::Vec2 boardPos);
+
     /**
      * Method for the scene switch listener used in GameScene
      */
@@ -267,7 +297,7 @@ public:
     void generateDirt();
 
     /** generates poo before bird is ready */
-    void generatePoo(ProjectileSet& projectiles);
+    void generatePoo(ProjectileSet* projectiles);
 
     /**
      * Called by host only. Converts game state into a JSON value for sending over the network
