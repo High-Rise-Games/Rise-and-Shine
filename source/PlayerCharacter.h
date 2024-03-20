@@ -329,9 +329,9 @@ public:
      *
      * @param dir        The unit vector of moving direction
      * @param size      The size of the window (for wrap around)
-     * @return True if moved
+     * @return 0 if moved, -1 if moving off of left edge, 1 if moving off of right edge, 2 otherwise
      */
-    bool move(cugl::Vec2 dir, cugl::Size size, float sideGap);
+    int move(cugl::Vec2 dir, cugl::Size size, float sideGap);
 
     /** Continues a movement between two grid spots */
     bool move();

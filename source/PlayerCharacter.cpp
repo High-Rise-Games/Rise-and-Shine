@@ -182,9 +182,9 @@ void Player::setPosition(cugl::Vec2 value, cugl::Vec2 size) {
  *
  * @param dir       Amount to move forward
  * @param size      Size of the game scene
- * @return True if moved
+ * @return 0 if moved, -1 if moving off of left edge, 1 if moving off of right edge, 2 otherwise
  */
-bool Player::move(Vec2 dir, Size size, float sideGap) {
+int Player::move(Vec2 dir, Size size, float sideGap) {
 
     // Process moving direction
     if (!_targetDist.isZero()) {
@@ -195,7 +195,7 @@ bool Player::move(Vec2 dir, Size size, float sideGap) {
             _pos += _targetDist;
             _targetDist.setZero();
         }
-        return true;
+        return 0;
     } else {
         _vel.setZero();
         if (dir.x != 0.0f) {
@@ -210,14 +210,17 @@ bool Player::move(Vec2 dir, Size size, float sideGap) {
         // Velocity always remains unchanged.
         // Also does not add velocity to position in the event that movement would go beyond the window building grid.
         int atEdge = getEdge(sideGap, size);
-        if (!atEdge && _pos.y + _targetDist.y >= 0 && _pos.y + _targetDist.y <= size.height) {
-            return true;
+        if (atEdge == 0 && _pos.y + _targetDist.y >= 0 && _pos.y + _targetDist.y <= size.height) {
+            return 0;
         } else {
             _targetDist.setZero();
             _vel.setZero();
+            if (atEdge != 0) {
+                return atEdge;
+            }
         }
     }
-    return false;
+    return 2;
 }
 
 /** Continues a movement between two grid spots */

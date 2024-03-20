@@ -641,7 +641,21 @@ void GameplayController::processMovementRequest(std::shared_ptr<cugl::JsonValue>
     // Check if player is stunned for this frame
     if (player->getStunFrames() == 0) {
         // Move the player, ignoring collisions
-        bool validMove = player->move(moveVec, getSize(), windows->sideGap);
+        int moveResult = player->move(moveVec, getSize(), windows->sideGap);
+        if (moveResult == -1 || moveResult == 1) {
+            // Request to switch to neighbor's board
+            int destinationId = playerId + moveResult;
+            if (destinationId == 0) {
+                destinationId = 4;
+            }
+            else if (destinationId == 5) {
+                destinationId == 1;
+            }
+
+            if (destinationId <= _numPlayers) {
+                _allCurBoards[playerId - 1] = moveResult;
+            }
+        }
     }
 }
 
@@ -786,16 +800,16 @@ void GameplayController::processDirtThrowRequest(std::shared_ptr<cugl::JsonValue
     _allDirtAmounts[source_id - 1] = max(0, _allDirtAmounts[source_id - 1] - 1);
     _currentDirtAmount = _allDirtAmounts[0];
 
-    if (source_id == 1 || target_id == 1) {
+    if (target_id == 1) {
         _projectiles.spawnProjectile(dirt_pos, dirt_vel, dirt_dest, ProjectileSet::Projectile::ProjectileType::DIRT);
     }
-    if (source_id == 2 || target_id == 2) {
+    if (target_id == 2) {
         _projectilesRight.spawnProjectile(dirt_pos, dirt_vel, dirt_dest, ProjectileSet::Projectile::ProjectileType::DIRT);
     }
-    if (source_id == 3 || target_id == 3) {
+    if (target_id == 3) {
         _projectilesAcross.spawnProjectile(dirt_pos, dirt_vel, dirt_dest, ProjectileSet::Projectile::ProjectileType::DIRT);
     }
-    if (source_id == 4 || target_id == 4) {
+    if (target_id == 4) {
         _projectilesLeft.spawnProjectile(dirt_pos, dirt_vel, dirt_dest, ProjectileSet::Projectile::ProjectileType::DIRT);
     }
 }
@@ -968,7 +982,12 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             // Check if player is stunned for this frame
             if (_player->getStunFrames() == 0) {
                 // Move the player, ignoring collisions
-                bool validMove = _player->move(_input.getDir(), getSize(), _windows.sideGap);
+                int moveResult = _player->move(_input.getDir(), getSize(), _windows.sideGap);
+                if (moveResult == -1 && _numPlayers == 4) {
+                    _allCurBoards[0] = -1;
+                } else if (moveResult == 1 && _numPlayers >= 2) {
+                    _allCurBoards[0] = 1;
+                }
             }
         }
     }
