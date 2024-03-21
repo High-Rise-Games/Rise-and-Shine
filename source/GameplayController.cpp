@@ -53,6 +53,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     
     // set this to zero, will be updated when game is over
     _frameCountForWin=0;
+ 
     
 
     // fps as established per App
@@ -401,6 +402,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
 
     json->appendValue("health", static_cast<double>(player->getHealth()));
     json->appendValue("stun_frames", static_cast<double>(player->getStunFrames()));
+    json->appendValue("wipe_frames", static_cast<double>(player->getWipeFrames()));
     json->appendValue("timer", static_cast<double>(_gameTime));
     json->appendValue("has_bird", id == _boardWithBird);
 
@@ -479,6 +481,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
     "player_y": 4.0,
     "health": 3,
     "stun_frames": 0,
+    "wipe_frames": 0,
     "timer": 145,
     "has_bird": True,
     "bird_pos": [2.4, 6.0],
@@ -568,6 +571,7 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     }
 
     player->setStunFrames(data->getInt("stun_frames"));
+    player->setWipeFrames(data->getInt("wipe_frames"));
     _gameTime = data->getInt("timer");
         
     // populate player's projectile set
@@ -659,7 +663,7 @@ void GameplayController::processMovementRequest(std::shared_ptr<cugl::JsonValue>
     }
 
     // Check if player is stunned for this frame
-    if (player->getStunFrames() == 0) {
+    if (player->getStunFrames() == 0 && player->getWipeFrames() == 0) {
         // Move the player, ignoring collisions
         int moveResult = player->move(moveVec, getSize(), windows->sideGap);
         if (moveResult == -1 || moveResult == 1) {
@@ -1020,7 +1024,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         }
         if (_ishost) {
             // Check if player is stunned for this frame
-            if (_player->getStunFrames() == 0) {
+            if (_player->getStunFrames() == 0 && _player->getWipeFrames() == 0) {
                 // Move the player, ignoring collisions
                 int moveResult = _player->move(_input.getDir(), getSize(), _windows.sideGap);
                 if (moveResult == -1 && _numPlayers == 4) {
@@ -1053,6 +1057,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     if (_frameCountForWin>4*_fps && _gameOver) {
         setRequestForMenu(true);
     };
+
     
 }
 
@@ -1072,6 +1077,18 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
         else {
             player->move();
         }
+        
+        if (player->getWipeFrames() > 0) {
+            player->decreaseWipeFrames();
+            if (player->getWipeFrames() == 0) {
+                player->setTexture(_assets->get<cugl::Texture>("player_1"));
+            }
+        }
+        else {
+            player->move();
+        }
+        
+        
         // remove any dirt the player collides with
         Vec2 grid_coors = player->getCoorsFromPos(windows.getPaneHeight(), windows.getPaneWidth(), windows.sideGap);
         player->setCoors(grid_coors);
@@ -1081,7 +1098,11 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
         bool dirtRemoved = windows.removeDirt(clamped_y, clamped_x);
         if (dirtRemoved) {
             // filling up dirty bucket
+            // set amount of frames plaer is frozen for for cleaning dirt
+            player->setWipeFrames(65);
+            player->setTexture(_assets->get<cugl::Texture>("player_1_wipe"));
             _allDirtAmounts[player_id - 1] = min(_maxDirtAmount, _allDirtAmounts[player_id - 1] + 1);
+//            player->setWipeFrames(2);
         }
 
         // Check for collisions and play sound

@@ -37,6 +37,9 @@ private:
     // width of a window pane of the game board
     // used to discretize movement
     float _windowWidth;
+    
+    // number of frames that the player is wiping for
+    int _wipeFrames;
        
     // TODO: remove unnecessary fields from here and constants json file
     // The following are protected, because they have no accessors
@@ -226,6 +229,36 @@ public:
      * @param value The time in frames to stun the player.
      */
     void setStunFrames(int value) { _stunFrames = value; }
+    
+    /**
+     * Sets the player's wiping time to the given time in frames to freeze the player.
+     *
+     * @param value The time in frames to stun the player.
+     */
+    void setWipeFrames(int value) { _wipeFrames = value; }
+    
+    /**
+     * Sets the player's movement freeze time to the given time in frames
+     * .Used when player wipes dirt
+     *
+     * @param value The time in frames to freeze the player.
+     */
+    void decreaseWipeFrames() {
+        if (_wipeFrames > 0) {
+            _wipeFrames -= 1;
+        }
+    };
+    
+    /**
+     * Gets the amount of frames that the player can't move
+     * 
+     *
+     * @returns _wipeFrames
+     */
+    int getWipeFrames() {
+        return _wipeFrames;
+    }
+    
 
     /** Decreases the stun frames by one, unless it is already at 0 then does nothing. */
     void decreaseStunFrames();

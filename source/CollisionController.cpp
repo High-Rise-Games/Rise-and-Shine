@@ -50,6 +50,7 @@ bool CollisionController::resolveCollision(const std::shared_ptr<Player>& player
             player->setHealth(player->getHealth() - proj->getDamage());
             player->setStunFrames(proj->getStunTime());
 
+
             // delete projectile from set after colliding
             it = pset.current.erase(it);
 

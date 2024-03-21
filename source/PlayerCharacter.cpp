@@ -33,6 +33,9 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     // number of frames the player is unable to move due to taking a hit
     _stunFrames = 0;
     
+    // number of frames the player is frozen for because wiping dirt
+    _wipeFrames = 0;
+    
     // rotation property of player when player is stunned
     _stunRotate = 0;
     

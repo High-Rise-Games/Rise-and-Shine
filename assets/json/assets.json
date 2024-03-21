@@ -49,6 +49,9 @@
         "player_1": {
             "file": "textures/player_1.png"
         },
+        "player_1_wipe": {
+            "file": "textures/player_1_wipe.png"
+        },
         "window": {
             "file": "textures/GenericWindow.png"
         },
