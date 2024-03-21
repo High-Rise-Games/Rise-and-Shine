@@ -1268,10 +1268,19 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 
 
 void GameplayController::setActive(bool f) {
+    // yes this code is bad and needs to be reworked
     if (!f) {
         _audioController.update(false);
         _isActive=false;
+        setRequestForMenu(false);
+        setGameOver(false);
+        setWin(false);
+        
     } else {
         _isActive = true;
+        setRequestForMenu(false);
+        setGameOver(false);
+        setWin(false);
+        _frameCountForWin = 0;
     };
 }
