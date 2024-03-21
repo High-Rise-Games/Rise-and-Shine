@@ -40,11 +40,19 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     // time of the game set to 200 seconds
     _gameTime = 200;
     
+
     _frame=0;
     
     // Initialize a game audio controller
     _audioController.init(assets);
     
+    // we set game win and game over to false
+    _gameWin = false;
+    _gameOver = false;
+    _transitionToMenu = false;
+    
+    // set this to zero, will be updated when game is over
+    _frameCountForWin=0;
     
 
     // fps as established per App
@@ -88,6 +96,12 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _windows.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
     _windows.init(_constants->get("easy board"), size); // init depends on texture
     _windows.setDirtTexture(assets->get<Texture>("dirt"));
+    
+    // get the win background when game is win
+    _winBackground = _assets->get<Texture>("win-background");
+    
+    // get the lose background when game is lose
+    _winBackground = _assets->get<Texture>("win-background");
 
     _windowsLeft.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
     _windowsLeft.init(_constants->get("easy board"), size); // init depends on texture
@@ -847,7 +861,10 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     if (incomingMsg->has("dirts")) {
                         // CULog("got board state message");
                         updateBoard(incomingMsg);
-                    }
+                    } // set the game to lose because host has won
+                        else if (incomingMsg->has("win")) {
+                            setGameOver(true);
+                        };
                 }
                 else { // is host
                     // process action data - movement or dirt throw
@@ -862,6 +879,8 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     else if (incomingMsg->has("player_id_target")) {
                         CULog("got dirt throw message");
                         processDirtThrowRequest(incomingMsg);
+                    } else if (incomingMsg->has("win")) {
+                        setGameOver(true);
                     }
                 }
             });
@@ -898,6 +917,16 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     // random chance to generate bird poo at column center
                     generatePoo(projectiles);
                 }
+            }
+            
+            // checks whether the host has won the game based on his board,
+            // then transmits to other players that he has won the game
+            if (checkBoardEmpty()) {
+                setGameOver(true);
+                setWin(true);
+                const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+                json->init(JsonValue::Type::ObjectType);
+                json->appendValue("win", true);
             }
         }
 
@@ -1011,6 +1040,20 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         _projectileGenChance = 0.8 / (1 + exp(-0.05 * (_gameTime - 50)));
         _frame = 0;
     }
+    
+    // update frame count for win / lose screen
+    // if a number of frames have passed,
+    // we will call setRequestForMenu
+    // to let app know that we should
+    // switch to the main menu
+    if (_gameOver) {
+        _frameCountForWin = _frameCountForWin +1;
+    }
+    
+    if (_frameCountForWin>4*_fps && _gameOver) {
+        setRequestForMenu(true);
+    };
+    
 }
 
 /**
@@ -1216,6 +1259,10 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         if (_curBirdBoard == 1) {
             _bird.draw(batch, getSize(), _curBirdPos);
         }
+    }
+    
+    if (isGameWin() && isGameOver()) {
+        batch->draw(_winBackground,Rect(Vec2::ZERO,getSize()));
     }
 }
 

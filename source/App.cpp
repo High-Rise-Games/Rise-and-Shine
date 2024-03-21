@@ -345,7 +345,7 @@ void App::updateLobbyScene(float timestep) {
  */
 void App::updateGameScene(float timestep) {
     _gamescene.update(timestep);
-    if (_gamescene.didQuit()) {
+    if (_gamescene.didQuit() || _gameplay->isThereARequestForMenu()) {
         AudioEngine::get()->play("click", _click_sound);
         _gamescene.setActive(false);
         _gameplay->setActive(false);

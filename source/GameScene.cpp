@@ -55,6 +55,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _background = _assets->get<Texture>("background");
     _constants = _assets->get<JsonValue>("constants");
     
+
+    
     // Initialize dirt bucket
     setEmptyBucket(assets->get<Texture>("bucketempty"));
     setFullBucket(assets->get<Texture>("bucketfull"));
@@ -171,6 +173,7 @@ void GameScene::update(float timestep) {
 
     // each player manages their own UI elements/text boxes for displaying resource information
     // Update the health meter
+    
     _healthText->setText(strtool::format("Health %d", _gameController->getPlayerHealth()));
     _timeText->setText(strtool::format("Time %d", _gameController->getTime()));
         
@@ -236,6 +239,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->setColor(Color4::WHITE);
     
     _scene_UI->render(batch);
+    
     
     batch->end();
 }

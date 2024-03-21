@@ -35,6 +35,12 @@ protected:
     /** Whether this player is the host */
     bool _ishost;
     
+    /** Whether this player won the game */
+    bool _gameWin;
+    
+    /** Whether the game has ended */
+    bool _gameOver;
+    
     /** ID of the player to distinguish in multiplayer */
     int _id;
     /** Seconds left in the game */
@@ -45,6 +51,9 @@ protected:
     
     /** The current frame incremeted by 1 every frame (resets to 0 every time we reach 60 frames) */
     int _frame;
+    
+    /** The number of frames that the win screen has been shown for */
+    int _frameCountForWin;
 
     /** Size of the scene */
     cugl::Size _size;
@@ -78,6 +87,8 @@ protected:
     /** True if a neighobr player's board is on display */
     bool _onAdjacentBoard;
     
+    /** True if we should transition to menu, is set to true a few frames after the win or lose screen shows up **/
+    bool _transitionToMenu;
 
     /** True if game scene is active and that gameplay is currently active */
     bool _isActive;
@@ -126,6 +137,7 @@ protected:
     int _maxDirtAmount;
     /** The amount of dirt player is currently holdinfg in the bucket **/
     int _currentDirtAmount;
+    
 
     /** Projectile generation chance, increases over time */
     float _projectileGenChance;
@@ -162,6 +174,8 @@ protected:
     // In the future, we will replace this with the scene graph
     /** The backgrounnd image */
     std::shared_ptr<cugl::Texture> _background;
+    /** The win screen image */
+    std::shared_ptr<cugl::Texture> _winBackground;
     /** The text with the current health */
     std::shared_ptr<cugl::TextLayout> _healthText;
     /** The text with the current time */
@@ -281,6 +295,36 @@ public:
      * Method for the scene switch listener used in GameScene
      */
     void switchScene();
+    
+    /** Method to set the player has won the game this round **/
+    void setWin(bool f) {
+        _gameWin = f;
+    };
+    
+    /** Method to set whether the game is over or not **/
+    void setGameOver(bool f) {
+        _gameOver = f;
+    }
+    
+    /** Returns whether the game is over**/
+    bool isGameOver() {
+        return _gameOver;
+    }
+    
+    /** Returns whether the player has won the game **/
+    bool isGameWin() {
+        return _gameWin;
+    }
+    
+    /** If we set this to true, this lets App know that we want to switch to main menu  **/
+    void setRequestForMenu(bool f) {
+        _transitionToMenu = f;
+    };
+    
+    /** Called by app to see if we should switch from gamescene to main menu **/
+    bool isThereARequestForMenu() {
+        return _transitionToMenu;
+    }
     
     /** Checks whether board is full */
     const bool checkBoardFull(); // TODO: Unimplemented

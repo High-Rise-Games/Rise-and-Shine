@@ -33,6 +33,16 @@
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
+        "win-background": {
+            "file": "textures/win-screen.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
+        "lose-background": {
+            "file": "textures/lose-screen.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
         "ship": {
             "file": "textures/ships.png"
         },
