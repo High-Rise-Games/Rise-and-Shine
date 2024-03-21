@@ -268,6 +268,7 @@ void LobbyScene::processData(const std::string source,
     } else {
         if (data.at(0) == std::byte{0xff} && _status != START) {
             _status = START;
+            _level = static_cast<int>(data.at(1));
         }
     }
     
@@ -441,6 +442,7 @@ void LobbyScene::startGame() {
 
         // sends data indicating game has started
         byteVec.push_back(std::byte{0xff});
+        byteVec.push_back(static_cast<std::byte>(_level));
         _network->broadcast(byteVec);
     }
     

@@ -75,6 +75,7 @@ void App::onShutdown() {
     _gamescene.dispose();
     _lobby_host.dispose();
     _lobby_client.dispose();
+    _levelscene.dispose();
     _assets = nullptr;
     _batch = nullptr;
 
@@ -150,6 +151,9 @@ void App::update(float timestep) {
         case MENU:
             updateMenuScene(timestep);
             break;
+        case LEVEL:
+            updateLevelScene(timestep);
+            break;
         case LOBBY_CLIENT:
             updateLobbyScene(timestep);
             break;
@@ -160,7 +164,6 @@ void App::update(float timestep) {
             updateGameScene(timestep);
             break;
     }
-
 
 }
 
@@ -192,6 +195,9 @@ void App::draw() {
         case MENU:
             _mainmenu.render(_batch);
             break;
+        case LEVEL:
+            _levelscene.render(_batch);
+            break;
         case LOBBY_HOST:
             _lobby_host.render(_batch);
             break;
@@ -221,6 +227,7 @@ void App::updateLoadingScene(float timestep) {
         _audioController.playBackgroundMusic();
         _loading.dispose(); // Permanently disables the input listeners in this mode
         _mainmenu.init(_assets);
+        _levelscene.init(_assets);
         _lobby_host.init_host(_assets);
         _lobby_client.init_client(_assets);
         _gamescene.init(_assets, getFPS());
@@ -245,10 +252,8 @@ void App::updateMenuScene(float timestep) {
     switch (_mainmenu.getChoice()) {
         case MenuScene::Choice::HOST:
             _mainmenu.setActive(false);
-            _lobby_host.setActive(true);
-            _lobby_host.setHost(true);
-            _lobby_client.setActive(false);
-            _scene = State::LOBBY_HOST;
+            _levelscene.setActive(true);
+            _scene = State::LEVEL;
             break;
         case MenuScene::Choice::JOIN:
             _mainmenu.setActive(false);
@@ -259,6 +264,35 @@ void App::updateMenuScene(float timestep) {
             break;
         case MenuScene::Choice::NONE:
             // DO NOTHING
+            break;
+    }
+}
+
+/**
+ * Inidividualized update method for the level select scene.
+ *
+ * This method keeps the primary {@link #update} from being a mess of switch
+ * statements. It also handles the transition logic from the level select scene.
+ *
+ * @param timestep  The amount of time (in seconds) since the last frame
+ */
+void App::updateLevelScene(float timestep) {
+    _levelscene.update(timestep);
+    switch (_levelscene.getChoice()) {
+        case LevelScene::Choice::NEXT:
+            _levelscene.setActive(false);
+            _lobby_host.setActive(true);
+            _lobby_host.setHost(true);
+            _lobby_host.setLevel(std::max(_levelscene.getLevel(), 0));
+            _lobby_client.setActive(false);
+            _scene = State::LOBBY_HOST;
+            break;
+        case LevelScene::Choice::BACK:
+            _levelscene.setActive(false);
+            _mainmenu.setActive(true);
+            _scene = State::MENU;
+            break;
+        case LevelScene::Choice::NONE:
             break;
     }
 }

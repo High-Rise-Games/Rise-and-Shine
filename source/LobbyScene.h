@@ -86,6 +86,9 @@ protected:
 
     /** The id of this player to be passed into the game controller */
     int _id;
+    
+    /** The level chosen for this gameplay*/
+    int _level;
 
 
 public:
@@ -173,6 +176,9 @@ public:
     
     // Sets the NetworkConfig of this object to be host of the network game
     void setHost(bool host) {_host = host; }
+    
+    // Sets the level chosen for current gameplay
+    void setLevel(int level) {_level = level; }
 
 private:
     
