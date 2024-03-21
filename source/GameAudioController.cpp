@@ -11,6 +11,8 @@ using namespace cugl;
 
 bool GameAudioController::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     
+    _gameplayIsActive = false;
+    _gampeplayMusicIsActive = false;
     _assets = assets;
     _gameplayMusic = _assets->get<cugl::Sound>("tower_of_dragons");
 
@@ -19,20 +21,20 @@ bool GameAudioController::init(const std::shared_ptr<cugl::AssetManager>& assets
 
 void GameAudioController::playGameplayMusic() {
 
-    AudioEngine::get()->play("tower_of_dragons", _gameplayMusic);
     AudioEngine::get()->getMusicQueue()->play(_gameplayMusic);
-    AudioEngine::get()->getMusicQueue()->setLoop(true);
     
 };
 
 void GameAudioController::stopGameplayMusic() {
-    AudioEngine::get()->getMusicQueue()->clear();;
+    AudioEngine::get()->getMusicQueue()->clear();
 };
 
 void GameAudioController::update(bool gameplayIsActive) {
-    if (!gameplayIsActive) {
-        AudioEngine::get()->getMusicQueue()->clear();
-    } else if (gameplayIsActive && !AudioEngine::get()->getMusicQueue()->isLoop()) {
+    if (gameplayIsActive && !getGameplayMusicStatus()) {
+        setGameplayMusicActive(true);
         playGameplayMusic();
-    };
+    } else if (!gameplayIsActive) {
+        setGameplayMusicActive(false);
+        stopGameplayMusic();
+    }
 };

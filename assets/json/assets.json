@@ -109,6 +109,11 @@
             "type": "sample",
             "file": "sounds/TOWER_OF_TWIN_DRAGONS1.mp3",
             "volume": 0.4
+        },
+        "click" : {
+            "type": "sample",
+            "file": "sounds/mouse-click.mp3",
+            "volume": 0.4
         }
     },
     "jsons" : {
@@ -152,6 +157,7 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
+                        "downnode": [ 0, 0, 0, 0 ],
                         "pushable": [ 160, 280, 190, 370, 280, 400, 370, 370, 400, 280, 370, 190, 280, 160, 190, 190 ],
                         "visible": true,
                         "pushsize": true,

@@ -41,6 +41,9 @@ protected:
     std::shared_ptr<cugl::SpriteBatch> _batch;
     /** The global asset manager */
     std::shared_ptr<cugl::AssetManager> _assets;
+    
+    /** The button click sound  */
+    std::shared_ptr<cugl::Sound> _click_sound;
 
     // Player modes
     

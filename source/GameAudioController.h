@@ -46,6 +46,16 @@ public:
     /** Plays the poop collision sound effect */
     void playPoopCollisionSoundEffect();
     
+    /** Sets whether the gameplay msuic is active **/
+    void setGameplayMusicActive(bool f) {
+        _gampeplayMusicIsActive = f;
+    }
+    
+    /** Returns whether the gameplayer music is currently active or not **/
+    bool getGameplayMusicStatus() {
+        return _gampeplayMusicIsActive;
+    }
+    
     /** Updates the audio controller, letting us know ot stop all music if the game is no longer active */
     void update(bool gameplayIsActive);
     

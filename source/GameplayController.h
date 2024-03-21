@@ -224,9 +224,7 @@ public:
     }
     
     /** Sets the gameplay controller as active or inactive, letting us know if the game is in session */
-    void setActive(bool f) {
-        _isActive = f;
-    };
+    void setActive(bool f);
     
 
     /**
@@ -421,7 +419,7 @@ public:
     void setConnection(const std::shared_ptr<cugl::net::NetcodeConnection>& network) {
         _network.setConnection(network);
     }
-
+    
     /**
      * Disconnects this scene from the network controller.
      */

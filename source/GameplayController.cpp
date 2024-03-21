@@ -1219,3 +1219,12 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     }
 }
 
+
+void GameplayController::setActive(bool f) {
+    if (!f) {
+        _audioController.update(false);
+        _isActive=false;
+    } else {
+        _isActive = true;
+    };
+}
