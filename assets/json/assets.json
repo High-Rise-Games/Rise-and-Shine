@@ -152,11 +152,24 @@
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
+        "win-background": {
+            "file": "textures/win-screen.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
+        "lose-background": {
+            "file": "textures/lose-screen.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
         "ship": {
             "file": "textures/ships.png"
         },
         "player_1": {
             "file": "textures/player_1.png"
+        },
+        "player_1_wipe": {
+            "file": "textures/player_1_wipe.png"
         },
         "window": {
             "file": "textures/GenericWindow.png"
@@ -184,6 +197,9 @@
         },
         "returnSceneButton": {
             "file": "textures/returnSceneButton.png"
+        },
+        "bird": {
+            "file": "textures/bird.png"
         },
         "poop": {
             "file": "textures/bird_poop.png"
@@ -224,6 +240,11 @@
         "tower_of_dragons" : {
             "type": "sample",
             "file": "sounds/TOWER_OF_TWIN_DRAGONS1.mp3",
+            "volume": 0.4
+        },
+        "click" : {
+            "type": "sample",
+            "file": "sounds/mouse-click.mp3",
             "volume": 0.4
         }
     },
@@ -267,6 +288,7 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
+                        "downnode": [ 0, 0, 0, 0 ],
                         "pushable": [ 160, 280, 190, 370, 280, 400, 370, 370, 400, 280, 370, 190, 280, 160, 190, 190 ],
                         "visible": true,
                         "pushsize": true,

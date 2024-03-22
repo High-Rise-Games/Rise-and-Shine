@@ -13,7 +13,6 @@
 #include "LobbyScene.h"
 #include "LevelScene.h"
 #include "MenuScene.h"
-#include "AudioController.h"
 #include "NetworkController.h"
 
 /**
@@ -45,6 +44,9 @@ protected:
     std::shared_ptr<cugl::SpriteBatch> _batch;
     /** The global asset manager */
     std::shared_ptr<cugl::AssetManager> _assets;
+    
+    /** The button click sound  */
+    std::shared_ptr<cugl::Sound> _click_sound;
 
     // Player modes
     
@@ -81,7 +83,7 @@ protected:
     bool _loaded;
     
     // Audio Controller
-    AudioController _audioController;
+
     
 public:
     /**

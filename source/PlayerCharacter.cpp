@@ -33,6 +33,9 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     // number of frames the player is unable to move due to taking a hit
     _stunFrames = 0;
     
+    // number of frames the player is frozen for because wiping dirt
+    _wipeFrames = 0;
+    
     // rotation property of player when player is stunned
     _stunRotate = 0;
     
@@ -150,6 +153,7 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds, 
         //shadtrans.translate(_shadows,-_shadows);
         //Color4f shadow(0,0,0,0.5f);
         
+        // CULog("drawing player at (%f, %f)", _pos.x, _pos.y);
         batch->draw(_texture, Vec2(), player_trans);
         //_sprite->draw(batch,shadow,shadtrans);
         //_sprite->draw(batch,player_trans);
@@ -181,9 +185,9 @@ void Player::setPosition(cugl::Vec2 value, cugl::Vec2 size) {
  *
  * @param dir       Amount to move forward
  * @param size      Size of the game scene
- * @return True if moved
+ * @return 0 if moved, -1 if moving off of left edge, 1 if moving off of right edge, 2 otherwise
  */
-bool Player::move(Vec2 dir, Size size, float sideGap) {
+int Player::move(Vec2 dir, Size size, float sideGap) {
 
     // Process moving direction
     if (!_targetDist.isZero()) {
@@ -194,7 +198,7 @@ bool Player::move(Vec2 dir, Size size, float sideGap) {
             _pos += _targetDist;
             _targetDist.setZero();
         }
-        return true;
+        return 0;
     } else {
         _vel.setZero();
         if (dir.x != 0.0f) {
@@ -209,15 +213,33 @@ bool Player::move(Vec2 dir, Size size, float sideGap) {
         // Velocity always remains unchanged.
         // Also does not add velocity to position in the event that movement would go beyond the window building grid.
         int atEdge = getEdge(sideGap, size);
-        if (!atEdge && _pos.y + _targetDist.y >= 0 && _pos.y + _targetDist.y <= size.height) {
-            return true;
+        if (atEdge == 0 && _pos.y + _targetDist.y >= 0 && _pos.y + _targetDist.y <= size.height) {
+            return 0;
         } else {
             _targetDist.setZero();
             _vel.setZero();
+            if (atEdge != 0) {
+                return atEdge;
+            }
         }
     }
-    return false;
+    return 2;
+}
 
+/** Continues a movement between two grid spots */
+bool Player::move() {
+    if (!_targetDist.isZero()) {
+        if (abs(_targetDist.x - _vel.x) > abs(_vel.x) || abs(_targetDist.y - _vel.y) > abs(_vel.y)) {
+            _targetDist = _targetDist - _vel;
+            _pos += _vel;
+        }
+        else {
+            _pos += _targetDist;
+            _targetDist.setZero();
+        }
+        return true;
+    }
+    return false;
 }
 
 /**

@@ -15,6 +15,9 @@
 #include "WindowGrid.h"
 #include "ProjectileSet.h"
 #include "NetworkController.h"
+#include "GameAudioController.h"
+#include "Bird.h"
+
 
 
 /**
@@ -32,6 +35,12 @@ protected:
     /** Whether this player is the host */
     bool _ishost;
     
+    /** Whether this player won the game */
+    bool _gameWin;
+    
+    /** Whether the game has ended */
+    bool _gameOver;
+    
     /** ID of the player to distinguish in multiplayer */
     int _id;
     /** Seconds left in the game */
@@ -42,6 +51,9 @@ protected:
     
     /** The current frame incremeted by 1 every frame (resets to 0 every time we reach 60 frames) */
     int _frame;
+    
+    /** The number of frames that the win screen has been shown for */
+    int _frameCountForWin;
 
     /** Size of the scene */
     cugl::Size _size;
@@ -75,12 +87,25 @@ protected:
     /** True if a neighobr player's board is on display */
     bool _onAdjacentBoard;
     
+    /** True if we should transition to menu, is set to true a few frames after the win or lose screen shows up **/
+    bool _transitionToMenu;
+
+    /** True if game scene is active and that gameplay is currently active */
+    bool _isActive;
+    
     /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
+
+    /** Which board is the player currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor */
+
     int _curBoard;
-    /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
+    /** Which board is the player currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor */
     int _curBoardRight;
-    /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
+    /** Which board is the player currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor */
     int _curBoardLeft;
+    /** Which board the bird enemy is currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor, 2 for none of these */
+    int _curBirdBoard;
+    /** The position of the bird enemy for drawing, if they are on your board */
+    cugl::Vec2 _curBirdPos;
     /** Whether the dirt is selected, ONLY active when currently on others board*/
     bool _dirtSelected;
     /** The path from player to the dirt throw destination, ONLY active when currently on player's own board*/
@@ -112,6 +137,7 @@ protected:
     int _maxDirtAmount;
     /** The amount of dirt player is currently holdinfg in the bucket **/
     int _currentDirtAmount;
+    
 
     /** Projectile generation chance, increases over time */
     float _projectileGenChance;
@@ -126,6 +152,8 @@ protected:
     /** The projectile set of the neighbor across the building. Only non-null if host */
     ProjectileSet _projectilesAcross;
     
+    
+    
     // for host only
     /** Number of players in the lobby */
     int _numPlayers;
@@ -133,6 +161,12 @@ protected:
     std::vector<int> _allDirtAmounts;
     /** The current board being displayed for each player in the lobby */
     std::vector<int> _allCurBoards;
+    /** Bird enemy for entire game */
+    Bird _bird;
+    /** True if bird exists in this level */;
+    bool _birdActive;
+    /** The current board that the bird is on */
+    int _boardWithBird;
     
     cugl::scheduable t;
     
@@ -140,6 +174,8 @@ protected:
     // In the future, we will replace this with the scene graph
     /** The backgrounnd image */
     std::shared_ptr<cugl::Texture> _background;
+    /** The win screen image */
+    std::shared_ptr<cugl::Texture> _winBackground;
     /** The text with the current health */
     std::shared_ptr<cugl::TextLayout> _healthText;
     /** The text with the current time */
@@ -164,6 +200,9 @@ protected:
 
     /** The sound of a ship-asteroid collision */
     std::shared_ptr<cugl::Sound> _bang;
+    
+    /** Gameplay Audio Controller */
+    GameAudioController _audioController;
 
     
 public:
@@ -192,6 +231,15 @@ public:
 
     /** Initializes the player models for all players, whether host or client. */
     bool initPlayers(const std::shared_ptr<cugl::AssetManager>& assets);
+    
+    /** Returns true if gameplay is active, and false if not. Tells us if the game is running */
+    bool isActive() {
+        return _isActive;
+    }
+    
+    /** Sets the gameplay controller as active or inactive, letting us know if the game is in session */
+    void setActive(bool f);
+    
 
     /**
      * Initializes the extra controllers needed for the host of the game.
@@ -231,10 +279,52 @@ public:
     /** Returns the current game time */
     int getTime() { return _gameTime; }
 
+    /** 
+     * Given the world positions, convert it to the board position
+     * based off of grid coordinates. Ex. [2, 3] or [2.3, 3] if the
+     * player is in the process of moving in between x = 2 and x = 3.
+     */
+    cugl::Vec2 getBoardPosition(cugl::Vec2 worldPos);
+
+    /**
+     * Given the board positions, convert it to the world position.
+     */
+    cugl::Vec2 getWorldPosition(cugl::Vec2 boardPos);
+
     /**
      * Method for the scene switch listener used in GameScene
      */
     void switchScene();
+    
+    /** Method to set the player has won the game this round **/
+    void setWin(bool f) {
+        _gameWin = f;
+    };
+    
+    /** Method to set whether the game is over or not **/
+    void setGameOver(bool f) {
+        _gameOver = f;
+    }
+    
+    /** Returns whether the game is over**/
+    bool isGameOver() {
+        return _gameOver;
+    }
+    
+    /** Returns whether the player has won the game **/
+    bool isGameWin() {
+        return _gameWin;
+    }
+    
+    /** If we set this to true, this lets App know that we want to switch to main menu  **/
+    void setRequestForMenu(bool f) {
+        _transitionToMenu = f;
+    };
+    
+    /** Called by app to see if we should switch from gamescene to main menu **/
+    bool isThereARequestForMenu() {
+        return _transitionToMenu;
+    }
     
     /** Checks whether board is full */
     const bool checkBoardFull(); // TODO: Unimplemented
@@ -249,7 +339,7 @@ public:
     void generateDirt();
 
     /** generates poo before bird is ready */
-    void generatePoo(ProjectileSet& projectiles);
+    void generatePoo(ProjectileSet* projectiles);
 
     /**
      * Called by host only. Converts game state into a JSON value for sending over the network
@@ -373,7 +463,7 @@ public:
     void setConnection(const std::shared_ptr<cugl::net::NetcodeConnection>& network) {
         _network.setConnection(network);
     }
-
+    
     /**
      * Disconnects this scene from the network controller.
      */
