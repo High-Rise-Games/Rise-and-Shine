@@ -61,13 +61,9 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     
     Size dimen = Application::get()->getDisplaySize();
     _rng.seed(std::time(nullptr));
-    _projectileGenChance = 0.4;
-    _projectileGenCountDown = 120;
     _dirtGenSpeed = 2;
-    _dirtThrowTimer = 0;
     _fixedDirtUpdateThreshold = 5 * 60;
     _maxDirtAmount = 1;
-    _currentDirtAmount = 0;
     _size = size;
     
     _dirtSelected = false;
@@ -94,8 +90,13 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _curBoardLeft = 0;
     
     // Initialize the window grids
-    _windows.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
-    _windows.init(_constants->get("easy board"), size); // init depends on texture
+    std::shared_ptr<cugl::JsonValue> level = _constants->get("easy board"); // TODO: make field passed in from level select through App
+    
+    _windows.setBuildingTexture(assets->get<Texture>("building_1"));
+    _windows.addTexture(assets->get<Texture>("window_1"));
+    _windows.addTexture(assets->get<Texture>("window_2"));
+    _windows.addTexture(assets->get<Texture>("window_3"));
+    _windows.init(level, size); // init depends on texture
     _windows.setDirtTexture(assets->get<Texture>("dirt"));
     
     // get the win background when game is win
@@ -104,13 +105,27 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     // get the lose background when game is lose
     _winBackground = _assets->get<Texture>("win-background");
 
-    _windowsLeft.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
-    _windowsLeft.init(_constants->get("easy board"), size); // init depends on texture
+    _windowsLeft.setBuildingTexture(assets->get<Texture>("building_1"));
+    _windowsLeft.addTexture(assets->get<Texture>("window_1"));
+    _windowsLeft.addTexture(assets->get<Texture>("window_2"));
+    _windowsLeft.addTexture(assets->get<Texture>("window_3"));
+    _windowsLeft.init(level, size); // init depends on texture
     _windowsLeft.setDirtTexture(assets->get<Texture>("dirt"));
 
-    _windowsRight.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
-    _windowsRight.init(_constants->get("easy board"), size); // init depends on texture
+    _windowsRight.setBuildingTexture(assets->get<Texture>("building_1"));
+    _windowsRight.addTexture(assets->get<Texture>("window_1"));
+    _windowsRight.addTexture(assets->get<Texture>("window_2"));
+    _windowsRight.addTexture(assets->get<Texture>("window_3"));
+    _windowsRight.init(level, size); // init depends on texture
     _windowsRight.setDirtTexture(assets->get<Texture>("dirt"));
+
+    _windowsAcross.setBuildingTexture(assets->get<Texture>("building_1"));
+    _windowsAcross.addTexture(assets->get<Texture>("window_1"));
+    _windowsAcross.addTexture(assets->get<Texture>("window_2"));
+    _windowsAcross.addTexture(assets->get<Texture>("window_3"));
+    _windowsAcross.init(level, getSize()); // init depends on texture
+    _windowsAcross.setDirtTexture(assets->get<Texture>("dirt"));
+
 
     // Initialize projectiles
     _projectiles.setDirtTexture(assets->get<Texture>("dirt"));
@@ -125,6 +140,10 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _projectilesRight.setDirtTexture(assets->get<Texture>("dirt"));
     _projectilesRight.setPoopTexture(assets->get<Texture>("poop"));
     _projectilesRight.setTextureScales(_windowsRight.getPaneHeight(), _windowsRight.getPaneWidth());
+
+    _projectilesAcross.setDirtTexture(assets->get<Texture>("dirt"));
+    _projectilesAcross.setPoopTexture(assets->get<Texture>("poop"));
+    _projectilesAcross.setTextureScales(_windows.getPaneHeight(), _windows.getPaneWidth());
 
     // Initialize bird textures, but do not set a location yet. that is the host's job
     if (_birdActive) {
@@ -148,6 +167,9 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
 
     _playerRight = std::make_shared <Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
     _playerRight->setTexture(assets->get<Texture>("player_1"));
+
+    _playerAcross = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
+    _playerAcross->setTexture(assets->get<Texture>("player_1"));
 
     // Initialize random dirt generation
     updateDirtGenTime();
@@ -176,6 +198,9 @@ bool GameplayController::initPlayers(const std::shared_ptr<cugl::AssetManager>& 
     _playerLeft->setId(leftId);
     int rightId = _id == 4 ? 1 : _id + 1;
     _playerRight->setId(rightId);
+    int acrossId = (_id + 2) % 4;
+    if (acrossId == 0) acrossId = 4;
+    _playerAcross->setId(acrossId);
 
     return true;
 }
@@ -209,23 +234,10 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
     if (_birdActive) {
         // randomly place bird on a player's board
         _boardWithBird = rand() % _numPlayers + 1;
-
     }
-
-    _windowsAcross.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
-    _windowsAcross.init(_constants->get("easy board"), getSize()); // init depends on texture
-    _windowsAcross.setDirtTexture(assets->get<Texture>("dirt"));
-
-    _projectilesAcross.setDirtTexture(assets->get<Texture>("dirt"));
-    _projectilesAcross.setPoopTexture(assets->get<Texture>("poop"));
-    _projectilesAcross.setTextureScales(_windows.getPaneHeight(), _windows.getPaneWidth());
 
     // starting position is most bottom left window
     Vec2 startingPos = Vec2(_windows.sideGap + (_windows.getPaneWidth() / 2), _windows.getPaneHeight());
-
-    // player ids for self, right, and left already assigned from earlier initPlayers call
-    _playerAcross = std::make_shared<Player>(3, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerAcross->setTexture(assets->get<Texture>("player_1"));
 
     hostReset();
 
@@ -267,7 +279,7 @@ void GameplayController::reset() {
     _projectilesRight.init(_constants->get("projectiles"));
 
     _dirtThrowTimer = 0;
-    _projectileGenChance = 0.4;
+    _projectileGenChance = 0.1;
     _projectileGenCountDown = 120;
     _currentDirtAmount = 0;
     _curBoard = 0;
@@ -665,8 +677,9 @@ void GameplayController::processMovementRequest(std::shared_ptr<cugl::JsonValue>
 
     // Check if player is stunned for this frame
     if (player->getStunFrames() == 0 && player->getWipeFrames() == 0) {
+        Vec2 playerCoords = windows->getGridIndices(player->getPosition(), getSize());
         // Move the player, ignoring collisions
-        int moveResult = player->move(moveVec, getSize(), windows->sideGap);
+        int moveResult = player->move(moveVec, getSize(), windows);
         if (moveResult == -1 || moveResult == 1) {
             // Request to switch to neighbor's board
             int destinationId = playerId + moveResult;
@@ -856,7 +869,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     
     // update the audio controller
     _audioController.update(isActive());
-
+    
     // get or transmit board states over network
     if (_network.getConnection()) {
         _network.getConnection()->receive([this](const std::string source,
@@ -1027,7 +1040,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             // Check if player is stunned for this frame
             if (_player->getStunFrames() == 0 && _player->getWipeFrames() == 0) {
                 // Move the player, ignoring collisions
-                int moveResult = _player->move(_input.getDir(), getSize(), _windows.sideGap);
+                int moveResult = _player->move(_input.getDir(), getSize(), &_windows);
                 if (moveResult == -1 && _numPlayers == 4) {
                     _allCurBoards[0] = -1;
                 } else if (moveResult == 1 && _numPlayers >= 2) {

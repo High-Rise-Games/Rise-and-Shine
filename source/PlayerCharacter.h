@@ -364,7 +364,7 @@ public:
      * @param size      The size of the window (for wrap around)
      * @return 0 if moved, -1 if moving off of left edge, 1 if moving off of right edge, 2 otherwise
      */
-    int move(cugl::Vec2 dir, cugl::Size size, float sideGap);
+    int move(cugl::Vec2 dir, cugl::Size size, WindowGrid* windows);
 
     /** Continues a movement between two grid spots */
     bool move();

@@ -187,7 +187,9 @@ void Player::setPosition(cugl::Vec2 value, cugl::Vec2 size) {
  * @param size      Size of the game scene
  * @return 0 if moved, -1 if moving off of left edge, 1 if moving off of right edge, 2 otherwise
  */
-int Player::move(Vec2 dir, Size size, float sideGap) {
+int Player::move(Vec2 dir, Size size, WindowGrid* windows) {
+
+    float sideGap = windows->sideGap;
 
     // Process moving direction
     if (!_targetDist.isZero()) {
@@ -203,9 +205,21 @@ int Player::move(Vec2 dir, Size size, float sideGap) {
         _vel.setZero();
         if (dir.x != 0.0f) {
             _targetDist = dir * _windowHeight;
+            Vec2 targetPosition = Vec2(_pos) + _targetDist;
+            Vec2 targetIndices = windows->getGridIndices(targetPosition, size);
+            if (!windows->getCanMoveTo(targetIndices.x, targetIndices.y)) {
+                _targetDist.setZero();
+                return 2;
+            }
             _vel = dir * _speed;
         } else if (dir.y != 0.0f) {
             _targetDist = dir * _windowWidth;
+            Vec2 targetPosition = Vec2(_pos) + _targetDist;
+            Vec2 targetIndices = windows->getGridIndices(targetPosition, size);
+            if (!windows->getCanMoveTo(targetIndices.x, targetIndices.y)) {
+                _targetDist.setZero();
+                return 2;
+            }
             _vel = dir * _speed;
         }
         
