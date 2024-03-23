@@ -82,8 +82,9 @@ private:
     //float _angdamp;
     
     // Asset references. These should be set by GameScene
-    /** player texture */
+    /** player textures */
     std::shared_ptr<cugl::Texture> _texture;
+    std::shared_ptr<cugl::Texture> _wipeTexture;
     /** Reference to the ships sprite sheet */
     //std::shared_ptr<cugl::SpriteSheet> _sprite;
     /** Radius of the ship in pixels (derived from sprite sheet) */
@@ -333,6 +334,9 @@ public:
      * @param texture   The texture for the sprite sheet
      */
     void setTexture(const std::shared_ptr<cugl::Texture>& texture);
+
+    /** Sets the wiping texture for this player. Same applies as setTexture */
+    void setWipingTexture(const std::shared_ptr<cugl::Texture>& texture);
     
     /**
      * Draws this ship to the sprite batch within the given bounds.

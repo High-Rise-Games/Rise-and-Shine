@@ -326,6 +326,7 @@ void App::updateLobbyScene(float timestep) {
                 _gameplay->setHost(true);
                 _gameplay->setActive(true);
                 _gameplay->setId(_lobby_host.getId());
+                _gameplay->setCharacter(_lobby_host.character, _gameplay->getId());
                 _gameplay->initHost(_assets);
                 CULog("my id: %d", _gameplay->getId());
                 break;

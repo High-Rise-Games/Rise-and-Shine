@@ -140,13 +140,16 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
 
     // no ids given yet - to be assigned in initPlayers()
     _player = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _player->setTexture(assets->get<Texture>("player_1"));
+    _player->setTexture(assets->get<Texture>("char_mushroom"));
+    _player->setWipingTexture(assets->get<Texture>("wipe_mushroom"));
     
     _playerLeft = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerLeft->setTexture(assets->get<Texture>("player_1"));
+    _playerLeft->setTexture(assets->get<Texture>("char_mushroom"));
+    _playerLeft->setWipingTexture(assets->get<Texture>("wipe_mushroom"));
 
     _playerRight = std::make_shared <Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerRight->setTexture(assets->get<Texture>("player_1"));
+    _playerRight->setTexture(assets->get<Texture>("char_mushroom"));
+    _playerRight->setWipingTexture(assets->get<Texture>("wipe_mushroom"));
 
     // Initialize random dirt generation
     updateDirtGenTime();
@@ -224,7 +227,8 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
 
     // player ids for self, right, and left already assigned from earlier initPlayers call
     _playerAcross = std::make_shared<Player>(3, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerAcross->setTexture(assets->get<Texture>("player_1"));
+    _playerAcross->setTexture(assets->get<Texture>("mushroom"));
+    _playerAcross->setWipingTexture(_assets->get<Texture>("wipe_mushroom"));
 
     hostReset();
 
@@ -293,6 +297,45 @@ void GameplayController::hostReset() {
 
     _allDirtAmounts = { 0, 0, 0, 0 };
     _allCurBoards = { 0, 0, 0, 0 };
+}
+
+/**
+* HOST ONLY. Sets the character of the player given player's id.
+* Possible values: "Mushroom", "Frog", "Banana", "Chameleon"
+*/
+void GameplayController::setCharacter(std::string ch, int id) {
+    std::shared_ptr<Player> player;
+    switch (id) {
+    case 1:
+        player = _player;
+        break;
+    case 2:
+        player = _playerRight;
+        break;
+    case 3:
+        player = _playerAcross;
+        break;
+    default:
+        player = _playerLeft;
+        break;
+    }
+
+    if (ch == "Frog") {
+        player->setTexture(_assets->get<Texture>("char_frog"));
+        player->setWipingTexture(_assets->get<Texture>("wipe_frog"));
+    }
+    else if (ch == "Banana") {
+        player->setTexture(_assets->get<Texture>("char_banana"));
+        player->setWipingTexture(_assets->get<Texture>("wipe_banana"));
+    }
+    else if (ch == "Chameleon") {
+        player->setTexture(_assets->get<Texture>("char_chameleon"));
+        player->setWipingTexture(_assets->get<Texture>("wipe_chameleon"));
+    }
+    else {
+        player->setTexture(_assets->get<Texture>("char_mushroom"));
+        player->setWipingTexture(_assets->get<Texture>("wipe_mushroom"));
+    }
 }
 
 /**
@@ -1080,9 +1123,6 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
         
         if (player->getWipeFrames() > 0) {
             player->decreaseWipeFrames();
-            if (player->getWipeFrames() == 0) {
-                player->setTexture(_assets->get<cugl::Texture>("player_1"));
-            }
         }
         else {
             player->move();
@@ -1100,7 +1140,6 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
             // filling up dirty bucket
             // set amount of frames plaer is frozen for for cleaning dirt
             player->setWipeFrames(65);
-            player->setTexture(_assets->get<cugl::Texture>("player_1_wipe"));
             _allDirtAmounts[player_id - 1] = min(_maxDirtAmount, _allDirtAmounts[player_id - 1] + 1);
 //            player->setWipeFrames(2);
         }

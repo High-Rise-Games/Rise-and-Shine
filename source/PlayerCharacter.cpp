@@ -38,6 +38,9 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     
     // rotation property of player when player is stunned
     _stunRotate = 0;
+
+    // radius of player for collisions
+    _radius = _windowHeight / 1.5;
     
     // Physics
     _mass = data->getFloat("mass",1.0);
@@ -91,8 +94,7 @@ void Player::decreaseStunFrames() {
  */
 void Player::setTexture(const std::shared_ptr<cugl::Texture>& texture) {
     _texture = texture;
-    float scale = _windowHeight / texture->getHeight();
-    _radius = texture->getWidth() * scale / 2;
+    _radius = _windowHeight / 1.5;
     /*
     if (_framecols > 0) {
         int rows = _framesize/_framecols;
@@ -105,6 +107,11 @@ void Player::setTexture(const std::shared_ptr<cugl::Texture>& texture) {
         _sprite->setOrigin(_sprite->getFrameSize()/2);
     }
     */
+}
+
+/** Sets the wiping texture for this player. Same applies as setTexture */
+void Player::setWipingTexture(const std::shared_ptr<cugl::Texture>& texture) {
+    _wipeTexture = texture;
 }
 
 /**
@@ -130,7 +137,7 @@ const cugl::Vec2& Player::getCoorsFromPos(const float windowHeight, const float 
  */
 void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds, WindowGrid windows) {
     // Don't draw if texture not set
-    if (_texture) {
+    if (_texture && _wipeFrames == 0) {
         // Transform to place the ship, start with centered version
         Affine2 player_trans;
         player_trans.translate( -(int)(_texture->getWidth())/2 , 0);
@@ -157,6 +164,26 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds, 
         batch->draw(_texture, Vec2(), player_trans);
         //_sprite->draw(batch,shadow,shadtrans);
         //_sprite->draw(batch,player_trans);
+    }
+    else if (_wipeTexture) {
+        Affine2 player_trans;
+        player_trans.translate(-(int)(_wipeTexture->getWidth()) / 2, 0);
+        player_trans.translate(0, -(int)(_wipeTexture->getHeight()) / 2);
+        double player_scale = windows.getPaneHeight() / _wipeTexture->getHeight();
+        player_trans.scale(player_scale);
+        //player_trans.rotate(_ang*M_PI/180);
+
+        if (getStunFrames() > 0) {
+            _stunRotate += 0.1;
+            player_trans.rotate(_stunRotate * M_PI);
+        }
+        else {
+            _stunRotate = 0;
+            player_trans.rotate(0);
+        }
+
+        player_trans.translate(_pos);
+        batch->draw(_wipeTexture, Vec2(), player_trans);
     }
 }
 
