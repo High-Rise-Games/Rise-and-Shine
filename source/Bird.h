@@ -37,9 +37,9 @@ private:
     bool _frameright;
     /** on count down to 0, play one frame of sprite animation*/
     int _frametimer;
-    /** Reference to the ships sprite sheet */
+    /** Reference to the bird sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _sprite;
-    /** Radius of the ship in pixels (derived from sprite sheet) */
+    /** Radius of the bird in pixels (derived from sprite sheet) */
     float _radius;
 
 public:
@@ -69,8 +69,8 @@ public:
      * @return the sprite sheet for the ship
      */
     const std::shared_ptr<cugl::SpriteSheet>& getSprite() const {
-            return _sprite;
-        }
+        return _sprite;
+    }
 
     /**
      * Sets the texture for the bird.
