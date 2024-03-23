@@ -20,6 +20,8 @@ private:
 	float _windowHeight;
 	float _windowWidth;
 	std::vector<int> _map;
+	/** Tile ids that players cannot move to */
+	std::set<int> _impassableTiles = {3};
 	/** Filth placement state */
 	std::vector<std::vector<std::shared_ptr<StaticFilth>>> _boardFilth;
 
@@ -83,6 +85,16 @@ public:
     bool getWindowState(const int row, const int col) {
         return _boardFilth[row][col] != nullptr ;
     }
+
+	/**
+	 * Get discrete indices of the window tile that a given vector is on
+	 */
+	cugl::Vec2 getGridIndices(cugl::Vec2 location, cugl::Size size);
+
+	/**
+	 * Returns whether a certain grid tile can be moved to
+	 */
+	bool getCanMoveTo(int x_coord, int y_coord);
     
     /**
      * Initializes the board by creating dirt

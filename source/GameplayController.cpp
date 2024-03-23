@@ -95,6 +95,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _windows.setBuildingTexture(assets->get<Texture>("building_1"));
     _windows.addTexture(assets->get<Texture>("window_1"));
     _windows.addTexture(assets->get<Texture>("window_2"));
+    _windows.addTexture(assets->get<Texture>("window_3"));
     _windows.init(level, size); // init depends on texture
     _windows.setDirtTexture(assets->get<Texture>("dirt"));
     
@@ -107,18 +108,21 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _windowsLeft.setBuildingTexture(assets->get<Texture>("building_1"));
     _windowsLeft.addTexture(assets->get<Texture>("window_1"));
     _windowsLeft.addTexture(assets->get<Texture>("window_2"));
+    _windowsLeft.addTexture(assets->get<Texture>("window_3"));
     _windowsLeft.init(level, size); // init depends on texture
     _windowsLeft.setDirtTexture(assets->get<Texture>("dirt"));
 
     _windowsRight.setBuildingTexture(assets->get<Texture>("building_1"));
     _windowsRight.addTexture(assets->get<Texture>("window_1"));
     _windowsRight.addTexture(assets->get<Texture>("window_2"));
+    _windowsRight.addTexture(assets->get<Texture>("window_3"));
     _windowsRight.init(level, size); // init depends on texture
     _windowsRight.setDirtTexture(assets->get<Texture>("dirt"));
 
     _windowsAcross.setBuildingTexture(assets->get<Texture>("building_1"));
     _windowsAcross.addTexture(assets->get<Texture>("window_1"));
     _windowsAcross.addTexture(assets->get<Texture>("window_2"));
+    _windowsAcross.addTexture(assets->get<Texture>("window_3"));
     _windowsAcross.init(level, getSize()); // init depends on texture
     _windowsAcross.setDirtTexture(assets->get<Texture>("dirt"));
 
@@ -672,8 +676,9 @@ void GameplayController::processMovementRequest(std::shared_ptr<cugl::JsonValue>
 
     // Check if player is stunned for this frame
     if (player->getStunFrames() == 0 && player->getWipeFrames() == 0) {
+        Vec2 playerCoords = windows->getGridIndices(player->getPosition(), getSize());
         // Move the player, ignoring collisions
-        int moveResult = player->move(moveVec, getSize(), windows->sideGap);
+        int moveResult = player->move(moveVec, getSize(), windows);
         if (moveResult == -1 || moveResult == 1) {
             // Request to switch to neighbor's board
             int destinationId = playerId + moveResult;
@@ -863,7 +868,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     
     // update the audio controller
     _audioController.update(isActive());
-
+    
     // get or transmit board states over network
     if (_network.getConnection()) {
         _network.getConnection()->receive([this](const std::string source,
@@ -1034,7 +1039,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             // Check if player is stunned for this frame
             if (_player->getStunFrames() == 0 && _player->getWipeFrames() == 0) {
                 // Move the player, ignoring collisions
-                int moveResult = _player->move(_input.getDir(), getSize(), _windows.sideGap);
+                int moveResult = _player->move(_input.getDir(), getSize(), &_windows);
                 if (moveResult == -1 && _numPlayers == 4) {
                     _allCurBoards[0] = -1;
                 } else if (moveResult == 1 && _numPlayers >= 2) {

@@ -49,6 +49,25 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 	return true;
 }
 
+cugl::Vec2 WindowGrid::getGridIndices(cugl::Vec2 location, cugl::Size size) {
+
+	int x_coor = ((int)(location.x - sideGap) / _windowWidth);
+	int y_coor = (int)(location.y / _windowHeight);
+	return Vec2(x_coor, y_coor);
+	//return Vec2(-1, -1);
+}
+
+bool WindowGrid::getCanMoveTo(int x_coord, int y_coord) {
+	int mapIndex = x_coord + getNHorizontal() * y_coord;
+	if (mapIndex < 0 || mapIndex >= _map.size()) { // invalid index
+		return false;
+	}
+	if (_impassableTiles.count(_map.at(mapIndex))) {
+		return false;
+	}
+	return true;
+}
+
 void WindowGrid::generateInitialBoard(int dirtNumber) {
     std::mt19937 rng(std::time(nullptr)); // Initializes random number generator
     std::uniform_int_distribution<int> rowDist(0, _boardFilth.size() - 1);
