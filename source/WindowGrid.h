@@ -109,17 +109,9 @@ public:
     
 	/**
 	 * Add dirt to board at specified location.
-	 * Returns true if the dirt was successfully added, and false if there is already dirt at the location.
+	 * Returns true if the dirt was successfully added, and false if there is already dirt at the location or the location is inaccessible.
 	 */
-	bool addDirt(const int row, const int col) { 
-		bool dirtExisted = _boardFilth[row][col] != nullptr;
-        if (!dirtExisted) {
-            std::shared_ptr<StaticFilth> filth = std::make_shared<StaticFilth>(cugl::Vec2(row, col));
-            filth->setStaticTexture(_dirt);
-			_boardFilth[row][col] = filth;
-        }
-		return !dirtExisted;
-	}
+	bool addDirt(const int row, const int col);
 
 	/** 
 	 * Remove dirt from board at specified location 

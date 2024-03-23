@@ -76,8 +76,8 @@ void WindowGrid::generateInitialBoard(int dirtNumber) {
         int rand_row = rowDist(rng);
         int rand_col = colDist(rng);
 
-        // if element is already true, select different element
-        if (_boardFilth[rand_row][rand_col]) {
+        // if dirt already present or tile not accessible, select different element
+        if (_boardFilth[rand_row][rand_col] || !getCanMoveTo(rand_col, rand_row)) {
             --i; // Decrease i to repeat this iteration
             continue;
         }
@@ -94,6 +94,17 @@ void WindowGrid::clearBoard() {
 			_boardFilth[y][x] = nullptr;
         }
     }
+}
+
+bool WindowGrid::addDirt(const int row, const int col) {
+	bool dirtExisted = _boardFilth[row][col] != nullptr;
+	bool isTileReachable = getCanMoveTo(col, row);
+	if (!dirtExisted && isTileReachable) {
+		std::shared_ptr<StaticFilth> filth = std::make_shared<StaticFilth>(cugl::Vec2(row, col));
+		filth->setStaticTexture(_dirt);
+		_boardFilth[row][col] = filth;
+	}
+	return !dirtExisted && isTileReachable;
 }
 
 // draws an entire grid of _nHorizontal x nVertical windows as large as possible with center (horizontal) alignment
