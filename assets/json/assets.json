@@ -80,7 +80,7 @@
             "file": "textures/returnSceneButton.png"
         },
         "bird": {
-            "file": "textures/bird.png"
+            "file": "textures/bird_sprite.png"
         },
         "poop": {
             "file": "textures/bird_poop.png"

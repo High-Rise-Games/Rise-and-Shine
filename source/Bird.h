@@ -26,11 +26,21 @@ private:
     bool _toRight;
     /** drawing scale */
     float _scaleFactor;
+    
+    /** The number of columns in the sprite sheet */
+    int _framecols;
+    /** The number of frames in the sprite sheet */
+    int _framesize;
+    /** The sprite sheet frame for being at rest */
+    int _frameflat;
+    /** order of the sprite playback, to right then to left */
+    bool _frameright;
+    /** on count down to 0, play one frame of sprite animation*/
+    int _frametimer;
+    /** Reference to the ships sprite sheet */
+    std::shared_ptr<cugl::SpriteSheet> _sprite;
+    /** Radius of the ship in pixels (derived from sprite sheet) */
     float _radius;
-
-    /** Bird texture on board */
-    std::shared_ptr<cugl::Texture> _birdTexture;
-
 
 public:
     /**
@@ -51,15 +61,27 @@ public:
     float getScale() {return _scaleFactor;}
 
     bool isFacingRight() { return _toRight; }
+    
+    /** Gets bird sprite.
+     *
+     * The size and layout of the sprite sheet should already be specified
+     * in the initializing step.
+     * @return the sprite sheet for the ship
+     */
+    const std::shared_ptr<cugl::SpriteSheet>& getSprite() const {
+            return _sprite;
+        }
 
-    /** sets bird texture */
-    void setTexture(const std::shared_ptr<cugl::Texture>& value) {
-        cugl::Size s = value->getSize();
-        _radius = std::min(s.width, s.height) / 2;
-        _birdTexture = value;
-    }
-    /** gets bird texture */
-    const std::shared_ptr<cugl::Texture>& getTexture() const { return _birdTexture; }
+    /**
+     * Sets the texture for the bird.
+     *
+     * The texture should be formated as a sprite sheet, and the size and
+     * layout of the sprite sheet should already be specified in the
+     * initializing step. If so, this method will construct a sprite sheet
+     * from this texture.
+     * @param texture   The texture for the sprite sheet
+     */
+    void setTexture(const std::shared_ptr<cugl::Texture>& texture);
     
     /** draws the bird on game board */
     void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, cugl::Vec2 birdPos);

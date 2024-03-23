@@ -128,10 +128,11 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
 
     // Initialize bird textures, but do not set a location yet. that is the host's job
     if (_birdActive) {
-        _bird.setTexture(assets->get<Texture>("bird"));
-        _bird.init(cugl::Vec2(_windows.sideGap, (_windows.getNVertical() - 1) * _windows.getPaneHeight()),
-            cugl::Vec2(size.getIWidth() - _windows.sideGap, (_windows.getNVertical() - 1) * _windows.getPaneHeight()), 2, 0.05);
+        float birdHeight = (_windows.getNVertical() - 1) * _windows.getPaneHeight() + _windows.getPaneHeight()/2;
+        _bird.init(cugl::Vec2(_windows.sideGap + _windows.getPaneWidth()/8, birdHeight),
+            cugl::Vec2(size.getIWidth() - _windows.sideGap - _windows.getPaneWidth()/4, birdHeight), 2, 0.04);
         _curBirdBoard = 2;
+        _bird.setTexture(assets->get<Texture>("bird"));
     }
     
     // Make a ship and set its texture
@@ -1206,7 +1207,7 @@ void GameplayController::generatePoo(ProjectileSet* projectiles) {
 //    CULog("player at: (%f, %f)", _player->getCoors().y, _player->getCoors().x);
 //    CULog("generate at: %d", (int)rand_row);
     // if add dirt already exists at location or player at location and board is not full, repeat
-    projectiles->spawnProjectile(_bird.birdPosition, Vec2(0, min(-2.4f,-2-_projectileGenChance)), Vec2(_bird.birdPosition.x, 0), ProjectileSet::Projectile::ProjectileType::POOP);
+    projectiles->spawnProjectile(Vec2(_bird.birdPosition.x, _bird.birdPosition.y - _windows.getPaneHeight()/2), Vec2(0, min(-2.4f,-2-_projectileGenChance)), Vec2(_bird.birdPosition.x, 0), ProjectileSet::Projectile::ProjectileType::POOP);
 }
 
 /** Checks whether board is full except player current location*/
