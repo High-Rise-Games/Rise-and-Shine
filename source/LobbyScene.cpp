@@ -91,6 +91,9 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Initialize the scene to a locked width
     
     setHost(true);
+
+    // host only instantiates the all characters list, which stores char selections of all players in the lobby
+    _all_characters = std::vector<std::string>(4);
     
     Size dimen = Application::get()->getDisplaySize();
     dimen *= SCENE_HEIGHT/dimen.height;
@@ -99,23 +102,33 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     } else if (!Scene2::init(dimen)) {
         return false;
     }
+
+    _quit = false;
     
     // Start up the input handler
     _assets = assets;
     
     std::shared_ptr<scene2::SceneNode> scene;
     
-
-    
     // Acquire the scene built by the asset loader and resize it the scene
     scene = _assets->get<scene2::SceneNode>("host");
     scene->setContentSize(dimen);
     scene->doLayout(); // Repositions the HUD
 
-    _startgame = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("host_center_start"));
+    _select_red = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("host_red"));
+    _select_blue = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("host_blue"));
+    _select_green = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("host_green"));
+    _select_yellow = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("host_yellow"));
+    _character_field_red = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("host_character_red"));
+    _character_field_blue = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("host_character_blue"));
+    _character_field_green = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("host_character_green"));
+    _character_field_yellow = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("host_character_yellow"));
+
+    _startgame = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("host_bottom_start"));
     _backout = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("host_back"));
-    _gameid_host = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("host_center_game_field_text"));
-    _player = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("host_center_players_field_text"));
+    _gameid_host = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("host_bottom_game_field_text"));
+    _player_field = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("host_bottom_players_field_text"));
+    _level_field = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("host_bottom_level_field_text"));
     _status = Status::WAIT;
     _id = 1;
     
@@ -124,6 +137,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
         if (down) {
             disconnect();
             _status = Status::ABORT;
+            _quit = true;
         }
     });
 
@@ -133,7 +147,60 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
         }
     });
 
+    _select_red->addListener([this](const std::string& name, bool down) {
+        std::cout<<"down1: "<<_select_red->isDown()<<"\n";
+        if (down) {
+            character = "Mushroom";
+            _character_field_red->setVisible(true);
+            _character_field_blue->setVisible(false);
+            _character_field_green->setVisible(false);
+            _character_field_yellow->setVisible(false);
+            std::cout<<"down2: "<<_select_red->isDown()<<"\n";
+            
+            _select_blue->setDown(false);
+            _select_green->setDown(false);
+            _select_yellow->setDown(false);
+        }
+        });
+    _select_blue->addListener([this](const std::string& name, bool down) {
+        if (down) {
+            character = "Frog";
+            _character_field_red->setVisible(false);
+            _character_field_blue->setVisible(true);
+            _character_field_green->setVisible(false);
+            _character_field_yellow->setVisible(false);
 
+            _select_red->setDown(false);
+            _select_green->setDown(false);
+            _select_yellow->setDown(false);
+        }
+        });
+    _select_green->addListener([this](const std::string& name, bool down) {
+        if (down) {
+            character = "Chameleon";
+            _character_field_red->setVisible(false);
+            _character_field_blue->setVisible(false);
+            _character_field_green->setVisible(true);
+            _character_field_yellow->setVisible(false);
+
+            _select_red->setDown(false);
+            _select_blue->setDown(false);
+            _select_yellow->setDown(false);
+        }
+        });
+    _select_yellow->addListener([this](const std::string& name, bool down) {
+        if (down) {
+            character = "Flower";
+            _character_field_red->setVisible(false);
+            _character_field_blue->setVisible(false);
+            _character_field_green->setVisible(false);
+            _character_field_yellow->setVisible(true);
+
+            _select_red->setDown(false);
+            _select_blue->setDown(false);
+            _select_green->setDown(false);
+        }
+        });
     
     // Create the server configuration
     auto json = _assets->get<JsonValue>("server");
@@ -161,6 +228,7 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
     
     // Start up the input handler
     _assets = assets;
+    _quit = false;
     
     std::shared_ptr<scene2::SceneNode> scene;
     
@@ -168,18 +236,30 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
     scene = _assets->get<scene2::SceneNode>("client");
     scene->setContentSize(dimen);
     scene->doLayout(); // Repositions the HUD
-    
-    _startgame = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("client_center_start"));
+
+    _select_red = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("client_red"));
+    _select_blue = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("client_blue"));
+    _select_green = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("client_green"));
+    _select_yellow = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("client_yellow"));
+    _character_field_red = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("client_character_red"));
+    _character_field_blue = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("client_character_blue"));
+    _character_field_green = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("client_character_green"));
+    _character_field_yellow = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("client_character_yellow"));
+
+    _startgame = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("client_bottom_start"));
     _backout = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("client_back"));
-    _gameid_client = std::dynamic_pointer_cast<scene2::TextField>(_assets->get<scene2::SceneNode>("client_center_game_field_text"));
-    _player = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("client_center_players_field_text"));
+    _gameid_client = std::dynamic_pointer_cast<scene2::TextField>(_assets->get<scene2::SceneNode>("client_bottom_game_field_text"));
+    _player_field = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("client_bottom_players_field_text"));
+    _level_field = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("client_bottom_level_field_text"));
     _status = Status::IDLE;
     _id = 0;
+    _level = -1;
     
     _backout->addListener([this](const std::string& name, bool down) {
         if (down) {
             disconnect();
             _status = Status::ABORT;
+            _quit = true;
         }
     });
 
@@ -194,7 +274,58 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
         connect(value);
     });
 
+    _select_red->addListener([this](const std::string& name, bool down) {
+        if (down) {
+            character = "Mushroom";
+            _character_field_red->setVisible(true);
+            _character_field_blue->setVisible(false);
+            _character_field_green->setVisible(false);
+            _character_field_yellow->setVisible(false);
+            
+            _select_blue->setDown(false);
+            _select_green->setDown(false);
+            _select_yellow->setDown(false);
+        }
+        });
+    _select_blue->addListener([this](const std::string& name, bool down) {
+        if (down) {
+            character = "Frog";
+            _character_field_red->setVisible(false);
+            _character_field_blue->setVisible(true);
+            _character_field_green->setVisible(false);
+            _character_field_yellow->setVisible(false);
 
+            _select_red->setDown(false);
+            _select_green->setDown(false);
+            _select_yellow->setDown(false);
+        }
+        });
+    _select_green->addListener([this](const std::string& name, bool down) {
+        if (down) {
+            character = "Chameleon";
+            _character_field_red->setVisible(false);
+            _character_field_blue->setVisible(false);
+            _character_field_green->setVisible(true);
+            _character_field_yellow->setVisible(false);
+
+            _select_red->setDown(false);
+            _select_blue->setDown(false);
+            _select_yellow->setDown(false);
+        }
+        });
+    _select_yellow->addListener([this](const std::string& name, bool down) {
+        if (down) {
+            character = "Banana";
+            _character_field_red->setVisible(false);
+            _character_field_blue->setVisible(false);
+            _character_field_green->setVisible(false);
+            _character_field_yellow->setVisible(true);
+
+            _select_red->setDown(false);
+            _select_blue->setDown(false);
+            _select_green->setDown(false);
+        }
+        });
     
     // Create the server configuration
     auto json = _assets->get<JsonValue>("server");
@@ -227,20 +358,49 @@ void LobbyScene::dispose() {
  * @param timestep  The amount of time (in seconds) since the last frame
  */
 void LobbyScene::update(float timestep) {
-    // We have written this for you this time
+    _level_field->setText(std::to_string(_level));
+
+    if (isHost()) {
+        _all_characters[0] = character;
+    }
+
     if (_network) {
         _network->receive([this](const std::string source,
-                                 const std::vector<std::byte>& data) {
-            processData(source,data);
-        });
+            const std::vector<std::byte>& data) {
+                processData(source, data);
+            });
         checkConnection();
         
-        if (isHost()) {
-            configureStartButton();
-        }
-        
-        _player->setText(std::to_string(_network->getPeers().size()+1));
+        configureStartButton();
 
+        _player_field->setText(std::to_string(_network->getPeers().size() + 1));
+        
+        if (isHost()) {
+            // sends level data across network
+            const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+            json->init(JsonValue::Type::ObjectType);
+            json->appendValue("level", std::to_string(_level));
+
+            NetcodeSerializer netSerializer;
+            netSerializer.writeJson(json);
+            const std::vector<std::byte>& levelJSON = netSerializer.serialize();
+            _network->broadcast(levelJSON);
+
+            netSerializer.reset();
+        }
+        else if ((!isHost() && _status == WAIT) || isHost()) {
+            // sends current character selection across network
+            const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+            json->init(JsonValue::Type::ObjectType);
+            json->appendValue("id", std::to_string(_id));
+            json->appendValue("char", character);
+
+            NetcodeSerializer netSerializer;
+            netSerializer.writeJson(json);
+            const std::vector<std::byte>& charJSON = netSerializer.serialize();
+            _network->broadcast(charJSON);
+            netSerializer.reset();
+        }
     }
 }
 
@@ -257,16 +417,31 @@ void LobbyScene::update(float timestep) {
  */
 void LobbyScene::processData(const std::string source,
                             const std::vector<std::byte>& data) {
-    
-    if (isHost()) {
-        
-    } else {
-        if (data.at(0) == std::byte{0xff} && _status != START) {
-            _status = START;
-        }
+    if (isHost() && _status == START) {
+        return;
     }
-    
-    
+    if (!isHost() && data.at(0) == std::byte{ 0xff } && _status != START) {
+        // read game start message sent from host
+        _status = START;
+        return;
+    }
+
+    NetcodeDeserializer netDeserializer;
+    netDeserializer.receive(data);
+    std::shared_ptr<JsonValue> jsonData = netDeserializer.readJson();
+
+    if (jsonData->has("level") && !isHost()) {
+        // read level message sent from host and update level
+        _level = std::stoi(jsonData->getString("level"));
+    }
+    else if (jsonData->has("char") && isHost()) {
+        // read character selection message sent from clients and update internal state
+        std::string char_selection = jsonData->getString("char");
+        int player_id = std::stoi(jsonData->getString("id"));
+        _all_characters[player_id - 1] = char_selection;
+    }
+
+    netDeserializer.reset();
 }
 
 
@@ -341,41 +516,34 @@ bool LobbyScene::checkConnection() {
    
     if (isHost()) {
         switch(_network->getState()) {
+            case cugl::net::NetcodeConnection::State::NEGOTIATING:
+                _status = WAIT;
+                break;
             case cugl::net::NetcodeConnection::State::CONNECTED:
                 if (_status == WAIT) {
                     _status = IDLE;
                     _gameid_host->setText(hex2dec(_network->getRoom()));
-                } else {
-                    //                _status = START;
-                    
                 }
-                return true;
+                break;
             case cugl::net::NetcodeConnection::State::MISMATCHED:
-                // code block
-                _status = WAIT;
-                return false;
             case cugl::net::NetcodeConnection::State::INVALID:
-                // code block
-                _status = WAIT;
-                return false;
             case cugl::net::NetcodeConnection::State::FAILED:
-                // code block
-                _status = WAIT;
-                return false;
             case cugl::net::NetcodeConnection::State::DENIED:
-                // code block
-                _status = WAIT;
-                return false;
             case cugl::net::NetcodeConnection::State::DISCONNECTED:
                 // code block
+                disconnect();
                 _status = WAIT;
-                return false;
             default:
                 return false;
         }
+        return true;
     }
      else if (!isHost()) {
         switch(_network->getState()) {
+            case cugl::net::NetcodeConnection::State::NEGOTIATING:
+            // code block
+                _status = JOIN;
+                return true;
             case cugl::net::NetcodeConnection::State::CONNECTED:
                 if (_status != START) {
                     _status = WAIT;
@@ -383,29 +551,18 @@ bool LobbyScene::checkConnection() {
                 if (_id == 0) {
                     _id = _network->getPeers().size() + 1;
                 }
-               return true;
+                return true;
             case cugl::net::NetcodeConnection::State::MISMATCHED:
             // code block
+                disconnect();
                 _status = WAIT;
                 return false;
-            case cugl::net::NetcodeConnection::State::NEGOTIATING:
-            // code block
-                _status = JOIN;
-                return true;
             case cugl::net::NetcodeConnection::State::INVALID:
-            // code block
-                _status = IDLE;
-                return false;
             case cugl::net::NetcodeConnection::State::FAILED:
-            // code block
-                _status = IDLE;
-                return false;
             case cugl::net::NetcodeConnection::State::DENIED:
-            // code block
-                _status = IDLE;
-                return false;
             case cugl::net::NetcodeConnection::State::DISCONNECTED:
             // code block
+                disconnect();
                 _status = IDLE;
                 return false;
           default:
@@ -487,20 +644,47 @@ void LobbyScene::configureStartButton() {
  * @param value whether the scene is currently active
  */
 void LobbyScene::setActive(bool value) {
+    if (isActive() != value) {
+        if (value) {
+            _quit = false;
+
+            _backout->activate();
+            _select_red->activate();
+            _select_blue->activate();
+            _select_green->activate();
+            _select_yellow->activate();
+            _select_red->setToggle(true);
+            _select_blue->setToggle(true);
+            _select_green->setToggle(true);
+            _select_yellow->setToggle(true);
+            _select_red->setDown(true);
+        }
+        else {
+            _startgame->deactivate();
+            _backout->deactivate();
+            _select_red->deactivate();
+            _select_blue->deactivate();
+            _select_green->deactivate();
+            _select_yellow->deactivate();
+            // If any were pressed, reset them
+            _startgame->setDown(false);
+            _backout->setDown(false);
+            _select_red->setDown(false);
+            _select_blue->setDown(false);
+            _select_green->setDown(false);
+            _select_yellow->setDown(false);
+        }
+    }
+    
     if (isHost()) {
         if (isActive() != value) {
             Scene2::setActive(value);
             if (value) {
                 _status = WAIT;
                 configureStartButton();
-                _backout->activate();
+                _player_field->setText("1");
+                _level_field->setText("1");
                 connect();
-            } else {
-                _startgame->deactivate();
-                _backout->deactivate();
-                // If any were pressed, reset them
-                _startgame->setDown(false);
-                _backout->setDown(false);
             }
         }
     } else if (!isHost()) {
@@ -509,18 +693,11 @@ void LobbyScene::setActive(bool value) {
             if (value) {
                 _status = IDLE;
                 _gameid_client->activate();
-                _backout->activate();
                 _network = nullptr;
-                _player->setText("1");
+                _player_field->setText("1");
+                _level_field->setText("1");
                 configureStartButton();
                 // Don't reset the room id
-            } else {
-                _gameid_client->deactivate();
-                _startgame->deactivate();
-                _backout->deactivate();
-                // If any were pressed, reset them
-                _startgame->setDown(false);
-                _backout->setDown(false);
             }
         }
 

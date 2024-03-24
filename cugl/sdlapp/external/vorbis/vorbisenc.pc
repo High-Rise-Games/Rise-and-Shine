@@ -1,9 +1,9 @@
 # libvorbisenc pkg-config source file
 
-prefix=/usr/local
-exec_prefix=/usr/local/bin
-libdir=/usr/local/lib
-includedir=/usr/local/include
+prefix=C:/Program Files (x86)/Shine
+exec_prefix=C:/Program Files (x86)/Shine/bin
+libdir=C:/Program Files (x86)/Shine/lib
+includedir=C:/Program Files (x86)/Shine/include
 
 Name: vorbisenc
 Description: vorbisenc is a library that provides a convenient API for setting up an encoding environment using libvorbis

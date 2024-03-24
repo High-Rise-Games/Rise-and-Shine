@@ -46,6 +46,9 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     
     // rotation property of player when player is stunned
     _stunRotate = 0;
+
+    // radius of player for collisions
+    _radius = _windowHeight / 1.5;
     
     // Physics
     _mass = data->getFloat("mass",1.0);
@@ -217,8 +220,16 @@ int Player::move(Vec2 dir, Size size, WindowGrid* windows) {
             Vec2 originIndices = windows->getGridIndices(_pos, size);
             Vec2 targetPosition = Vec2(_pos) + _targetDist;
             Vec2 targetIndices = windows->getGridIndices(targetPosition, size);
+
             if (!windows->getCanMoveBetween(originIndices.x, originIndices.y, targetIndices.x, targetIndices.y)) {
                 _targetDist.setZero();
+                // check if player is trying to switch scenes
+                if (targetIndices.x < 0) {
+                    return -1;
+                }
+                else if (targetIndices.x >= windows->getNHorizontal()) {
+                    return 1;
+                }
                 return 2;
             }
             _vel = dir * _speed;
@@ -232,20 +243,6 @@ int Player::move(Vec2 dir, Size size, WindowGrid* windows) {
                 return 2;
             }
             _vel = dir * _speed;
-        }
-        
-        // Move the ship position by the ship velocity.
-        // Velocity always remains unchanged.
-        // Also does not add velocity to position in the event that movement would go beyond the window building grid.
-        int atEdge = getEdge(sideGap, size);
-        if (atEdge == 0 && _pos.y + _targetDist.y >= 0 && _pos.y + _targetDist.y <= size.height) {
-            return 0;
-        } else {
-            _targetDist.setZero();
-            _vel.setZero();
-            if (atEdge != 0) {
-                return atEdge;
-            }
         }
     }
     return 2;

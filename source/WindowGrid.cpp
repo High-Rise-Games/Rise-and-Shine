@@ -56,8 +56,8 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 
 cugl::Vec2 WindowGrid::getGridIndices(cugl::Vec2 location, cugl::Size size) {
 
-	int x_coor = ((int)(location.x - sideGap) / _windowWidth);
-	int y_coor = (int)(location.y / _windowHeight);
+	int x_coor = floor((location.x - sideGap) / _windowWidth);
+	int y_coor = floor(location.y / _windowHeight);
 	return Vec2(x_coor, y_coor);
 	//return Vec2(-1, -1);
 }
@@ -65,7 +65,7 @@ cugl::Vec2 WindowGrid::getGridIndices(cugl::Vec2 location, cugl::Size size) {
 bool WindowGrid::getCanMoveBetween(int x_origin, int y_origin, int x_dest, int y_dest) {
 	int originMapIndex = x_origin + getNHorizontal() * y_origin;
 	int destMapIndex   = x_dest   + getNHorizontal() * y_dest;
-	if (destMapIndex < 0 || destMapIndex >= _map.size()) { // invalid destination index
+	if (x_dest < 0 || y_dest < 0 || x_dest >= getNHorizontal() || y_dest >= getNVertical()) { // invalid destination
 		return false;
 	}
 	bool impassableDest = _impassableTiles.count(_map.at(destMapIndex));

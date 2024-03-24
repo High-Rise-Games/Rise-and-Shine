@@ -46,6 +46,8 @@ public:
         /** Client is connecting to the host */
         JOIN,
     };
+
+    std::string character;
     
 protected:
     
@@ -53,6 +55,22 @@ protected:
     std::shared_ptr<cugl::AssetManager> _assets;
 
     std::shared_ptr<cugl::net::NetcodeConnection> _network;
+    
+    /** Whether we've quit this scene */
+    bool _quit;
+
+    /** Character select buttons */
+    std::shared_ptr<cugl::scene2::Button> _select_red;
+    std::shared_ptr<cugl::scene2::Button> _select_blue;
+    std::shared_ptr<cugl::scene2::Button> _select_green;
+    std::shared_ptr<cugl::scene2::Button> _select_yellow;
+    std::shared_ptr<cugl::scene2::SceneNode> _character_field_red;
+    std::shared_ptr<cugl::scene2::SceneNode> _character_field_blue;
+    std::shared_ptr<cugl::scene2::SceneNode> _character_field_green;
+    std::shared_ptr<cugl::scene2::SceneNode> _character_field_yellow;
+
+    /** HOST ONLY. List of all client's character selections, default mushroom */
+    std::vector<std::string> _all_characters;
 
     /** The game id label (for updating) */
     std::shared_ptr<cugl::scene2::Label> _gameid_host;
@@ -61,7 +79,10 @@ protected:
     std::shared_ptr<cugl::scene2::TextField> _gameid_client;
     
     /** The players label (for updating) */
-    std::shared_ptr<cugl::scene2::Label> _player;
+    std::shared_ptr<cugl::scene2::Label> _player_field;
+
+    /** The level label (for updating) */
+    std::shared_ptr<cugl::scene2::Label> _level_field;
 
     /** The menu button for starting a game */
     std::shared_ptr<cugl::scene2::Button> _startgame;
@@ -80,6 +101,9 @@ protected:
 
     /** The id of this player to be passed into the game controller */
     int _id;
+    
+    /** The level chosen for this gameplay*/
+    int _level;
 
 
 public:
@@ -98,7 +122,7 @@ public:
      * Dispose the scene and its children
      */
     void dispose() override;
-    
+
 
     bool init_host(const std::shared_ptr<cugl::AssetManager>& assets);
 
@@ -123,6 +147,9 @@ public:
 
     /** Returns the number of peers/players currently in this lobby. */
     int getNumPlayers() { return _network->getPeers().size() + 1; }
+
+    /** HOST ONLY. Returns all character selections for players in this lobby. */
+    std::vector<std::string>& getAllCharacters() { return _all_characters; }
     
     /**
      * Returns the network connection (as made by this scene)
@@ -167,6 +194,16 @@ public:
     
     // Sets the NetworkConfig of this object to be host of the network game
     void setHost(bool host) {_host = host; }
+    
+    // Sets the level chosen for current gameplay for host only.
+    void setLevel(int level) {_level = level; }
+
+    /**
+     * Returns true if the player quits the game.
+     *
+     * @return true if the player quits the game.
+     */
+    bool didQuit() const { return _quit; }
 
 private:
     

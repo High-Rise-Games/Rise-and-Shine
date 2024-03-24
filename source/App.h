@@ -11,6 +11,7 @@
 #include "GameplayController.h"
 #include "LoadingScene.h"
 #include "LobbyScene.h"
+#include "LevelScene.h"
 #include "MenuScene.h"
 #include "NetworkController.h"
 
@@ -28,6 +29,8 @@ protected:
         LOAD,
         /** The main menu scene */
         MENU,
+        /** The level select scene*/
+        LEVEL,
         /** The scene to host or join a game */
         LOBBY_CLIENT,
         LOBBY_HOST,
@@ -49,8 +52,10 @@ protected:
     
     /** The controller for the loading screen */
     LoadingScene _loading;
-    /** The menu scene to chose what to do */
+    /** The menu scene to choose what to do */
     MenuScene _mainmenu;
+    /** The level select scene to choose the level */
+    LevelScene _levelscene;
     /** The scene for hosting or joining a game */
     LobbyScene _lobby_host;
     
@@ -198,6 +203,16 @@ private:
      * @param timestep  The amount of time (in seconds) since the last frame
      */
     void updateMenuScene(float timestep);
+    
+    /**
+     * Inidividualized update method for the level select scene.
+     *
+     * This method keeps the primary {@link #update} from being a mess of switch
+     * statements. It also handles the transition logic from the level select scene.
+     *
+     * @param timestep  The amount of time (in seconds) since the last frame
+     */
+    void updateLevelScene(float timestep);
 
     /**
      * Inidividualized update method for the lobby scene.

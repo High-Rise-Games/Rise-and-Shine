@@ -177,20 +177,20 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
 
     // no ids given yet - to be assigned in initPlayers()
     _player = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _player->setIdleTexture(assets->get<Texture>("yellow"));
-    _player->setWipeTexture(assets->get<Texture>("yellow-wipe"));
+    _player->setIdleTexture(assets->get<Texture>("idle_flower"));
+    _player->setWipeTexture(assets->get<Texture>("wipe_flower"));
     
     _playerLeft = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerLeft->setIdleTexture(assets->get<Texture>("yellow"));
-    _playerLeft->setWipeTexture(assets->get<Texture>("yellow-wipe"));
+    _playerLeft->setIdleTexture(assets->get<Texture>("idle_flower"));
+    _playerLeft->setWipeTexture(assets->get<Texture>("wipe_flower"));
 
     _playerRight = std::make_shared <Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerRight->setIdleTexture(assets->get<Texture>("yellow"));
-    _playerRight->setWipeTexture(assets->get<Texture>("yellow-wipe"));
+    _playerRight->setIdleTexture(assets->get<Texture>("idle_flower"));
+    _playerRight->setWipeTexture(assets->get<Texture>("wipe_flower"));
 
     _playerAcross = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerAcross->setIdleTexture(assets->get<Texture>("yellow"));
-    _playerAcross->setWipeTexture(assets->get<Texture>("yellow-wipe"));
+    _playerAcross->setIdleTexture(assets->get<Texture>("idle_flower"));
+    _playerAcross->setWipeTexture(assets->get<Texture>("wipe_flower"));
 
     // Initialize random dirt generation
     updateDirtGenTime();
@@ -259,12 +259,6 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
 
     // starting position is most bottom left window
     Vec2 startingPos = Vec2(_windows.sideGap + (_windows.getPaneWidth() / 2), _windows.getPaneHeight());
-
-
-    // player ids for self, right, and left already assigned from earlier initPlayers call
-    _playerAcross = std::make_shared<Player>(3, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerAcross->setIdleTexture(assets->get<Texture>("yellow"));
-
 
     hostReset();
 
@@ -336,6 +330,52 @@ void GameplayController::hostReset() {
 }
 
 /**
+* HOST ONLY. Sets the character of the player given player's id.
+* Possible values: "Mushroom", "Frog", "Flower", "Chameleon"
+*/
+void GameplayController::setCharacters(std::vector<std::string>& chars) {
+    for (int id = 0; id < _numPlayers; id++) {
+        switch (id+1) {
+        case 1:
+            changeCharTexture(_player, chars[id]);
+            _player->setChar(chars[id]);
+            break;
+        case 2:
+            changeCharTexture(_playerRight, chars[id]);
+            _playerRight->setChar(chars[id]);
+            break;
+        case 3:
+            changeCharTexture(_playerAcross, chars[id]);
+            _playerAcross->setChar(chars[id]);
+            break;
+        default:
+            changeCharTexture(_playerLeft, chars[id]);
+            _playerLeft->setChar(chars[id]);
+            break;
+        }
+    }
+}
+
+void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std::string charChoice) {
+    if (charChoice == "Frog") {
+        player->setIdleTexture(_assets->get<Texture>("idle_frog"));
+        player->setWipeTexture(_assets->get<Texture>("wipe_frog"));
+    }
+    else if (charChoice == "Flower") {
+        player->setIdleTexture(_assets->get<Texture>("idle_flower"));
+        player->setWipeTexture(_assets->get<Texture>("wipe_flower"));
+    }
+    else if (charChoice == "Chameleon") {
+        player->setIdleTexture(_assets->get<Texture>("idle_chameleon"));
+        player->setWipeTexture(_assets->get<Texture>("wipe_chameleon"));
+    }
+    else {
+        player->setIdleTexture(_assets->get<Texture>("idle_mushroom"));
+        player->setWipeTexture(_assets->get<Texture>("wipe_mushroom"));
+    }
+}
+
+/**
 * Given the world positions, convert it to the board position
 * based off of grid coordinates. Ex. [2, 3] or [2.3, 3] if the
 * player is in the process of moving in between x = 2 and x = 3.
@@ -356,10 +396,9 @@ cugl::Vec2 GameplayController::getWorldPosition(cugl::Vec2 boardPos) {
 }
 
 /**
- * Method for the scene switch listener used in GameScene
+ * Method for the return to board button listener used in GameScene
  */
 void GameplayController::switchScene() {
-    int edge = _player->getEdge(_windows.sideGap, getSize());
     if (_curBoard != 0) {
         CULog("leaving other player's board");
         if (_ishost) {
@@ -368,30 +407,6 @@ void GameplayController::switchScene() {
         }
         else {
             _network.transmitMessage(getJsonSceneSwitch(true));
-        }
-    }
-    else if (edge != 0) {
-        CULog("entering other player's board: %d", edge);
-        if (_ishost) {
-            // if move is valid
-            int destinationId = _id + edge;
-            if (destinationId == 0) {
-                destinationId = 4;
-            }
-            else if (destinationId == 5) {
-                destinationId == 1;
-            }
-            if (destinationId <= _numPlayers) {
-                _allCurBoards[0] = edge;
-                _curBoard = edge;
-            }
-        }
-        else {
-            // first check that we are on an edge
-            // to make a valid scene switch request
-            if (_player->getEdge(_windows.sideGap, getSize()) != 0) {
-                _network.transmitMessage(getJsonSceneSwitch(false));
-            }
         }
     }
 }
@@ -433,6 +448,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
     const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
     json->init(JsonValue::Type::ObjectType);
     json->appendValue("player_id", static_cast<double>(id));
+    json->appendValue("player_char", player->getChar());
     json->appendValue("num_dirt", static_cast<double>(_allDirtAmounts[id - 1]));
     json->appendValue("curr_board", static_cast<double>(_allCurBoards[id - 1]));
 
@@ -515,6 +531,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
 * * Example board state:
  * {
     "player_id":  1,
+    "player_char": "Frog",
     "num_dirt": 1,
     "curr_board": 0,
     "player_x": 3.0,
@@ -546,6 +563,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
 */
 void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     int playerId = data->getInt("player_id", 0);
+    std::string playerChar = data->getString("player_char");
 
     std::shared_ptr<Player> player;
     WindowGrid* windows;
@@ -597,6 +615,12 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     const std::vector<std::shared_ptr<JsonValue>>& birdPos = data->get("bird_pos")->children();
     Vec2 birdBoardPos(birdPos[0]->asFloat(), birdPos[1]->asFloat());
     _curBirdPos = getWorldPosition(birdBoardPos);
+
+    // update the player's character textures if they are not already set
+    if (player->getChar() != playerChar) {
+        player->setChar(playerChar);
+        changeCharTexture(player, playerChar);
+    }
 
     // get x, y positions of player
     Vec2 playerBoardPos(data->getFloat("player_x", 0), data->getFloat("player_y", 0));
