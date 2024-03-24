@@ -73,6 +73,7 @@ void App::onShutdown() {
     _gamescene.dispose();
     _lobby_host.dispose();
     _lobby_client.dispose();
+    _levelscene.dispose();
     _assets = nullptr;
     _batch = nullptr;
 
@@ -148,6 +149,9 @@ void App::update(float timestep) {
         case MENU:
             updateMenuScene(timestep);
             break;
+        case LEVEL:
+            updateLevelScene(timestep);
+            break;
         case LOBBY_CLIENT:
             updateLobbyScene(timestep);
             break;
@@ -158,7 +162,6 @@ void App::update(float timestep) {
             updateGameScene(timestep);
             break;
     }
-
 
 }
 
@@ -190,6 +193,9 @@ void App::draw() {
         case MENU:
             _mainmenu.render(_batch);
             break;
+        case LEVEL:
+            _levelscene.render(_batch);
+            break;
         case LOBBY_HOST:
             _lobby_host.render(_batch);
             break;
@@ -218,6 +224,7 @@ void App::updateLoadingScene(float timestep) {
         _click_sound= _assets->get<cugl::Sound>("click");
         _loading.dispose(); // Permanently disables the input listeners in this mode
         _mainmenu.init(_assets);
+        _levelscene.init(_assets);
         _lobby_host.init_host(_assets);
         _lobby_client.init_client(_assets);
         _gamescene.init(_assets, getFPS());
@@ -244,10 +251,8 @@ void App::updateMenuScene(float timestep) {
             // play the click soud
             AudioEngine::get()->play("click", _click_sound);
             _mainmenu.setActive(false);
-            _lobby_host.setActive(true);
-            _lobby_host.setHost(true);
-            _lobby_client.setActive(false);
-            _scene = State::LOBBY_HOST;
+            _levelscene.setActive(true);
+            _scene = State::LEVEL;
             break;
         case MenuScene::Choice::JOIN:
             AudioEngine::get()->play("click", _click_sound);
@@ -264,6 +269,35 @@ void App::updateMenuScene(float timestep) {
 }
 
 /**
+ * Inidividualized update method for the level select scene.
+ *
+ * This method keeps the primary {@link #update} from being a mess of switch
+ * statements. It also handles the transition logic from the level select scene.
+ *
+ * @param timestep  The amount of time (in seconds) since the last frame
+ */
+void App::updateLevelScene(float timestep) {
+    _levelscene.update(timestep);
+    switch (_levelscene.getChoice()) {
+        case LevelScene::Choice::NEXT:
+            _levelscene.setActive(false);
+            _lobby_host.setActive(true);
+            _lobby_host.setHost(true);
+            _lobby_host.setLevel(std::max(_levelscene.getLevel(), 0));
+            _lobby_client.setActive(false);
+            _scene = State::LOBBY_HOST;
+            break;
+        case LevelScene::Choice::BACK:
+            _levelscene.setActive(false);
+            _mainmenu.setActive(true);
+            _scene = State::MENU;
+            break;
+        case LevelScene::Choice::NONE:
+            break;
+    }
+}
+
+/**
  * Inidividualized update method for the host scene.
  *
  * This method keeps the primary {@link #update} from being a mess of switch
@@ -274,6 +308,7 @@ void App::updateMenuScene(float timestep) {
 void App::updateLobbyScene(float timestep) {
     if (_mainmenu.getChoice() == MenuScene::HOST) {
         _lobby_host.update(timestep);
+
         switch (_lobby_host.getStatus()) {
             case LobbyScene::Status::ABORT:
                 AudioEngine::get()->play("click", _click_sound);
@@ -293,6 +328,7 @@ void App::updateLobbyScene(float timestep) {
                 _gameplay->setActive(true);
                 _gameplay->setId(_lobby_host.getId());
                 _gameplay->initHost(_assets);
+                _gameplay->setCharacters(_lobby_host.getAllCharacters());
                 CULog("my id: %d", _gameplay->getId());
                 break;
             case LobbyScene::Status::WAIT:
@@ -305,6 +341,7 @@ void App::updateLobbyScene(float timestep) {
         }
     } else {
         _lobby_client.update(timestep);
+
         switch (_lobby_client.getStatus()) {
             case LobbyScene::Status::ABORT:
                 AudioEngine::get()->play("click", _click_sound);

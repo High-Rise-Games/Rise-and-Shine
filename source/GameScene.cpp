@@ -45,8 +45,6 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
         return false;
     }
     
-    _quit = false;
-    
     // Start up the input handler
     _assets = assets;
     _dirtThrowInput.init();
@@ -238,6 +236,15 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->drawText(_dirtText, dirtTextTrans);
     batch->setColor(Color4::WHITE);
     
+    if (_gameController->getCurBoard() != 0) {
+        _tn_button->setVisible(true);
+        _tn_button->activate();
+        _tn_button->setDown(false);
+    }
+    else {
+        _tn_button->setVisible(false);
+        _tn_button->deactivate();
+    }
     _scene_UI->render(batch);
     
     

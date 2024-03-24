@@ -18,6 +18,8 @@ class Player {
 private:
     /** The player's id */
     int _id;
+    /** The player's selected character */
+    std::string _character;
     /** Player movement speed*/
     float _speed;
     /** Player distance to target of movement, set to 0 when reaches target*/
@@ -111,6 +113,12 @@ public:
 
     /** Sets the id of the player. */
     void setId(int id) { _id = id; }
+
+    /** Returns the character of this player. Frog, Mushroom, Flower, Chameleon. */
+    const std::string getChar() { return _character; }
+
+    /** Sets the character of the player. */
+    void setChar(std::string c) { _character = c; }
 
     /**
      * Returns the position of this ship.
