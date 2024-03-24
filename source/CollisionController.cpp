@@ -48,7 +48,9 @@ bool CollisionController::resolveCollision(const std::shared_ptr<Player>& player
 
             // Damage and/or stun the player as the last step
             player->setHealth(player->getHealth() - proj->getDamage());
-            player->setStunFrames(proj->getStunTime());
+            if (player->getStunFrames() == 0) {
+                player->setStunFrames(proj->getStunTime());
+            }
 
 
             // delete projectile from set after colliding

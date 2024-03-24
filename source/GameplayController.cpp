@@ -1140,7 +1140,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
         }
 
         // Check for collisions and play sound
-        if (player->getStunFrames() <= 0 && _collisions.resolveCollision(player, projectiles)) {
+        if (_collisions.resolveCollision(player, projectiles)) {
             AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
         }
         
