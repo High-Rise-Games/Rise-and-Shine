@@ -96,6 +96,7 @@ void Player::setIdleTexture(const std::shared_ptr<cugl::Texture>& texture) {
             rows++;
         }
         _idleSprite = SpriteSheet::alloc(texture, rows, _idleframecols, _idleframesize);
+        _radius = std::min(_idleSprite->getFrameSize().width, _idleSprite->getFrameSize().height)/2 * 0.1;
         _idleSprite->setFrame(1);
     }
 }
