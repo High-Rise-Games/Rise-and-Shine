@@ -29,7 +29,12 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 			 // TODO: set building constants?
 		 }
 		 else if (l->getString("name") == "Windows") {
-			 _map = l->get("data")->asIntArray();
+             std::vector<int> temp = l->get("data")->asIntArray();
+             for (int i = _nHorizontal*_nVertical; i>0; i=i-_nHorizontal) {
+                 for (int ii=_nHorizontal; ii>0; ii--) {
+                     _map.push_back(temp.at(i-ii)-1);
+                 }
+             }
 		 }
 	 }
 
