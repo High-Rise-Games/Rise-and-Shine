@@ -66,12 +66,20 @@ private:
     int _framesize;
     /** The sprite sheet frame for being at rest */
     int _frameflat;
-    /** on count down to 0, play one frame of sprite animation*/
+    /** total number of frames*/
     int _maxwipeFrame;
     // number of frames that the player is wiping for
     int _wipeFrames;
-    /** player idle texture */
-    std::shared_ptr<cugl::Texture> _idleTexture;
+    /** The number of columns in the sprite sheet */
+    int _idleframecols;
+    /** The number of frames in the sprite sheet */
+    int _idleframesize;
+    /** total number of frames */
+    int _maxidleFrame;
+    // number of frames that the player is idling for
+    int _idleFrames;
+    /** player idle sprite sheet */
+    std::shared_ptr<cugl::SpriteSheet> _idleSprite;
     /** Reference to the player wiping animation sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _wipeSprite;
     /** Radius of the ship in pixels (derived from sprite sheet) */
@@ -230,22 +238,36 @@ public:
      */
     int getMaxWipeFrames() const { return _maxwipeFrame; }
     
+    
     /**
      * Sets the player's movement freeze time to the given time in frames
      * .Used when player wipes dirt
-     *
-     * @param value The time in frames to freeze the player.
      */
     void advanceWipeFrame() {
-        int step = _maxwipeFrame / _framesize;
+        int step = _maxwipeFrame / (_framesize * 2);
         if (_wipeFrames < _maxwipeFrame) {
             if (_wipeFrames % step == 0) {
-                _wipeSprite->setFrame(_wipeFrames / step);
+                _wipeSprite->setFrame((int) (_wipeFrames / step) % _framesize);
+                CULog("drawing frame %d", (int) (_wipeFrames / step) % _framesize);
             }
             _wipeFrames += 1;
         } else {
             _wipeSprite->setFrame(_frameflat);
         }
+    };
+    
+    /**
+     * Advance animation for player idle
+     */
+    void advanceIdleFrame() {
+        int step = _maxidleFrame / _idleframesize;
+         if (_idleFrames == _maxidleFrame) {
+             _idleFrames = 0;
+        }
+        if (_idleFrames % step == 0) {
+            _idleSprite->setFrame((int) (_idleFrames / step));
+        }
+        _idleFrames = _idleFrames+1;
     };
     
     /**
@@ -261,28 +283,6 @@ public:
 
     /** Decreases the stun frames by one, unless it is already at 0 then does nothing. */
     void decreaseStunFrames();
-    
-    /**
-     * Returns true if the ship can fire its weapon
-     *
-     * Weapon fire is subjected to a cooldown. You can modify the
-     * value "fire rate" in the JSON file to make this faster or slower.
-     *
-     * @return true if the ship can fire
-     */
-    //bool canFireWeapon() const {
-    //    return (_refire > _firerate);
-    //}
-    
-    /**
-     * Resets the reload counter so the ship cannot fire again immediately.
-     *
-     * The ship must wait a number of frames before it can fire. This
-     * value is set by "fire rate" in the JSON file
-     */
-    //void reloadWeapon() {
-    //    _refire = 0;
-    //}
 
     /**
      * Returns the mass of the ship.
@@ -317,8 +317,8 @@ public:
      * //will be ignored.     *
      * @return the texture for the ship
      */
-    const std::shared_ptr<cugl::Texture>& getIdleTexture() const {
-        return _idleTexture;
+    const std::shared_ptr<cugl::SpriteSheet>& getIdleSprite() const {
+        return _idleSprite;
     }
 
     /**

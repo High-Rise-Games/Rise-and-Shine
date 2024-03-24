@@ -83,9 +83,9 @@ void Bird::move() {
     } else {
         _frametimer -= 1;
     }
-    float targetDist = target.distance(birdPosition);
-    if (targetDist - _speed > 0) {
-        birdPosition = birdPosition.add(_speed * (_toRight ? 1 : -1), 0);
+    target = target - birdPosition;
+    if ((target.x > 0 && _toRight) || (target.x < 0 && !_toRight)) {
+        birdPosition = birdPosition.add(_speed * target.normalize());
     } else {
         birdPosition = (_toRight ? _endPos : _startPos);
         _toRight = !_toRight;

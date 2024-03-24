@@ -22,7 +22,9 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     _speed = 10;
     _framecols = 7;
     _framesize = 7;
-    _frameflat = 1;
+    _frameflat = 0;
+    _idleframecols = 4;
+    _idleframesize = 8;
     
     // height of a window pane of the game board
     _windowWidth = windowWidth;
@@ -34,9 +36,13 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     _stunFrames = 0;
     
     // number of frames the player is frozen for because wiping dirt
-    _wipeFrames = 4;
+    _wipeFrames = 3;
     // number of total frames the player will play wipe animation
-    _maxwipeFrame = _wipeFrames * _framesize;
+    _maxwipeFrame = _wipeFrames * _framesize * 2;
+    
+    _idleFrames = 5;
+    _maxidleFrame = _idleFrames * _idleframesize;
+    _idleFrames = _maxwipeFrame/_idleframesize;
     
     // rotation property of player when player is stunned
     _stunRotate = 0;
@@ -87,8 +93,15 @@ void Player::decreaseStunFrames() {
  * @param texture   The texture for the sprite sheet
  */
 void Player::setIdleTexture(const std::shared_ptr<cugl::Texture>& texture) {
-    _idleTexture = texture;
-    _radius = _windowHeight / 1.5;
+    if (_idleframecols > 0) {
+        int rows = _idleframesize/_idleframecols;
+        if (_idleframesize % _idleframecols != 0) {
+            rows++;
+        }
+        _idleSprite = SpriteSheet::alloc(texture, rows, _idleframecols, _idleframesize);
+        _radius = std::min(_idleSprite->getFrameSize().width, _idleSprite->getFrameSize().height)/2 * 0.1;
+        _idleSprite->setFrame(1);
+    }
 }
 
 /**
@@ -102,10 +115,8 @@ void Player::setWipeTexture(const std::shared_ptr<cugl::Texture>& texture) {
         if (_framesize % _framecols != 0) {
             rows++;
         }
-        _sprite = SpriteSheet::alloc(texture, rows, _framecols, _framesize);
-        _sprite->setFrame(_frameflat);
-        _radius = std::max(_sprite->getFrameSize().width, _sprite->getFrameSize().height)/2;
-        _sprite->setOrigin(_sprite->getFrameSize()/2);
+        _wipeSprite = SpriteSheet::alloc(texture, rows, _framecols, _framesize);
+        _wipeSprite->setFrame(_frameflat);
     }
 }
 
@@ -133,9 +144,9 @@ const cugl::Vec2& Player::getCoorsFromPos(const float windowHeight, const float 
 void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds, WindowGrid windows) {
     // Transform to place the ship, start with centered version
     Affine2 player_trans;
-    if (_idleTexture && _wipeFrames == _maxwipeFrame) {
-        player_trans.translate( -(int)(_idleTexture->getWidth())/2 , -(int)(_idleTexture->getHeight()) / 2);
-        double player_scale = windows.getPaneHeight() / _idleTexture->getHeight();
+    if (_idleSprite && _wipeFrames == _maxwipeFrame) {
+        player_trans.translate( -(int)(_idleSprite->getFrameSize().width)/2 , -(int)(_idleSprite->getFrameSize().height) / 2);
+        double player_scale = windows.getPaneHeight() / _idleSprite->getFrameSize().height;
         player_trans.scale(player_scale);
     }
     else if (_wipeSprite && _wipeFrames < _maxwipeFrame) {
@@ -152,32 +163,9 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds, 
         player_trans.rotate(0);
     }
     player_trans.translate(_pos);
-    if (_idleTexture && _wipeFrames == _maxwipeFrame) {
+    if (_idleSprite && _wipeFrames == _maxwipeFrame) {
         // CULog("drawing player at (%f, %f)", _pos.x, _pos.y);
-        batch->draw(_idleTexture, Vec2(), player_trans);
-    }
-    else if (_wipeSprite && _wipeFrames < _maxwipeFrame) {
-        _wipeSprite->draw(batch, player_trans);
-    }
-
-
-        if (getStunFrames() > 0) {
-            _stunRotate += 0.1;
-            player_trans.rotate(_stunRotate * M_PI);
-        }
-        else {
-            _stunRotate = 0;
-            player_trans.rotate(0);
-        }
-
-        player_trans.translate(_pos);
-        // Transform to place the shadow, and its color
-        //Affine2 shadtrans = player_trans;
-        //shadtrans.translate(_shadows,-_shadows);
-        //Color4f shadow(0,0,0,0.5f);
-    if (_idleTexture && _wipeFrames == _maxwipeFrame) {
-        // CULog("drawing player at (%f, %f)", _pos.x, _pos.y);
-        batch->draw(_idleTexture, Vec2(), player_trans);
+        _idleSprite->draw(batch, player_trans);
     }
     else if (_wipeSprite && _wipeFrames < _maxwipeFrame) {
         _wipeSprite->draw(batch, player_trans);
@@ -229,18 +217,20 @@ int Player::move(Vec2 dir, Size size, WindowGrid* windows) {
         _vel.setZero();
         if (dir.x != 0.0f) {
             _targetDist = dir * _windowHeight;
+            Vec2 originIndices = windows->getGridIndices(_pos, size);
             Vec2 targetPosition = Vec2(_pos) + _targetDist;
             Vec2 targetIndices = windows->getGridIndices(targetPosition, size);
-            if (!windows->getCanMoveTo(targetIndices.x, targetIndices.y)) {
+            if (!windows->getCanMoveBetween(originIndices.x, originIndices.y, targetIndices.x, targetIndices.y)) {
                 _targetDist.setZero();
                 return 2;
             }
             _vel = dir * _speed;
         } else if (dir.y != 0.0f) {
             _targetDist = dir * _windowWidth;
+            Vec2 originIndices = windows->getGridIndices(_pos, size);
             Vec2 targetPosition = Vec2(_pos) + _targetDist;
             Vec2 targetIndices = windows->getGridIndices(targetPosition, size);
-            if (!windows->getCanMoveTo(targetIndices.x, targetIndices.y)) {
+            if (!windows->getCanMoveBetween(originIndices.x, originIndices.y, targetIndices.x, targetIndices.y)) {
                 _targetDist.setZero();
                 return 2;
             }
