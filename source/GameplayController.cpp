@@ -330,32 +330,39 @@ void GameplayController::hostReset() {
 * HOST ONLY. Sets the character of the player given player's id.
 * Possible values: "Mushroom", "Frog", "Flower", "Chameleon"
 */
-void GameplayController::setCharacter(std::string ch, int id) {
-    std::shared_ptr<Player> player;
-    switch (id) {
-    case 1:
-        player = _player;
-        break;
-    case 2:
-        player = _playerRight;
-        break;
-    case 3:
-        player = _playerAcross;
-        break;
-    default:
-        player = _playerLeft;
-        break;
+void GameplayController::setCharacters(std::vector<std::string>& chars) {
+    for (int id = 0; id < _numPlayers; id++) {
+        switch (id+1) {
+        case 1:
+            changeCharTexture(_player, chars[id]);
+            _player->setChar(chars[id]);
+            break;
+        case 2:
+            changeCharTexture(_playerRight, chars[id]);
+            _playerRight->setChar(chars[id]);
+            break;
+        case 3:
+            changeCharTexture(_playerAcross, chars[id]);
+            _playerAcross->setChar(chars[id]);
+            break;
+        default:
+            changeCharTexture(_playerLeft, chars[id]);
+            _playerLeft->setChar(chars[id]);
+            break;
+        }
     }
+}
 
-    if (ch == "Frog") {
+void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std::string charChoice) {
+    if (charChoice == "Frog") {
         player->setIdleTexture(_assets->get<Texture>("idle_frog"));
         player->setWipeTexture(_assets->get<Texture>("wipe_frog"));
     }
-    else if (ch == "Flower") {
+    else if (charChoice == "Flower") {
         player->setIdleTexture(_assets->get<Texture>("idle_flower"));
         player->setWipeTexture(_assets->get<Texture>("wipe_flower"));
     }
-    else if (ch == "Chameleon") {
+    else if (charChoice == "Chameleon") {
         player->setIdleTexture(_assets->get<Texture>("idle_chameleon"));
         player->setWipeTexture(_assets->get<Texture>("wipe_chameleon"));
     }
@@ -463,6 +470,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
     const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
     json->init(JsonValue::Type::ObjectType);
     json->appendValue("player_id", static_cast<double>(id));
+    json->appendValue("player_char", player->getChar());
     json->appendValue("num_dirt", static_cast<double>(_allDirtAmounts[id - 1]));
     json->appendValue("curr_board", static_cast<double>(_allCurBoards[id - 1]));
 
@@ -545,6 +553,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
 * * Example board state:
  * {
     "player_id":  1,
+    "player_char": "Frog",
     "num_dirt": 1,
     "curr_board": 0,
     "player_x": 3.0,
@@ -576,6 +585,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
 */
 void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     int playerId = data->getInt("player_id", 0);
+    std::string playerChar = data->getString("player_char");
 
     std::shared_ptr<Player> player;
     WindowGrid* windows;
@@ -627,6 +637,12 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     const std::vector<std::shared_ptr<JsonValue>>& birdPos = data->get("bird_pos")->children();
     Vec2 birdBoardPos(birdPos[0]->asFloat(), birdPos[1]->asFloat());
     _curBirdPos = getWorldPosition(birdBoardPos);
+
+    // update the player's character textures if they are not already set
+    if (player->getChar() != playerChar) {
+        player->setChar(playerChar);
+        changeCharTexture(player, playerChar);
+    }
 
     // get x, y positions of player
     Vec2 playerBoardPos(data->getFloat("player_x", 0), data->getFloat("player_y", 0));

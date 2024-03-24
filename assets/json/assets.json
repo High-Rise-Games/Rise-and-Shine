@@ -996,6 +996,21 @@
                                 "priority": 4
                             }
                         },
+                        "level_field": {
+                            "type": "Widget",
+                            "data": {
+                                "key": "textfield",
+                                "variables": {
+                                    "size": [ 200, 100 ],
+                                    "text": "1",
+                                    "halign": "center",
+                                    "framecolor": "#000088"
+                                }
+                            },
+                            "layout": {
+                                "priority": 5
+                            }
+                        },
                         "start": {
                             "type": "Widget",
                             "data": {
@@ -1007,7 +1022,7 @@
                                 }
                             },
                             "layout": {
-                                "priority": 5,
+                                "priority": 6,
                                 "padding": [ 20, 0, 20, 20 ]
                             }
                         }
@@ -1359,6 +1374,21 @@
                             },
                             "layout": {
                                 "priority": 4
+                            }
+                        },
+                        "level_field": {
+                            "type": "Widget",
+                            "data": {
+                                "key": "textfield",
+                                "variables": {
+                                    "size": [ 200, 100 ],
+                                    "text": "1",
+                                    "halign": "center",
+                                    "framecolor": "#000088"
+                                }
+                            },
+                            "layout": {
+                                "priority": 5
                             }
                         },
                         "start": {

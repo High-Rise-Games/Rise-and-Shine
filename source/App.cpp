@@ -308,6 +308,7 @@ void App::updateLevelScene(float timestep) {
 void App::updateLobbyScene(float timestep) {
     if (_mainmenu.getChoice() == MenuScene::HOST) {
         _lobby_host.update(timestep);
+
         switch (_lobby_host.getStatus()) {
             case LobbyScene::Status::ABORT:
                 AudioEngine::get()->play("click", _click_sound);
@@ -326,8 +327,8 @@ void App::updateLobbyScene(float timestep) {
                 _gameplay->setHost(true);
                 _gameplay->setActive(true);
                 _gameplay->setId(_lobby_host.getId());
-                _gameplay->setCharacter(_lobby_host.character, _gameplay->getId());
                 _gameplay->initHost(_assets);
+                _gameplay->setCharacters(_lobby_host.getAllCharacters());
                 CULog("my id: %d", _gameplay->getId());
                 break;
             case LobbyScene::Status::WAIT:
@@ -340,6 +341,7 @@ void App::updateLobbyScene(float timestep) {
         }
     } else {
         _lobby_client.update(timestep);
+
         switch (_lobby_client.getStatus()) {
             case LobbyScene::Status::ABORT:
                 AudioEngine::get()->play("click", _click_sound);

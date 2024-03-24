@@ -91,6 +91,9 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Initialize the scene to a locked width
     
     setHost(true);
+
+    // host only instantiates the all characters list, which stores char selections of all players in the lobby
+    _all_characters = std::vector<std::string>(4);
     
     Size dimen = Application::get()->getDisplaySize();
     dimen *= SCENE_HEIGHT/dimen.height;
@@ -99,6 +102,8 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     } else if (!Scene2::init(dimen)) {
         return false;
     }
+
+    _quit = false;
     
     // Start up the input handler
     _assets = assets;
@@ -122,7 +127,8 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     _startgame = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("host_bottom_start"));
     _backout = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("host_back"));
     _gameid_host = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("host_bottom_game_field_text"));
-    _player = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("host_bottom_players_field_text"));
+    _player_field = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("host_bottom_players_field_text"));
+    _level_field = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("host_bottom_level_field_text"));
     _status = Status::WAIT;
     _id = 1;
     
@@ -131,6 +137,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
         if (down) {
             disconnect();
             _status = Status::ABORT;
+            _quit = true;
         }
     });
 
@@ -219,6 +226,7 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
     
     // Start up the input handler
     _assets = assets;
+    _quit = false;
     
     std::shared_ptr<scene2::SceneNode> scene;
     
@@ -239,14 +247,17 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
     _startgame = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("client_bottom_start"));
     _backout = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("client_back"));
     _gameid_client = std::dynamic_pointer_cast<scene2::TextField>(_assets->get<scene2::SceneNode>("client_bottom_game_field_text"));
-    _player = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("client_bottom_players_field_text"));
+    _player_field = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("client_bottom_players_field_text"));
+    _level_field = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("client_bottom_level_field_text"));
     _status = Status::IDLE;
     _id = 0;
+    _level = -1;
     
     _backout->addListener([this](const std::string& name, bool down) {
         if (down) {
             disconnect();
             _status = Status::ABORT;
+            _quit = true;
         }
     });
 
@@ -345,20 +356,51 @@ void LobbyScene::dispose() {
  * @param timestep  The amount of time (in seconds) since the last frame
  */
 void LobbyScene::update(float timestep) {
-    // We have written this for you this time
+    _level_field->setText(std::to_string(_level));
+
+    if (isHost()) {
+        _all_characters[0] = character;
+    }
+
     if (_network) {
         _network->receive([this](const std::string source,
-                                 const std::vector<std::byte>& data) {
-            processData(source,data);
-        });
+            const std::vector<std::byte>& data) {
+                processData(source, data);
+            });
         checkConnection();
-        
+
         if (isHost()) {
             configureStartButton();
         }
-        
-        _player->setText(std::to_string(_network->getPeers().size()+1));
 
+        _player_field->setText(std::to_string(_network->getPeers().size() + 1));
+        
+        if (isHost()) {
+            // sends level data across network
+            const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+            json->init(JsonValue::Type::ObjectType);
+            json->appendValue("level", std::to_string(_level));
+
+            NetcodeSerializer netSerializer;
+            netSerializer.writeJson(json);
+            const std::vector<std::byte>& levelJSON = netSerializer.serialize();
+            _network->broadcast(levelJSON);
+
+            netSerializer.reset();
+        }
+        else if ((!isHost() && _status == WAIT) || isHost()) {
+            // sends current character selection across network
+            const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+            json->init(JsonValue::Type::ObjectType);
+            json->appendValue("id", std::to_string(_id));
+            json->appendValue("char", character);
+
+            NetcodeSerializer netSerializer;
+            netSerializer.writeJson(json);
+            const std::vector<std::byte>& charJSON = netSerializer.serialize();
+            _network->broadcast(charJSON);
+            netSerializer.reset();
+        }
     }
 }
 
@@ -375,17 +417,31 @@ void LobbyScene::update(float timestep) {
  */
 void LobbyScene::processData(const std::string source,
                             const std::vector<std::byte>& data) {
-    
-    if (isHost()) {
-        
-    } else {
-        if (data.at(0) == std::byte{0xff} && _status != START) {
-            _status = START;
-            _level = static_cast<int>(data.at(1));
-        }
+    if (isHost() && _status == START) {
+        return;
     }
-    
-    
+    if (!isHost() && data.at(0) == std::byte{ 0xff } && _status != START) {
+        // read game start message sent from host
+        _status = START;
+        return;
+    }
+
+    NetcodeDeserializer netDeserializer;
+    netDeserializer.receive(data);
+    std::shared_ptr<JsonValue> jsonData = netDeserializer.readJson();
+
+    if (jsonData->has("level") && !isHost()) {
+        // read level message sent from host and update level
+        _level = std::stoi(jsonData->getString("level"));
+    }
+    else if (jsonData->has("char") && isHost()) {
+        // read character selection message sent from clients and update internal state
+        std::string char_selection = jsonData->getString("char");
+        int player_id = std::stoi(jsonData->getString("id"));
+        _all_characters[player_id - 1] = char_selection;
+    }
+
+    netDeserializer.reset();
 }
 
 
@@ -555,7 +611,6 @@ void LobbyScene::startGame() {
 
         // sends data indicating game has started
         byteVec.push_back(std::byte{0xff});
-        byteVec.push_back(static_cast<std::byte>(_level));
         _network->broadcast(byteVec);
     }
     
@@ -607,37 +662,47 @@ void LobbyScene::configureStartButton() {
  * @param value whether the scene is currently active
  */
 void LobbyScene::setActive(bool value) {
+    if (isActive() != value) {
+        if (value) {
+            _quit = false;
+
+            _backout->activate();
+            _select_red->activate();
+            _select_blue->activate();
+            _select_green->activate();
+            _select_yellow->activate();
+            _select_red->setToggle(true);
+            _select_blue->setToggle(true);
+            _select_green->setToggle(true);
+            _select_yellow->setToggle(true);
+            _select_red->setDown(true);
+        }
+        else {
+            _startgame->deactivate();
+            _backout->deactivate();
+            _select_red->deactivate();
+            _select_blue->deactivate();
+            _select_green->deactivate();
+            _select_yellow->deactivate();
+            // If any were pressed, reset them
+            _startgame->setDown(false);
+            _backout->setDown(false);
+            _select_red->setDown(false);
+            _select_blue->setDown(false);
+            _select_green->setDown(false);
+            _select_yellow->setDown(false);
+        }
+    }
+    
     if (isHost()) {
         if (isActive() != value) {
             Scene2::setActive(value);
             if (value) {
                 _status = WAIT;
                 configureStartButton();
-                _backout->activate();
-                _select_red->activate();
-                _select_blue->activate();
-                _select_green->activate();
-                _select_yellow->activate();
-                _select_red->setToggle(true);
-                _select_blue->setToggle(true);
-                _select_green->setToggle(true);
-                _select_yellow->setToggle(true);
-                _select_red->setDown(true);
+                _player_field->setText("1");
+                _level_field->setText("1");
                 connect();
-            } else {
-                _startgame->deactivate();
-                _backout->deactivate();
-                _select_red->deactivate();
-                _select_blue->deactivate();
-                _select_green->deactivate();
-                _select_yellow->deactivate();
-                // If any were pressed, reset them
-                _startgame->setDown(false);
-                _backout->setDown(false);
-                _select_red->setDown(false);
-                _select_blue->setDown(false);
-                _select_green->setDown(false);
-                _select_yellow->setDown(false);
             }
         }
     } else if (!isHost()) {
@@ -646,35 +711,11 @@ void LobbyScene::setActive(bool value) {
             if (value) {
                 _status = IDLE;
                 _gameid_client->activate();
-                _backout->activate();
-                _select_red->activate();
-                _select_blue->activate();
-                _select_green->activate();
-                _select_yellow->activate();
-                _select_red->setToggle(true);
-                _select_blue->setToggle(true);
-                _select_green->setToggle(true);
-                _select_yellow->setToggle(true);
-                _select_red->setDown(true);
                 _network = nullptr;
-                _player->setText("1");
+                _player_field->setText("1");
+                _level_field->setText("1");
                 configureStartButton();
                 // Don't reset the room id
-            } else {
-                _gameid_client->deactivate();
-                _startgame->deactivate();
-                _backout->deactivate();
-                _select_red->deactivate();
-                _select_blue->deactivate();
-                _select_green->deactivate();
-                _select_yellow->deactivate();
-                // If any were pressed, reset them
-                _startgame->setDown(false);
-                _backout->setDown(false);
-                _select_red->setDown(false);
-                _select_blue->setDown(false);
-                _select_green->setDown(false);
-                _select_yellow->setDown(false);
             }
         }
 

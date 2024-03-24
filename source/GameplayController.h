@@ -268,10 +268,15 @@ public:
     void setId(int id) { _id = id; }
 
     /**
-    * HOST ONLY. Sets the character of the player given player's id.
-    * Possible values: "Mushroom", "Frog", "Banana", "Chameleon"
+    * HOST ONLY. Sets the character of all players.
     */
-    void setCharacter(std::string ch, int id);
+    void setCharacters(std::vector<std::string>& chars);
+
+    /**
+     * Sets the character texture of the given player.
+     * Possible values: "Mushroom", "Frog", "Flower", "Chameleon"
+     */
+    void changeCharTexture(std::shared_ptr<Player>& player, std::string charChoice);
 
     /** Returns the size of the scene */
     cugl::Size getSize() { return _size; }

@@ -45,8 +45,6 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
         return false;
     }
     
-    _quit = false;
-    
     // Start up the input handler
     _assets = assets;
     _dirtThrowInput.init();

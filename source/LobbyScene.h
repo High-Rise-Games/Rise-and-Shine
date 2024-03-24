@@ -55,6 +55,9 @@ protected:
     std::shared_ptr<cugl::AssetManager> _assets;
 
     std::shared_ptr<cugl::net::NetcodeConnection> _network;
+    
+    /** Whether we've quit this scene */
+    bool _quit;
 
     /** Character select buttons */
     std::shared_ptr<cugl::scene2::Button> _select_red;
@@ -66,6 +69,9 @@ protected:
     std::shared_ptr<cugl::scene2::SceneNode> _character_field_green;
     std::shared_ptr<cugl::scene2::SceneNode> _character_field_yellow;
 
+    /** HOST ONLY. List of all client's character selections, default mushroom */
+    std::vector<std::string> _all_characters;
+
     /** The game id label (for updating) */
     std::shared_ptr<cugl::scene2::Label> _gameid_host;
     
@@ -73,7 +79,10 @@ protected:
     std::shared_ptr<cugl::scene2::TextField> _gameid_client;
     
     /** The players label (for updating) */
-    std::shared_ptr<cugl::scene2::Label> _player;
+    std::shared_ptr<cugl::scene2::Label> _player_field;
+
+    /** The level label (for updating) */
+    std::shared_ptr<cugl::scene2::Label> _level_field;
 
     /** The menu button for starting a game */
     std::shared_ptr<cugl::scene2::Button> _startgame;
@@ -138,6 +147,9 @@ public:
 
     /** Returns the number of peers/players currently in this lobby. */
     int getNumPlayers() { return _network->getPeers().size() + 1; }
+
+    /** HOST ONLY. Returns all character selections for players in this lobby. */
+    std::vector<std::string>& getAllCharacters() { return _all_characters; }
     
     /**
      * Returns the network connection (as made by this scene)
@@ -183,8 +195,15 @@ public:
     // Sets the NetworkConfig of this object to be host of the network game
     void setHost(bool host) {_host = host; }
     
-    // Sets the level chosen for current gameplay
+    // Sets the level chosen for current gameplay for host only.
     void setLevel(int level) {_level = level; }
+
+    /**
+     * Returns true if the player quits the game.
+     *
+     * @return true if the player quits the game.
+     */
+    bool didQuit() const { return _quit; }
 
 private:
     
