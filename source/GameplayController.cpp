@@ -667,7 +667,7 @@ void GameplayController::processMovementRequest(std::shared_ptr<cugl::JsonValue>
     }
 
     // Check if player is stunned for this frame
-    if (player->getStunFrames() == 0 && player->getWipeFrames() == player->getMaxFrames()) {
+    if (player->getStunFrames() == 0 && player->getWipeFrames() == player->getMaxWipeFrames()) {
         // Move the player, ignoring collisions
         int moveResult = player->move(moveVec, getSize(), windows->sideGap);
         if (moveResult == -1 || moveResult == 1) {
@@ -1028,7 +1028,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         }
         if (_ishost) {
             // Check if player is stunned for this frame
-            if (_player->getStunFrames() == 0 && _player->getWipeFrames() == _player->getMaxFrames()) {
+            if (_player->getStunFrames() == 0 && _player->getWipeFrames() == _player->getMaxWipeFrames()) {
                 // Move the player, ignoring collisions
                 int moveResult = _player->move(_input.getDir(), getSize(), _windows.sideGap);
                 if (moveResult == -1 && _numPlayers == 4) {
@@ -1082,7 +1082,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
             player->move();
         }
         
-        if (player->getWipeFrames() < player->getMaxFrames()) {
+        if (player->getWipeFrames() < player->getMaxWipeFrames()) {
             player->advanceWipeFrame();
         }
         else {

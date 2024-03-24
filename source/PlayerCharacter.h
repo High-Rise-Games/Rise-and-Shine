@@ -67,7 +67,7 @@ private:
     /** The sprite sheet frame for being at rest */
     int _frameflat;
     /** on count down to 0, play one frame of sprite animation*/
-    int _maxframe;
+    int _maxwipeFrame;
     // number of frames that the player is wiping for
     int _wipeFrames;
     /** player idle texture */
@@ -228,7 +228,7 @@ public:
     /**
      * Returns the current player's maximum wipe time in frames.
      */
-    int getMaxFrames() const { return _maxframe; }
+    int getMaxWipeFrames() const { return _maxwipeFrame; }
     
     /**
      * Sets the player's movement freeze time to the given time in frames
@@ -237,8 +237,8 @@ public:
      * @param value The time in frames to freeze the player.
      */
     void advanceWipeFrame() {
-        int step = _maxframe / _framesize;
-        if (_wipeFrames < _maxframe) {
+        int step = _maxwipeFrame / _framesize;
+        if (_wipeFrames < _maxwipeFrame) {
             if (_wipeFrames % step == 0) {
                 _wipeSprite->setFrame(_wipeFrames / step);
             }

@@ -36,7 +36,7 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     // number of frames the player is frozen for because wiping dirt
     _wipeFrames = 4;
     // number of total frames the player will play wipe animation
-    _maxframe = _wipeFrames * _framesize;
+    _maxwipeFrame = _wipeFrames * _framesize;
     
     // rotation property of player when player is stunned
     _stunRotate = 0;
@@ -130,12 +130,12 @@ const cugl::Vec2& Player::getCoorsFromPos(const float windowHeight, const float 
 void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds, WindowGrid windows) {
     // Transform to place the ship, start with centered version
     Affine2 player_trans;
-    if (_idleTexture && _wipeFrames == _maxframe) {
+    if (_idleTexture && _wipeFrames == _maxwipeFrame) {
         player_trans.translate( -(int)(_idleTexture->getWidth())/2 , -(int)(_idleTexture->getHeight()) / 2);
         double player_scale = windows.getPaneHeight() / _idleTexture->getHeight();
         player_trans.scale(player_scale);
     }
-    else if (_wipeSprite && _wipeFrames < _maxframe) {
+    else if (_wipeSprite && _wipeFrames < _maxwipeFrame) {
         player_trans.translate( -(int)(_wipeSprite->getFrameSize().width)/2 , -(int)(_wipeSprite->getFrameSize().height) / 2);
         double player_scale = windows.getPaneHeight() / _wipeSprite->getFrameSize().height;
         player_trans.scale(player_scale);
@@ -149,11 +149,11 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds, 
         player_trans.rotate(0);
     }
     player_trans.translate(_pos);
-    if (_idleTexture && _wipeFrames == _maxframe) {
+    if (_idleTexture && _wipeFrames == _maxwipeFrame) {
         // CULog("drawing player at (%f, %f)", _pos.x, _pos.y);
         batch->draw(_idleTexture, Vec2(), player_trans);
     }
-    else if (_wipeSprite && _wipeFrames < _maxframe) {
+    else if (_wipeSprite && _wipeFrames < _maxwipeFrame) {
         _wipeSprite->draw(batch, player_trans);
     }
 }
