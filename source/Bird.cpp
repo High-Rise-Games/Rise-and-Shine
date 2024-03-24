@@ -23,7 +23,6 @@ bool Bird::init(const cugl::Vec2 startP, const cugl::Vec2 endP, const float spee
 
 // sets up the sprite image
 void Bird::setTexture(const std::shared_ptr<cugl::Texture>& texture) {
-    CULog("setting up bird");
     if (_framecols > 0) {
         int rows = _framesize/_framecols;
         if (_framesize % _framecols != 0) {

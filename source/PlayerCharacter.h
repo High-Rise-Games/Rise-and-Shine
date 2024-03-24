@@ -38,17 +38,9 @@ private:
     // used to discretize movement
     float _windowWidth;
     
-    // number of frames that the player is wiping for
-    int _wipeFrames;
        
     // TODO: remove unnecessary fields from here and constants json file
     // The following are protected, because they have no accessors
-    /** Current angle of the ship */
-    //float _ang;
-    /** Accumulator variable to turn faster as key is held down */
-    //float _dang;
-    /** Countdown to limit refire rate */
-    //int _refire;
     /** The amount of health this ship has */
     int _health;
     /** The amount of time in frames for the player to be stunned */
@@ -60,32 +52,36 @@ private:
     // JSON DEFINED ATTRIBUTES
     /** Mass/weight of the ship. Used in collisions. */
     float _mass;
-    /** The number of frames until we can fire again */
-    //int _firerate;
-    /** The number of columns in the sprite sheet */
-    //int _framecols;
-    /** The number of frames in the sprite sheet */
-    //int _framesize;
-    /** The sprite sheet frame for being at rest */
-    //int _frameflat;
     /** The shadow offset in pixels */
     //float _shadows;
     /** Amount to adjust forward movement from input */
     float _thrust;
     /** The maximum allowable velocity */
     float _maxvel;
-    /** The banking factor */
-    //float _banking;
-    /** The maximum banking amount */
-    //float _maxbank;
-    /** Amount to dampedn angular movement over time */
-    //float _angdamp;
     
     // Asset references. These should be set by GameScene
-    /** player texture */
-    std::shared_ptr<cugl::Texture> _texture;
-    /** Reference to the ships sprite sheet */
-    //std::shared_ptr<cugl::SpriteSheet> _sprite;
+    /** The number of columns in the sprite sheet */
+    int _framecols;
+    /** The number of frames in the sprite sheet */
+    int _framesize;
+    /** The sprite sheet frame for being at rest */
+    int _frameflat;
+    /** total number of frames*/
+    int _maxwipeFrame;
+    // number of frames that the player is wiping for
+    int _wipeFrames;
+    /** The number of columns in the sprite sheet */
+    int _idleframecols;
+    /** The number of frames in the sprite sheet */
+    int _idleframesize;
+    /** total number of frames */
+    int _maxidleFrame;
+    // number of frames that the player is idling for
+    int _idleFrames;
+    /** player idle sprite sheet */
+    std::shared_ptr<cugl::SpriteSheet> _idleSprite;
+    /** Reference to the player wiping animation sprite sheet */
+    std::shared_ptr<cugl::SpriteSheet> _wipeSprite;
     /** Radius of the ship in pixels (derived from sprite sheet) */
     float _radius;
 
@@ -231,22 +227,47 @@ public:
     void setStunFrames(int value) { _stunFrames = value; }
     
     /**
-     * Sets the player's wiping time to the given time in frames to freeze the player.
+     * Sets the player's wiping time to the max  frames to freeze the player.
      *
      * @param value The time in frames to stun the player.
      */
-    void setWipeFrames(int value) { _wipeFrames = value; }
+    void resetWipeFrames() { _wipeFrames = 0; }
+    
+    /**
+     * Returns the current player's maximum wipe time in frames.
+     */
+    int getMaxWipeFrames() const { return _maxwipeFrame; }
+    
     
     /**
      * Sets the player's movement freeze time to the given time in frames
      * .Used when player wipes dirt
-     *
-     * @param value The time in frames to freeze the player.
      */
-    void decreaseWipeFrames() {
-        if (_wipeFrames > 0) {
-            _wipeFrames -= 1;
+    void advanceWipeFrame() {
+        int step = _maxwipeFrame / (_framesize * 2);
+        if (_wipeFrames < _maxwipeFrame) {
+            if (_wipeFrames % step == 0) {
+                _wipeSprite->setFrame((int) (_wipeFrames / step) % _framesize);
+                CULog("drawing frame %d", (int) (_wipeFrames / step) % _framesize);
+            }
+            _wipeFrames += 1;
+        } else {
+            _wipeSprite->setFrame(_frameflat);
         }
+    };
+    
+    /**
+     * Advance animation for player idle
+     */
+    void advanceIdleFrame() {
+        int step = _maxidleFrame / _idleframesize;
+         if (_idleFrames == _maxidleFrame) {
+             _idleFrames = 0;
+        }
+        if (_idleFrames % step == 0) {
+            _idleSprite->setFrame((int) (_idleFrames / step));
+        }
+        _idleFrames = _idleFrames+1;
     };
     
     /**
@@ -262,28 +283,6 @@ public:
 
     /** Decreases the stun frames by one, unless it is already at 0 then does nothing. */
     void decreaseStunFrames();
-    
-    /**
-     * Returns true if the ship can fire its weapon
-     *
-     * Weapon fire is subjected to a cooldown. You can modify the
-     * value "fire rate" in the JSON file to make this faster or slower.
-     *
-     * @return true if the ship can fire
-     */
-    //bool canFireWeapon() const {
-    //    return (_refire > _firerate);
-    //}
-    
-    /**
-     * Resets the reload counter so the ship cannot fire again immediately.
-     *
-     * The ship must wait a number of frames before it can fire. This
-     * value is set by "fire rate" in the JSON file
-     */
-    //void reloadWeapon() {
-    //    _refire = 0;
-    //}
 
     /**
      * Returns the mass of the ship.
@@ -311,19 +310,19 @@ public:
     
 #pragma mark Graphics
     /**
-     * Returns the texture for the ship
+     * Returns the idle texture for the player
      *
      * //The size and layout of the sprite sheet should already be specified
      * //in the initializing JSON. Otherwise, the contents of the sprite sheet
      * //will be ignored.     *
      * @return the texture for the ship
      */
-    const std::shared_ptr<cugl::Texture>& getTexture() const {
-        return _texture;
+    const std::shared_ptr<cugl::SpriteSheet>& getIdleSprite() const {
+        return _idleSprite;
     }
 
     /**
-     * Sets the texture for this ship.
+     * Sets the idle texture for the player.
      *
      * The texture should be formated as a sprite sheet, and the size and 
      * layout of the sprite sheet should already be specified in the 
@@ -332,7 +331,29 @@ public:
      *
      * @param texture   The texture for the sprite sheet
      */
-    void setTexture(const std::shared_ptr<cugl::Texture>& texture);
+    void setIdleTexture(const std::shared_ptr<cugl::Texture>& texture);
+    
+    /** Gets player wipe sprite.
+     *
+     * The size and layout of the sprite sheet should already be specified
+     * in the initializing step.
+     * @return the sprite sheet for the ship
+     */
+    const std::shared_ptr<cugl::SpriteSheet>& getWipeSprite() const {
+        return _wipeSprite;
+    }
+    
+    /**
+     * Sets the player wipe sprite.
+     *
+     * The texture should be formated as a sprite sheet, and the size and
+     * layout of the sprite sheet should already be specified in the
+     * initializing step. If so, this method will construct a sprite sheet
+     * from this texture.
+     * @param texture   The texture for the sprite sheet
+     */
+    void setWipeTexture(const std::shared_ptr<cugl::Texture>& texture);
+
     
     /**
      * Draws this ship to the sprite batch within the given bounds.

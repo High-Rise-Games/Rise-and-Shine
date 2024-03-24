@@ -174,16 +174,20 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
 
     // no ids given yet - to be assigned in initPlayers()
     _player = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _player->setTexture(assets->get<Texture>("player_1"));
+    _player->setIdleTexture(assets->get<Texture>("yellow"));
+    _player->setWipeTexture(assets->get<Texture>("yellow-wipe"));
     
     _playerLeft = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerLeft->setTexture(assets->get<Texture>("player_1"));
+    _playerLeft->setIdleTexture(assets->get<Texture>("yellow"));
+    _playerLeft->setWipeTexture(assets->get<Texture>("yellow-wipe"));
 
     _playerRight = std::make_shared <Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerRight->setTexture(assets->get<Texture>("player_1"));
+    _playerRight->setIdleTexture(assets->get<Texture>("yellow"));
+    _playerRight->setWipeTexture(assets->get<Texture>("yellow-wipe"));
 
     _playerAcross = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerAcross->setTexture(assets->get<Texture>("player_1"));
+    _playerAcross->setIdleTexture(assets->get<Texture>("yellow"));
+    _playerAcross->setWipeTexture(assets->get<Texture>("yellow-wipe"));
 
     // Initialize random dirt generation
     updateDirtGenTime();
@@ -252,6 +256,12 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
 
     // starting position is most bottom left window
     Vec2 startingPos = Vec2(_windows.sideGap + (_windows.getPaneWidth() / 2), _windows.getPaneHeight());
+
+
+    // player ids for self, right, and left already assigned from earlier initPlayers call
+    _playerAcross = std::make_shared<Player>(3, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
+    _playerAcross->setIdleTexture(assets->get<Texture>("yellow"));
+
 
     hostReset();
 
@@ -597,9 +607,9 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
         windows->addDirt(dirtPos[0], dirtPos[1]);
     }
 
-    player->setStunFrames(data->getInt("stun_frames"));
-    player->setWipeFrames(data->getInt("wipe_frames"));
-    _gameTime = data->getInt("timer");
+//    player->setStunFrames(data->getInt("stun_frames"));
+//    player->setWipeFrames(data->getInt("wipe_frames"));
+//    _gameTime = data->getInt("timer");
         
     // populate player's projectile set
     projectiles->clearCurrentSet(); // clear current set to rewrite
@@ -690,8 +700,8 @@ void GameplayController::processMovementRequest(std::shared_ptr<cugl::JsonValue>
     }
 
     // Check if player is stunned for this frame
-    if (player->getStunFrames() == 0 && player->getWipeFrames() == 0) {
-        Vec2 playerCoords = windows->getGridIndices(player->getPosition(), getSize());
+
+    if (player->getStunFrames() == 0 && player->getWipeFrames() == player->getMaxWipeFrames()) {
         // Move the player, ignoring collisions
         int moveResult = player->move(moveVec, getSize(), windows);
         if (moveResult == -1 || moveResult == 1) {
@@ -1052,7 +1062,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         }
         if (_ishost) {
             // Check if player is stunned for this frame
-            if (_player->getStunFrames() == 0 && _player->getWipeFrames() == 0) {
+            if (_player->getStunFrames() == 0 && _player->getWipeFrames() == _player->getMaxWipeFrames()) {
                 // Move the player, ignoring collisions
                 int moveResult = _player->move(_input.getDir(), getSize(), &_windows);
                 if (moveResult == -1 && _numPlayers == 4) {
@@ -1099,21 +1109,24 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
     if (_allCurBoards[player_id - 1] == 0) {
         // only check if player is stunned, has removed dirt, or collided with projectile
         // if they are on their own board.
+        bool occupied = false;
         if (player->getStunFrames() > 0) {
             player->decreaseStunFrames();
+            occupied = true;
         }
         else {
             player->move();
         }
         
-        if (player->getWipeFrames() > 0) {
-            player->decreaseWipeFrames();
-            if (player->getWipeFrames() == 0) {
-                player->setTexture(_assets->get<cugl::Texture>("player_1"));
-            }
+        if (player->getWipeFrames() < player->getMaxWipeFrames()) {
+            player->advanceWipeFrame();
+            occupied = true;
         }
         else {
             player->move();
+        }
+        if (!occupied) {
+            player->advanceIdleFrame();
         }
         
         
@@ -1127,10 +1140,8 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
         if (dirtRemoved) {
             // filling up dirty bucket
             // set amount of frames plaer is frozen for for cleaning dirt
-            player->setWipeFrames(65);
-            player->setTexture(_assets->get<cugl::Texture>("player_1_wipe"));
+            player->resetWipeFrames();
             _allDirtAmounts[player_id - 1] = min(_maxDirtAmount, _allDirtAmounts[player_id - 1] + 1);
-//            player->setWipeFrames(2);
         }
 
         // Check for collisions and play sound
