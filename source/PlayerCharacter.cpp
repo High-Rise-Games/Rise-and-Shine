@@ -20,9 +20,9 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     _pos = pos;
     _coors = Vec2();
     _speed = 10;
-    //_ang  = 0;
-    //_dang = 0;
-    //_refire = 0;
+    _framecols = 7;
+    _framesize = 7;
+    _frameflat = 1;
     
     // height of a window pane of the game board
     _windowWidth = windowWidth;
@@ -34,7 +34,9 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     _stunFrames = 0;
     
     // number of frames the player is frozen for because wiping dirt
-    _wipeFrames = 0;
+    _wipeFrames = 4;
+    // number of total frames the player will play wipe animation
+    _maxwipeFrame = _wipeFrames * _framesize;
     
     // rotation property of player when player is stunned
     _stunRotate = 0;
@@ -43,9 +45,6 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     _mass = data->getFloat("mass",1.0);
     //_shadows  = data->getFloat("shadow",0.0);
     _maxvel   = data->getFloat("max velocity",0.0);
-    //_banking  = data->getFloat("bank factor",0.0);
-    //_maxbank  = data->getFloat("max bank",0.0);
-    //_angdamp  = data->getFloat("angular damp",0.0);
 
     // Sprite sheet information
     //_framecols = data->getInt("sprite cols",0);
@@ -80,31 +79,31 @@ void Player::decreaseStunFrames() {
 
 #pragma mark Graphics
 /**
- * Sets the texture for this ship.
- *
- * The texture should be formated as a sprite sheet, and the size and
- * layout of the sprite sheet should already be specified in the
- * initializing JSON. If so, this method will construct a sprite sheet
- * from this texture. Otherwise, the texture will be ignored.
+ * Sets the idle texture for player.
  *
  * @param texture   The texture for the sprite sheet
  */
-void Player::setTexture(const std::shared_ptr<cugl::Texture>& texture) {
-    _texture = texture;
+void Player::setIdleTexture(const std::shared_ptr<cugl::Texture>& texture) {
+    _idleTexture = texture;
     float scale = _windowHeight / texture->getHeight();
     _radius = texture->getWidth() * scale / 2;
-    /*
+}
+
+/**
+ * Sets the wiping texture for player.
+ *
+ * @param texture   The texture for the sprite sheet
+ */
+void Player::setWipeTexture(const std::shared_ptr<cugl::Texture>& texture) {
     if (_framecols > 0) {
         int rows = _framesize/_framecols;
         if (_framesize % _framecols != 0) {
             rows++;
         }
-        _sprite = SpriteSheet::alloc(texture, rows, _framecols, _framesize);
-        _sprite->setFrame(_frameflat);
-        _radius = std::max(_sprite->getFrameSize().width, _sprite->getFrameSize().height)/2;
-        _sprite->setOrigin(_sprite->getFrameSize()/2);
+        _wipeSprite = SpriteSheet::alloc(texture, rows, _framecols, _framesize);
+        _wipeSprite->setFrame(_frameflat);
+        // shift bird origin to left and down to simulate poop effect from stomach
     }
-    */
 }
 
 /**
@@ -129,34 +128,33 @@ const cugl::Vec2& Player::getCoorsFromPos(const float windowHeight, const float 
  * @param size      The size of the window (for wrap around)
  */
 void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds, WindowGrid windows) {
-    // Don't draw if texture not set
-    if (_texture) {
-        // Transform to place the ship, start with centered version
-        Affine2 player_trans;
-        player_trans.translate( -(int)(_texture->getWidth())/2 , 0);
-        player_trans.translate(0, -(int)(_texture->getHeight()) / 2);
-        double player_scale = windows.getPaneHeight() / _texture->getHeight();
+    // Transform to place the ship, start with centered version
+    Affine2 player_trans;
+    if (_idleTexture && _wipeFrames == _maxwipeFrame) {
+        player_trans.translate( -(int)(_idleTexture->getWidth())/2 , -(int)(_idleTexture->getHeight()) / 2);
+        double player_scale = windows.getPaneHeight() / _idleTexture->getHeight();
         player_trans.scale(player_scale);
-        //player_trans.rotate(_ang*M_PI/180);
-
-        if (getStunFrames()>0) {
-            _stunRotate += 0.1;
-            player_trans.rotate(_stunRotate*M_PI);
-        } else {
-            _stunRotate = 0;
-            player_trans.rotate(0);
-        }
-        
-        player_trans.translate(_pos);
-        // Transform to place the shadow, and its color
-        //Affine2 shadtrans = player_trans;
-        //shadtrans.translate(_shadows,-_shadows);
-        //Color4f shadow(0,0,0,0.5f);
-        
+    }
+    else if (_wipeSprite && _wipeFrames < _maxwipeFrame) {
+        player_trans.translate( -(int)(_wipeSprite->getFrameSize().width)/2 , -(int)(_wipeSprite->getFrameSize().height) / 2);
+        double player_scale = windows.getPaneHeight() / _wipeSprite->getFrameSize().height;
+        player_trans.scale(player_scale);
+    }
+    // Don't draw if texture not set
+    if (getStunFrames()>0) {
+        _stunRotate += 0.1;
+        player_trans.rotate(_stunRotate*M_PI);
+    } else {
+        _stunRotate = 0;
+        player_trans.rotate(0);
+    }
+    player_trans.translate(_pos);
+    if (_idleTexture && _wipeFrames == _maxwipeFrame) {
         // CULog("drawing player at (%f, %f)", _pos.x, _pos.y);
-        batch->draw(_texture, Vec2(), player_trans);
-        //_sprite->draw(batch,shadow,shadtrans);
-        //_sprite->draw(batch,player_trans);
+        batch->draw(_idleTexture, Vec2(), player_trans);
+    }
+    else if (_wipeSprite && _wipeFrames < _maxwipeFrame) {
+        _wipeSprite->draw(batch, player_trans);
     }
 }
 
