@@ -148,13 +148,15 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     });
 
     _select_red->addListener([this](const std::string& name, bool down) {
+        std::cout<<"down1: "<<_select_red->isDown()<<"\n";
         if (down) {
             character = "Mushroom";
             _character_field_red->setVisible(true);
             _character_field_blue->setVisible(false);
             _character_field_green->setVisible(false);
             _character_field_yellow->setVisible(false);
-
+            std::cout<<"down2: "<<_select_red->isDown()<<"\n";
+            
             _select_blue->setDown(false);
             _select_green->setDown(false);
             _select_yellow->setDown(false);
@@ -279,7 +281,7 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
             _character_field_blue->setVisible(false);
             _character_field_green->setVisible(false);
             _character_field_yellow->setVisible(false);
-
+            
             _select_blue->setDown(false);
             _select_green->setDown(false);
             _select_yellow->setDown(false);
@@ -368,10 +370,8 @@ void LobbyScene::update(float timestep) {
                 processData(source, data);
             });
         checkConnection();
-
-        if (isHost()) {
-            configureStartButton();
-        }
+        
+        configureStartButton();
 
         _player_field->setText(std::to_string(_network->getPeers().size() + 1));
         
@@ -516,41 +516,34 @@ bool LobbyScene::checkConnection() {
    
     if (isHost()) {
         switch(_network->getState()) {
+            case cugl::net::NetcodeConnection::State::NEGOTIATING:
+                _status = WAIT;
+                break;
             case cugl::net::NetcodeConnection::State::CONNECTED:
                 if (_status == WAIT) {
                     _status = IDLE;
                     _gameid_host->setText(hex2dec(_network->getRoom()));
-                } else {
-                    //                _status = START;
-                    
                 }
-                return true;
+                break;
             case cugl::net::NetcodeConnection::State::MISMATCHED:
-                // code block
-                _status = WAIT;
-                return false;
             case cugl::net::NetcodeConnection::State::INVALID:
-                // code block
-                _status = WAIT;
-                return false;
             case cugl::net::NetcodeConnection::State::FAILED:
-                // code block
-                _status = WAIT;
-                return false;
             case cugl::net::NetcodeConnection::State::DENIED:
-                // code block
-                _status = WAIT;
-                return false;
             case cugl::net::NetcodeConnection::State::DISCONNECTED:
                 // code block
+                disconnect();
                 _status = WAIT;
-                return false;
             default:
                 return false;
         }
+        return true;
     }
      else if (!isHost()) {
         switch(_network->getState()) {
+            case cugl::net::NetcodeConnection::State::NEGOTIATING:
+            // code block
+                _status = JOIN;
+                return true;
             case cugl::net::NetcodeConnection::State::CONNECTED:
                 if (_status != START) {
                     _status = WAIT;
@@ -558,29 +551,18 @@ bool LobbyScene::checkConnection() {
                 if (_id == 0) {
                     _id = _network->getPeers().size() + 1;
                 }
-               return true;
+                return true;
             case cugl::net::NetcodeConnection::State::MISMATCHED:
             // code block
+                disconnect();
                 _status = WAIT;
                 return false;
-            case cugl::net::NetcodeConnection::State::NEGOTIATING:
-            // code block
-                _status = JOIN;
-                return true;
             case cugl::net::NetcodeConnection::State::INVALID:
-            // code block
-                _status = IDLE;
-                return false;
             case cugl::net::NetcodeConnection::State::FAILED:
-            // code block
-                _status = IDLE;
-                return false;
             case cugl::net::NetcodeConnection::State::DENIED:
-            // code block
-                _status = IDLE;
-                return false;
             case cugl::net::NetcodeConnection::State::DISCONNECTED:
             // code block
+                disconnect();
                 _status = IDLE;
                 return false;
           default:
