@@ -67,6 +67,36 @@
 	"window_3": {
             "file": "textures/window_3.png"
         },
+        "window_4": {
+            "file": "textures/window_4.png"
+        },
+        "window_5": {
+            "file": "textures/window_5.png"
+        },
+        "window_6": {
+            "file": "textures/window_6.png"
+        },
+        "window_7": {
+            "file": "textures/window_7.png"
+        },
+        "window_8": {
+            "file": "textures/window_8.png"
+        },
+        "window_9": {
+            "file": "textures/window_9.png"
+        },
+        "window_10": {
+            "file": "textures/window_10.png"
+        },
+        "window_11": {
+            "file": "textures/window_11.png"
+        },
+        "window_12": {
+            "file": "textures/window_12.png"
+        },
+        "window_13": {
+            "file": "textures/window_13.png"
+        },
         "dirt": {
             "file": "textures/GenericDirt.png"
         },

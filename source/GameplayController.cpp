@@ -91,11 +91,16 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     
     // Initialize the window grids
     std::shared_ptr<cugl::JsonValue> level = _constants->get("easy board"); // TODO: make field passed in from level select through App
+
+    string window_strings[13] = { "window_1", "window_2", "window_3", "window_4", "window_5", "window_6", "window_7", "window_8", "window_9", "window_10", "window_11", "window_12", "window_13", };
     
     _windows.setBuildingTexture(assets->get<Texture>("building_1"));
-    _windows.addTexture(assets->get<Texture>("window_1"));
-    _windows.addTexture(assets->get<Texture>("window_2"));
-    _windows.addTexture(assets->get<Texture>("window_3"));
+    for (string thisWindow: window_strings) {
+        _windows.addTexture(assets->get<Texture>(thisWindow));
+    }
+    //_windows.addTexture(assets->get<Texture>("window_1"));
+    //_windows.addTexture(assets->get<Texture>("window_2"));
+    //_windows.addTexture(assets->get<Texture>("window_3"));
     _windows.init(level, size); // init depends on texture
     _windows.setDirtTexture(assets->get<Texture>("dirt"));
     
@@ -106,23 +111,32 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _winBackground = _assets->get<Texture>("win-background");
 
     _windowsLeft.setBuildingTexture(assets->get<Texture>("building_1"));
-    _windowsLeft.addTexture(assets->get<Texture>("window_1"));
-    _windowsLeft.addTexture(assets->get<Texture>("window_2"));
-    _windowsLeft.addTexture(assets->get<Texture>("window_3"));
+    for (string thisWindow: window_strings) {
+        _windowsLeft.addTexture(assets->get<Texture>(thisWindow));
+    }
+    //_windowsLeft.addTexture(assets->get<Texture>("window_1"));
+    //_windowsLeft.addTexture(assets->get<Texture>("window_2"));
+    //_windowsLeft.addTexture(assets->get<Texture>("window_3"));
     _windowsLeft.init(level, size); // init depends on texture
     _windowsLeft.setDirtTexture(assets->get<Texture>("dirt"));
 
     _windowsRight.setBuildingTexture(assets->get<Texture>("building_1"));
-    _windowsRight.addTexture(assets->get<Texture>("window_1"));
-    _windowsRight.addTexture(assets->get<Texture>("window_2"));
-    _windowsRight.addTexture(assets->get<Texture>("window_3"));
+    for (string thisWindow: window_strings) {
+        _windowsRight.addTexture(assets->get<Texture>(thisWindow));
+    }
+    //_windowsRight.addTexture(assets->get<Texture>("window_1"));
+    //_windowsRight.addTexture(assets->get<Texture>("window_2"));
+    //_windowsRight.addTexture(assets->get<Texture>("window_3"));
     _windowsRight.init(level, size); // init depends on texture
     _windowsRight.setDirtTexture(assets->get<Texture>("dirt"));
 
     _windowsAcross.setBuildingTexture(assets->get<Texture>("building_1"));
-    _windowsAcross.addTexture(assets->get<Texture>("window_1"));
-    _windowsAcross.addTexture(assets->get<Texture>("window_2"));
-    _windowsAcross.addTexture(assets->get<Texture>("window_3"));
+    for (string thisWindow : window_strings) {
+        _windowsAcross.addTexture(assets->get<Texture>(thisWindow));
+    }
+    //_windowsAcross.addTexture(assets->get<Texture>("window_1"));
+    //_windowsAcross.addTexture(assets->get<Texture>("window_2"));
+    //_windowsAcross.addTexture(assets->get<Texture>("window_3"));
     _windowsAcross.init(level, getSize()); // init depends on texture
     _windowsAcross.setDirtTexture(assets->get<Texture>("dirt"));
 

@@ -205,18 +205,20 @@ int Player::move(Vec2 dir, Size size, WindowGrid* windows) {
         _vel.setZero();
         if (dir.x != 0.0f) {
             _targetDist = dir * _windowHeight;
+            Vec2 originIndices = windows->getGridIndices(_pos, size);
             Vec2 targetPosition = Vec2(_pos) + _targetDist;
             Vec2 targetIndices = windows->getGridIndices(targetPosition, size);
-            if (!windows->getCanMoveTo(targetIndices.x, targetIndices.y)) {
+            if (!windows->getCanMoveBetween(originIndices.x, originIndices.y, targetIndices.x, targetIndices.y)) {
                 _targetDist.setZero();
                 return 2;
             }
             _vel = dir * _speed;
         } else if (dir.y != 0.0f) {
             _targetDist = dir * _windowWidth;
+            Vec2 originIndices = windows->getGridIndices(_pos, size);
             Vec2 targetPosition = Vec2(_pos) + _targetDist;
             Vec2 targetIndices = windows->getGridIndices(targetPosition, size);
-            if (!windows->getCanMoveTo(targetIndices.x, targetIndices.y)) {
+            if (!windows->getCanMoveBetween(originIndices.x, originIndices.y, targetIndices.x, targetIndices.y)) {
                 _targetDist.setZero();
                 return 2;
             }

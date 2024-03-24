@@ -20,8 +20,18 @@ private:
 	float _windowHeight;
 	float _windowWidth;
 	std::vector<int> _map;
-	/** Tile ids that players cannot move to */
-	std::set<int> _impassableTiles = {3};
+	/** Tile ids that players cannot move to at all */
+	std::set<int> _impassableTiles    = { 3 };
+	/** Tile ids that players cannot move through top side of */
+	std::set<int> _topBlockedTiles    = { 4, 8, 10, 13 };
+	/** Tile ids that players cannot move through bottom side of */
+	std::set<int> _bottomBlockedTiles = { 6, 8, 11, 12 };
+	/** Tile ids that players cannot move through right side of */
+	std::set<int> _rightBlockedTiles  = { 5, 9, 10, 11 };
+	/** Tile ids that players cannot move through left side of */
+	std::set<int> _leftBlockedTiles   = { 7, 9, 12, 13 };
+	/** Tile ids that cannot hold dirt */
+	std::set<int> _noDirtTiles        = { 3 };
 	/** Filth placement state */
 	std::vector<std::vector<std::shared_ptr<StaticFilth>>> _boardFilth;
 
@@ -92,9 +102,14 @@ public:
 	cugl::Vec2 getGridIndices(cugl::Vec2 location, cugl::Size size);
 
 	/**
-	 * Returns whether a certain grid tile can be moved to
+	 * Returns whether it is possible to move from one window grid location to another
 	 */
-	bool getCanMoveTo(int x_coord, int y_coord);
+	bool getCanMoveBetween(int x_origin, int y_origin, int x_dest, int y_dest);
+
+	/**
+	 * Returns whether it is possible to move from one window grid location to another
+	 */
+	bool getCanBeDirtied(int x_index, int y_index);
     
     /**
      * Initializes the board by creating dirt

@@ -57,15 +57,39 @@ cugl::Vec2 WindowGrid::getGridIndices(cugl::Vec2 location, cugl::Size size) {
 	//return Vec2(-1, -1);
 }
 
-bool WindowGrid::getCanMoveTo(int x_coord, int y_coord) {
-	int mapIndex = x_coord + getNHorizontal() * y_coord;
-	if (mapIndex < 0 || mapIndex >= _map.size()) { // invalid index
+bool WindowGrid::getCanMoveBetween(int x_origin, int y_origin, int x_dest, int y_dest) {
+	int originMapIndex = x_origin + getNHorizontal() * y_origin;
+	int destMapIndex   = x_dest   + getNHorizontal() * y_dest;
+	if (destMapIndex < 0 || destMapIndex >= _map.size()) { // invalid destination index
 		return false;
 	}
-	if (_impassableTiles.count(_map.at(mapIndex))) {
+	bool impassableDest = _impassableTiles.count(_map.at(destMapIndex));
+	if (impassableDest) { // dest is not a tile the player can ever access
 		return false;
 	}
-	return true;
+	// check relevant directional blockages on both tiles involved, allow if neither tile blocks
+	if (y_origin == y_dest) { // horizontal move
+		if (x_dest == x_origin + 1) { // right
+			return ! ( _rightBlockedTiles.count(_map.at(originMapIndex))  ||   _leftBlockedTiles.count(_map.at(destMapIndex)) );
+		}
+		else if (x_dest == x_origin - 1) { // left
+			return ! ( _leftBlockedTiles.count(_map.at(originMapIndex))   ||   _rightBlockedTiles.count(_map.at(destMapIndex)) );
+		}
+	}
+	else if (x_origin == x_dest) { // vertical move
+		if (y_dest == y_origin + 1) { // up
+			return ! ( _topBlockedTiles.count(_map.at(originMapIndex))    ||   _bottomBlockedTiles.count(_map.at(destMapIndex)) );
+		}
+		else if (y_dest == y_origin - 1) { // down
+			return ! ( _bottomBlockedTiles.count(_map.at(originMapIndex)) ||   _topBlockedTiles.count(_map.at(destMapIndex)) );
+		}
+	}
+	return false; // don't allow unanticipated movement modes
+}
+
+bool WindowGrid::getCanBeDirtied(int x_index, int y_index) {
+	int tileMapIndex = x_index + getNHorizontal() * y_index;
+	return !( _noDirtTiles.count(_map.at(tileMapIndex)) ); // check if tile is on list of non-dirtiable tiles
 }
 
 void WindowGrid::generateInitialBoard(int dirtNumber) {
@@ -77,7 +101,7 @@ void WindowGrid::generateInitialBoard(int dirtNumber) {
         int rand_col = colDist(rng);
 
         // if dirt already present or tile not accessible, select different element
-        if (_boardFilth[rand_row][rand_col] || !getCanMoveTo(rand_col, rand_row)) {
+        if (_boardFilth[rand_row][rand_col] || !getCanBeDirtied(rand_col, rand_row)) {
             --i; // Decrease i to repeat this iteration
             continue;
         }
@@ -98,13 +122,13 @@ void WindowGrid::clearBoard() {
 
 bool WindowGrid::addDirt(const int row, const int col) {
 	bool dirtExisted = _boardFilth[row][col] != nullptr;
-	bool isTileReachable = getCanMoveTo(col, row);
-	if (!dirtExisted && isTileReachable) {
+	bool isTileDirtiable = getCanBeDirtied(col, row);
+	if (!dirtExisted && isTileDirtiable) {
 		std::shared_ptr<StaticFilth> filth = std::make_shared<StaticFilth>(cugl::Vec2(row, col));
 		filth->setStaticTexture(_dirt);
 		_boardFilth[row][col] = filth;
 	}
-	return !dirtExisted && isTileReachable;
+	return !dirtExisted && isTileDirtiable;
 }
 
 // draws an entire grid of _nHorizontal x nVertical windows as large as possible with center (horizontal) alignment
