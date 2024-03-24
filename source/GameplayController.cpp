@@ -393,10 +393,9 @@ cugl::Vec2 GameplayController::getWorldPosition(cugl::Vec2 boardPos) {
 }
 
 /**
- * Method for the scene switch listener used in GameScene
+ * Method for the return to board button listener used in GameScene
  */
 void GameplayController::switchScene() {
-    int edge = _player->getEdge(_windows.sideGap, getSize());
     if (_curBoard != 0) {
         CULog("leaving other player's board");
         if (_ishost) {
@@ -405,30 +404,6 @@ void GameplayController::switchScene() {
         }
         else {
             _network.transmitMessage(getJsonSceneSwitch(true));
-        }
-    }
-    else if (edge != 0) {
-        CULog("entering other player's board: %d", edge);
-        if (_ishost) {
-            // if move is valid
-            int destinationId = _id + edge;
-            if (destinationId == 0) {
-                destinationId = 4;
-            }
-            else if (destinationId == 5) {
-                destinationId == 1;
-            }
-            if (destinationId <= _numPlayers) {
-                _allCurBoards[0] = edge;
-                _curBoard = edge;
-            }
-        }
-        else {
-            // first check that we are on an edge
-            // to make a valid scene switch request
-            if (_player->getEdge(_windows.sideGap, getSize()) != 0) {
-                _network.transmitMessage(getJsonSceneSwitch(false));
-            }
         }
     }
 }

@@ -191,12 +191,6 @@ protected:
     std::shared_ptr<cugl::scene2::SceneNode> _scene_UI;
     /** The back button for the menu scene */
     std::shared_ptr<cugl::scene2::Button> _backout;
-//    /** Switch scene button texture image */
-//    std::shared_ptr<cugl::Texture> _switchSceneButton;
-//    /** Return scene button texture image */
-//    std::shared_ptr<cugl::Texture> _returnSceneButton;
-    /** Switch scene button */
-    std::shared_ptr<cugl::scene2::Button> _tn_button;
 
     /** The sound of a ship-asteroid collision */
     std::shared_ptr<cugl::Sound> _bang;
@@ -289,6 +283,9 @@ public:
 
     /** Returns the current game time */
     int getTime() { return _gameTime; }
+
+    /** Returns the player's current board */
+    int getCurBoard() { return _curBoard; }
 
     /** 
      * Given the world positions, convert it to the board position
