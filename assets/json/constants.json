@@ -23,8 +23,76 @@
         ]
     },
     "easy board": {
-        "columns": 3,
-        "rows": 6,
-        "number dirts": 5 
-    }
+        "number dirts": 5,
+        "compressionlevel": -1,
+        "height": 4,
+        "infinite": false,
+        "layers": [
+            {
+                "draworder": "topdown",
+                "id": 2,
+                "name": "Building",
+                "objects": [
+                    {
+                        "gid": 2,
+                        "height": 800,
+                        "id": 6,
+                        "name": "",
+                        "rotation": 0,
+                        "type": "",
+                        "visible": true,
+                        "width": 1000,
+                        "x": 0,
+                        "y": 720
+                    }
+                ],
+                "opacity": 1,
+                "type": "objectgroup",
+                "visible": true,
+                "x": 0,
+                "y": 0
+            },
+            {
+                "data": [
+                    1,
+                    2,
+                    1,
+                    2,
+                    3,
+                    2,
+                    3,
+                    2,
+                    1,
+                    2,
+                    1,
+                    2
+                ],
+                "height": 4,
+                "id": 1,
+                "name": "Windows",
+                "opacity": 1,
+                "type": "tilelayer",
+                "visible": true,
+                "width": 3,
+                "x": 0,
+                "y": 0
+            }
+        ],
+        "nextlayerid": 3,
+        "nextobjectid": 7,
+        "orientation": "orthogonal",
+        "renderorder": "right-down",
+        "tiledversion": "1.10.0",
+        "tileheight": 4,
+        "tilesets": [
+            {
+                "firstgid": 1,
+                "source": "..\/Tilesets\/Test Tileset.tsx"
+            }
+        ],
+        "tilewidth": 5,
+        "type": "map",
+        "version": "1.10",
+        "width": 3
+    }    
 }

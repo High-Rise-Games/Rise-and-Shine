@@ -8,25 +8,57 @@ using namespace cugl;
 bool Bird::init(const cugl::Vec2 startP, const cugl::Vec2 endP, const float speed, const float sf) {
     _startPos = startP;
     _endPos = endP;
-    _endPos.x = _endPos.x -_radius * sf * 2;
+    _endPos.x = _endPos.x -_radius * 2;
     _speed = speed;
     _scaleFactor = sf;
     birdPosition = _startPos;
     _toRight = true;
+    _framecols = 5;
+    _framesize = 5;
+    _frameflat = 4;
+    _frametimer = 4;
+    _frameright = true;
     return true;
+}
+
+// sets up the sprite image
+void Bird::setTexture(const std::shared_ptr<cugl::Texture>& texture) {
+    if (_framecols > 0) {
+        int rows = _framesize/_framecols;
+        if (_framesize % _framecols != 0) {
+            rows++;
+        }
+        _sprite = SpriteSheet::alloc(texture, rows, _framecols, _framesize);
+        _sprite->setFrame(_frameflat);
+        _radius = std::min(_sprite->getFrameSize().width, _sprite->getFrameSize().height)/2 * _scaleFactor;
+        // shift bird origin to left and down to simulate poop effect from stomach
+        _sprite->setOrigin(Vec2(_sprite->getFrameSize().width/2-1000, _sprite->getFrameSize().height/2-400));
+    }
 }
 
 // draws a static filth on the screen on window pane at location windowPos
 void Bird::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, cugl::Vec2 birdPos) {
-    // calculate origin of bird
-    float r = _radius * _scaleFactor;
-    Vec2 origin(r, r);
-    
-    Affine2 birdTrans;
-    birdTrans.scale(_scaleFactor);
-    birdTrans.translate(birdPos);
-    
-    batch->draw(_birdTexture, origin, birdTrans);
+    // Don't draw if sprite not set
+    if (_sprite) {
+        Affine2 birdTrans;
+        if (!_toRight) {
+            _sprite->setOrigin(Vec2(_sprite->getFrameSize().width/2, _sprite->getFrameSize().height/2-400));
+            birdTrans.scale(Vec2(-_scaleFactor, _scaleFactor));
+        } else {
+            _sprite->setOrigin(Vec2(_sprite->getFrameSize().width/2-1000, _sprite->getFrameSize().height/2-400));
+            birdTrans.scale(_scaleFactor);
+        }
+        birdTrans.translate(birdPos);
+        // Transform to place the shadow, and its color
+//        Affine2 shadtrans = shiptrans;
+//        shadtrans.translate(_shadows,-_shadows);
+//        Color4f shadow(0,0,0,0.5f);
+//        
+//        _sprite->draw(batch,shadow,shadtrans);
+        _sprite->draw(batch,birdTrans);
+        
+         
+    }
 }
 
 /** Moves the bird on game board in direction based on current position. */
@@ -37,6 +69,19 @@ void Bird::move() {
         target = _endPos;
     } else {
         target = _startPos;
+    }
+    if (_frametimer == 0) {
+        int frame = _sprite->getFrame();
+        if (frame == _framesize - 1) {
+            _frameright = false;
+        }
+        if (frame == 1) {
+            _frameright = true;
+        }
+        _sprite->setFrame(_frameright ? frame + 1: frame - 1);
+        _frametimer = 4;
+    } else {
+        _frametimer -= 1;
     }
     float targetDist = target.distance(birdPosition);
     if (targetDist - _speed > 0) {

@@ -61,13 +61,9 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     
     Size dimen = Application::get()->getDisplaySize();
     _rng.seed(std::time(nullptr));
-    _projectileGenChance = 0.4;
-    _projectileGenCountDown = 120;
     _dirtGenSpeed = 2;
-    _dirtThrowTimer = 0;
     _fixedDirtUpdateThreshold = 5 * 60;
     _maxDirtAmount = 1;
-    _currentDirtAmount = 0;
     _size = size;
     
     _dirtSelected = false;
@@ -94,8 +90,13 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _curBoardLeft = 0;
     
     // Initialize the window grids
-    _windows.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
-    _windows.init(_constants->get("easy board"), size); // init depends on texture
+    std::shared_ptr<cugl::JsonValue> level = _constants->get("easy board"); // TODO: make field passed in from level select through App
+    
+    _windows.setBuildingTexture(assets->get<Texture>("building_1"));
+    _windows.addTexture(assets->get<Texture>("window_1"));
+    _windows.addTexture(assets->get<Texture>("window_2"));
+    _windows.addTexture(assets->get<Texture>("window_3"));
+    _windows.init(level, size); // init depends on texture
     _windows.setDirtTexture(assets->get<Texture>("dirt"));
     
     // get the win background when game is win
@@ -104,13 +105,27 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     // get the lose background when game is lose
     _winBackground = _assets->get<Texture>("win-background");
 
-    _windowsLeft.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
-    _windowsLeft.init(_constants->get("easy board"), size); // init depends on texture
+    _windowsLeft.setBuildingTexture(assets->get<Texture>("building_1"));
+    _windowsLeft.addTexture(assets->get<Texture>("window_1"));
+    _windowsLeft.addTexture(assets->get<Texture>("window_2"));
+    _windowsLeft.addTexture(assets->get<Texture>("window_3"));
+    _windowsLeft.init(level, size); // init depends on texture
     _windowsLeft.setDirtTexture(assets->get<Texture>("dirt"));
 
-    _windowsRight.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
-    _windowsRight.init(_constants->get("easy board"), size); // init depends on texture
+    _windowsRight.setBuildingTexture(assets->get<Texture>("building_1"));
+    _windowsRight.addTexture(assets->get<Texture>("window_1"));
+    _windowsRight.addTexture(assets->get<Texture>("window_2"));
+    _windowsRight.addTexture(assets->get<Texture>("window_3"));
+    _windowsRight.init(level, size); // init depends on texture
     _windowsRight.setDirtTexture(assets->get<Texture>("dirt"));
+
+    _windowsAcross.setBuildingTexture(assets->get<Texture>("building_1"));
+    _windowsAcross.addTexture(assets->get<Texture>("window_1"));
+    _windowsAcross.addTexture(assets->get<Texture>("window_2"));
+    _windowsAcross.addTexture(assets->get<Texture>("window_3"));
+    _windowsAcross.init(level, getSize()); // init depends on texture
+    _windowsAcross.setDirtTexture(assets->get<Texture>("dirt"));
+
 
     // Initialize projectiles
     _projectiles.setDirtTexture(assets->get<Texture>("dirt"));
@@ -126,12 +141,17 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _projectilesRight.setPoopTexture(assets->get<Texture>("poop"));
     _projectilesRight.setTextureScales(_windowsRight.getPaneHeight(), _windowsRight.getPaneWidth());
 
+    _projectilesAcross.setDirtTexture(assets->get<Texture>("dirt"));
+    _projectilesAcross.setPoopTexture(assets->get<Texture>("poop"));
+    _projectilesAcross.setTextureScales(_windows.getPaneHeight(), _windows.getPaneWidth());
+
     // Initialize bird textures, but do not set a location yet. that is the host's job
     if (_birdActive) {
-        _bird.setTexture(assets->get<Texture>("bird"));
-        _bird.init(cugl::Vec2(_windows.sideGap, (_windows.getNVertical() - 1) * _windows.getPaneHeight()),
-            cugl::Vec2(size.getIWidth() - _windows.sideGap, (_windows.getNVertical() - 1) * _windows.getPaneHeight()), 2, 0.05);
+        float birdHeight = (_windows.getNVertical() - 1) * _windows.getPaneHeight() + _windows.getPaneHeight()/2;
+        _bird.init(cugl::Vec2(_windows.sideGap + _windows.getPaneWidth()/8, birdHeight),
+            cugl::Vec2(size.getIWidth() - _windows.sideGap - _windows.getPaneWidth()/4, birdHeight), 2, 0.04);
         _curBirdBoard = 2;
+        _bird.setTexture(assets->get<Texture>("bird"));
     }
     
     // Make a ship and set its texture
@@ -140,16 +160,20 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
 
     // no ids given yet - to be assigned in initPlayers()
     _player = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _player->setTexture(assets->get<Texture>("char_mushroom"));
-    _player->setWipingTexture(assets->get<Texture>("wipe_mushroom"));
+    _player->setIdleTexture(assets->get<Texture>("char_flower"));
+    _player->setWipeTexture(assets->get<Texture>("wipe_flower"));
     
     _playerLeft = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerLeft->setTexture(assets->get<Texture>("char_mushroom"));
-    _playerLeft->setWipingTexture(assets->get<Texture>("wipe_mushroom"));
+    _playerLeft->setIdleTexture(assets->get<Texture>("char_flower"));
+    _playerLeft->setWipeTexture(assets->get<Texture>("wipe_flower"));
 
     _playerRight = std::make_shared <Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerRight->setTexture(assets->get<Texture>("char_mushroom"));
-    _playerRight->setWipingTexture(assets->get<Texture>("wipe_mushroom"));
+    _playerRight->setIdleTexture(assets->get<Texture>("char_flower"));
+    _playerRight->setWipeTexture(assets->get<Texture>("wipe_flower"));
+
+    _playerAcross = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
+    _playerAcross->setIdleTexture(assets->get<Texture>("char_flower"));
+    _playerAcross->setWipeTexture(assets->get<Texture>("wipe_flower"));
 
     // Initialize random dirt generation
     updateDirtGenTime();
@@ -178,6 +202,9 @@ bool GameplayController::initPlayers(const std::shared_ptr<cugl::AssetManager>& 
     _playerLeft->setId(leftId);
     int rightId = _id == 4 ? 1 : _id + 1;
     _playerRight->setId(rightId);
+    int acrossId = (_id + 2) % 4;
+    if (acrossId == 0) acrossId = 4;
+    _playerAcross->setId(acrossId);
 
     return true;
 }
@@ -211,24 +238,10 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
     if (_birdActive) {
         // randomly place bird on a player's board
         _boardWithBird = rand() % _numPlayers + 1;
-
     }
-
-    _windowsAcross.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
-    _windowsAcross.init(_constants->get("easy board"), getSize()); // init depends on texture
-    _windowsAcross.setDirtTexture(assets->get<Texture>("dirt"));
-
-    _projectilesAcross.setDirtTexture(assets->get<Texture>("dirt"));
-    _projectilesAcross.setPoopTexture(assets->get<Texture>("poop"));
-    _projectilesAcross.setTextureScales(_windows.getPaneHeight(), _windows.getPaneWidth());
 
     // starting position is most bottom left window
     Vec2 startingPos = Vec2(_windows.sideGap + (_windows.getPaneWidth() / 2), _windows.getPaneHeight());
-
-    // player ids for self, right, and left already assigned from earlier initPlayers call
-    _playerAcross = std::make_shared<Player>(3, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerAcross->setTexture(assets->get<Texture>("mushroom"));
-    _playerAcross->setWipingTexture(_assets->get<Texture>("wipe_mushroom"));
 
     hostReset();
 
@@ -270,7 +283,7 @@ void GameplayController::reset() {
     _projectilesRight.init(_constants->get("projectiles"));
 
     _dirtThrowTimer = 0;
-    _projectileGenChance = 0.4;
+    _projectileGenChance = 0.1;
     _projectileGenCountDown = 120;
     _currentDirtAmount = 0;
     _curBoard = 0;
@@ -613,9 +626,9 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
         windows->addDirt(dirtPos[0], dirtPos[1]);
     }
 
-    player->setStunFrames(data->getInt("stun_frames"));
-    player->setWipeFrames(data->getInt("wipe_frames"));
-    _gameTime = data->getInt("timer");
+//    player->setStunFrames(data->getInt("stun_frames"));
+//    player->setWipeFrames(data->getInt("wipe_frames"));
+//    _gameTime = data->getInt("timer");
         
     // populate player's projectile set
     projectiles->clearCurrentSet(); // clear current set to rewrite
@@ -706,9 +719,10 @@ void GameplayController::processMovementRequest(std::shared_ptr<cugl::JsonValue>
     }
 
     // Check if player is stunned for this frame
-    if (player->getStunFrames() == 0 && player->getWipeFrames() == 0) {
+
+    if (player->getStunFrames() == 0 && player->getWipeFrames() == player->getMaxWipeFrames()) {
         // Move the player, ignoring collisions
-        int moveResult = player->move(moveVec, getSize(), windows->sideGap);
+        int moveResult = player->move(moveVec, getSize(), windows);
         if (moveResult == -1 || moveResult == 1) {
             // Request to switch to neighbor's board
             int destinationId = playerId + moveResult;
@@ -898,7 +912,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     
     // update the audio controller
     _audioController.update(isActive());
-
+    
     // get or transmit board states over network
     if (_network.getConnection()) {
         _network.getConnection()->receive([this](const std::string source,
@@ -1067,9 +1081,9 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         }
         if (_ishost) {
             // Check if player is stunned for this frame
-            if (_player->getStunFrames() == 0 && _player->getWipeFrames() == 0) {
+            if (_player->getStunFrames() == 0 && _player->getWipeFrames() == _player->getMaxWipeFrames()) {
                 // Move the player, ignoring collisions
-                int moveResult = _player->move(_input.getDir(), getSize(), _windows.sideGap);
+                int moveResult = _player->move(_input.getDir(), getSize(), &_windows);
                 if (moveResult == -1 && _numPlayers == 4) {
                     _allCurBoards[0] = -1;
                 } else if (moveResult == 1 && _numPlayers >= 2) {
@@ -1121,8 +1135,8 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
             player->move();
         }
         
-        if (player->getWipeFrames() > 0) {
-            player->decreaseWipeFrames();
+        if (player->getWipeFrames() < player->getMaxWipeFrames()) {
+            player->advanceWipeFrame();
         }
         else {
             player->move();
@@ -1139,9 +1153,8 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
         if (dirtRemoved) {
             // filling up dirty bucket
             // set amount of frames plaer is frozen for for cleaning dirt
-            player->setWipeFrames(65);
+            player->resetWipeFrames();
             _allDirtAmounts[player_id - 1] = min(_maxDirtAmount, _allDirtAmounts[player_id - 1] + 1);
-//            player->setWipeFrames(2);
         }
 
         // Check for collisions and play sound
@@ -1245,7 +1258,7 @@ void GameplayController::generatePoo(ProjectileSet* projectiles) {
 //    CULog("player at: (%f, %f)", _player->getCoors().y, _player->getCoors().x);
 //    CULog("generate at: %d", (int)rand_row);
     // if add dirt already exists at location or player at location and board is not full, repeat
-    projectiles->spawnProjectile(_bird.birdPosition, Vec2(0, min(-2.4f,-2-_projectileGenChance)), Vec2(_bird.birdPosition.x, 0), ProjectileSet::Projectile::ProjectileType::POOP);
+    projectiles->spawnProjectile(Vec2(_bird.birdPosition.x, _bird.birdPosition.y - _windows.getPaneHeight()/2), Vec2(0, min(-2.4f,-2-_projectileGenChance)), Vec2(_bird.birdPosition.x, 0), ProjectileSet::Projectile::ProjectileType::POOP);
 }
 
 /** Checks whether board is full except player current location*/

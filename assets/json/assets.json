@@ -154,8 +154,8 @@
             "minfilter": "linear",
             "magfilter": "linear"
         },
-        "char_banana": {
-            "file": "textures/Banana.png",
+        "char_flower": {
+            "file": "textures/Flower.png",
             "wrapS": "clamp",
             "wrapT": "clamp",
             "minfilter": "linear",
@@ -182,7 +182,7 @@
             "minfilter": "linear",
             "magfilter": "linear"
         },
-        "wipe_banana": {
+        "wipe_flower": {
             "file": "textures/wipe-flower.png"
         },
         "wipe_chameleon": {
@@ -233,8 +233,20 @@
         "ship": {
             "file": "textures/ships.png"
         },
+        "building_1": {
+            "file": "textures/building.png"
+        },
         "window": {
             "file": "textures/GenericWindow.png"
+        },
+        "window_1": {
+            "file": "textures/window_1.png"
+        },
+        "window_2": {
+            "file": "textures/window_2.png"
+        },
+	"window_3": {
+            "file": "textures/window_3.png"
         },
         "dirt": {
             "file": "textures/GenericDirt.png"
@@ -261,7 +273,7 @@
             "file": "textures/returnSceneButton.png"
         },
         "bird": {
-            "file": "textures/bird.png"
+            "file": "textures/bird_sprite.png"
         },
         "poop": {
             "file": "textures/bird_poop.png"
@@ -858,7 +870,7 @@
                         "type": "Anchored"
                     },
                     "data": {
-                        "texture": "char_banana",
+                        "texture": "char_flower",
                         "anchor": [ 0.5, 0.5 ],
                         "visible": false,
                         "scale": 0.7
@@ -1223,7 +1235,7 @@
                         "type": "Anchored"
                     },
                     "data": {
-                        "texture": "char_banana",
+                        "texture": "char_flower",
                         "anchor": [ 0.5, 0.5 ],
                         "visible": false,
                         "scale": 0.7
