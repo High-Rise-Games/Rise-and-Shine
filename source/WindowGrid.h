@@ -19,16 +19,22 @@ private:
 	float _scaleFactor;
 	float _windowHeight;
 	float _windowWidth;
+	std::vector<int> _map;
+	/** Tile ids that players cannot move to */
+	std::set<int> _impassableTiles = {3};
 	/** Filth placement state */
-	std::vector<std::vector<std::shared_ptr<StaticFilth>>> _board;
+	std::vector<std::vector<std::shared_ptr<StaticFilth>>> _boardFilth;
 
-	/** Window texture image */
-	std::shared_ptr<cugl::Texture> _texture;
+	/** Building background texture */
+	std::shared_ptr<cugl::Texture> _buildingTexture;
+	/** Window texture images */
+	std::vector<std::shared_ptr<cugl::Texture>> _textures;
 	/** Dirt texture image */
 	std::shared_ptr<cugl::Texture> _dirt;
 
 
 public:
+	const int MAX_HEIGHT = 5;
 	// accessors 
 //	void setWindowWidth(int width)        { _windowWidth = width;       };
 //	int  getWindowWidth()                 { return _windowWidth;        };
@@ -50,15 +56,21 @@ public:
 		includes number rows, columns, and dirts to be displayed */
 	bool init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size);
 
+	/** appends a texture to the texture vector */
+	void addTexture(const std::shared_ptr<cugl::Texture>& value) { _textures.push_back(value); }
+
 	/** sets window pane texture */
-	void setTexture(const std::shared_ptr<cugl::Texture>& value) { _texture = value; }
+	void setTexture(const std::shared_ptr<cugl::Texture>& value, int idx) { _textures[idx] = value; }
 
 	/** sets dirt texture */
 	void setDirtTexture(const std::shared_ptr<cugl::Texture>& value) { _dirt = value; }
+
+	/** sets building texture */
+	void setBuildingTexture(const std::shared_ptr<cugl::Texture>& value) { _buildingTexture = value; }
 	
 	/** gets window pane texture */
-	const std::shared_ptr<cugl::Texture>& getTexture() const {
-		return _texture;
+	const std::shared_ptr<cugl::Texture>& getTexture(int idx) const {
+		return _textures[idx];
 	}
 
 	/** Returns the window height */
@@ -71,8 +83,18 @@ public:
      * Get window state at row and col
      */
     bool getWindowState(const int row, const int col) {
-        return _board[row][col] != nullptr ;
+        return _boardFilth[row][col] != nullptr ;
     }
+
+	/**
+	 * Get discrete indices of the window tile that a given vector is on
+	 */
+	cugl::Vec2 getGridIndices(cugl::Vec2 location, cugl::Size size);
+
+	/**
+	 * Returns whether a certain grid tile can be moved to
+	 */
+	bool getCanMoveTo(int x_coord, int y_coord);
     
     /**
      * Initializes the board by creating dirt
@@ -87,17 +109,9 @@ public:
     
 	/**
 	 * Add dirt to board at specified location.
-	 * Returns true if the dirt was successfully added, and false if there is already dirt at the location.
+	 * Returns true if the dirt was successfully added, and false if there is already dirt at the location or the location is inaccessible.
 	 */
-	bool addDirt(const int row, const int col) { 
-		bool dirtExisted = _board[row][col] != nullptr;
-        if (!dirtExisted) {
-            std::shared_ptr<StaticFilth> filth = std::make_shared<StaticFilth>(cugl::Vec2(row, col));
-            filth->setStaticTexture(_dirt);
-            _board[row][col] = filth;
-        }
-		return !dirtExisted;
-	}
+	bool addDirt(const int row, const int col);
 
 	/** 
 	 * Remove dirt from board at specified location 
@@ -105,10 +119,10 @@ public:
 	 */
 	bool removeDirt(const int row, const int col) { 
 //        CULog("size: %d, %d", _board.size(), board[0].size());
-        bool dirtExisted = _board[row][col] != nullptr;
+        bool dirtExisted = _boardFilth[row][col] != nullptr;
         if (dirtExisted) {
-            _board[row][col].reset();
-            _board[row][col] = nullptr;
+			_boardFilth[row][col].reset();
+			_boardFilth[row][col] = nullptr;
         }
 		return dirtExisted;
 	}

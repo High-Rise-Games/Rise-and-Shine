@@ -52,8 +52,20 @@
         "yellow-wipe": {
             "file": "textures/yellow-wipe.png"
         },
+        "building_1": {
+            "file": "textures/building.png"
+        },
         "window": {
             "file": "textures/GenericWindow.png"
+        },
+        "window_1": {
+            "file": "textures/window_1.png"
+        },
+        "window_2": {
+            "file": "textures/window_2.png"
+        },
+	"window_3": {
+            "file": "textures/window_3.png"
         },
         "dirt": {
             "file": "textures/GenericDirt.png"
