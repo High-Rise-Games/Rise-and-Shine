@@ -66,6 +66,12 @@
  "nextlayerid":5,
  "nextobjectid":4,
  "orientation":"orthogonal",
+ "properties":[
+        {
+         "name":"number dirts",
+         "type":"int",
+         "value":5
+        }],
  "renderorder":"left-down",
  "tiledversion":"1.10.0",
  "tileheight":350,

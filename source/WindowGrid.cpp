@@ -49,7 +49,12 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 
 	// Initialize the dirt board
 	_boardFilth = std::vector<std::vector<std::shared_ptr<StaticFilth>>>(_nVertical, std::vector<std::shared_ptr<StaticFilth>>(_nHorizontal, nullptr));
-    _initDirtNum = data->getInt("number dirts", 1);
+    
+    for (const std::shared_ptr<JsonValue>& property : data->get("properties")->children()) {
+        if (property->getString("name") == "number dirts") {
+            _initDirtNum = property->getInt("value", 1);
+        }
+    }
 
 	return true;
 }
