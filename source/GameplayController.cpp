@@ -172,7 +172,8 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _playerRight->setWipeTexture(assets->get<Texture>("yellow-wipe"));
 
     _playerAcross = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerAcross->setTexture(assets->get<Texture>("player_1"));
+    _playerAcross->setIdleTexture(assets->get<Texture>("yellow"));
+    _playerAcross->setWipeTexture(assets->get<Texture>("yellow-wipe"));
 
     // Initialize random dirt generation
     updateDirtGenTime();
@@ -1094,8 +1095,10 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
     if (_allCurBoards[player_id - 1] == 0) {
         // only check if player is stunned, has removed dirt, or collided with projectile
         // if they are on their own board.
+        bool occupied = false;
         if (player->getStunFrames() > 0) {
             player->decreaseStunFrames();
+            occupied = true;
         }
         else {
             player->move();
@@ -1103,9 +1106,13 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
         
         if (player->getWipeFrames() < player->getMaxWipeFrames()) {
             player->advanceWipeFrame();
+            occupied = true;
         }
         else {
             player->move();
+        }
+        if (!occupied) {
+            player->advanceIdleFrame();
         }
         
         
