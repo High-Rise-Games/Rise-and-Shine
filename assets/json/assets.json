@@ -29,49 +29,77 @@
             "magfilter": "linear"
         },
         "level_background": {
-            "file": "textures/HomeBG.jpg",
+            "file": "textures/LevelSelectBackground.png",
             "wrapS": "clamp",
             "wrapT": "clamp",
             "minfilter": "linear",
             "magfilter": "linear"
         },
-        "level_choice1": {
-            "file": "textures/button.png",
+        "level_title": {
+            "file": "textures/LevelSelectTitle.png",
             "wrapS": "clamp",
             "wrapT": "clamp",
             "minfilter": "linear",
             "magfilter": "linear"
         },
-        "level_choice2": {
-            "file": "textures/button.png",
+        "level_next": {
+            "file": "textures/LevelNext.png",
             "wrapS": "clamp",
             "wrapT": "clamp",
             "minfilter": "linear",
             "magfilter": "linear"
         },
-        "level_choice3": {
-            "file": "textures/button.png",
+        "level_choice1_inactive": {
+            "file": "textures/Level1Inactive.png",
             "wrapS": "clamp",
             "wrapT": "clamp",
             "minfilter": "linear",
             "magfilter": "linear"
         },
-        "level_choice1_highlight": {
-            "file": "textures/frame.png",
+        "level_choice2_inactive": {
+            "file": "textures/Level2Inactive.png",
             "wrapS": "clamp",
             "wrapT": "clamp",
             "minfilter": "linear",
             "magfilter": "linear"
         },
-        "level_choice2_highlight": {
-            "file": "textures/frame.png",
+        "level_choice3_inactive": {
+            "file": "textures/Level3Inactive.png",
             "wrapS": "clamp",
             "wrapT": "clamp",
             "minfilter": "linear",
             "magfilter": "linear"
         },
-        "level_choice3_highlight": {
-            "file": "textures/frame.png",
+        "level_choice4_inactive": {
+            "file": "textures/Level4Inactive.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "level_choice1_active": {
+            "file": "textures/Level1Active.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "level_choice2_active": {
+            "file": "textures/Level2Active.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "level_choice3_active": {
+            "file": "textures/Level3Active.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "level_choice4_active": {
+            "file": "textures/Level4Active.png",
             "wrapS": "clamp",
             "wrapT": "clamp",
             "minfilter": "linear",
@@ -460,27 +488,19 @@
                 "texture": "level_background"
             },
             "children": {
-                "next": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [ 0.0, 0.0 ],
-                        "scale": 0.75
+                "title": {
+                    "type": "Image",
+                    "format": {
+                        "type": "Anchored"
                     },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "switchSceneButton"
-                            }
-                        }
+                    "data": {
+                        "texture": "level_title",
+                        "anchor": [ 0.5, 0.5 ]
                     },
                     "layout": {
-                        "x_anchor": "right",
-                        "y_anchor": "bottom",
-                        "y_offset": 100,
-                        "x_offset": -250,
-                        "priority": 1,
+                        "x_anchor": "center",
+                        "y_anchor": "top",
+                        "y_offset": -100,
                         "absolute": true
                     }
                 },
@@ -488,8 +508,7 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 0.0 ],
-                        "scale": 0.75
+                        "anchor": [ 0.0, 0.5 ]
                     },
                     "children": {
                         "up": {
@@ -501,10 +520,32 @@
                     },
                     "layout": {
                         "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -100,
+                        "x_offset": 30,
+                        "absolute": true
+                    }
+                },
+                "next": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.0, 0.0 ],
+                        "scale": 0.75
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "level_next"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
                         "y_anchor": "bottom",
                         "y_offset": 100,
-                        "x_offset": 250,
-                        "priority": 1,
+                        "x_offset": -200,
                         "absolute": true
                     }
                 },
