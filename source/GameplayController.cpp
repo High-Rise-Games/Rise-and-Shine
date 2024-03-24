@@ -174,19 +174,19 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
 
     // no ids given yet - to be assigned in initPlayers()
     _player = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _player->setIdleTexture(assets->get<Texture>("char_flower"));
+    _player->setIdleTexture(assets->get<Texture>("idle_flower"));
     _player->setWipeTexture(assets->get<Texture>("wipe_flower"));
     
     _playerLeft = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerLeft->setIdleTexture(assets->get<Texture>("char_flower"));
+    _playerLeft->setIdleTexture(assets->get<Texture>("idle_flower"));
     _playerLeft->setWipeTexture(assets->get<Texture>("wipe_flower"));
 
     _playerRight = std::make_shared <Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerRight->setIdleTexture(assets->get<Texture>("char_flower"));
+    _playerRight->setIdleTexture(assets->get<Texture>("idle_flower"));
     _playerRight->setWipeTexture(assets->get<Texture>("wipe_flower"));
 
     _playerAcross = std::make_shared<Player>(-1, startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _playerAcross->setIdleTexture(assets->get<Texture>("char_flower"));
+    _playerAcross->setIdleTexture(assets->get<Texture>("idle_flower"));
     _playerAcross->setWipeTexture(assets->get<Texture>("wipe_flower"));
 
     // Initialize random dirt generation
@@ -328,7 +328,7 @@ void GameplayController::hostReset() {
 
 /**
 * HOST ONLY. Sets the character of the player given player's id.
-* Possible values: "Mushroom", "Frog", "Banana", "Chameleon"
+* Possible values: "Mushroom", "Frog", "Flower", "Chameleon"
 */
 void GameplayController::setCharacter(std::string ch, int id) {
     std::shared_ptr<Player> player;
@@ -348,20 +348,20 @@ void GameplayController::setCharacter(std::string ch, int id) {
     }
 
     if (ch == "Frog") {
-        player->setTexture(_assets->get<Texture>("char_frog"));
-        player->setWipingTexture(_assets->get<Texture>("wipe_frog"));
+        player->setIdleTexture(_assets->get<Texture>("idle_frog"));
+        player->setWipeTexture(_assets->get<Texture>("wipe_frog"));
     }
-    else if (ch == "Banana") {
-        player->setTexture(_assets->get<Texture>("char_banana"));
-        player->setWipingTexture(_assets->get<Texture>("wipe_banana"));
+    else if (ch == "Flower") {
+        player->setIdleTexture(_assets->get<Texture>("idle_flower"));
+        player->setWipeTexture(_assets->get<Texture>("wipe_flower"));
     }
     else if (ch == "Chameleon") {
-        player->setTexture(_assets->get<Texture>("char_chameleon"));
-        player->setWipingTexture(_assets->get<Texture>("wipe_chameleon"));
+        player->setIdleTexture(_assets->get<Texture>("idle_chameleon"));
+        player->setWipeTexture(_assets->get<Texture>("wipe_chameleon"));
     }
     else {
-        player->setTexture(_assets->get<Texture>("char_mushroom"));
-        player->setWipingTexture(_assets->get<Texture>("wipe_mushroom"));
+        player->setIdleTexture(_assets->get<Texture>("idle_mushroom"));
+        player->setWipeTexture(_assets->get<Texture>("wipe_mushroom"));
     }
 }
 

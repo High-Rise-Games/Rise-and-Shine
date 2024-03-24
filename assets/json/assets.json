@@ -183,16 +183,28 @@
             "magfilter": "linear"
         },
         "wipe_flower": {
-            "file": "textures/wipe-flower.png"
+            "file": "textures/wipe-fl-4096.png"
         },
         "wipe_chameleon": {
-            "file": "textures/wipe-chameleon.png"
+            "file": "textures/wipe-cha-4096.png"
         },
         "wipe_frog": {
-            "file": "textures/wipe-frog.png"
+            "file": "textures/wipe-frog-4096.png"
         },
         "wipe_mushroom": {
-            "file": "textures/wipe-mushroom.png"
+            "file": "textures/wipe-mush-4096.png"
+        },
+        "idle_flower": {
+            "file": "textures/idle-fl-4096.png"
+        },
+        "idle_chameleon": {
+            "file": "textures/idle-cha-4096.png"
+        },
+        "idle_frog": {
+            "file": "textures/idle-fr-4096.png"
+        },
+        "idle_mushroom": {
+            "file": "textures/idle-mush-4096.png"
         },
         "start_game": {
             "file": "textures/StartButton.png",
