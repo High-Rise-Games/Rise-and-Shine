@@ -173,7 +173,8 @@
     },
     "jsons" : {
         "constants" : "json/constants.json",
-        "server": "json/server.json"
+        "server": "json/server.json",
+        "templatelevel": "json/templatelevel.json"
     },
     "widgets": {
         "colorbutton" : "widgets/colorbutton.json",
