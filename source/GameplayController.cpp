@@ -1378,7 +1378,9 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     }
     else if (_curBoard == -1) {
         _windowsLeft.draw(batch, getSize());
-        _playerLeft->draw(batch, getSize());
+        if (_curBoardLeft == 0) {
+            _playerLeft->draw(batch, getSize());
+        }
         _player->drawPeeking(batch, getSize(), _curBoard, _windows.sideGap);
         _projectilesLeft.draw(batch, getSize(), _windowsLeft.getPaneWidth(), _windowsLeft.getPaneHeight());
         if (_dirtSelected && _dirtPath.size() != 0) {
@@ -1391,7 +1393,9 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     }
     else if (_curBoard == 1) {
         _windowsRight.draw(batch, getSize());
-        _playerRight->draw(batch, getSize());
+        if (_curBoardRight == 0) {
+            _playerRight->draw(batch, getSize());
+        }
         _player->drawPeeking(batch, getSize(), _curBoard, _windows.sideGap);
         _projectilesRight.draw(batch, getSize(), _windowsRight.getPaneWidth(), _windowsRight.getPaneHeight());
         if (_dirtSelected && _dirtPath.size() != 0) {
