@@ -561,15 +561,16 @@ bool LobbyScene::checkConnection() {
                 disconnect();
                 _status = WAIT;
                 return false;
+            case cugl::net::NetcodeConnection::State::INVALID:
+            case cugl::net::NetcodeConnection::State::FAILED:
+            case cugl::net::NetcodeConnection::State::DENIED:
             case cugl::net::NetcodeConnection::State::DISCONNECTED:
             // code block
                 disconnect();
                 _status = IDLE;
                 return false;
           default:
-            disconnect();
-            _status = IDLE;
-            return false;
+            return true;
         }
     }
     
