@@ -448,28 +448,28 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
 
     const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
     json->init(JsonValue::Type::ObjectType);
-    json->appendValue("player_id", static_cast<double>(id));
+    json->appendValue("player_id", std::to_string(id));
     json->appendValue("player_char", player->getChar());
-    json->appendValue("num_dirt", static_cast<double>(_allDirtAmounts[id - 1]));
-    json->appendValue("curr_board", static_cast<double>(_allCurBoards[id - 1]));
+    json->appendValue("num_dirt", std::to_string(_allDirtAmounts[id - 1]));
+    json->appendValue("curr_board", std::to_string(_allCurBoards[id - 1]));
 
     cugl::Vec2 playerBoardPos = getBoardPosition(player->getPosition());
-    json->appendValue("player_x", playerBoardPos.x);
-    json->appendValue("player_y", playerBoardPos.y);
+    json->appendValue("player_x", std::to_string(playerBoardPos.x));
+    json->appendValue("player_y", std::to_string(playerBoardPos.y));
 
-    json->appendValue("health", static_cast<double>(player->getHealth()));
-    json->appendValue("stun_frames", static_cast<double>(player->getStunFrames()));
-    json->appendValue("wipe_frames", static_cast<double>(player->getWipeFrames()));
-    json->appendValue("timer", static_cast<double>(_gameTime));
-    json->appendValue("has_bird", id == _boardWithBird);
+    json->appendValue("health", std::to_string((player->getHealth())));
+    json->appendValue("stun_frames", std::to_string(player->getStunFrames()));
+    json->appendValue("wipe_frames", std::to_string(player->getWipeFrames()));
+    json->appendValue("timer", std::to_string(_gameTime));
+    json->appendValue("has_bird", (id == _boardWithBird));
     
     const std::shared_ptr<JsonValue> birdPos = std::make_shared<JsonValue>();
     birdPos->init(JsonValue::Type::ArrayType);
-    birdPos->appendValue(static_cast<double>(_bird.birdPosition.x));
-    birdPos->appendValue(static_cast<double>(_bird.birdPosition.y));
+    birdPos->appendValue(std::to_string(_bird.birdPosition.x));
+    birdPos->appendValue(std::to_string(_bird.birdPosition.y));
     json->appendChild("bird_pos", birdPos);
 
-    json->appendValue("bird_facing_right", _bird.isFacingRight());
+    json->appendValue("bird_facing_right", (_bird.isFacingRight()));
 
     const std::shared_ptr<JsonValue> dirtArray = std::make_shared<JsonValue>();
     dirtArray->init(JsonValue::Type::ArrayType);
@@ -479,8 +479,8 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
             if (hasDirt) {
                 const std::shared_ptr<JsonValue> dirtPos = std::make_shared<JsonValue>();
                 dirtPos->init(JsonValue::Type::ArrayType);
-                dirtPos->appendValue(static_cast<double>(row));
-                dirtPos->appendValue(static_cast<double>(col));
+                dirtPos->appendValue(std::to_string(row));
+                dirtPos->appendValue(std::to_string(col));
                 dirtArray->appendChild(dirtPos);
             }
         }
@@ -497,21 +497,21 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
         cugl::Vec2 projBoardPos = getBoardPosition(proj->position);
         const std::shared_ptr<JsonValue> projPos = std::make_shared<JsonValue>();
         projPos->init(JsonValue::Type::ArrayType);
-        projPos->appendValue(projBoardPos.x);
-        projPos->appendValue(projBoardPos.y);
+        projPos->appendValue(std::to_string(projBoardPos.x));
+        projPos->appendValue(std::to_string(projBoardPos.y));
         projJson->appendChild("pos", projPos);
 
         const std::shared_ptr<JsonValue> projVel = std::make_shared<JsonValue>();
         projVel->init(JsonValue::Type::ArrayType);
-        projVel->appendValue(proj->velocity.x);
-        projVel->appendValue(proj->velocity.y);
+        projVel->appendValue(std::to_string(proj->velocity.x));
+        projVel->appendValue(std::to_string(proj->velocity.y));
         projJson->appendChild("vel", projVel);
 
         cugl::Vec2 projDestBoardPos = getBoardPosition(proj->destination);
         const std::shared_ptr<JsonValue> projDest = std::make_shared<JsonValue>();
         projDest->init(JsonValue::Type::ArrayType);
-        projDest->appendValue(projDestBoardPos.x);
-        projDest->appendValue(projDestBoardPos.y);
+        projDest->appendValue(std::to_string(projDestBoardPos.x));
+        projDest->appendValue(std::to_string(projDestBoardPos.y));
         projJson->appendChild("dest", projDest);
 
         if (proj->type == ProjectileSet::Projectile::ProjectileType::DIRT) {
@@ -565,7 +565,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
 * @params data     The data to update
 */
 void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
-    int playerId = data->getInt("player_id", 0);
+    int playerId = std::stod(data->getString("player_id", "0"));
     std::string playerChar = data->getString("player_char");
 
     std::shared_ptr<Player> player;
@@ -578,8 +578,8 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
         player = _player;
         windows = &_windows;
         projectiles = &_projectiles;
-        _currentDirtAmount = data->getInt("num_dirt", 0);
-        _curBoard = data->getInt("curr_board", 0);
+        _currentDirtAmount = std::stod(data->getString("num_dirt", "0"));
+        _curBoard = std::stod(data->getString("curr_board", "0"));
         if (data->getBool("has_bird", false)) {
             _curBirdBoard = 0;
         }
@@ -589,7 +589,7 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
         player = _playerRight;
         windows = &_windowsRight;
         projectiles = &_projectilesRight;
-        _curBoardRight = data->getInt("curr_board", 0);
+        _curBoardRight = std::stod(data->getString("curr_board", "0"));
         if (data->getBool("has_bird", false)) {
             _curBirdBoard = 1;
         }
@@ -599,7 +599,7 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
         player = _playerLeft;
         windows = &_windowsLeft;
         projectiles = &_projectilesLeft;
-        _curBoardLeft = data->getInt("curr_board", 0);
+        _curBoardLeft = std::stod(data->getString("curr_board", "0"));
         if (data->getBool("has_bird", false)) {
             _curBirdBoard = -1;
         }
@@ -616,7 +616,7 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     // update game states
     // update bird position, no matter which board the bird is on
     const std::vector<std::shared_ptr<JsonValue>>& birdPos = data->get("bird_pos")->children();
-    Vec2 birdBoardPos(birdPos[0]->asFloat(), birdPos[1]->asFloat());
+    Vec2 birdBoardPos(std::stod(birdPos[0]->asString()), std::stod(birdPos[1]->asString()));
     _curBirdPos = getWorldPosition(birdBoardPos);
 
     _bird.setFacingRight(data->getBool("bird_facing_right"));
@@ -628,15 +628,15 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     }
 
     // get x, y positions of player
-    Vec2 playerBoardPos(data->getFloat("player_x", 0), data->getFloat("player_y", 0));
+    Vec2 playerBoardPos(std::stod(data->getString("player_x", "0")), std::stod(data->getString("player_y", "0")));
     player->setPosition(getWorldPosition(playerBoardPos));
-    player->setHealth(data->getInt("health", 3));
+    player->setHealth(std::stod(data->getString("health", "3")));
 
     // populate player's board with dirt
     windows->clearBoard();
     for (const std::shared_ptr< JsonValue>& jsonDirt : data->get("dirts")->children()) {
-        std::vector<int> dirtPos = jsonDirt->asIntArray();
-        windows->addDirt(dirtPos[0], dirtPos[1]);
+        std::vector<std::string> dirtPos = jsonDirt->asStringArray();
+        windows->addDirt(std::stod(dirtPos[0]), std::stod(dirtPos[1]));
     }
 
 //    player->setStunFrames(data->getInt("stun_frames"));
@@ -648,15 +648,15 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     for (const std::shared_ptr<JsonValue>& projNode : data->get("projectiles")->children()) {
         // get projectile position
         const std::vector<std::shared_ptr<JsonValue>>& projPos = projNode->get("pos")->children();
-        Vec2 pos(projPos[0]->asFloat(), projPos[1]->asFloat());
+        Vec2 pos(std::stod(projPos[0]->asString()), std::stod(projPos[1]->asString()));
 
         // get projectile velocity
         const std::vector<std::shared_ptr<JsonValue>>& projVel = projNode->get("vel")->children();
-        Vec2 vel(projVel[0]->asInt(), projVel[1]->asInt());
+        Vec2 vel(std::stod(projVel[0]->asString()), std::stod(projVel[1]->asString()));
         
         // get projectile destination
         const std::vector<std::shared_ptr<JsonValue>>& projDest = projNode->get("dest")->children();
-        Vec2 dest(projDest[0]->asInt(), projDest[1]->asInt());
+        Vec2 dest(std::stod(projDest[0]->asString()), std::stod(projDest[1]->asString()));
 
         // get projectile type
         string typeStr = projNode->get("type")->asString();
@@ -680,12 +680,12 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
 std::shared_ptr<cugl::JsonValue> GameplayController::getJsonMove(const cugl::Vec2 move) {
     const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
     json->init(JsonValue::Type::ObjectType);
-    json->appendValue("player_id", static_cast<double>(_id));
+    json->appendValue("player_id", std::to_string(_id));
 
     const std::shared_ptr<JsonValue> vel = std::make_shared<JsonValue>();
     vel->init(JsonValue::Type::ArrayType);
-    vel->appendValue(move.x);
-    vel->appendValue(move.y);
+    vel->appendValue(std::to_string(move.x));
+    vel->appendValue(std::to_string(move.y));
     json->appendChild("vel", vel);
     
 
@@ -711,9 +711,10 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonMove(const cugl::Vec
 * @params data     The data to update
 */
 void GameplayController::processMovementRequest(std::shared_ptr<cugl::JsonValue> data) {
-    int playerId = data->getInt("player_id", 0);
+//    int playerId = data->getInt("player_id", 0);
+    int playerId = std::stod(data->getString("player_id", "0"));
     const std::vector<std::shared_ptr<JsonValue>>& vel = data->get("vel")->children();
-    Vec2 moveVec(vel[0]->asFloat(), vel[1]->asFloat());
+    Vec2 moveVec(std::stod(vel[0]->asString()), std::stod(vel[1]->asString()));
     std::shared_ptr<Player> player = _player;
     WindowGrid* windows;
         
@@ -779,15 +780,15 @@ void GameplayController::processMovementRequest(std::shared_ptr<cugl::JsonValue>
 std::shared_ptr<cugl::JsonValue> GameplayController::getJsonSceneSwitch(bool returning) {
     const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
     json->init(JsonValue::Type::ObjectType);
-    json->appendValue("player_id", static_cast<double>(_id));
+    json->appendValue("player_id", std::to_string(_id));
 
     if (returning) {
-        json->appendValue("switch_destination", static_cast<double>(0));
+        json->appendValue("switch_destination", std::to_string(0));
     }
     else {
         // pre-condition: if not returning, guarantee that the player is on an edge
         int edge = _player->getEdge(_windows.sideGap, getSize());
-        json->appendValue("switch_destination", static_cast<double>(edge));
+        json->appendValue("switch_destination", std::to_string(edge));
     }
     return json;
 }
@@ -801,8 +802,8 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonSceneSwitch(bool ret
 */
 void GameplayController::processSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data) {
 
-    int playerId = data->getInt("player_id", 0);
-    int switchDestination = data->getInt("switch_destination", 0);
+    int playerId = std::stod(data->getString("player_id", "0"));
+    int switchDestination = std::stod(data->getString("switch_destination", "0"));
     CULog("player %d switching to %d", playerId, switchDestination);
 
     // update the board of the player to their switch destination
@@ -846,27 +847,27 @@ void GameplayController::processSceneSwitchRequest(std::shared_ptr<cugl::JsonVal
 std::shared_ptr<cugl::JsonValue> GameplayController::getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest) {
     const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
     json->init(JsonValue::Type::ObjectType);
-    json->appendValue("player_id_source", static_cast<double>(_id));
-    json->appendValue("player_id_target", static_cast<double>(target));
+    json->appendValue("player_id_source", std::to_string(_id));
+    json->appendValue("player_id_target", std::to_string(target));
     
     cugl::Vec2 boardPos = getBoardPosition(pos);
     const std::shared_ptr<JsonValue> dirtPos = std::make_shared<JsonValue>();
     dirtPos->init(JsonValue::Type::ArrayType);
-    dirtPos->appendValue(static_cast<double>(boardPos.x));
-    dirtPos->appendValue(static_cast<double>(boardPos.y));
+    dirtPos->appendValue(std::to_string(boardPos.x));
+    dirtPos->appendValue(std::to_string(boardPos.y));
     json->appendChild("dirt_pos", dirtPos);
 
     const std::shared_ptr<JsonValue> dirtVel = std::make_shared<JsonValue>();
     dirtVel->init(JsonValue::Type::ArrayType);
-    dirtVel->appendValue(static_cast<double>(vel.x));
-    dirtVel->appendValue(static_cast<double>(vel.y));
+    dirtVel->appendValue(std::to_string(vel.x));
+    dirtVel->appendValue(std::to_string(vel.y));
     json->appendChild("dirt_vel", dirtVel);
 
     cugl::Vec2 boardDest = getBoardPosition(dest);
     const std::shared_ptr<JsonValue> dirtDest = std::make_shared<JsonValue>();
     dirtDest->init(JsonValue::Type::ArrayType);
-    dirtDest->appendValue(static_cast<double>(boardDest.x));
-    dirtDest->appendValue(static_cast<double>(boardDest.y));
+    dirtDest->appendValue(std::to_string(boardDest.x));
+    dirtDest->appendValue(std::to_string(boardDest.y));
     json->appendChild("dirt_dest", dirtDest);
 
     CULog("dirt throw from player %d to %d", _id, target);
@@ -881,17 +882,17 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonDirtThrow(const int 
 * @params data     The data to update
 */
 void GameplayController::processDirtThrowRequest(std::shared_ptr<cugl::JsonValue> data) {
-    int source_id = data->getInt("player_id_source", 0);
-    int target_id = data->getInt("player_id_target", 0);
+    int source_id = std::stod(data->getString("player_id_source", "0"));
+    int target_id = std::stod(data->getString("player_id_target", "0"));
 
     const std::vector<std::shared_ptr<JsonValue>>& pos = data->get("dirt_pos")->children();
-    Vec2 dirt_pos(pos[0]->asFloat(), pos[1]->asFloat());
+    Vec2 dirt_pos(std::stod(pos[0]->asString()), std::stod(pos[1]->asString()));
 
     const std::vector<std::shared_ptr<JsonValue>>& vel = data->get("dirt_vel")->children();
-    Vec2 dirt_vel(vel[0]->asFloat(), vel[1]->asFloat());
+    Vec2 dirt_vel(std::stod(vel[0]->asString()), std::stod(vel[1]->asString()));
 
     const std::vector<std::shared_ptr<JsonValue>>& dest = data->get("dirt_dest")->children();
-    Vec2 dirt_dest(dest[0]->asFloat(), dest[1]->asFloat());
+    Vec2 dirt_dest(std::stod(dest[0]->asString()), std::stod(dest[1]->asString()));
 
     _allDirtAmounts[source_id - 1] = max(0, _allDirtAmounts[source_id - 1] - 1);
     _currentDirtAmount = _allDirtAmounts[0];
@@ -1195,14 +1196,18 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
             // filling up dirty bucket
             // set amount of frames plaer is frozen for for cleaning dirt
             player->resetWipeFrames();
-            AudioEngine::get()->play("clean", _assets->get<cugl::Sound>("clean"));
-            AudioEngine::get()->setTimeRemaining("clean", 2);
+            if (player_id == _id) {
+                AudioEngine::get()->play("clean", _assets->get<cugl::Sound>("clean"));
+                AudioEngine::get()->setTimeRemaining("clean", 2);
+            };
             _allDirtAmounts[player_id - 1] = min(_maxDirtAmount, _allDirtAmounts[player_id - 1] + 1);
         }
 
         // Check for collisions and play sound
         if (_collisions.resolveCollision(player, projectiles)) {
-            AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
+            if (player_id == _id) {
+                AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
+            };
         }
         
         if (_boardWithBird == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.01)) {

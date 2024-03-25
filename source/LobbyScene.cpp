@@ -566,9 +566,9 @@ bool LobbyScene::checkConnection() {
             case cugl::net::NetcodeConnection::State::DENIED:
             case cugl::net::NetcodeConnection::State::DISCONNECTED:
             // code block
-                disconnect();
-                _status = IDLE;
-                return false;
+//                disconnect();
+//                _status = IDLE;
+//                return false;
           default:
             return true;
         }
@@ -619,7 +619,7 @@ void LobbyScene::configureStartButton() {
             _startgame->activate();
         }
     } else if (!isHost()) {
-        if (_gameid_client->getText().size() != 0 && !_network) {
+        if (_status == IDLE && !_gameid_client->getText().empty() && !_network) {
             connect(_gameid_client->getText());
         }
 
