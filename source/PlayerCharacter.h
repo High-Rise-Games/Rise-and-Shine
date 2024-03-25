@@ -279,15 +279,15 @@ public:
     };
     
     /**
-     * Gets the amount of frames that the player can't move
-     * 
-     *
+     * Gets the amount of frames that the player is wiping dirt for
      * @returns _wipeFrames
      */
     int getWipeFrames() {
         return _wipeFrames;
     }
     
+    /** Sets the wipe frames */
+    void setWipeFrames(int n) { _wipeFrames = n; }
 
     /** Decreases the stun frames by one, unless it is already at 0 then does nothing. */
     void decreaseStunFrames();

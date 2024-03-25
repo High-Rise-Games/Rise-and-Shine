@@ -642,11 +642,11 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
         windows->addDirt(std::stod(dirtPos[0]), std::stod(dirtPos[1]));
     }
 
-//    player->setStunFrames(data->getInt("stun_frames"));
-//    player->setWipeFrames(data->getInt("wipe_frames"));
+    player->setStunFrames(std::stoi(data->getString("stun_frames")));
+    player->setWipeFrames(std::stoi(data->getString("wipe_frames")));
 //    _gameTime = data->getInt("timer");
         
-    // populate player's projectile set
+    // populate player's projectile setZ
     projectiles->clearCurrentSet(); // clear current set to rewrite
     for (const std::shared_ptr<JsonValue>& projNode : data->get("projectiles")->children()) {
         // get projectile position
