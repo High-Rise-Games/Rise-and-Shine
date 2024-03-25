@@ -317,7 +317,7 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
         });
     _select_yellow->addListener([this](const std::string& name, bool down) {
         if (down) {
-            character = "Banana";
+            character = "Flower";
             _character_field_red->setVisible(false);
             _character_field_blue->setVisible(false);
             _character_field_green->setVisible(false);
