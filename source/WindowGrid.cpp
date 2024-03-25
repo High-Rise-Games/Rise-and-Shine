@@ -155,7 +155,7 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 	// draw building background
 	Affine2 building_trans = Affine2();
 /*	building_trans.scale(std::max(_windowWidth * _nHorizontal / _buildingTexture->getWidth(), _windowHeight * _nVertical / _buildingTexture->getHeight()))*/;
-    building_trans.scale(_buildingWidth,_buildingHeight);
+    building_trans.scale(getPaneWidth() * _nHorizontal / _buildingTexture->getWidth(), getPaneHeight() * _nVertical / _buildingTexture->getHeight());
 
 	building_trans.translate(sideGap, 0);
 	batch->draw(_buildingTexture, Vec2(), building_trans);
