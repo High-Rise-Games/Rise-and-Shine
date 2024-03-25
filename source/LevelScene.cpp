@@ -58,10 +58,11 @@ bool LevelScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level1")));
     _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level2")));
     _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level3")));
-//    _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level4")));
+    _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level4")));
     _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level1h"));
     _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level2h"));
     _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level3h"));
+    _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level4h"));
     
     // Program the buttons
     _backbutton->addListener([this](const std::string& name, bool down) {
@@ -133,6 +134,9 @@ void LevelScene::setActive(bool value) {
             for (const auto& level: _highlightedlevels) {
                 level->setVisible(false);
             }
+            _levelbuttons[0]->setVisible(false);
+            _highlightedlevels[0]->setVisible(true);
+            _selectedlevel = 0;
         } else {
             _backbutton->deactivate();
             _nextbutton->deactivate();
