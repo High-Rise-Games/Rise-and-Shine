@@ -61,6 +61,8 @@ public:
     float getScale() {return _scaleFactor;}
 
     bool isFacingRight() { return _toRight; }
+
+    void setFacingRight(bool val) { _toRight = val; }
     
     /** Gets bird sprite.
      *
@@ -84,10 +86,13 @@ public:
     void setTexture(const std::shared_ptr<cugl::Texture>& texture);
     
     /** draws the bird on game board */
-    void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, cugl::Vec2 birdPos);
+    void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, cugl::Vec2 birdWorldPos);
     
     /** moves the bird on game board in direction based on current position. */
     void move();
+
+    /** Advances the bird frame by 1 */
+    void advanceBirdFrame();
     
     /**
      * Returns column number if bird is at the center of a column, else -1

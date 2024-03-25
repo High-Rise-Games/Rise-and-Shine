@@ -165,8 +165,9 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     // Initialize bird textures, but do not set a location yet. that is the host's job
     if (_birdActive) {
         float birdHeight = (_windows.getNVertical() - 1) * _windows.getPaneHeight() + _windows.getPaneHeight()/2;
-        _bird.init(cugl::Vec2(_windows.sideGap + _windows.getPaneWidth()/8, birdHeight),
-            cugl::Vec2(size.getIWidth() - _windows.sideGap - _windows.getPaneWidth()/4, birdHeight), 2, 0.04);
+        cugl::Vec2 birdStartPos = getBoardPosition(cugl::Vec2(_windows.sideGap + _windows.getPaneWidth() / 8, birdHeight));
+        cugl::Vec2 birdEndPos = getBoardPosition(cugl::Vec2(size.getIWidth() - _windows.sideGap - _windows.getPaneWidth() / 4, birdHeight));
+        _bird.init(birdStartPos, birdEndPos, 0.01, 0.04);
         _curBirdBoard = 2;
         _bird.setTexture(assets->get<Texture>("bird"));
     }
@@ -412,7 +413,7 @@ void GameplayController::switchScene() {
 }
 
 /** 
- * Converts game state into a JSON value for sending over the network.
+ * Host Only. Converts game state into a JSON value for sending over the network.
  * Only called by the host, as only the host transmits board states over the network.
  * 
  * @param id    the id of the player of the board state to get
@@ -461,13 +462,14 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
     json->appendValue("wipe_frames", static_cast<double>(player->getWipeFrames()));
     json->appendValue("timer", static_cast<double>(_gameTime));
     json->appendValue("has_bird", id == _boardWithBird);
-
-    cugl::Vec2 birdBoardPos = getBoardPosition(_bird.birdPosition);
+    
     const std::shared_ptr<JsonValue> birdPos = std::make_shared<JsonValue>();
     birdPos->init(JsonValue::Type::ArrayType);
-    birdPos->appendValue(static_cast<double>(birdBoardPos.x));
-    birdPos->appendValue(static_cast<double>(birdBoardPos.y));
+    birdPos->appendValue(static_cast<double>(_bird.birdPosition.x));
+    birdPos->appendValue(static_cast<double>(_bird.birdPosition.y));
     json->appendChild("bird_pos", birdPos);
+
+    json->appendValue("bird_facing_right", _bird.isFacingRight());
 
     const std::shared_ptr<JsonValue> dirtArray = std::make_shared<JsonValue>();
     dirtArray->init(JsonValue::Type::ArrayType);
@@ -542,6 +544,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
     "timer": 145,
     "has_bird": True,
     "bird_pos": [2.4, 6.0],
+    "bird_facing_right": true,
     "dirts": [ [0, 1], [2, 2], [0, 2] ],
     "projectiles": [ 
             { 
@@ -615,6 +618,8 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     const std::vector<std::shared_ptr<JsonValue>>& birdPos = data->get("bird_pos")->children();
     Vec2 birdBoardPos(birdPos[0]->asFloat(), birdPos[1]->asFloat());
     _curBirdPos = getWorldPosition(birdBoardPos);
+
+    _bird.setFacingRight(data->getBool("bird_facing_right"));
 
     // update the player's character textures if they are not already set
     if (player->getChar() != playerChar) {
@@ -1024,7 +1029,30 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         _currentDirtAmount = _allDirtAmounts[0];
         _curBoard = _allCurBoards[0];
         _curBirdBoard = _boardWithBird == 4 ? -1 : _boardWithBird - 1;
-        _curBirdPos = _bird.birdPosition;
+        _curBirdPos = getWorldPosition(_bird.birdPosition);
+    }
+    else {
+        // not host - advance all players idle or wipe frames
+        if (_player->getWipeFrames() < _player->getMaxWipeFrames()) {
+            _player->advanceWipeFrame();
+        }
+        _player->advanceIdleFrame();
+
+        if (_playerLeft->getWipeFrames() < _playerLeft->getMaxWipeFrames()) {
+            _playerLeft->advanceWipeFrame();
+        }
+        _playerLeft->advanceIdleFrame();
+
+        if (_playerRight->getWipeFrames() < _playerRight->getMaxWipeFrames()) {
+            _playerRight->advanceWipeFrame();
+        }
+        _playerRight->advanceIdleFrame();
+
+        // uncomment later if we are adding the ability to see opposite player's board
+        // if (_playerAcross->getWipeFrames() < _playerAcross->getMaxWipeFrames()) {
+        //     _playerAcross->advanceWipeFrame();
+        // }
+        // _playerAcross->advanceIdleFrame();
     }
 
     // When the player is on other's board and are able to throw dirt
@@ -1101,6 +1129,9 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         }
     }
 
+    // advance bird flying frame
+    _bird.advanceBirdFrame();
+
     // update time
     if ((_gameTime>=1)) {
         _frame = _frame+1;
@@ -1138,7 +1169,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
         // if they are on their own board.
         if (player->getStunFrames() > 0) {
             player->decreaseStunFrames();
-        }
+        } 
         else {
             player->move();
         }
@@ -1149,6 +1180,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
         else {
             player->move();
         }
+        
         player->advanceIdleFrame();
         
         
@@ -1171,7 +1203,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
             AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
         }
         
-        if (_boardWithBird == player_id && _collisions.resolveBirdCollision(player, _bird, 0.01)) {
+        if (_boardWithBird == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.01)) {
             CULog("collided with bird");
             _boardWithBird = _bird.isFacingRight() ? _boardWithBird + 1 : _boardWithBird - 1;
             if (_boardWithBird == 0) {
@@ -1267,7 +1299,8 @@ void GameplayController::generatePoo(ProjectileSet* projectiles) {
 //    CULog("player at: (%f, %f)", _player->getCoors().y, _player->getCoors().x);
 //    CULog("generate at: %d", (int)rand_row);
     // if add dirt already exists at location or player at location and board is not full, repeat
-    projectiles->spawnProjectile(Vec2(_bird.birdPosition.x, _bird.birdPosition.y - _windows.getPaneHeight()/2), Vec2(0, min(-2.4f,-2-_projectileGenChance)), Vec2(_bird.birdPosition.x, 0), ProjectileSet::Projectile::ProjectileType::POOP);
+    cugl::Vec2 birdWorldPos = getWorldPosition(_bird.birdPosition);
+    projectiles->spawnProjectile(Vec2(birdWorldPos.x, birdWorldPos.y - _windows.getPaneHeight()/2), Vec2(0, min(-2.4f,-2-_projectileGenChance)), Vec2(birdWorldPos.x, 0), ProjectileSet::Projectile::ProjectileType::POOP);
 }
 
 /** Checks whether board is full except player current location*/
