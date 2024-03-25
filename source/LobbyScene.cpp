@@ -561,16 +561,15 @@ bool LobbyScene::checkConnection() {
                 disconnect();
                 _status = WAIT;
                 return false;
-            case cugl::net::NetcodeConnection::State::INVALID:
-            case cugl::net::NetcodeConnection::State::FAILED:
-            case cugl::net::NetcodeConnection::State::DENIED:
             case cugl::net::NetcodeConnection::State::DISCONNECTED:
             // code block
                 disconnect();
                 _status = IDLE;
                 return false;
           default:
-            return true;
+            disconnect();
+            _status = IDLE;
+            return false;
         }
     }
     
@@ -619,7 +618,7 @@ void LobbyScene::configureStartButton() {
             _startgame->activate();
         }
     } else if (!isHost()) {
-        if (_gameid_client->getText().size() != 0 && !_network) {
+        if (_status == IDLE && !_gameid_client->getText().empty() && !_network) {
             connect(_gameid_client->getText());
         }
 

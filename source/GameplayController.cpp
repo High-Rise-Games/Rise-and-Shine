@@ -384,6 +384,7 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
 cugl::Vec2 GameplayController::getBoardPosition(cugl::Vec2 worldPos) {
     float x_coor = (worldPos.x - _windows.sideGap) / _windows.getPaneWidth();
     float y_coor = worldPos.y / _windows.getPaneHeight();
+    
     return Vec2(x_coor, y_coor);
 }
 
