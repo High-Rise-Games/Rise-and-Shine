@@ -77,8 +77,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     std::string time_msg = "Time";
     _timeText = TextLayout::allocWithText(time_msg, assets->get<Font>("pixel32"));
     _timeText->layout();
-    _healthText = TextLayout::allocWithText(health_msg, assets->get<Font>("pixel32"));
-    _healthText->layout();
+//    _healthText = TextLayout::allocWithText(health_msg, assets->get<Font>("pixel32"));
+//    _healthText->layout();
     
     reset();
     
@@ -171,12 +171,12 @@ void GameScene::update(float timestep) {
 
     // each player manages their own UI elements/text boxes for displaying resource information
     // Update the health meter
-    
-    _healthText->setText(strtool::format("Health %d", _gameController->getPlayerHealth()));
+//    
+//    _healthText->setText(strtool::format("Health %d", _gameController->getPlayerHealth()));
     _timeText->setText(strtool::format("Time %d", _gameController->getTime()));
         
         
-    _healthText->layout();
+//    _healthText->layout();
     _timeText->layout();
         
     // Update the dirt display
@@ -208,7 +208,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 
     batch->setColor(Color4::BLACK);
     batch->drawText(_timeText, Vec2(getSize().width - 10 - _timeText->getBounds().size.width, getSize().height - _timeText->getBounds().size.height));
-    batch->drawText(_healthText, Vec2(10, getSize().height - _healthText->getBounds().size.height));
+//    batch->drawText(_healthText, Vec2(10, getSize().height - _healthText->getBounds().size.height));
     
     //set bucket texture location
     Affine2 bucketTrans = Affine2();

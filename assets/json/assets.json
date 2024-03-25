@@ -381,6 +381,11 @@
             "file": "sounds/bang.wav",
             "volume": 0.8
         },
+        "clean" : {
+            "type": "sample",
+            "file": "sounds/clean.wav",
+            "volume": 0.4
+        },
         "tower_of_dragons" : {
             "type": "sample",
             "file": "sounds/Swing_Men.mp3",
@@ -389,7 +394,7 @@
         "click" : {
             "type": "sample",
             "file": "sounds/mouse-click.mp3",
-            "volume": 0.4
+            "volume": 0.1
         }
     },
     "jsons" : {

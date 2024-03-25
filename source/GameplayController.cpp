@@ -1195,6 +1195,8 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
             // filling up dirty bucket
             // set amount of frames plaer is frozen for for cleaning dirt
             player->resetWipeFrames();
+            AudioEngine::get()->play("clean", _assets->get<cugl::Sound>("clean"));
+            AudioEngine::get()->setTimeRemaining("clean", 2);
             _allDirtAmounts[player_id - 1] = min(_maxDirtAmount, _allDirtAmounts[player_id - 1] + 1);
         }
 

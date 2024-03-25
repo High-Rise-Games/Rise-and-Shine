@@ -280,6 +280,7 @@ void App::updateLevelScene(float timestep) {
     _levelscene.update(timestep);
     switch (_levelscene.getChoice()) {
         case LevelScene::Choice::NEXT:
+            AudioEngine::get()->play("click", _click_sound);
             _levelscene.setActive(false);
             _lobby_host.setActive(true);
             _lobby_host.setHost(true);
@@ -288,6 +289,7 @@ void App::updateLevelScene(float timestep) {
             _scene = State::LOBBY_HOST;
             break;
         case LevelScene::Choice::BACK:
+            AudioEngine::get()->play("click", _click_sound);
             _levelscene.setActive(false);
             _mainmenu.setActive(true);
             _scene = State::MENU;
@@ -383,7 +385,9 @@ void App::updateLobbyScene(float timestep) {
 void App::updateGameScene(float timestep) {
     _gamescene.update(timestep);
     if (_gamescene.didQuit() || _gameplay->isThereARequestForMenu()) {
-        AudioEngine::get()->play("click", _click_sound);
+        if (_gamescene.didQuit()) {
+            AudioEngine::get()->play("click", _click_sound);
+        }
         _gamescene.setActive(false);
         _gameplay->setActive(false);
         _mainmenu.setActive(true);

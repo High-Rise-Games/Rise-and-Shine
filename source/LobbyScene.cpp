@@ -160,6 +160,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
             _select_blue->setDown(false);
             _select_green->setDown(false);
             _select_yellow->setDown(false);
+            AudioEngine::get()->play("click", _assets->get<cugl::Sound>("click"));
         }
         });
     _select_blue->addListener([this](const std::string& name, bool down) {
@@ -173,6 +174,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
             _select_red->setDown(false);
             _select_green->setDown(false);
             _select_yellow->setDown(false);
+            AudioEngine::get()->play("click", _assets->get<cugl::Sound>("click"));
         }
         });
     _select_green->addListener([this](const std::string& name, bool down) {
@@ -186,6 +188,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
             _select_red->setDown(false);
             _select_blue->setDown(false);
             _select_yellow->setDown(false);
+            AudioEngine::get()->play("click", _assets->get<cugl::Sound>("click"));
         }
         });
     _select_yellow->addListener([this](const std::string& name, bool down) {
@@ -199,6 +202,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
             _select_red->setDown(false);
             _select_blue->setDown(false);
             _select_green->setDown(false);
+            AudioEngine::get()->play("click", _assets->get<cugl::Sound>("click"));
         }
         });
     
