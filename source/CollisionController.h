@@ -73,7 +73,7 @@ public:
     bool resolveCollision(const std::shared_ptr<Player>& player, ProjectileSet& pset);
 
     /** Returns true if there is a player bird collision*/
-    bool resolveBirdCollision(const std::shared_ptr<Player>& player, Bird& bird, float radiusMultiplier);
+    bool resolveBirdCollision(const std::shared_ptr<Player>& player, Bird& bird, cugl::Vec2 birdWorldPos, float radiusMultiplier);
 };
 
 #endif /* __SL_COLLISION_CONTROLLER_H__ */

@@ -66,15 +66,15 @@ bool CollisionController::resolveCollision(const std::shared_ptr<Player>& player
 }
 
 /** Returns true if there is a player bird collision*/
-bool CollisionController::resolveBirdCollision(const std::shared_ptr<Player>& player, Bird& bird, float radiusMultiplier) {
+bool CollisionController::resolveBirdCollision(const std::shared_ptr<Player>& player, Bird& bird, cugl::Vec2 birdWorldPos, float radiusMultiplier) {
     bool collision = false;
 
-    Vec2 norm = player->getPosition() - bird.birdPosition;
+    Vec2 norm = player->getPosition() - birdWorldPos;
     float distance = norm.length();
     float impactDistance = (player->getRadius() + bird.getRadius() * bird.getScale() * radiusMultiplier);
 
     // finds the NEAREST collision
-    Vec2 pos = bird.birdPosition;
+    Vec2 pos = birdWorldPos;
     pos = player->getPosition() - pos;
     float dist = pos.length();
     if (dist < distance) {

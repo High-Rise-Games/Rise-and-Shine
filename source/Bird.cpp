@@ -8,7 +8,7 @@ using namespace cugl;
 bool Bird::init(const cugl::Vec2 startP, const cugl::Vec2 endP, const float speed, const float sf) {
     _startPos = startP;
     _endPos = endP;
-    _endPos.x = _endPos.x -_radius * 2;
+    // _endPos.x = _endPos.x -_radius * 2;
     _speed = speed;
     _scaleFactor = sf;
     birdPosition = _startPos;
@@ -37,7 +37,7 @@ void Bird::setTexture(const std::shared_ptr<cugl::Texture>& texture) {
 }
 
 // draws a static filth on the screen on window pane at location windowPos
-void Bird::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, cugl::Vec2 birdPos) {
+void Bird::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, cugl::Vec2 birdWorldPos) {
     // Don't draw if sprite not set
     if (_sprite) {
         Affine2 birdTrans;
@@ -48,7 +48,7 @@ void Bird::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size
             _sprite->setOrigin(Vec2(_sprite->getFrameSize().width/2-1000, _sprite->getFrameSize().height/2-400));
             birdTrans.scale(_scaleFactor);
         }
-        birdTrans.translate(birdPos);
+        birdTrans.translate(birdWorldPos);
         // Transform to place the shadow, and its color
 //        Affine2 shadtrans = shiptrans;
 //        shadtrans.translate(_shadows,-_shadows);
@@ -70,19 +70,6 @@ void Bird::move() {
     } else {
         target = _startPos;
     }
-    if (_frametimer == 0) {
-        int frame = _sprite->getFrame();
-        if (frame == _framesize - 1) {
-            _frameright = false;
-        }
-        if (frame == 1) {
-            _frameright = true;
-        }
-        _sprite->setFrame(_frameright ? frame + 1: frame - 1);
-        _frametimer = 4;
-    } else {
-        _frametimer -= 1;
-    }
     target = target - birdPosition;
     if ((target.x > 0 && _toRight) || (target.x < 0 && !_toRight)) {
         birdPosition = birdPosition.add(_speed * target.normalize());
@@ -92,13 +79,31 @@ void Bird::move() {
     }
 }
 
+void Bird::advanceBirdFrame() {
+    if (_frametimer == 0) {
+        int frame = _sprite->getFrame();
+        if (frame == _framesize - 1) {
+            _frameright = false;
+        }
+        if (frame == 1) {
+            _frameright = true;
+        }
+        _sprite->setFrame(_frameright ? frame + 1 : frame - 1);
+        _frametimer = 4;
+    }
+    else {
+        _frametimer -= 1;
+    }
+}
+
 /** Returns column number if bird is at the center of a column, else -1*/
 int Bird::atColCenter(const int nHorizontal, const float windowWidth, const float sideGap) {
+
     for (int i=0; i < nHorizontal; i++) {
-        float windowXPos = sideGap - 20 + ((i == 0) ? 0 : (i * windowWidth)) + (float) windowWidth /2;
-        if ((_toRight) ? (birdPosition.x < windowXPos && birdPosition.x + _speed > windowXPos) :
-            (birdPosition.x > windowXPos && birdPosition.x - _speed < windowXPos)) {
-//            CULog("at column center %i", i);
+        float xPos = i + 0.4;
+        if ((_toRight) ? (birdPosition.x < xPos && birdPosition.x + _speed > xPos) :
+            (birdPosition.x > xPos && birdPosition.x - _speed < xPos)) {
+            CULog("at column center %i", i);
             return i;
         }
     }
