@@ -200,7 +200,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     // CULog("current board: %d", _curBoard);
     
     
-    Vec3 idk = Vec3(_gameController->getPlayer()->getPosition().x, _gameController->getPlayer()->getPosition().y, 1);
+    Vec3 idk = Vec3(getCamera()->getPosition().x, _gameController->getPlayer()->getPosition().y, 1);
     getCamera()->setPosition(idk);
     getCamera()->update();
     batch->begin(getCamera()->getCombined());
@@ -213,8 +213,12 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     _gameController->draw(batch);
 
     batch->setColor(Color4::BLACK);
-    batch->drawText(_timeText, Vec2(getSize().width - 10 - _timeText->getBounds().size.width, getSize().height - _timeText->getBounds().size.height));
+//    batch->drawText(_timeText, Vec2(getSize().width - 10 - _timeText->getBounds().size.width, getSize().height - _timeText->getBounds().size.height));
 //    batch->drawText(_healthText, Vec2(10, getSize().height - _healthText->getBounds().size.height));
+    
+    batch->drawText(_timeText, Vec2(getCamera()->getPosition().x+ 412, getCamera()->getPosition().y + 300));
+    
+//    batch->drawText(_timeText, Vec2(getSize().width - 10 - _timeText->getBounds().size.width, getSize().height - _timeText->getBounds().size.height));
     
     //set bucket texture location
     Affine2 bucketTrans = Affine2();
@@ -222,8 +226,10 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     float bucketScaleFactor = std::min(((float)getSize().getIWidth() / (float)_fullBucket->getWidth()) /2, ((float)getSize().getIHeight() / (float)_fullBucket->getHeight() /2));
     bucketTrans.scale(bucketScaleFactor);
     
-    Vec2 bucketLocation(getSize().width - ((float)_fullBucket->getWidth() * bucketScaleFactor/2),
-                        getSize().height - (float)_fullBucket->getHeight() * bucketScaleFactor/2);
+//    Vec2 bucketLocation(getSize().width - ((float)_fullBucket->getWidth() * bucketScaleFactor/2 + getCamera()->getPosition().x),
+//                        getSize().height + (float)_fullBucket->getHeight() * bucketScaleFactor/2 + getCamera()->getPosition().y + 100);
+    
+    Vec2 bucketLocation(getCamera()->getPosition().x+ 500, getCamera()->getPosition().y + 120);
     bucketTrans.translate(bucketLocation);
     
     // draw different bucket based on dirt amount
