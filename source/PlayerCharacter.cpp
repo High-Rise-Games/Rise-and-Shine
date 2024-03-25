@@ -22,9 +22,10 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     _speed = 10;
     _framecols = 7;
     _framesize = 7;
-    _frameflat = 0;
     _idleframecols = 4;
     _idleframesize = 8;
+    _throwframecols = 7;
+    _throwframesize = 7;
     
     // height of a window pane of the game board
     _windowWidth = windowWidth;
@@ -48,7 +49,7 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     _stunRotate = 0;
 
     // radius of player for collisions
-    _radius = _windowHeight / 1.5;
+    _radius = _windowHeight / 2;
     
     // Physics
     _mass = data->getFloat("mass",1.0);
@@ -99,7 +100,6 @@ void Player::setIdleTexture(const std::shared_ptr<cugl::Texture>& texture) {
             rows++;
         }
         _idleSprite = SpriteSheet::alloc(texture, rows, _idleframecols, _idleframesize);
-        _radius = std::min(_idleSprite->getFrameSize().width, _idleSprite->getFrameSize().height)/2 * 0.1;
         _idleSprite->setFrame(1);
     }
 }
@@ -116,7 +116,23 @@ void Player::setWipeTexture(const std::shared_ptr<cugl::Texture>& texture) {
             rows++;
         }
         _wipeSprite = SpriteSheet::alloc(texture, rows, _framecols, _framesize);
-        _wipeSprite->setFrame(_frameflat);
+        _wipeSprite->setFrame(0);
+    }
+}
+
+/**
+* Sets the player dirt throwing sprite.
+* 
+* @param texture   The texture for the sprite sheet
+*/
+void Player::setThrowTexture(const std::shared_ptr<cugl::Texture>& texture) {
+    if (_throwframecols > 0) {
+        int rows = _throwframesize / _throwframecols;
+        if (_throwframesize % _throwframecols != 0) {
+            rows++;
+        }
+        _throwSprite = SpriteSheet::alloc(texture, rows, _throwframecols, _throwframesize);
+        _throwSprite->setFrame(0);
     }
 }
 
@@ -134,24 +150,20 @@ const cugl::Vec2& Player::getCoorsFromPos(const float windowHeight, const float 
 /**
  * Draws this ship on the screen within the given bounds.
  *
- * This drawing code supports "wrap around". If the ship is partly off of
- * one edge, then it will also be drawn across the edge on the opposite
- * side.
- *
  * @param batch     The sprite batch to draw to
  * @param size      The size of the window (for wrap around)
  */
-void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds, WindowGrid windows) {
+void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) {
     // Transform to place the ship, start with centered version
     Affine2 player_trans;
     if (_idleSprite && _wipeFrames == _maxwipeFrame) {
         player_trans.translate( -(int)(_idleSprite->getFrameSize().width)/2 , -(int)(_idleSprite->getFrameSize().height) / 2);
-        double player_scale = windows.getPaneHeight() / _idleSprite->getFrameSize().height;
+        double player_scale = _windowHeight / _idleSprite->getFrameSize().height;
         player_trans.scale(player_scale);
     }
     else if (_wipeSprite && _wipeFrames < _maxwipeFrame) {
         player_trans.translate( -(int)(_wipeSprite->getFrameSize().width)/2 , -(int)(_wipeSprite->getFrameSize().height) / 2);
-        double player_scale = windows.getPaneHeight() / _wipeSprite->getFrameSize().height;
+        double player_scale = _windowHeight / _wipeSprite->getFrameSize().height;
         player_trans.scale(player_scale);
     }
     // Don't draw if texture not set
@@ -172,19 +184,37 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds, 
     }
 }
 
-#pragma mark Movement
 /**
- * Sets the position of this ship
- *
- * This is the preferred way to "bump" a ship in a collision.
- *
- * @param value     The position of this ship
- * @param size      The size of the window (for wrap around)
- */
-void Player::setPosition(cugl::Vec2 value, cugl::Vec2 size) {
-    _pos = value;
+* Draws the peeking player texture on one of the sides, depending on peek angle.
+*
+* @param batch     The sprite batch to draw to
+* @param size      The size of the window (for wrap around)
+* @param peekDirection The direction (-1 for left, 1 for right) that the player is peeking from. Draw on the opposite side.
+*/
+void Player::drawPeeking(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, int peekDirection, float sideGap) {
+    if (_throwSprite) {
+        Affine2 player_trans;
+        player_trans.translate(0, -(int)(_throwSprite->getFrameSize().height) / 2);
+        double player_scale = _windowHeight / _throwSprite->getFrameSize().height;
 
+        // flip sprite and translate position depending on peeking side
+        if (peekDirection == -1) {
+            player_trans.translate(-(int)(_throwSprite->getFrameSize().width)*0.85, 0);
+            player_trans.scale(-player_scale, player_scale);
+            player_trans.translate(size.width - sideGap, _pos.y);
+        }
+        else if (peekDirection == 1) {
+            player_trans.translate(-(int)(_throwSprite->getFrameSize().width)*0.65, 0);
+            player_trans.scale(player_scale);
+            player_trans.translate(sideGap, _pos.y);
+        }
+
+        _throwSprite->draw(batch, player_trans);
+
+    }
 }
+
+#pragma mark Movement
 
 /**
  * Moves the ship by the specified amount.

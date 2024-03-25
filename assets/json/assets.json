@@ -234,6 +234,18 @@
         "idle_mushroom": {
             "file": "textures/idle-mush-4096.png"
         },
+        "throw_flower": {
+            "file": "textures/throw-fl-4096.png"
+        },
+        "throw_chameleon": {
+            "file": "textures/throw-c-4096.png"
+        },
+        "throw_frog": {
+            "file": "textures/throw-fr-4096.png"
+        },
+        "throw_mushroom": {
+            "file": "textures/throw-m-4096.png"
+        },
         "start_game": {
             "file": "textures/StartButton.png",
             "wrapS": "clamp",

@@ -66,8 +66,6 @@ private:
     int _framecols;
     /** The number of frames in the sprite sheet */
     int _framesize;
-    /** The sprite sheet frame for being at rest */
-    int _frameflat;
     /** total number of frames*/
     int _maxwipeFrame;
     // number of frames that the player is wiping for
@@ -80,10 +78,17 @@ private:
     int _maxidleFrame;
     // number of frames that the player is idling for
     int _idleFrames;
+    /** The number of columns in the throw sprite sheet */
+    int _throwframecols;
+    /** The number of frames in the throw sprite sheet */
+    int _throwframesize;
+
     /** player idle sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _idleSprite;
     /** Reference to the player wiping animation sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _wipeSprite;
+    /** Reference to the player throwing animation sprite sheet */
+    std::shared_ptr<cugl::SpriteSheet> _throwSprite;
     /** Radius of the ship in pixels (derived from sprite sheet) */
     float _radius;
 
@@ -139,16 +144,6 @@ public:
      * @param value the position of this ship
      */
     void setPosition(cugl::Vec2 value) { _pos = value; }
-    
-    /**
-     * Sets the position of this ship, supporting wrap-around.
-     *
-     * This is the preferred way to "bump" a ship in a collision.
-     *
-     * @param value     The position of this ship
-     * @param size      The size of the window (for wrap around)
-     */
-    void setPosition(cugl::Vec2 value, cugl::Vec2 size);
     
     /**
      * Returns the velocity of this ship.
@@ -260,7 +255,7 @@ public:
             }
             _wipeFrames += 1;
         } else {
-            _wipeSprite->setFrame(_frameflat);
+            _wipeSprite->setFrame(0);
         }
     };
     
@@ -362,18 +357,44 @@ public:
      */
     void setWipeTexture(const std::shared_ptr<cugl::Texture>& texture);
 
+   /** Gets player dirt throwing sprite.
+    *
+    * The size and layout of the sprite sheet should already be specified
+    * in the initializing step.
+    * 
+    * @return the sprite sheet
+    */
+    const std::shared_ptr<cugl::SpriteSheet>& getThrowSprite() const { return _throwSprite; }
+
+    /**
+     * Sets the player dirt throwing sprite.
+     *
+     * The texture should be formated as a sprite sheet, and the size and
+     * layout of the sprite sheet should already be specified in the
+     * initializing step. If so, this method will construct a sprite sheet
+     * from this texture.
+     * 
+     * @param texture   The texture for the sprite sheet
+     */
+    void setThrowTexture(const std::shared_ptr<cugl::Texture>& texture);
     
     /**
-     * Draws this ship to the sprite batch within the given bounds.
-     *
-     * This drawing code supports "wrap around". If the ship is partly off of
-     * one edge, then it will also be drawn across the edge on the opposite
-     * side.
+     * Draws this player to the sprite batch within the given bounds.
      *
      * @param batch     The sprite batch to draw to
      * @param size      The size of the window (for wrap around)
      */
-    void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, WindowGrid windows);
+    void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size);
+
+    /**
+     * Draws the peeking player texture on one of the sides, depending on peek angle.
+     *
+     * @param batch     The sprite batch to draw to
+     * @param size      The size of the window (for wrap around)
+     * @param peekDirection The direction (-1 for left, 1 for right) that the player is peeking from. Draw on the opposite side.
+     * @param sideGap   The size of the side gap for the window grid
+     */
+    void drawPeeking(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, int peekDirection, float sideGap);
 
 #pragma mark Movement
     /**

@@ -109,9 +109,9 @@ protected:
     /** Whether the dirt is selected, ONLY active when currently on others board*/
     bool _dirtSelected;
     /** The path from player to the dirt throw destination, ONLY active when currently on player's own board*/
-    cugl::Path2 _dirtPath;
+    cugl::Poly2 _dirtPath;
     /** The position of the dirt when it is selected*/
-    cugl::Vec2 _prevDirtPos;
+    cugl::Vec2 _prevInputPos;
     
     /** Todo: probably need to change _windows to a vector, length 3 or 4*/
     /** Grid of windows and dirt placement to be drawn */
