@@ -1,5 +1,5 @@
 { "compressionlevel":-1,
- "height":4,
+ "height":6,
  "infinite":false,
  "layers":[
         {
@@ -49,17 +49,39 @@
          "y":0
         }, 
         {
-         "data":[3, 2, 3,
-            2, 10, 4,
-            3, 2, 11,
-            5, 3, 8],
-         "height":4,
+            "data": [
+                3,
+                2,
+                3,
+                2,
+                2,
+                4,
+                3,
+                2,
+                11,
+                5,
+                3,
+                8,
+                3,
+                2,
+                3,
+                2,
+                2,
+                4,
+                3,
+                2,
+                10,
+                5,
+                3,
+                8
+            ],
+         "height":6,
          "id":1,
          "name":"Windows",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
-         "width":3,
+         "width":4,
          "x":0,
          "y":0
         }],
@@ -91,5 +113,5 @@
  "tilewidth":400,
  "type":"map",
  "version":"1.10",
- "width":3
+ "width":4
 }
