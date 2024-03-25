@@ -198,7 +198,13 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     // For now we render 3152-style
     // DO NOT DO THIS IN YOUR FINAL GAME
     // CULog("current board: %d", _curBoard);
+    
+    
+    Vec3 idk = Vec3(_gameController->getPlayer()->getPosition().x, _gameController->getPlayer()->getPosition().y, 1);
+    getCamera()->setPosition(idk);
+    getCamera()->update();
     batch->begin(getCamera()->getCombined());
+
     
     
     
