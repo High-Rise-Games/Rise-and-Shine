@@ -148,14 +148,12 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     });
 
     _select_red->addListener([this](const std::string& name, bool down) {
-        std::cout<<"down1: "<<_select_red->isDown()<<"\n";
         if (down) {
             character = "Mushroom";
             _character_field_red->setVisible(true);
             _character_field_blue->setVisible(false);
             _character_field_green->setVisible(false);
             _character_field_yellow->setVisible(false);
-            std::cout<<"down2: "<<_select_red->isDown()<<"\n";
             
             _select_blue->setDown(false);
             _select_green->setDown(false);

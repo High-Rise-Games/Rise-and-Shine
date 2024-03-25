@@ -284,7 +284,7 @@ void App::updateLevelScene(float timestep) {
             _levelscene.setActive(false);
             _lobby_host.setActive(true);
             _lobby_host.setHost(true);
-            _lobby_host.setLevel(std::max(_levelscene.getLevel(), 0));
+            _lobby_host.setLevel(_levelscene.getLevel() + 1);
             _lobby_client.setActive(false);
             _scene = State::LOBBY_HOST;
             break;
