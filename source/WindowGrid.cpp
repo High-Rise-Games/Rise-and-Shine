@@ -55,6 +55,15 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
             _initDirtNum = property->getInt("value", 1);
         }
     }
+    
+//    for (const std::shared_ptr<JsonValue>& object : data->get("layers")->children()) {
+//        if (object->getString("name") == "Building") {
+//            const std::shared_ptr<JsonValue>& object1 = object->get("objects")->get(0);
+//            _buildingHeight = (object1->getInt("height")) / (size.height);
+//            _buildingWidth = ((object1->getInt("width"))/ size.width);
+//            
+//        }
+//    }
 
 	return true;
 }
@@ -146,6 +155,8 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 	// draw building background
 	Affine2 building_trans = Affine2();
 	building_trans.scale(std::max(_windowWidth * _nHorizontal / _buildingTexture->getWidth(), _windowHeight * _nVertical / _buildingTexture->getHeight()));
+//    building_trans.scale(_buildingWidth,_buildingHeight);
+
 	building_trans.translate(sideGap, 0);
 	batch->draw(_buildingTexture, Vec2(), building_trans);
 	

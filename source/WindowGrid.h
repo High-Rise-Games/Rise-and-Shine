@@ -19,6 +19,8 @@ private:
 	float _scaleFactor;
 	float _windowHeight;
 	float _windowWidth;
+    float _buildingWidth;
+    float _buildingHeight;
 	std::vector<int> _map;
 	/** Tile ids that players cannot move to at all */
 	std::set<int> _impassableTiles    = { 3 };
