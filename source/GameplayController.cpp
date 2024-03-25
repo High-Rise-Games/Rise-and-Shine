@@ -63,7 +63,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _rng.seed(std::time(nullptr));
     _dirtGenSpeed = 2;
     _fixedDirtUpdateThreshold = 5 * 60;
-    _maxDirtAmount = 1;
+    _maxDirtAmount = 3;
     _size = size;
     
     _dirtSelected = false;
