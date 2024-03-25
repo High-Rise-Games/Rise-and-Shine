@@ -195,6 +195,9 @@ protected:
     /** The sound of a ship-asteroid collision */
     std::shared_ptr<cugl::Sound> _bang;
     
+    /** The sound of a ship-asteroid collision */
+    std::shared_ptr<cugl::Sound> _clean;
+    
     /** Gameplay Audio Controller */
     GameAudioController _audioController;
 

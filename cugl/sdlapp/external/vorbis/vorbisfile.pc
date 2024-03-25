@@ -1,9 +1,9 @@
 # libvorbisfile pkg-config source file
 
-prefix=C:/Program Files (x86)/Shine
-exec_prefix=C:/Program Files (x86)/Shine/bin
-libdir=C:/Program Files (x86)/Shine/lib
-includedir=C:/Program Files (x86)/Shine/include
+prefix=/usr/local
+exec_prefix=/usr/local/bin
+libdir=/usr/local/lib
+includedir=/usr/local/include
 
 Name: vorbisfile
 Description: vorbisfile is a library that provides a convenient high-level API for decoding and basic manipulation of all Vorbis I audio streams

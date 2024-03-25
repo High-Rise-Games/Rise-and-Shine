@@ -201,6 +201,8 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     // Get the bang sound
     _bang = assets->get<Sound>("bang");
     
+    _clean = assets->get<Sound>("clean");
+    
     reset();
     return true;
 }
@@ -1198,8 +1200,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
             // set amount of frames plaer is frozen for for cleaning dirt
             player->resetWipeFrames();
             if (player_id == _id) {
-                AudioEngine::get()->play("clean", _assets->get<cugl::Sound>("clean"));
-                AudioEngine::get()->setTimeRemaining("clean", 2);
+                AudioEngine::get()->play("clean", _clean, false, _clean->getVolume(), true);
             };
             _allDirtAmounts[player_id - 1] = min(_maxDirtAmount, _allDirtAmounts[player_id - 1] + 1);
         }
