@@ -111,7 +111,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _winBackground = _assets->get<Texture>("win-background");
     
     // get the lose background when game is lose
-    _winBackground = _assets->get<Texture>("win-background");
+    _loseBackground = _assets->get<Texture>("lose-background");
 
     _windowsLeft.setBuildingTexture(assets->get<Texture>("building_1"));
     for (string thisWindow: window_strings) {
@@ -535,31 +535,31 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
 * 
 * * Example board state:
  * {
-    "player_id":  1,
+    "player_id":  "1",
     "player_char": "Frog",
-    "num_dirt": 1,
-    "curr_board": 0,
-    "player_x": 3.0,
-    "player_y": 4.0,
-    "health": 3,
-    "stun_frames": 0,
-    "wipe_frames": 0,
-    "timer": 145,
+    "num_dirt": "1",
+    "curr_board": "0",
+    "player_x": "3.0",
+    "player_y": "4.0",
+    "health": "3",
+    "stun_frames": "0",
+    "wipe_frames": "0",
+    "timer": "145",
     "has_bird": True,
-    "bird_pos": [2.4, 6.0],
+    "bird_pos": ["2.4", "6.0"],
     "bird_facing_right": true,
-    "dirts": [ [0, 1], [2, 2], [0, 2] ],
-    "projectiles": [ 
+    "dirts": [ ["0", "1"], ["2", "2"], ["0", "2"] ],
+    "projectiles": [
             { 
-                "pos": [3.0, 1.45],
-                "vel": [2, 3],
-                "dest": [12.23, 23.5],
+                "pos": ["3.0", "1.45"],
+                "vel": ["2", "3"],
+                "dest": ["12.23", "23.5"],
                 "type: "DIRT"
             },
             {
-                "pos": [5.0, 0.2],
-                "vel": [0, -2], 
-                "dest": [12.23, 23.5],
+                "pos": ["5.0", "0.2"],
+                "vel": ["0", "-2"],
+                "dest": ["12.23", "23.5"],
                 "type": "POOP"
             }
         ]
@@ -940,9 +940,15 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                         // CULog("got board state message");
                         updateBoard(incomingMsg);
                     } // set the game to lose because host has won
-                        else if (incomingMsg->has("win")) {
+                        else if (incomingMsg->has("win") && incomingMsg->getBool("win") == true
+                                 && !isGameOver()) {
                             setGameOver(true);
-                        };
+                            setWin(true);
+                        } else if (incomingMsg->has("win") && incomingMsg->getBool("win") == false
+                                   && !isGameOver()) {
+                              setGameOver(true);
+                              setWin(false);
+                          }
                 }
                 else { // is host
                     // process action data - movement or dirt throw
@@ -957,8 +963,6 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     else if (incomingMsg->has("player_id_target")) {
                         CULog("got dirt throw message");
                         processDirtThrowRequest(incomingMsg);
-                    } else if (incomingMsg->has("win")) {
-                        setGameOver(true);
                     }
                 }
             });
@@ -997,31 +1001,53 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 }
             }
             
-            // checks whether the host has won the game based on his board,
-            // then transmits to other players that he has won the game
-            if (checkBoardEmpty()) {
-                setGameOver(true);
-                setWin(true);
+        }
+
+        if (checkBoardEmpty(_windows)) {
+            setGameOver(true);
+            setWin(true);
+            const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+            json->init(JsonValue::Type::ObjectType);
+            json->appendValue("win", false);
+            _network.transmitMessage(json);
+        };
+        stepForward(_player, _windows, _projectiles);
+        if (_numPlayers > 1) {
+            if (checkBoardEmpty(_windowsRight)) {
                 const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
                 json->init(JsonValue::Type::ObjectType);
                 json->appendValue("win", true);
-            }
-        }
-
-        stepForward(_player, _windows, _projectiles);
-        if (_numPlayers > 1) {
+                setGameOver(true);
+                _network.transmitMessage(json);
+            };
             stepForward(_playerRight, _windowsRight, _projectilesRight);
         }
         if (_numPlayers > 2) {
+            if (checkBoardEmpty(_windowsAcross)) {
+                const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+                json->init(JsonValue::Type::ObjectType);
+                json->appendValue("win", true);
+                setGameOver(true);
+                _network.transmitMessage(json);
+            };
             stepForward(_playerAcross, _windowsAcross, _projectilesAcross);
         }
         if (_numPlayers > 3) {
+            if (checkBoardEmpty(_windowsLeft)) {
+                const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+                json->init(JsonValue::Type::ObjectType);
+                json->appendValue("win", true);
+                setGameOver(true);
+                _network.transmitMessage(json);
+            };
             stepForward(_playerLeft, _windowsLeft, _projectilesLeft);
         }
         for (int i = 1; i <= _numPlayers; i++) {
             _network.transmitMessage(getJsonBoard(i));
             // CULog("transmitting board state for player %d", i);
         }
+        
+        
 
         _input.update();
         if (_input.didPressReset()) {
@@ -1036,6 +1062,8 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         _curBoardRight = _allCurBoards[1];
         _curBirdBoard = _boardWithBird == 4 ? -1 : _boardWithBird - 1;
         _curBirdPos = getWorldPosition(_bird.birdPosition);
+
+        
     }
     else {
         // not host - advance all players idle or wipe frames
@@ -1339,10 +1367,10 @@ const bool GameplayController::checkBoardFull() {
 }
 
 /** Checks whether board is empty except player current location*/
-const bool GameplayController::checkBoardEmpty() {
-    for (int x = 0; x < _windows.getNHorizontal(); x++) {
-        for (int y = 0; y < _windows.getNVertical(); y++) {
-                if (_windows.getWindowState(y, x) == 1) {
+const bool GameplayController::checkBoardEmpty(WindowGrid playerWindowGrid) {
+    for (int x = 0; x < playerWindowGrid.getNHorizontal(); x++) {
+        for (int y = 0; y < playerWindowGrid.getNVertical(); y++) {
+                if (playerWindowGrid.getWindowState(y, x) == 1) {
                     return false;
                 }
         }
@@ -1409,6 +1437,8 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     
     if (isGameWin() && isGameOver()) {
         batch->draw(_winBackground,Rect(Vec2::ZERO,getSize()));
+    } else if (isGameOver()) {
+        batch->draw(_loseBackground,Rect(Vec2::ZERO,getSize()));
     }
 }
 
