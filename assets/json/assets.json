@@ -330,6 +330,21 @@
         "window_13": {
             "file": "textures/window_13.png"
         },
+        "nightmare_window1": {
+            "file": "textures/window1nightmare.png"
+        },
+        "nightmare_window2": {
+            "file": "textures/window2nightmare.png"
+        },
+        "nightmare_window3": {
+            "file": "textures/window3nightmare.png"
+        },
+        "nightmare_window4": {
+            "file": "textures/window4nightmare.png"
+        },
+        "nightmare_window5": {
+            "file": "textures/window5nightmare.png"
+        },
         "dirt": {
             "file": "textures/GenericDirt.png"
         },
@@ -412,7 +427,9 @@
     "jsons" : {
         "constants" : "json/constants.json",
         "server": "json/server.json",
-        "templatelevel": "json/templatelevel.json"
+        "templatelevel": "json/templatelevel.json",
+        "templatelevel2": "json/templatelevel2.json",
+        "templatelevel3": "json/templatelevel3.json"
     },
     "widgets": {
         "colorbutton" : "widgets/colorbutton.json",

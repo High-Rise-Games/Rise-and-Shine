@@ -93,7 +93,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     // Initialize the window grids
 //    std::shared_ptr<cugl::JsonValue> level = _constants->get("easy board"); // TODO: make field passed in from level select through App
     
-    std::shared_ptr<cugl::JsonValue> level = _assets->get<JsonValue>("templatelevel");
+    std::shared_ptr<cugl::JsonValue> level = _assets->get<JsonValue>("templatelevel2");
 
     string window_strings[13] = { "window_1", "window_2", "window_3", "window_4", "window_5", "window_6", "window_7", "window_8", "window_9", "window_10", "window_11", "window_12", "window_13", };
     

@@ -46,7 +46,7 @@ private:
 
 
 public:
-	const int MAX_HEIGHT = 100; // TODO change to 4 once scrolling is complete
+	const int MAX_HEIGHT = 15; // TODO change to 4 once scrolling is complete
 	// accessors 
 //	void setWindowWidth(int width)        { _windowWidth = width;       };
 //	int  getWindowWidth()                 { return _windowWidth;        };

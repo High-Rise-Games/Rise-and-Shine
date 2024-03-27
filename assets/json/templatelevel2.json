@@ -1,0 +1,106 @@
+{ "compressionlevel":-1,
+ "height":15,
+ "infinite":false,
+ "layers":[
+        {
+         "draworder":"topdown",
+         "id":4,
+         "name":"Background",
+         "objects":[
+                {
+                 "gid":17,
+                 "height":5970,
+                 "id":3,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":7200,
+                 "x":-2400,
+                 "y":5250
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Building",
+         "objects":[
+                {
+                 "gid":15,
+                 "height":5250,
+                 "id":2,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":2000,
+                 "x":0,
+                 "y":5250
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[2, 2, 2, 2, 2,
+            2, 2, 2, 12, 2,
+            2, 5, 2, 2, 2,
+            2, 2, 2, 2, 9,
+            2, 2, 11, 2, 2,
+            2, 4, 2, 7, 2,
+            2, 2, 2, 2, 2,
+            2, 7, 2, 2, 2,
+            2, 2, 2, 11, 2,
+            2, 10, 2, 2, 2,
+            2, 2, 2, 8, 2,
+            2, 2, 2, 4, 2,
+            2, 13, 2, 2, 2,
+            2, 2, 2, 2, 2,
+            2, 2, 2, 2, 2],
+         "height":15,
+         "id":1,
+         "name":"Windows",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":5,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":5,
+ "nextobjectid":4,
+ "orientation":"orthogonal",
+ "properties":[
+        {
+         "name":"number dirts",
+         "type":"int",
+         "value":5
+        }],
+ "renderorder":"left-down",
+ "tiledversion":"1.10.0",
+ "tileheight":350,
+ "tilesets":[
+        {
+         "firstgid":1,
+         "source":"..\/..\/..\/..\/Tiled\/Tilesets\/windows.tsx"
+        }, 
+        {
+         "firstgid":15,
+         "source":"..\/..\/..\/..\/Tiled\/Tilesets\/buildings.tsx"
+        }, 
+        {
+         "firstgid":17,
+         "source":"..\/..\/..\/..\/Tiled\/Tilesets\/backgrounds.tsx"
+        }],
+ "tilewidth":400,
+ "type":"map",
+ "version":"1.10",
+ "width":5
+}
