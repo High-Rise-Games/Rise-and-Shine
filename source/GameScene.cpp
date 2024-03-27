@@ -167,6 +167,8 @@ void GameScene::update(float timestep) {
     Vec3 convertedWorldPos = screenToWorldCoords(screenPos);
     Vec2 worldPos = Vec2(convertedWorldPos.x, convertedWorldPos.y);
     
+    
+    _tn_button->setPosition(getCamera()->getPosition().x+400, getCamera()->getPosition().y-200);
     _gameController->update(timestep, worldPos, _dirtThrowInput);
 
     // each player manages their own UI elements/text boxes for displaying resource information
