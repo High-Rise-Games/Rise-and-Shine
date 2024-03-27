@@ -65,6 +65,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _fixedDirtUpdateThreshold = 5 * 60;
     _maxDirtAmount = 3;
     _size = size;
+    _nativeSize = size;
     
     _dirtSelected = false;
     _dirtPath = Path2();
@@ -90,22 +91,49 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _curBoardRight = 0;
     _curBoardLeft = 0;
     
+    
+    return true;
+}
+
+bool GameplayController::initLevel(int selected_level) {
     // Initialize the window grids
 //    std::shared_ptr<cugl::JsonValue> level = _constants->get("easy board"); // TODO: make field passed in from level select through App
-    
-    std::shared_ptr<cugl::JsonValue> level = _assets->get<JsonValue>("templatelevel2");
+    std::shared_ptr<cugl::JsonValue> level;
+    switch (selected_level) {
+        case 1:
+            CULog("garage selecting 1");
+            level = _assets->get<JsonValue>("templatelevel");
+            break;
+        case 2:
+            CULog("garage selecting 2");
+            level = _assets->get<JsonValue>("templatelevel2");
+            _size = _nativeSize;
+            _size.height *= 2;
+            break;
+        case 3:
+            CULog("garage selecting 3");
+            level = _assets->get<JsonValue>("templatelevel3");
+            _size = _nativeSize;
+            _size.height *= 3;
+            break;
+        default:
+            CULog("garage selecting default");
+            level = _assets->get<JsonValue>("templatelevel");
+            break;
+    }
 
     string window_strings[13] = { "window_1", "window_2", "window_3", "window_4", "window_5", "window_6", "window_7", "window_8", "window_9", "window_10", "window_11", "window_12", "window_13", };
     
-    _windows.setBuildingTexture(assets->get<Texture>("building_1"));
+    _windows.setBuildingTexture(_assets->get<Texture>("building_1"));
     for (string thisWindow: window_strings) {
-        _windows.addTexture(assets->get<Texture>(thisWindow));
+        _windows.addTexture(_assets->get<Texture>(thisWindow));
     }
     //_windows.addTexture(assets->get<Texture>("window_1"));
     //_windows.addTexture(assets->get<Texture>("window_2"));
     //_windows.addTexture(assets->get<Texture>("window_3"));
-    _windows.init(level, size); // init depends on texture
-    _windows.setDirtTexture(assets->get<Texture>("dirt"));
+    _windows.init(level, _size); // init depends on texture
+    _windows.setInitDirtNum(selected_level * 5);
+    _windows.setDirtTexture(_assets->get<Texture>("dirt"));
     
     // get the win background when game is win
     _winBackground = _assets->get<Texture>("win-background");
@@ -113,63 +141,63 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     // get the lose background when game is lose
     _loseBackground = _assets->get<Texture>("lose-background");
 
-    _windowsLeft.setBuildingTexture(assets->get<Texture>("building_1"));
+    _windowsLeft.setBuildingTexture(_assets->get<Texture>("building_1"));
     for (string thisWindow: window_strings) {
-        _windowsLeft.addTexture(assets->get<Texture>(thisWindow));
+        _windowsLeft.addTexture(_assets->get<Texture>(thisWindow));
     }
     //_windowsLeft.addTexture(assets->get<Texture>("window_1"));
     //_windowsLeft.addTexture(assets->get<Texture>("window_2"));
     //_windowsLeft.addTexture(assets->get<Texture>("window_3"));
-    _windowsLeft.init(level, size); // init depends on texture
-    _windowsLeft.setDirtTexture(assets->get<Texture>("dirt"));
+    _windowsLeft.init(level, _size); // init depends on texture
+    _windowsLeft.setDirtTexture(_assets->get<Texture>("dirt"));
 
-    _windowsRight.setBuildingTexture(assets->get<Texture>("building_1"));
+    _windowsRight.setBuildingTexture(_assets->get<Texture>("building_1"));
     for (string thisWindow: window_strings) {
-        _windowsRight.addTexture(assets->get<Texture>(thisWindow));
+        _windowsRight.addTexture(_assets->get<Texture>(thisWindow));
     }
     //_windowsRight.addTexture(assets->get<Texture>("window_1"));
     //_windowsRight.addTexture(assets->get<Texture>("window_2"));
     //_windowsRight.addTexture(assets->get<Texture>("window_3"));
-    _windowsRight.init(level, size); // init depends on texture
-    _windowsRight.setDirtTexture(assets->get<Texture>("dirt"));
+    _windowsRight.init(level, _size); // init depends on texture
+    _windowsRight.setDirtTexture(_assets->get<Texture>("dirt"));
 
-    _windowsAcross.setBuildingTexture(assets->get<Texture>("building_1"));
+    _windowsAcross.setBuildingTexture(_assets->get<Texture>("building_1"));
     for (string thisWindow : window_strings) {
-        _windowsAcross.addTexture(assets->get<Texture>(thisWindow));
+        _windowsAcross.addTexture(_assets->get<Texture>(thisWindow));
     }
     //_windowsAcross.addTexture(assets->get<Texture>("window_1"));
     //_windowsAcross.addTexture(assets->get<Texture>("window_2"));
     //_windowsAcross.addTexture(assets->get<Texture>("window_3"));
     _windowsAcross.init(level, getSize()); // init depends on texture
-    _windowsAcross.setDirtTexture(assets->get<Texture>("dirt"));
+    _windowsAcross.setDirtTexture(_assets->get<Texture>("dirt"));
 
 
     // Initialize projectiles
-    _projectiles.setDirtTexture(assets->get<Texture>("dirt"));
-    _projectiles.setPoopTexture(assets->get<Texture>("poop"));
+    _projectiles.setDirtTexture(_assets->get<Texture>("dirt"));
+    _projectiles.setPoopTexture(_assets->get<Texture>("poop"));
     _projectiles.setTextureScales(_windows.getPaneHeight(), _windows.getPaneWidth());
 //    _projectiles.init(_constants->get("projectiles"));
 
-    _projectilesLeft.setDirtTexture(assets->get<Texture>("dirt"));
-    _projectilesLeft.setPoopTexture(assets->get<Texture>("poop"));
+    _projectilesLeft.setDirtTexture(_assets->get<Texture>("dirt"));
+    _projectilesLeft.setPoopTexture(_assets->get<Texture>("poop"));
     _projectilesLeft.setTextureScales(_windowsLeft.getPaneHeight(), _windowsLeft.getPaneWidth());
 
-    _projectilesRight.setDirtTexture(assets->get<Texture>("dirt"));
-    _projectilesRight.setPoopTexture(assets->get<Texture>("poop"));
+    _projectilesRight.setDirtTexture(_assets->get<Texture>("dirt"));
+    _projectilesRight.setPoopTexture(_assets->get<Texture>("poop"));
     _projectilesRight.setTextureScales(_windowsRight.getPaneHeight(), _windowsRight.getPaneWidth());
 
-    _projectilesAcross.setDirtTexture(assets->get<Texture>("dirt"));
-    _projectilesAcross.setPoopTexture(assets->get<Texture>("poop"));
+    _projectilesAcross.setDirtTexture(_assets->get<Texture>("dirt"));
+    _projectilesAcross.setPoopTexture(_assets->get<Texture>("poop"));
     _projectilesAcross.setTextureScales(_windows.getPaneHeight(), _windows.getPaneWidth());
 
     // Initialize bird textures, but do not set a location yet. that is the host's job
     if (_birdActive) {
         float birdHeight = (_windows.getNVertical() - 1) * _windows.getPaneHeight() + _windows.getPaneHeight()/2;
         cugl::Vec2 birdStartPos = getBoardPosition(cugl::Vec2(_windows.sideGap + _windows.getPaneWidth() / 8, birdHeight));
-        cugl::Vec2 birdEndPos = getBoardPosition(cugl::Vec2(size.getIWidth() - _windows.sideGap - _windows.getPaneWidth() / 4, birdHeight));
+        cugl::Vec2 birdEndPos = getBoardPosition(cugl::Vec2(_size.getIWidth() - _windows.sideGap - _windows.getPaneWidth() / 4, birdHeight));
         _bird.init(birdStartPos, birdEndPos, 0.01, 0.04);
         _curBirdBoard = 2;
-        _bird.setTexture(assets->get<Texture>("bird"));
+        _bird.setTexture(_assets->get<Texture>("bird"));
     }
     
     // Make a ship and set its texture
@@ -192,12 +220,12 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     // Initialize random dirt generation
     updateDirtGenTime();
 
-    _collisions.init(size);
+    _collisions.init(_size);
 
     // Get the bang sound
-    _bang = assets->get<Sound>("bang");
+    _bang = _assets->get<Sound>("bang");
     
-    _clean = assets->get<Sound>("clean");
+    _clean = _assets->get<Sound>("clean");
     
     reset();
     return true;

@@ -22,7 +22,8 @@ bool WindowGrid::init(int nHorizontal, int nVertical, cugl::Size size) {
 bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 	 _nHorizontal = data->getInt("width", 2);
 	 _nVertical = data->getInt("height", 4);
-
+ 
+     _map.clear();
 	 std::vector<std::shared_ptr<cugl::JsonValue>> layers = data->get("layers")->children();
 	 for (std::shared_ptr<cugl::JsonValue> l : layers) {
 		 if (l->getString("name") == "Building") {

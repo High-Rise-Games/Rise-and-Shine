@@ -319,6 +319,7 @@ void App::updateLobbyScene(float timestep) {
                 _scene = State::MENU;
                 break;
             case LobbyScene::Status::START:
+                _gameplay->initLevel(_lobby_host.getLevel());
                 AudioEngine::get()->play("click", _click_sound);
                 _lobby_host.setActive(false);
                 _gamescene.setActive(true);

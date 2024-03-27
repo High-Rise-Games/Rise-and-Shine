@@ -57,7 +57,8 @@ protected:
 
     /** Size of the scene */
     cugl::Size _size;
-    
+    /** native size of the scene */
+    cugl::Size _nativeSize;
     
     
     // CONTROLLERS are attached directly to the scene (no pointers)
@@ -271,6 +272,14 @@ public:
     */
     void setId(int id) { _id = id; }
 
+    /**
+    * Initializes the level of this game session.
+    * @param assets     game assets
+    * @param level     the leve of this game
+    * Returns true if level set up is successful
+    */
+    bool initLevel(int level);
+    
     /**
     * HOST ONLY. Sets the character of all players.
     */
