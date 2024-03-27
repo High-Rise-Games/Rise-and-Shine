@@ -256,6 +256,11 @@ public:
     
 #pragma mark -
 #pragma mark Gameplay Handling
+    
+    
+    /** Returns the main player of who owns this controller**/
+    std::shared_ptr<Player> getPlayer() { return _player; }
+    
 
     /** Returns the id of this player. */
     const int getId() const { return _id; }
