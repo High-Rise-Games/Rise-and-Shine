@@ -198,6 +198,8 @@ public:
     // Sets the level chosen for current gameplay for host only.
     void setLevel(int level) {_level = level; }
 
+    // Gets the level chosen for current gameplay for host only.
+    int getLevel() { return _level; }
     /**
      * Returns true if the player quits the game.
      *
