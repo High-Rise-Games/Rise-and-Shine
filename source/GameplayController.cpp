@@ -98,7 +98,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
 bool GameplayController::initLevel(int selected_level) {
     // Initialize the window grids
 //    std::shared_ptr<cugl::JsonValue> level = _constants->get("easy board"); // TODO: make field passed in from level select through App
-    std::shared_ptr<cugl::JsonValue> level;
+    std::shared_ptr<cugl::JsonValue> level = std::make_shared<JsonValue>();
     switch (selected_level) {
         case 1:
             CULog("garage selecting 1");

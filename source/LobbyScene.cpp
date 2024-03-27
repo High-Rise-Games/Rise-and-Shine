@@ -370,6 +370,7 @@ void LobbyScene::update(float timestep) {
         _network->receive([this](const std::string source,
             const std::vector<std::byte>& data) {
                 processData(source, data);
+                
             });
         checkConnection();
         
