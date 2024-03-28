@@ -86,6 +86,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _scene_UI = _assets->get<scene2::SceneNode>("game");
     _scene_UI->setContentSize(dimen);
     _scene_UI->doLayout(); // Repositions the HUD
+    
 
     _backout = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("game_back"));
     _backout->addListener([=](const std::string& name, bool down) {
@@ -102,6 +103,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
             _gameController->switchScene();
         }
     });
+    
+
 
     _quit = false;
     addChild(_scene_UI);
@@ -167,6 +170,8 @@ void GameScene::update(float timestep) {
     Vec3 convertedWorldPos = screenToWorldCoords(screenPos);
     Vec2 worldPos = Vec2(convertedWorldPos.x, convertedWorldPos.y);
     
+    
+
     _gameController->update(timestep, worldPos, _dirtThrowInput);
 
     // each player manages their own UI elements/text boxes for displaying resource information
@@ -204,6 +209,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     getCamera()->setPosition(idk);
     getCamera()->update();
     batch->begin(getCamera()->getCombined());
+    _scene_UI->setPosition(idk-getSize().operator Vec2()/2);
 
     
     
