@@ -1464,9 +1464,9 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     }
     
     if (isGameWin() && isGameOver()) {
-        batch->draw(_winBackground,Rect(Vec2::ZERO,getSize()));
+        batch->draw(_winBackground,Rect(Vec2::ZERO,getSize()), _player->getPosition() - Vec2(700,0));
     } else if (isGameOver()) {
-        batch->draw(_loseBackground,Rect(Vec2::ZERO,getSize()));
+        batch->draw(_loseBackground,Rect(Vec2::ZERO,getSize()), _player->getPosition() + Vec2(700,0));
     }
 }
 
