@@ -372,7 +372,9 @@ void LobbyScene::update(float timestep) {
                 processData(source, data);
                 
             });
-        checkConnection();
+        if (!checkConnection()) {
+            return;
+        }
         
         configureStartButton();
 
