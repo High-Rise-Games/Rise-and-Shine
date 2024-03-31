@@ -1,17 +1,17 @@
 {
     "lobby" : {
-        "address" : "104.248.110.113",
+        "address" : "206.189.184.75",
         "port": 8080
     },
     "ice servers" : [
         {
             "turn" : false,
-            "address" : "104.248.110.113",
+            "address" : "206.189.184.75",
             "port" : 3478
         },
         {
             "turn" : true,
-            "address" : "104.248.110.113",
+            "address" : "206.189.184.75",
             "port" : 3478,
             "username": "server",
             "password": "server"
