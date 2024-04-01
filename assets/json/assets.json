@@ -1,5 +1,18 @@
 {
     "textures": {
+        "progress": {
+            "file":      "textures/progress.png",
+            "wrapS":     "clamp",
+            "wrapT":     "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear",
+            "atlas":     {
+                "background" : [0,    0, 320, 45],
+                "foreground" : [24,  45, 296, 90],
+                "leftcap"    : [0,   45,  24, 90],
+                "rightcap"   : [296, 45, 320, 90]
+            }
+        },
         "menu_background": {
             "file": "textures/HomeBG.jpg",
             "wrapS": "clamp",
@@ -447,7 +460,7 @@
         "lose": {
             "type": "Image",
             "data": {
-                "texture": "lose-background"
+                "texture": "win-background"
             }
         },
         "menu": {
@@ -1559,6 +1572,16 @@
                 "anchor": [ 0.5, 0.5 ]
             },
             "children": {
+                "player bar"  : {
+                    "type"   : "Progress",
+                    "data"   : {
+                        "anchor"     : [0.5,0.5],
+                        "background" : "progress_background",
+                        "foreground" : "progress_foreground",
+                        "left_cap"   : "progress_leftcap",
+                        "right_cap"  : "progress_rightcap"
+                    }
+                },
                 "back": {
                     "type": "Button",
                     "data": {

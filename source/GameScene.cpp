@@ -53,8 +53,10 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _background = _assets->get<Texture>("background");
     _constants = _assets->get<JsonValue>("constants");
     
-
-
+    // test progress bar
+    _player_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("player bar"));
+    
+    
     
     // Initialize dirt bucket
     setEmptyBucket(assets->get<Texture>("bucketempty"));
@@ -289,6 +291,9 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _loseBackground->setVisible(true);
         _loseBackground->render(batch);
     }
+    
+//    _player_bar->render(batch);
+//    _player_bar->setPosition(idk-getSize().operator Vec2()/2);
     
     batch->end();
 }

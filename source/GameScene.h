@@ -46,6 +46,13 @@ protected:
     std::shared_ptr<cugl::scene2::SceneNode> _winBackground;
     /** The win screen scene */
     std::shared_ptr<cugl::scene2::SceneNode> _loseBackground;
+    
+    /** Progress bar for this player **/
+    std::shared_ptr<cugl::scene2::ProgressBar>  _player_bar;
+    /** The progress for this player displayed on the screen */
+    float _player_progress;
+
+
 
     /** The game controller for this scene */
     std::shared_ptr<GameplayController> _gameController;
