@@ -438,6 +438,18 @@
         "labelbox" : "widgets/labelbox.json"
     },
     "scene2s": {
+        "win": {
+            "type": "Image",
+            "data": {
+                "texture": "win-background"
+            }
+        },
+        "lose": {
+            "type": "Image",
+            "data": {
+                "texture": "lose-background"
+            }
+        },
         "menu": {
             "type": "Image",
             "format": {

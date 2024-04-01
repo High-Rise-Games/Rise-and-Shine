@@ -41,6 +41,11 @@ protected:
     int _frame;
 
     int _countdownFrame;
+    
+    /** The win screen scene */
+    std::shared_ptr<cugl::scene2::SceneNode> _winBackground;
+    /** The win screen scene */
+    std::shared_ptr<cugl::scene2::SceneNode> _loseBackground;
 
     /** The game controller for this scene */
     std::shared_ptr<GameplayController> _gameController;

@@ -54,6 +54,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _constants = _assets->get<JsonValue>("constants");
     
 
+
     
     // Initialize dirt bucket
     setEmptyBucket(assets->get<Texture>("bucketempty"));
@@ -87,6 +88,12 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _scene_UI->setContentSize(dimen);
     _scene_UI->doLayout(); // Repositions the HUD
     
+    // get the win background scene when game is win
+    _winBackground = _assets->get<scene2::SceneNode>("win");
+    
+    // get the lose background scene when game is lose
+    _loseBackground = _assets->get<scene2::SceneNode>("lose");
+    
 
     _backout = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("game_back"));
     _backout->addListener([=](const std::string& name, bool down) {
@@ -104,10 +111,13 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
         }
     });
     
-
-
+    
     _quit = false;
     addChild(_scene_UI);
+    addChild(_winBackground);
+    addChild(_loseBackground);
+//    _loseBackground->setVisible(false);
+//    _winBackground->setVisible(false);
     setActive(false);
     return true;
 }
@@ -120,6 +130,8 @@ void GameScene::dispose() {
         removeAllChildren();
         _active = false;
         _tn_button = nullptr;
+        _winBackground = nullptr;
+        _loseBackground = nullptr;
     }
 }
 
@@ -173,6 +185,8 @@ void GameScene::update(float timestep) {
     
 
     _gameController->update(timestep, worldPos, _dirtThrowInput);
+    
+    
 
     // each player manages their own UI elements/text boxes for displaying resource information
     // Update the health meter
@@ -187,6 +201,8 @@ void GameScene::update(float timestep) {
     // Update the dirt display
     _dirtText->setText(strtool::format("%d", _gameController->getCurDirtAmount()));
     _dirtText->layout();
+    
+    
 }
 
 
@@ -210,11 +226,10 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     getCamera()->update();
     batch->begin(getCamera()->getCombined());
     _scene_UI->setPosition(idk-getSize().operator Vec2()/2);
-
-    
-    
     
     batch->draw(_background,Rect(Vec2::ZERO,getSize()));
+    
+    
 
     _gameController->draw(batch);
 
@@ -265,6 +280,15 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     }
     _scene_UI->render(batch);
     
+    if (_gameController->isGameWin() && _gameController->isGameOver()) {
+        _winBackground->setPosition(idk-getSize().operator Vec2()/2);
+        _winBackground->setVisible(true);
+        _winBackground->render(batch);
+    } else if (_gameController->isGameOver()) {
+        _loseBackground->setPosition(idk-getSize().operator Vec2()/2);
+        _loseBackground->setVisible(true);
+        _loseBackground->render(batch);
+    }
     
     batch->end();
 }
