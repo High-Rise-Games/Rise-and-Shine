@@ -95,6 +95,9 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     // host only instantiates the all characters list, which stores char selections of all players in the lobby
     _all_characters = std::vector<std::string>(4);
     
+    // part 1 of initializing list to keep track of invalid character selections
+    _all_characters_select = std::vector<int>(4);
+    
     Size dimen = Application::get()->getDisplaySize();
     dimen *= SCENE_HEIGHT/dimen.height;
     if (assets == nullptr) {
@@ -115,6 +118,17 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     scene->setContentSize(dimen);
     scene->doLayout(); // Repositions the HUD
 
+    // Acquire the invalid texture to draw on the screen when player picks
+    // an already selected player charatcer
+    _invalid = _assets->get<scene2::SceneNode>("invalid");
+    
+    // initialize the list to keep track of selectable vs non-selectable characters
+    _all_characters_select;
+    for (int i=0; i<4; i++) {
+        _all_characters_select[i] = 0;
+    };
+    
+    
     _select_red = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("host_red"));
     _select_blue = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("host_blue"));
     _select_green = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("host_green"));
@@ -149,6 +163,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
 
     _select_red->addListener([this](const std::string& name, bool down) {
         if (down) {
+            // Mushroom = 0
             character = "Mushroom";
             _character_field_red->setVisible(true);
             _character_field_blue->setVisible(false);
@@ -163,6 +178,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
         });
     _select_blue->addListener([this](const std::string& name, bool down) {
         if (down) {
+            // Frog = 1
             character = "Frog";
             _character_field_red->setVisible(false);
             _character_field_blue->setVisible(true);
@@ -177,6 +193,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
         });
     _select_green->addListener([this](const std::string& name, bool down) {
         if (down) {
+            // Chameleon = 2
             character = "Chameleon";
             _character_field_red->setVisible(false);
             _character_field_blue->setVisible(false);
@@ -191,6 +208,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
         });
     _select_yellow->addListener([this](const std::string& name, bool down) {
         if (down) {
+            // Flower = 3
             character = "Flower";
             _character_field_red->setVisible(false);
             _character_field_blue->setVisible(false);
@@ -443,7 +461,12 @@ void LobbyScene::processData(const std::string source,
         // read character selection message sent from clients and update internal state
         std::string char_selection = jsonData->getString("char");
         int player_id = std::stoi(jsonData->getString("id"));
-        _all_characters[player_id - 1] = char_selection;
+        if (_all_characters_select[mapToSelectList(char_selection)] == 0) {
+            _all_characters[player_id - 1] = char_selection;
+            _all_characters_select[mapToSelectList(char_selection)] = 1;
+        } else {
+            _invalid->setVisible(true);
+        }
     }
 
     netDeserializer.reset();

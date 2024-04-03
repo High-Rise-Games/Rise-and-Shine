@@ -13,6 +13,13 @@
                 "rightcap"   : [296, 45, 320, 90]
             }
         },
+        "invalid": {
+            "file": "textures/invalid.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
         "menu_background": {
             "file": "textures/HomeBG.jpg",
             "wrapS": "clamp",
@@ -461,6 +468,12 @@
             "type": "Image",
             "data": {
                 "texture": "win-background"
+            }
+        },
+        "invalid": {
+            "type": "Image",
+            "data": {
+                "texture": "invalid"
             }
         },
         "menu": {

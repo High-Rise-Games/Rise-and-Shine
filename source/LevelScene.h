@@ -35,6 +35,7 @@ public:
     };
     
 protected:
+    
     /** The asset manager for this scene. */
     std::shared_ptr<cugl::AssetManager> _assets;
     /** The button for going back to character select scene */
