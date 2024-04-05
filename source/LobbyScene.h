@@ -56,6 +56,10 @@ protected:
 
     std::shared_ptr<cugl::net::NetcodeConnection> _network;
     
+    /** Frame variable used to increment frames used to determine
+     time to display invalid character choice image**/
+    int _invalid_frames;
+    
     /** Whether we've quit this scene */
     bool _quit;
     /** Image to draw when player pickes an already selected character **/
@@ -102,6 +106,9 @@ protected:
     /** The back button for the menu scene */
     std::shared_ptr<cugl::scene2::Button> _backout;
     
+    /** True when player picks an invalid character selection **/
+    bool _invalid_character_selection
+    
     /** The network configuration */
     cugl::net::NetcodeConfig _config;
     
@@ -134,6 +141,11 @@ public:
      * Dispose the scene and its children
      */
     void dispose() override;
+    
+    
+    void setInvalidCharacterChoice(bool b) {
+        _invalid=b;
+    }
 
 
     bool init_host(const std::shared_ptr<cugl::AssetManager>& assets);
@@ -158,10 +170,10 @@ public:
     int mapToSelectList(std::string chare) {
         if (chare == "Mushroom") {
             return 0;
-        } else if (chare == "Chamaleon") {
-            return 1;
-        } else if (chare == "Frog") {
+        } else if (chare == "Chameleon") {
             return 2;
+        } else if (chare == "Frog") {
+            return 1;
         } else if (chare == "Flower") {
             return 3;
         } return -1;

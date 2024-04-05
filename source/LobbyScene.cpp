@@ -122,6 +122,9 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     // an already selected player charatcer
     _invalid = _assets->get<scene2::SceneNode>("invalid");
     
+    scene->addChild(_invalid);
+    _invalid->setVisible(false);
+    
     // initialize the list to keep track of selectable vs non-selectable characters
     _all_characters_select;
     for (int i=0; i<4; i++) {
@@ -457,6 +460,12 @@ void LobbyScene::processData(const std::string source,
         // read level message sent from host and update level
         _level = std::stoi(jsonData->getString("level"));
     }
+    
+    if (jsonData->has("invalid") == (std::stoi(jsonData->getString("invalid"))) && !isHost()) {
+        // read level message sent from host and update level
+        setInvalidCharacterChoice(true);
+    }
+    
     else if (jsonData->has("char") && isHost()) {
         // read character selection message sent from clients and update internal state
         std::string char_selection = jsonData->getString("char");
@@ -464,8 +473,10 @@ void LobbyScene::processData(const std::string source,
         if (_all_characters_select[mapToSelectList(char_selection)] == 0) {
             _all_characters[player_id - 1] = char_selection;
             _all_characters_select[mapToSelectList(char_selection)] = 1;
-        } else {
-            _invalid->setVisible(true);
+        } else if (mapToSelectList(char_selection) != -1) {
+            const std::shared_ptr<JsonValue> response = std::make_shared<JsonValue>();
+            response->appendValue("invalid", std::to_string(_id));
+            response->appendValue("char", character);
         }
     }
 
@@ -685,7 +696,7 @@ void LobbyScene::setActive(bool value) {
             _select_blue->setToggle(true);
             _select_green->setToggle(true);
             _select_yellow->setToggle(true);
-            _select_red->setDown(true);
+//            _select_red->setDown(true);
         }
         else {
             _startgame->deactivate();
