@@ -1,4 +1,4 @@
-Alpha release on Android for Group 1.
+Alpha release for Group 1.
 
 To run on Android, download the game and execute the APK from https://appdistribution.firebase.dev/i/d5baa8bfa21ce8ce
 
