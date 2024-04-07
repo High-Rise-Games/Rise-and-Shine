@@ -107,7 +107,7 @@ protected:
     std::shared_ptr<cugl::scene2::Button> _backout;
     
     /** True when player picks an invalid character selection **/
-    bool _invalid_character_selection
+    bool _invalid_character_selection;
     
     /** The network configuration */
     cugl::net::NetcodeConfig _config;
@@ -142,10 +142,10 @@ public:
      */
     void dispose() override;
     
-    
-    void setInvalidCharacterChoice(bool b) {
-        _invalid=b;
-    }
+//    
+//    void setInvalidCharacterChoice(bool b) {
+//        _invalid=b;
+//    }
 
 
     bool init_host(const std::shared_ptr<cugl::AssetManager>& assets);

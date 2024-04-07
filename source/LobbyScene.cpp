@@ -95,8 +95,8 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     // host only instantiates the all characters list, which stores char selections of all players in the lobby
     _all_characters = std::vector<std::string>(4);
     
-    // part 1 of initializing list to keep track of invalid character selections
-    _all_characters_select = std::vector<int>(4);
+//    // part 1 of initializing list to keep track of invalid character selections
+//    _all_characters_select = std::vector<int>(4);
     
     Size dimen = Application::get()->getDisplaySize();
     dimen *= SCENE_HEIGHT/dimen.height;
@@ -118,18 +118,18 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     scene->setContentSize(dimen);
     scene->doLayout(); // Repositions the HUD
 
-    // Acquire the invalid texture to draw on the screen when player picks
-    // an already selected player charatcer
-    _invalid = _assets->get<scene2::SceneNode>("invalid");
-    
-    scene->addChild(_invalid);
-    _invalid->setVisible(false);
+//    // Acquire the invalid texture to draw on the screen when player picks
+//    // an already selected player charatcer
+//    _invalid = _assets->get<scene2::SceneNode>("invalid");
+//    
+//    scene->addChild(_invalid);
+//    _invalid->setVisible(false);
     
     // initialize the list to keep track of selectable vs non-selectable characters
-    _all_characters_select;
-    for (int i=0; i<4; i++) {
-        _all_characters_select[i] = 0;
-    };
+//    _all_characters_select;
+//    for (int i=0; i<4; i++) {
+//        _all_characters_select[i] = 0;
+//    };
     
     
     _select_red = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("host_red"));
@@ -461,24 +461,29 @@ void LobbyScene::processData(const std::string source,
         _level = std::stoi(jsonData->getString("level"));
     }
     
-    if (jsonData->has("invalid") == (std::stoi(jsonData->getString("invalid"))) && !isHost()) {
-        // read level message sent from host and update level
-        setInvalidCharacterChoice(true);
-    }
-    
+//    if (jsonData->has("invalid") == (std::stoi(jsonData->getString("invalid"))) && !isHost()) {
+//        // read level message sent from host and update level
+//        setInvalidCharacterChoice(true);
+//    }
+//    
     else if (jsonData->has("char") && isHost()) {
         // read character selection message sent from clients and update internal state
         std::string char_selection = jsonData->getString("char");
         int player_id = std::stoi(jsonData->getString("id"));
-        if (_all_characters_select[mapToSelectList(char_selection)] == 0) {
-            _all_characters[player_id - 1] = char_selection;
-            _all_characters_select[mapToSelectList(char_selection)] = 1;
-        } else if (mapToSelectList(char_selection) != -1) {
-            const std::shared_ptr<JsonValue> response = std::make_shared<JsonValue>();
-            response->appendValue("invalid", std::to_string(_id));
-            response->appendValue("char", character);
-        }
+        _all_characters[player_id - 1] = char_selection;
+//        response->appendValue("char", character);
+//        if (_all_characters_select[mapToSelectList(char_selection)] == 0) {
+//            _all_characters[player_id - 1] = char_selection;
+//            _all_characters_select[mapToSelectList(char_selection)] = 1;
+//        } else if (mapToSelectList(char_selection) != -1) {
+//            const std::shared_ptr<JsonValue> response = std::make_shared<JsonValue>();
+//            response->appendValue("invalid", std::to_string(_id));
+//            response->appendValue("char", character);
+//        }
     }
+    
+//    _all_characters[player_id - 1] = char_selection;
+//    response->appendValue("char", character);
 
     netDeserializer.reset();
 }

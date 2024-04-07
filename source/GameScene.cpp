@@ -286,7 +286,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _winBackground->setPosition(idk-getSize().operator Vec2()/2);
         _winBackground->setVisible(true);
         _winBackground->render(batch);
-    } else if (_gameController->isGameOver()) {
+    } else if (_gameController->isGameOver() && !_gameController->isGameWin()) {
         _loseBackground->setPosition(idk-getSize().operator Vec2()/2);
         _loseBackground->setVisible(true);
         _loseBackground->render(batch);
