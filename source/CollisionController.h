@@ -7,6 +7,8 @@
 #define __COLLISION_CONTROLLER_H__
 #include <cugl/cugl.h>
 #include "PlayerCharacter.h"
+#include "ProjectileSet.h"
+#include "Bird.h"
 
 /**
  * Namespace of functions implementing simple game physics.
@@ -56,8 +58,22 @@ public:
         return true;
     }
         
+    /**
+     * Returns true if there is a player-projectile collision
+     *
+     * In addition to checking for the collision, this method also resolves it.
+     * That means it applies the effect to the player for EACH projectile encountered.
+     * It does not, however, play the sound. That happens in the main controller
+     *
+     * @param player  The player
+     * @param pset    The projectile set
+     *
+     * @return true if there is a ship-asteroid collision
+     */
+    bool resolveCollision(const std::shared_ptr<Player>& player, ProjectileSet& pset);
 
-
+    /** Returns true if there is a player bird collision*/
+    bool resolveBirdCollision(const std::shared_ptr<Player>& player, Bird& bird, cugl::Vec2 birdWorldPos, float radiusMultiplier);
 };
 
 #endif /* __SL_COLLISION_CONTROLLER_H__ */

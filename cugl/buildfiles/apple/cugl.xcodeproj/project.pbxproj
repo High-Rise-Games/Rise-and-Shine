@@ -325,6 +325,14 @@
 		EBDABF9E2B538760006862AF /* CULogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABF9C2B538760006862AF /* CULogger.cpp */; };
 		EBDB2A2329560BD400A4B39C /* cJSON.c in Sources */ = {isa = PBXBuildFile; fileRef = EBDB2A2229560BD400A4B39C /* cJSON.c */; };
 		EBDB2A2429560BD400A4B39C /* cJSON.c in Sources */ = {isa = PBXBuildFile; fileRef = EBDB2A2229560BD400A4B39C /* cJSON.c */; };
+		EBE2DFF82B794B360091FF11 /* CUICEAddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA42B40F35E006862AF /* CUICEAddress.cpp */; };
+		EBE2DFFF2B794B390091FF11 /* CUInetAddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA22B40F35E006862AF /* CUInetAddress.cpp */; };
+		EBE2E0002B794B3C0091FF11 /* CUNetcodeChannel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA52B40F35E006862AF /* CUNetcodeChannel.cpp */; };
+		EBE2E0012B794B410091FF11 /* CUNetcodeConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA82B40F35E006862AF /* CUNetcodeConfig.cpp */; };
+		EBE2E0022B794B410091FF11 /* CUNetcodeSerializer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA72B40F35E006862AF /* CUNetcodeSerializer.cpp */; };
+		EBE2E0032B794B410091FF11 /* CUNetcodeConnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA62B40F35E006862AF /* CUNetcodeConnection.cpp */; };
+		EBE2E0042B794B410091FF11 /* CUNetcodePeer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA32B40F35E006862AF /* CUNetcodePeer.cpp */; };
+		EBE2E0052B794B410091FF11 /* CUNetworkLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBDABBA92B40F35E006862AF /* CUNetworkLayer.cpp */; };
 		EBF2856D2B5CAB3B00E91BB4 /* CUGestureRecognizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBF2856C2B5CAB3B00E91BB4 /* CUGestureRecognizer.cpp */; };
 		EBF2856E2B5CAB3B00E91BB4 /* CUGestureRecognizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBF2856C2B5CAB3B00E91BB4 /* CUGestureRecognizer.cpp */; };
 		EBF285702B5CAB4A00E91BB4 /* CUGameController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBF2856F2B5CAB4A00E91BB4 /* CUGameController.cpp */; };
@@ -1717,6 +1725,7 @@
 				EB163859295625BB0090F7D4 /* CUBinaryReader.cpp in Sources */,
 				EB16383729561FE40090F7D4 /* CUFrustum.cpp in Sources */,
 				EB1637FB2956160E0090F7D4 /* CUVec3.cpp in Sources */,
+				EBE2E0032B794B410091FF11 /* CUNetcodeConnection.cpp in Sources */,
 				EB16385A295625BB0090F7D4 /* CUBinaryWriter.cpp in Sources */,
 				EB163A14295D2F640090F7D4 /* CUPanGesture.cpp in Sources */,
 				EB163B12295E1BFF0090F7D4 /* CUObstacleWorld.cpp in Sources */,
@@ -1790,9 +1799,11 @@
 				EB163892295627E30090F7D4 /* CUCamera.cpp in Sources */,
 				EB16383029561FE40090F7D4 /* CUPath2.cpp in Sources */,
 				EB16383529561FE40090F7D4 /* CUEasingBezier.cpp in Sources */,
+				EBE2DFFF2B794B390091FF11 /* CUInetAddress.cpp in Sources */,
 				EB163A51295E11680090F7D4 /* CUStencilEffect.cpp in Sources */,
 				EBDABE772B4C5933006862AF /* CUWheelJoint.cpp in Sources */,
 				EB163840295621C00090F7D4 /* CUDelaunayTriangulator.cpp in Sources */,
+				EBE2E0012B794B410091FF11 /* CUNetcodeConfig.cpp in Sources */,
 				EB163B11295E1BFF0090F7D4 /* CUBoxObstacle.cpp in Sources */,
 				EB163843295621C00090F7D4 /* CUEarclipTriangulator.cpp in Sources */,
 				EBF285712B5CAB4A00E91BB4 /* CUGameController.cpp in Sources */,
@@ -1812,6 +1823,7 @@
 				EB1638B7295634710090F7D4 /* CUAnchoredLayout.cpp in Sources */,
 				EB1639E1295A38FE0090F7D4 /* CUAudioEngine.cpp in Sources */,
 				EB1639FE295D2F470090F7D4 /* CUAudioSpinner.cpp in Sources */,
+				EBE2E0042B794B410091FF11 /* CUNetcodePeer.cpp in Sources */,
 				EBDABE452B49FFEE006862AF /* CUJoint.cpp in Sources */,
 				EB163844295621C00090F7D4 /* CUSimpleExtruder.cpp in Sources */,
 				EB1637FD2956195F0090F7D4 /* CUVec4.cpp in Sources */,
@@ -1827,12 +1839,14 @@
 				EBDABC462B4297A8006862AF /* CUTextureRenderer.cpp in Sources */,
 				EBDABD322B42AC97006862AF /* CUButtonGroup.cpp in Sources */,
 				EB1639E3295A38FE0090F7D4 /* CUAudioTypes.cpp in Sources */,
+				EBE2DFF82B794B360091FF11 /* CUICEAddress.cpp in Sources */,
 				EB163842295621C00090F7D4 /* CUSplinePather.cpp in Sources */,
 				EB7453F71D74D276002FBAE6 /* CUDisplay.cpp in Sources */,
 				EB1639FF295D2F470090F7D4 /* CUAudioScheduler.cpp in Sources */,
 				EB16381F29561A440090F7D4 /* CUAffine2.cpp in Sources */,
 				EB1639E4295A38FE0090F7D4 /* CUSound.cpp in Sources */,
 				EB16385B295625BB0090F7D4 /* CUJsonReader.cpp in Sources */,
+				EBE2E0052B794B410091FF11 /* CUNetworkLayer.cpp in Sources */,
 				EB1637F4295613A40090F7D4 /* CUStrings.cpp in Sources */,
 				EB163A04295D2F470090F7D4 /* CUAudioPlayer.cpp in Sources */,
 				EB163A6E295E14200090F7D4 /* CURotateAction.cpp in Sources */,
@@ -1849,6 +1863,7 @@
 				EB163847295621C00090F7D4 /* CUPathSmoother.cpp in Sources */,
 				EB163890295627E30090F7D4 /* CUUniformBuffer.cpp in Sources */,
 				EB16388A295627E30090F7D4 /* CUTextLayout.cpp in Sources */,
+				EBE2E0002B794B3C0091FF11 /* CUNetcodeChannel.cpp in Sources */,
 				EB163857295625BB0090F7D4 /* CUTextWriter.cpp in Sources */,
 				EB1638DC29563A240090F7D4 /* CUScene2.cpp in Sources */,
 				EBDABEF02B4CC1B7006862AF /* CUGameStateEvent.cpp in Sources */,
@@ -1863,6 +1878,7 @@
 				EB1637F3295613A40090F7D4 /* CUFiletools.cpp in Sources */,
 				EB1639F4295B6CFB0090F7D4 /* CUSoundLoader.cpp in Sources */,
 				EB16383229561FE40090F7D4 /* CURay.cpp in Sources */,
+				EBE2E0022B794B410091FF11 /* CUNetcodeSerializer.cpp in Sources */,
 				EBF2856E2B5CAB3B00E91BB4 /* CUGestureRecognizer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

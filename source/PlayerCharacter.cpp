@@ -7,40 +7,59 @@
 using namespace cugl;
 
 /**
- * Creates a ship wiht the given position and data.
- *
- * The JsonValue should be a reference of all of the constants
- * that necessary to set the "hidden physical properties".
- *
- * @param pos   The ship position
- * @param data  The data defining the physics constants
+ * Creates a player with the given fields.
+ * 
+ * @param id    The player's id
+ * @param pos   The player position
+ * @param data  The data defining the constants
+ * @param windowWidth   The width of the window panes
+ * @param windowHeight  The height of the window panes
  */
-Player::Player(const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data, const float windowWidth, const float windowHeight) {
+Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data, const float windowWidth, const float windowHeight) {
+    _id = id;
     _pos = pos;
     _coors = Vec2();
-    _ang  = 0;
-    _dang = 0;
-    _refire = 0;
-    _radius = 0;
+    _speed = 10;
+    _framecols = 7;
+    _framesize = 7;
+    _idleframecols = 4;
+    _idleframesize = 8;
+    _throwframecols = 7;
+    _throwframesize = 7;
     
     // height of a window pane of the game board
     _windowWidth = windowWidth;
     
     // width of a window pane of the game board
     _windowHeight = windowHeight;
+
+    // number of frames the player is unable to move due to taking a hit
+    _stunFrames = 0;
+    
+    // number of frames the player is frozen for because wiping dirt
+    _wipeFrames = 3;
+    // number of total frames the player will play wipe animation
+    _maxwipeFrame = _wipeFrames * _framesize * 2;
+    
+    _idleFrames = 5;
+    _maxidleFrame = _idleFrames * _idleframesize;
+    _idleFrames = _maxwipeFrame/_idleframesize;
+    
+    // rotation property of player when player is stunned
+    _stunRotate = 0;
+
+    // radius of player for collisions
+    _radius = _windowHeight / 2;
     
     // Physics
     _mass = data->getFloat("mass",1.0);
-    _shadows  = data->getFloat("shadow",0.0);
+    //_shadows  = data->getFloat("shadow",0.0);
     _maxvel   = data->getFloat("max velocity",0.0);
-    _banking  = data->getFloat("bank factor",0.0);
-    _maxbank  = data->getFloat("max bank",0.0);
-    _angdamp  = data->getFloat("angular damp",0.0);
 
     // Sprite sheet information
-    _framecols = data->getInt("sprite cols",0);
-    _framesize = data->getInt("sprite size",0);
-    _frameflat = data->getInt("sprite frame",0);
+    //_framecols = data->getInt("sprite cols",0);
+    //_framesize = data->getInt("sprite size",0);
+    //_frameflat = data->getInt("sprite frame",0);
     
     _health = data->getInt("health",0);
 }
@@ -61,27 +80,59 @@ void Player::setHealth(int value) {
     }
 }
 
+/** Decreases the stun frames by one, unless it is already at 0 then does nothing. */
+void Player::decreaseStunFrames() {
+    if (_stunFrames > 0) {
+        _stunFrames -= 1;
+    }
+}
+
 #pragma mark Graphics
 /**
- * Sets the texture for this ship.
- *
- * The texture should be formated as a sprite sheet, and the size and
- * layout of the sprite sheet should already be specified in the
- * initializing JSON. If so, this method will construct a sprite sheet
- * from this texture. Otherwise, the texture will be ignored.
+ * Sets the idle texture for player.
  *
  * @param texture   The texture for the sprite sheet
  */
-void Player::setTexture(const std::shared_ptr<cugl::Texture>& texture) {
+void Player::setIdleTexture(const std::shared_ptr<cugl::Texture>& texture) {
+    if (_idleframecols > 0) {
+        int rows = _idleframesize/_idleframecols;
+        if (_idleframesize % _idleframecols != 0) {
+            rows++;
+        }
+        _idleSprite = SpriteSheet::alloc(texture, rows, _idleframecols, _idleframesize);
+        _idleSprite->setFrame(1);
+    }
+}
+
+/**
+ * Sets the wiping texture for player.
+ *
+ * @param texture   The texture for the sprite sheet
+ */
+void Player::setWipeTexture(const std::shared_ptr<cugl::Texture>& texture) {
     if (_framecols > 0) {
         int rows = _framesize/_framecols;
         if (_framesize % _framecols != 0) {
             rows++;
         }
-        _sprite = SpriteSheet::alloc(texture, rows, _framecols, _framesize);
-        _sprite->setFrame(_frameflat);
-        _radius = std::max(_sprite->getFrameSize().width, _sprite->getFrameSize().height)/2;
-        _sprite->setOrigin(_sprite->getFrameSize()/2);
+        _wipeSprite = SpriteSheet::alloc(texture, rows, _framecols, _framesize);
+        _wipeSprite->setFrame(0);
+    }
+}
+
+/**
+* Sets the player dirt throwing sprite.
+* 
+* @param texture   The texture for the sprite sheet
+*/
+void Player::setThrowTexture(const std::shared_ptr<cugl::Texture>& texture) {
+    if (_throwframecols > 0) {
+        int rows = _throwframesize / _throwframecols;
+        if (_throwframesize % _throwframecols != 0) {
+            rows++;
+        }
+        _throwSprite = SpriteSheet::alloc(texture, rows, _throwframecols, _throwframesize);
+        _throwSprite->setFrame(0);
     }
 }
 
@@ -90,7 +141,8 @@ void Player::setTexture(const std::shared_ptr<cugl::Texture>& texture) {
 * using the scene position of the player (_pos).
 */
 const cugl::Vec2& Player::getCoorsFromPos(const float windowHeight, const float windowWidth, const float sideGap) {
-    int x_coor = (int)((_pos.x - sideGap) / windowWidth);
+    // int cast should be inside the bracket, otherwise causes numerical inprecision results in +1 x coord when at right edge
+    int x_coor = ((int)(_pos.x - sideGap) / windowWidth);
     int y_coor = (int)(_pos.y / windowHeight);
     return Vec2(x_coor, y_coor);
 }
@@ -98,120 +150,148 @@ const cugl::Vec2& Player::getCoorsFromPos(const float windowHeight, const float 
 /**
  * Draws this ship on the screen within the given bounds.
  *
- * This drawing code supports "wrap around". If the ship is partly off of
- * one edge, then it will also be drawn across the edge on the opposite
- * side.
- *
  * @param batch     The sprite batch to draw to
  * @param size      The size of the window (for wrap around)
  */
 void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) {
-    // Don't draw if sprite not set
-    if (_sprite) {
-        // Transform to place the ship
-        Affine2 shiptrans;
-        shiptrans.rotate(_ang*M_PI/180);
-        shiptrans.translate(_pos);
-        // Transform to place the shadow, and its color
-        Affine2 shadtrans = shiptrans;
-        shadtrans.translate(_shadows,-_shadows);
-        Color4f shadow(0,0,0,0.5f);
-        
-        _sprite->draw(batch,shadow,shadtrans);
-        _sprite->draw(batch,shiptrans);
-        
-        // Duplicate images to support wrap
-        if (_pos.x+_radius > bounds.width) {
-            shiptrans.translate(-bounds.width,0);
-            shadtrans.translate(-bounds.width,0);
-            _sprite->draw(batch,shadow,shadtrans);
-            _sprite->draw(batch,shiptrans);
-            shiptrans.translate(bounds.width,0);
-            shadtrans.translate(bounds.width,0);
-        } else if (_pos.x-_radius < 0) {
-            shiptrans.translate(bounds.width,0);
-            shadtrans.translate(bounds.width,0);
-            _sprite->draw(batch,shadow,shadtrans);
-            _sprite->draw(batch,shiptrans);
-            shiptrans.translate(-bounds.width,0);
-            shadtrans.translate(-bounds.width,0);
+    // Transform to place the ship, start with centered version
+    Affine2 player_trans;
+    if (_idleSprite && _wipeFrames == _maxwipeFrame) {
+        player_trans.translate( -(int)(_idleSprite->getFrameSize().width)/2 , -(int)(_idleSprite->getFrameSize().height) / 2);
+        double player_scale = _windowHeight / _idleSprite->getFrameSize().height;
+        player_trans.scale(player_scale);
+    }
+    else if (_wipeSprite && _wipeFrames < _maxwipeFrame) {
+        player_trans.translate( -(int)(_wipeSprite->getFrameSize().width)/2 , -(int)(_wipeSprite->getFrameSize().height) / 2);
+        double player_scale = _windowHeight / _wipeSprite->getFrameSize().height;
+        player_trans.scale(player_scale);
+    }
+    // Don't draw if texture not set
+    if (getStunFrames()>0) {
+        _stunRotate += 0.1;
+        player_trans.rotate(_stunRotate*M_PI);
+    } else {
+        _stunRotate = 0;
+        player_trans.rotate(0);
+    }
+    player_trans.translate(_pos);
+    if (_idleSprite && _wipeFrames == _maxwipeFrame) {
+        // CULog("drawing player at (%f, %f)", _pos.x, _pos.y);
+        _idleSprite->draw(batch, player_trans);
+    }
+    else if (_wipeSprite && _wipeFrames < _maxwipeFrame) {
+        _wipeSprite->draw(batch, player_trans);
+    }
+}
+
+/**
+* Draws the peeking player texture on one of the sides, depending on peek angle.
+*
+* @param batch     The sprite batch to draw to
+* @param size      The size of the window (for wrap around)
+* @param peekDirection The direction (-1 for left, 1 for right) that the player is peeking from. Draw on the opposite side.
+*/
+void Player::drawPeeking(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, int peekDirection, float sideGap) {
+    if (_throwSprite) {
+        Affine2 player_trans;
+        player_trans.translate(0, -(int)(_throwSprite->getFrameSize().height) / 2);
+        double player_scale = _windowHeight / _throwSprite->getFrameSize().height;
+
+        // flip sprite and translate position depending on peeking side
+        if (peekDirection == -1) {
+            player_trans.translate(-(int)(_throwSprite->getFrameSize().width)*0.85, 0);
+            player_trans.scale(-player_scale, player_scale);
+            player_trans.translate(size.width - sideGap, _pos.y);
         }
-        if (_pos.y+_radius > bounds.height) {
-            shiptrans.translate(0,-bounds.height);
-            shadtrans.translate(0,-bounds.height);
-            _sprite->draw(batch,shadow,shadtrans);
-            _sprite->draw(batch,shiptrans);
-            shiptrans.translate(0,bounds.height);
-            shadtrans.translate(0,bounds.height);
-        } else if (_pos.y-_radius < 0) {
-            shiptrans.translate(0,bounds.height);
-            shadtrans.translate(0,bounds.height);
-            _sprite->draw(batch,shadow,shadtrans);
-            _sprite->draw(batch,shiptrans);
-            shiptrans.translate(0,-bounds.height);
-            shadtrans.translate(0,-bounds.height);
+        else if (peekDirection == 1) {
+            player_trans.translate(-(int)(_throwSprite->getFrameSize().width)*0.65, 0);
+            player_trans.scale(player_scale);
+            player_trans.translate(sideGap, _pos.y);
         }
+
+        _throwSprite->draw(batch, player_trans);
+
     }
 }
 
 #pragma mark Movement
-/**
- * Sets the position of this ship
- *
- * This is the preferred way to "bump" a ship in a collision.
- *
- * @param value     The position of this ship
- * @param size      The size of the window (for wrap around)
- */
-void Player::setPosition(cugl::Vec2 value, cugl::Vec2 size) {
-    _pos = value;
-
-}
 
 /**
  * Moves the ship by the specified amount.
  *
- * Forward is the amount to move forward, while turn is the angle to turn the ship.
- * Makes sure that the ship is within the bounds of the window building grid.
+ * Dir is the amount to move forward and direction to move for the player.
+ * Makes sure that the player is within the bounds of the window building grid.
  * Also, can only move along one axis at a time. sideGap argument is the sideGap
  * property of the window building grid in order to make it eaiser to check bounds
  * for player movement.
  *
- * @param forward    Amount to move forward
- * @param turn        Amount to turn the ship
- * @return True if moved
+ * @param dir       Amount to move forward
+ * @param size      Size of the game scene
+ * @return 0 if moved, -1 if moving off of left edge, 1 if moving off of right edge, 2 otherwise
  */
-bool Player::move(float forward, float turn, Size size, float sideGap) {
-    // Process the ship turning.
+int Player::move(Vec2 dir, Size size, WindowGrid* windows) {
 
-    // Process forward key press
-    if (forward != 0.0f) {
-        Vec2 dir(0,_windowWidth);
-        _vel = dir * forward;
+    float sideGap = windows->sideGap;
+
+    // Process moving direction
+    if (!_targetDist.isZero()) {
+        if (abs(_targetDist.x - _vel.x) > abs(_vel.x) || abs(_targetDist.y - _vel.y) > abs(_vel.y)) {
+            _targetDist = _targetDist - _vel;
+            _pos += _vel;
+        } else {
+            _pos += _targetDist;
+            _targetDist.setZero();
+        }
+        return 0;
+    } else {
+        _vel.setZero();
+        if (dir.x != 0.0f) {
+            _targetDist = dir * _windowHeight;
+            Vec2 originIndices = windows->getGridIndices(_pos, size);
+            Vec2 targetPosition = Vec2(_pos) + _targetDist;
+            Vec2 targetIndices = windows->getGridIndices(targetPosition, size);
+
+            if (!windows->getCanMoveBetween(originIndices.x, originIndices.y, targetIndices.x, targetIndices.y)) {
+                _targetDist.setZero();
+                // check if player is trying to switch scenes
+                if (targetIndices.x < 0) {
+                    return -1;
+                }
+                else if (targetIndices.x >= windows->getNHorizontal()) {
+                    return 1;
+                }
+                return 2;
+            }
+            _vel = dir * _speed;
+        } else if (dir.y != 0.0f) {
+            _targetDist = dir * _windowWidth;
+            Vec2 originIndices = windows->getGridIndices(_pos, size);
+            Vec2 targetPosition = Vec2(_pos) + _targetDist;
+            Vec2 targetIndices = windows->getGridIndices(targetPosition, size);
+            if (!windows->getCanMoveBetween(originIndices.x, originIndices.y, targetIndices.x, targetIndices.y)) {
+                _targetDist.setZero();
+                return 2;
+            }
+            _vel = dir * _speed;
+        }
     }
-    
-    // Process turn key key press
-    if (turn != 0.0f && forward == 0.0f) {
-        Vec2 dir(_windowHeight,0);
-        _vel = dir * turn;
-    }
-    
-    // Process no movement;
-    if (turn == 0.0f && forward == 0.0f) {
-        Vec2 dir(0,0);
-        _vel = dir * turn;
-    }
-    
-    
-    // Move the ship position by the ship velocity.
-    // Velocity always remains unchanged.
-    // Also does not add velocity to position in the event that movement would go beyond the window building grid.
-    if (!getEdge(sideGap, size) && !(_pos.y + _vel.y >= size.height-20) && !(_pos.y + _vel.y <= 40)) {
-        _pos += _vel;
+    return 2;
+}
+
+/** Continues a movement between two grid spots */
+bool Player::move() {
+    if (!_targetDist.isZero()) {
+        if (abs(_targetDist.x - _vel.x) > abs(_vel.x) || abs(_targetDist.y - _vel.y) > abs(_vel.y)) {
+            _targetDist = _targetDist - _vel;
+            _pos += _vel;
+        }
+        else {
+            _pos += _targetDist;
+            _targetDist.setZero();
+        }
         return true;
     }
     return false;
-
 }
 
 /**
@@ -220,12 +300,11 @@ bool Player::move(float forward, float turn, Size size, float sideGap) {
  * @return -1 if the player is at left edge, 0 not at edge, and 1 at right edge
  */
 int Player::getEdge(float sideGap, Size size) {
-    if (_pos.x + _vel.x <= sideGap) {
+    if (_pos.x + _targetDist.x <= sideGap) {
         return -1;
-    } else if (_pos.x + _vel.x >= size.width - sideGap) {
+    } else if (_pos.x + _targetDist.x >= size.getIWidth() - sideGap) {
         return 1;
     }
     return 0;
 };
-
 

@@ -34,15 +34,10 @@ using namespace std;
  *
  * @return true if the controller is initialized properly, false otherwise.
  */
-bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
-    // Initialize the scene to a locked width
+bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps) {
+    
     Size dimen = Application::get()->getDisplaySize();
-    _rng.seed(std::time(nullptr));
-    _dirtGenSpeed = 2;
-    _dirtThrowTimer = 0;
-    _fixedDirtUpdateThreshold = 5 * 60;
-    _maxDirtAmount = 1;
-    _currentDirtAmount = 0;
+
     dimen *= SCENE_HEIGHT/dimen.height;
     if (assets == nullptr) {
         return false;
@@ -52,48 +47,80 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     
     // Start up the input handler
     _assets = assets;
-    _input.init();
-    
+    _dirtThrowInput.init();
+
     // Get the background image and constant values
-    _background = assets->get<Texture>("background");
-    _constants = assets->get<JsonValue>("constants");
-
-
-
-    // Initialize the window grid
-    _windows.setTexture(assets->get<Texture>("window")); // MUST SET TEXTURE FIRST
-    _windows.init(_constants->get("easy board"), getSize()); // init depends on texture
-    _windows.setDirtTexture(assets->get<Texture>("dirt"));
+    _background = _assets->get<Texture>("background");
+    _constants = _assets->get<JsonValue>("constants");
     
-    // Make a ship and set its texture
-    // starting position is most bottom left window
-    Vec2 startingPos = Vec2(_windows.sideGap+(_windows.getPaneWidth()/2), _windows.getPaneHeight());
-    _player = std::make_shared<Player>(startingPos, _constants->get("ship"), _windows.getPaneHeight(), _windows.getPaneWidth());
-    _player->setTexture(assets->get<Texture>("ship"));
-
+    // test progress bar
+    _player_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("player bar"));
     
-    // Initialize random dirt generation
-    updateDirtGenTime();
+    
     
     // Initialize dirt bucket
     setEmptyBucket(assets->get<Texture>("bucketempty"));
     setFullBucket(assets->get<Texture>("bucketfull"));
-
-    // Initialize the asteroid set
-    //_asteroids.init(_constants->get("asteroids"));
-    //_asteroids.setTexture(assets->get<Texture>("asteroid1"));
-
-    // Get the bang sound
-    _bang = assets->get<Sound>("bang");
+    
+    _countdown1 =assets->get<Texture>("countdown1");
+    
+//    // Initialize switch scene icon
+//    setSwitchSceneButton(assets->get<Texture>("switchSceneButton"));
+//    // Initialize return scene icon
+//    setReturnSceneButton(assets->get<Texture>("returnSceneButton"));
 
     // Create and layout the dirt amount
-    std::string msg = strtool::format("%d", _currentDirtAmount);
-    _dirtText = TextLayout::allocWithText(msg, assets->get<Font>("pixel32"));
+    std::string dirt_msg = "0";
+    _dirtText = TextLayout::allocWithText(dirt_msg, assets->get<Font>("pixel32"));
     _dirtText->layout();
-    
-    //_collisions.init(getSize());
+
+
+    // Create and layout the health meter
+    std::string health_msg = "Health";
+    std::string time_msg = "Time";
+    _timeText = TextLayout::allocWithText(time_msg, assets->get<Font>("pixel32"));
+    _timeText->layout();
+//    _healthText = TextLayout::allocWithText(health_msg, assets->get<Font>("pixel32"));
+//    _healthText->layout();
     
     reset();
+    
+    // Acquire the scene built by the asset loader and resize it the scene
+    _scene_UI = _assets->get<scene2::SceneNode>("game");
+    _scene_UI->setContentSize(dimen);
+    _scene_UI->doLayout(); // Repositions the HUD
+    
+    // get the win background scene when game is win
+    _winBackground = _assets->get<scene2::SceneNode>("win");
+    
+    // get the lose background scene when game is lose
+    _loseBackground = _assets->get<scene2::SceneNode>("lose");
+    
+
+    _backout = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("game_back"));
+    _backout->addListener([=](const std::string& name, bool down) {
+        if (down) {
+            CULog("quitting game");
+            _quit = true;
+        }
+    });
+
+    _tn_button = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("game_switch"));
+    _tn_button->addListener([=](const std::string& name, bool down) {
+        if (down) {
+            CULog("switch scene button pressed");
+            _gameController->switchScene();
+        }
+    });
+    
+    
+    _quit = false;
+    addChild(_scene_UI);
+    addChild(_winBackground);
+    addChild(_loseBackground);
+//    _loseBackground->setVisible(false);
+//    _winBackground->setVisible(false);
+    setActive(false);
     return true;
 }
 
@@ -104,152 +131,82 @@ void GameScene::dispose() {
     if (_active) {
         removeAllChildren();
         _active = false;
+        _tn_button = nullptr;
+        _winBackground = nullptr;
+        _loseBackground = nullptr;
     }
 }
+
+/**
+ * Sets whether the scene is currently active
+ *
+ * This method should be used to toggle all the UI elements.  Buttons
+ * should be activated when it is made active and deactivated when
+ * it is not.
+ *
+ * @param value whether the scene is currently active
+ */
+void GameScene::setActive(bool value) {
+    if (isActive() != value) {
+        Scene2::setActive(value);
+        if (value) {
+            _quit = false;
+            _backout->activate();
+            _tn_button->activate();
+        }
+        else {
+            _backout->deactivate();
+            _tn_button->deactivate();
+            // If any were pressed, reset them
+            _backout->setDown(false);
+            _tn_button->setDown(false);
+        }
+    }
+}
+
 
 
 #pragma mark -
 #pragma mark Gameplay Handling
-/**
- * Resets the status of the game so that we can play again.
- */
-void GameScene::reset() {
-    // starting position is most bottom left window
-    Vec2 startingPos = Vec2(_windows.sideGap+(_windows.getPaneWidth()/2), _windows.getPaneHeight()/2);
-    _player->setPosition(startingPos);
-    _player->setAngle(0);
-    _player->setVelocity(Vec2::ZERO);
-    _player->setHealth(_constants->get("ship")->getInt("health",0));
-    _windows.clearBoard();
-    _windows.generateInitialBoard(_windows.getInitDirtNum());
-    _dirtThrowTimer = 0;
-    _currentDirtAmount = 0;
-    //_asteroids.init(_constants->get("asteroids"));
-}
 
-/**
- * The method called to update the game mode.
- *
+/** 
+ * Converts game state into a JSON value for sending over the network.
+ * Only called by the host, as only the host transmits board states over the network.
  * This method contains any gameplay code that is not an OpenGL call.
+ * 
+ * We need to update this method to constantly talk to the server.
  *
  * @param timestep  The amount of time (in seconds) since the last frame
  */
 void GameScene::update(float timestep) {
-    // Read the keyboard for each controller.
-    _input.update();
-    if (_input.didPressReset()) {
-        reset();
-    }
+    _dirtThrowInput.update();
+    Vec2 screenPos = _dirtThrowInput.getPosition();
+    Vec3 convertedWorldPos = screenToWorldCoords(screenPos);
+    Vec2 worldPos = Vec2(convertedWorldPos.x, convertedWorldPos.y);
+    
+    
 
-    //Checks and returns true if board is full besides current player position
-    if (checkBoardFull()) {
-        //TODO: implment lose screen here?
-    }
+    _gameController->update(timestep, worldPos, _dirtThrowInput);
+    
+    
 
-    // Move the player, ignoring collisions
-    bool moved = _player->move( _input.getForward(),  _input.getTurn(), getSize(), _windows.sideGap);
-    // remove any dirt the player collides with
-    Vec2 grid_coors = _player->getCoorsFromPos(_windows.getPaneHeight(), _windows.getPaneWidth(), _windows.sideGap);
-    _player->setCoors(grid_coors);
-//    if (grid_coors == NULL) {
-//        CULog("player coors: NULL");
-//        CULog("player coors: (%f, %f)", grid_coors.y, grid_coors.x);
-//    }
-    bool dirtRemoved = _windows.removeDirt(grid_coors.y, grid_coors.x);
-    if (dirtRemoved) {
-        // TODO: implement logic to deal with filling up dirty bucket
-        _currentDirtAmount = min(_maxDirtAmount, _currentDirtAmount + 1);
-    }
-    
-    if (_player->getEdge(_windows.sideGap, getSize()) && !moved) {
-        _currentDirtAmount = max(0, _currentDirtAmount - 1);
-    }
-    
-    // fixed dirt generation logic (every 5 seconds)
-    if (!checkBoardEmpty() && !checkBoardFull()) {
-        if (_dirtThrowTimer <= _fixedDirtUpdateThreshold) {
-            auto search = _dirtGenTimes.find(_dirtThrowTimer);
-            if (search != _dirtGenTimes.end()) {
-                // random dirt generation logic
-//                CULog("generating random dirt");
-                generateDirt();
-            }
-            _dirtThrowTimer++;
-        } else {
-            _dirtThrowTimer = 0;
-            updateDirtGenTime();
-//            CULog("generating fixed dirt");
-            generateDirt();
-        }
-    }
-    
-    // dynamic dirt generation logic (based on generation rate)
-
-    
-    // Move the asteroids
-    //_asteroids.update(getSize());
-    
-    // Check for collisions and play sound
-    //if (_collisions.resolveCollision(_ship, _asteroids)) {
-    //    AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
-    //}
-    
+    // each player manages their own UI elements/text boxes for displaying resource information
+    // Update the health meter
+//    
+//    _healthText->setText(strtool::format("Health %d", _gameController->getPlayerHealth()));
+    _timeText->setText(strtool::format("Time %d", _gameController->getTime()));
+        
+        
+//    _healthText->layout();
+    _timeText->layout();
+        
     // Update the dirt display
-    _dirtText->setText(strtool::format("%d", _currentDirtAmount));
+    _dirtText->setText(strtool::format("%d", _gameController->getCurDirtAmount()));
     _dirtText->layout();
+    
+    
 }
 
-/** update when dirt is generated */
-void GameScene::updateDirtGenTime() {
-    _dirtGenTimes.clear();
-    std::uniform_int_distribution<> distr(0, _fixedDirtUpdateThreshold);
-    for(int n=0; n<_dirtGenSpeed; ++n) {
-        _dirtGenTimes.insert(distr(_rng));
-    }
-}
-
-/** handles actual dirt generation */
-void GameScene::generateDirt() {
-    std::uniform_int_distribution<int> rowDist(0, _windows.getNVertical() - 1);
-    std::uniform_int_distribution<int> colDist(0, _windows.getNHorizontal() - 1);
-    int rand_row = rowDist(_rng);
-    int rand_col = colDist(_rng);
-//    CULog("player at: (%f, %f)", _player->getCoors().y, _player->getCoors().x);
-//    CULog("generate at: (%d, %d)", (int)rand_row, (int) rand_col);
-    // if add dirt already exists at location or player at location and board is not full, repeat
-    while (Vec2((int)_player->getCoors().y, (int)_player->getCoors().x) == Vec2((int)rand_row, (int)rand_col) || !_windows.addDirt(rand_row, rand_col)) {
-        rand_row = rowDist(_rng);
-        rand_col = colDist(_rng);
-    }
-}
-
-/** Checks whether board is full except player current location*/
-const bool GameScene::checkBoardFull() {
-    for (int x = 0; x < _windows.getNHorizontal(); x++) {
-        for (int y = 0; y < _windows.getNVertical(); y++) {
-                if (_windows.getWindowState(y, x) == 0) {
-                    if (Vec2((int)_player->getCoors().y, (int)_player->getCoors().x) == Vec2(y, x)) {
-                        // consider current place occupied
-                        continue;
-                    }
-                    return false;
-                }
-        }
-    }
-    return true; // No 0s found, all dirty spots
-}
-
-/** Checks whether board is empty except player current location*/
-const bool GameScene::checkBoardEmpty() {
-    for (int x = 0; x < _windows.getNHorizontal(); x++) {
-        for (int y = 0; y < _windows.getNVertical(); y++) {
-                if (_windows.getWindowState(y, x) == 1) {
-                    return false;
-                }
-        }
-    }
-    return true; // No 1s found, board is clear
-}
 
 /**
  * Draws all this scene to the given SpriteBatch.
@@ -263,29 +220,46 @@ const bool GameScene::checkBoardEmpty() {
 void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     // For now we render 3152-style
     // DO NOT DO THIS IN YOUR FINAL GAME
+    // CULog("current board: %d", _curBoard);
+    
+    
+    Vec3 idk = Vec3(getCamera()->getPosition().x, _gameController->getPlayer()->getPosition().y, 1);
+    getCamera()->setPosition(idk);
+    getCamera()->update();
     batch->begin(getCamera()->getCombined());
+    _scene_UI->setPosition(idk-getSize().operator Vec2()/2);
     
     batch->draw(_background,Rect(Vec2::ZERO,getSize()));
-    //_asteroids.draw(batch,getSize());
-    _windows.draw(batch, getSize());
-    _player->draw(batch, getSize());
     
+    
+
+    _gameController->draw(batch);
+
+    batch->setColor(Color4::BLACK);
+//    batch->drawText(_timeText, Vec2(getSize().width - 10 - _timeText->getBounds().size.width, getSize().height - _timeText->getBounds().size.height));
+//    batch->drawText(_healthText, Vec2(10, getSize().height - _healthText->getBounds().size.height));
+    
+    batch->drawText(_timeText, Vec2(getCamera()->getPosition().x+ 412, getCamera()->getPosition().y + 300));
+    
+//    batch->drawText(_timeText, Vec2(getSize().width - 10 - _timeText->getBounds().size.width, getSize().height - _timeText->getBounds().size.height));
     
     //set bucket texture location
-    Affine2 bucket_trans = Affine2();
-    Vec2 origin(_fullBucket->getWidth()/2,_fullBucket->getHeight()/2);
+    Affine2 bucketTrans = Affine2();
+    Vec2 bOrigin(_fullBucket->getWidth()/2,_fullBucket->getHeight()/2);
     float bucketScaleFactor = std::min(((float)getSize().getIWidth() / (float)_fullBucket->getWidth()) /2, ((float)getSize().getIHeight() / (float)_fullBucket->getHeight() /2));
-    bucket_trans.scale(bucketScaleFactor);
+    bucketTrans.scale(bucketScaleFactor);
     
-    Vec2 bucketLocation(getSize().width - ((float)_fullBucket->getWidth() * bucketScaleFactor/2),
-                        (float)_fullBucket->getHeight() * bucketScaleFactor/2);
-    bucket_trans.translate(bucketLocation);
+//    Vec2 bucketLocation(getSize().width - ((float)_fullBucket->getWidth() * bucketScaleFactor/2 + getCamera()->getPosition().x),
+//                        getSize().height + (float)_fullBucket->getHeight() * bucketScaleFactor/2 + getCamera()->getPosition().y + 100);
+    
+    Vec2 bucketLocation(getCamera()->getPosition().x+ 500, getCamera()->getPosition().y + 120);
+    bucketTrans.translate(bucketLocation);
     
     // draw different bucket based on dirt amount
-    if (_currentDirtAmount == 0) {
-        batch->draw(_emptyBucket, origin, bucket_trans);
+    if (_gameController->getCurDirtAmount() == 0) {
+        batch->draw(_emptyBucket, bOrigin, bucketTrans);
     } else {
-        batch->draw(_fullBucket, origin, bucket_trans);
+        batch->draw(_fullBucket, bOrigin, bucketTrans);
     }
     
     // draw dirt amount text, centered at bucket
@@ -297,7 +271,43 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->drawText(_dirtText, dirtTextTrans);
     batch->setColor(Color4::WHITE);
     
+    if (_gameController->getCurBoard() != 0) {
+        _tn_button->setVisible(true);
+        _tn_button->activate();
+        _tn_button->setDown(false);
+    }
+    else {
+        _tn_button->setVisible(false);
+        _tn_button->deactivate();
+    }
+    _scene_UI->render(batch);
+    
+    if (_gameController->isGameWin() && _gameController->isGameOver()) {
+        _winBackground->setPosition(idk-getSize().operator Vec2()/2);
+        _winBackground->setVisible(true);
+        _winBackground->render(batch);
+    } else if (_gameController->isGameOver() && !_gameController->isGameWin()) {
+        _loseBackground->setPosition(idk-getSize().operator Vec2()/2);
+        _loseBackground->setVisible(true);
+        _loseBackground->render(batch);
+    }
+    
+//    _player_bar->render(batch);
+//    _player_bar->setPosition(idk-getSize().operator Vec2()/2);
     
     batch->end();
+}
+
+void GameScene::renderCountdown(std::shared_ptr<cugl::SpriteBatch> batch) {
+    Affine2 countdown1Trans = Affine2();
+    Vec2 countdown1Origin(_countdown1->getWidth()/2,_countdown1->getHeight()/2);
+    float countdown1ScaleFactor = std::min(((float)getSize().getIWidth() / (float)_countdown1->getWidth()) /2, ((float)getSize().getIHeight() / (float)_countdown1->getHeight() /2));
+    countdown1Trans.scale(countdown1ScaleFactor);
+    
+    Vec2 countdown1Location(getSize().width/2,
+                        getSize().height - 10*_countdownFrame);
+    countdown1Trans.translate(countdown1Location);
+    
+    batch->draw(_countdown1, countdown1Origin, countdown1Trans);
 }
 

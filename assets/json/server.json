@@ -1,0 +1,22 @@
+{
+    "lobby" : {
+        "address" : "206.189.184.75",
+        "port": 8080
+    },
+    "ice servers" : [
+        {
+            "turn" : false,
+            "address" : "206.189.184.75",
+            "port" : 3478
+        },
+        {
+            "turn" : true,
+            "address" : "206.189.184.75",
+            "port" : 3478,
+            "username": "server",
+            "password": "server"
+        }
+    ],
+    "max players" : 4,
+    "API version" : 0
+}

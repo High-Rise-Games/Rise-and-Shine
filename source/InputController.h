@@ -21,6 +21,9 @@ private:
     /** How much are we turning? */
     float _turning;
     
+    /** The unit vector of the character moving direction*/
+    cugl::Vec2 _moveDir;
+    
     /** Did we press the fire button? */
     bool _didFire;
 
@@ -67,6 +70,15 @@ public:
      */
     float getTurn() const {
         return _turning;
+    }
+    
+    /**
+     * Returns the unit vector of moving direction
+     *
+     * @return amount to turn the ship.
+     */
+    cugl::Vec2 getDir() const {
+        return _moveDir;
     }
 
     /**

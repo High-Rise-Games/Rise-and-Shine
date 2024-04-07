@@ -2,7 +2,7 @@
 //  CUSlider.cpp
 //  Cornell University Game Library (CUGL)
 //
-//    This module provides support for a slider, which allows the user to drag
+//  This module provides support for a slider, which allows the user to drag
 //  a knob to select a value.  The slider can be spartan (a circle on a line),
 //  or it can have custom images.
 //
@@ -41,8 +41,8 @@
 //
 //      3. This notice may not be removed or altered from any source distribution.
 //
-//  Author: Walker White and Enze Zhou
-//  Version: 8/20/20
+//  Authors: Walker White and Enze Zhou
+//  Version: 2/5/24
 //
 #include <cugl/input/cu_input.h>
 #include <cugl/scene2/cu_scene2.h>
@@ -69,7 +69,6 @@ using namespace cugl::scene2;
 Slider::Slider() :
 _range(Vec2::ZERO),
 _bounds(Rect::ZERO),
-_adjust(Rect::ZERO),
 _tick(0),
 _value(0),
 _snap(false),
@@ -78,8 +77,12 @@ _mouse(false),
 _knob(nullptr),
 _path(nullptr),
 _inputkey(0),
-_nextKey(1) {
+_nextKey(1),
+_knobChild(""),
+_pathChild("") {
     _classname  = "Slider";
+    _range.x = DEFAULT_MIN;
+    _range.y = DEFAULT_MAX;
 }
 
 /**
@@ -95,7 +98,7 @@ _nextKey(1) {
  * the maximum value (corresponding to the top right corner of bounds).
  * The slider will start at the middle value.
  *
- * @param range        The slider value range
+ * @param range     The slider value range
  * @param bounds    The slider path
  *
  * @return true if the slider is initialized properly, false otherwise.
@@ -103,7 +106,8 @@ _nextKey(1) {
 bool Slider::init(const Vec2 range, const Rect bounds) {
     _range  = range;
     _bounds = bounds;
-    placePath(nullptr);
+
+    setPath(nullptr);
     placeKnob(nullptr);
     
     _value = (_range.y+_range.x)/2.0f;
@@ -132,10 +136,12 @@ bool Slider::init(const Vec2 range, const Rect bounds) {
  * @return true if the slider is initialized properly, false otherwise.
  */
 bool Slider::initWithUI(const Vec2 range, const Rect bounds,
-                        const std::shared_ptr<SceneNode>& path, const std::shared_ptr<Button>& knob) {
+                        const std::shared_ptr<SceneNode>& path, 
+                        const std::shared_ptr<Button>& knob) {
     _range  = range;
     _bounds = bounds;
-    placePath(path);
+
+    setPath(path);
     placeKnob(knob);
     
     _value = (_range.y+_range.x)/2.0f;
@@ -156,8 +162,8 @@ bool Slider::initWithUI(const Vec2 range, const Rect bounds,
  *      "value':    A number representing the initial value
  *      "tick':     A number greater than 0, representing the tick period
  *      "snap":     A boolean indicating whether to snap to a nearest tick
- *      "knob":     A JSON object defining a scene graph node
- *      "path":     A JSON object defining a scene graph node OR
+ *      "knob":     A string referencing the name of a child node
+ *      "path":     A string referencing the name of a child node
  *
  * The attribute 'bounds' is REQUIRED.  All other attributes are optional.
  *
@@ -173,9 +179,6 @@ bool Slider::initWithData(const Scene2Loader* loader, const std::shared_ptr<Json
         return false;
     }
 
-    // All of the code that follows can corrupt the position.
-    Vec2 coord = getPosition();
-    
     if (data->has("bounds")) {
         JsonValue* bound = data->get("bounds").get();
         CUAssertLog(bound->size() == 4, "Attribute 'bounds' must be a four element array");
@@ -190,17 +193,11 @@ bool Slider::initWithData(const Scene2Loader* loader, const std::shared_ptr<Json
     
     
     if (data->has("path")) {
-        std::shared_ptr<JsonValue> path = data->get("path");
-        placePath(loader->build("path",path));
-    } else {
-        placePath(nullptr);
+        _pathChild = data->get("path")->asString();
     }
 
     if (data->has("knob")) {
-        std::shared_ptr<JsonValue> knob = data->get("knob");
-        placeKnob(std::dynamic_pointer_cast<Button>(loader->build("knob",knob)));
-    } else {
-        placeKnob(nullptr);
+        _knobChild = data->get("knob")->asString();
     }
 
     if (data->has("range")) {
@@ -213,11 +210,7 @@ bool Slider::initWithData(const Scene2Loader* loader, const std::shared_ptr<Json
     _value = data->getFloat("value",(_range.y+_range.x)/2.0f);
     _tick  = data->getFloat("tick",0);
     _snap  = data->getBool("snap",false);
-
-    reconfigure();
     
-    // Now redo the position
-    setPosition(coord);
     return true;
 }
 
@@ -239,11 +232,12 @@ void Slider::dispose() {
     _snap = false;
     _range  = Vec2::ZERO;
     _bounds = Rect::ZERO;
-    _adjust = Rect::ZERO;
     _active = false;
     _mouse  = false;
     _knob   = nullptr;
     _path   = nullptr;
+    _knobChild = "";
+    _pathChild = "";
     _listeners.clear();
     _nextKey = 1;
     _inputkey = 0;
@@ -255,6 +249,23 @@ void Slider::dispose() {
 /**
  * Sets the scene graph node for the knob.
  *
+ * If this value is nullptr, the method will construct a default knob scene
+ * graph consisting of a simple circle.
+ *
+ * Changing the knob may resize the bounding box of the slider. The slider
+ * tries to ensure that the knob remains inside of the bounding box no
+ * matter its position.
+ *
+ * @param knob  The new scene graph node for the knob.
+ */
+void Slider::setKnob(const std::shared_ptr<Button>& knob) {
+    placeKnob(knob);
+    reconfigure();
+}
+
+/**
+ * Sets the scene graph node for the knob.
+ *
  * If this value is nullptr, the method will construct a default knob
  * scene graph consisting of a simple circle.
  *
@@ -263,14 +274,18 @@ void Slider::dispose() {
  * @param knob  The new scene graph node for the knob.
  */
 void Slider::placeKnob(const std::shared_ptr<Button>& knob) {
-    if (_knob) { removeChild(_knob); }
+    if (_knob) {
+        removeChild(_knob);
+    }
     if (knob == nullptr) {
         float radius = std::max(_bounds.origin.x,_bounds.origin.y);
-        
         PolyFactory factory;
-        Poly2 poly = factory.makeEllipse(Vec2(radius,radius), Size(2*radius,2*radius));
+        Poly2 poly = factory.makeEllipse(Vec2(radius,radius), 
+                                         Size(2*radius,2*radius));
         std::shared_ptr<PolygonNode> circ = PolygonNode::allocWithPoly(poly);
         circ->setColor(Color4::GRAY);
+        // Just in case
+        circ->setContentSize(Size(2*radius,2*radius));
         _knob = Button::alloc(circ);
     } else {
         _knob = knob;
@@ -285,17 +300,25 @@ void Slider::placeKnob(const std::shared_ptr<Button>& knob) {
  * If this value is nullptr, the method will construct a default path
  * scene graph consisting of a simple line and a semi-transparent track.
  *
- * Unlike {@link setPath()}, this does not resize the bounding box.
+ * Changing the path will not resize the bounding box of the slider. It
+ * is up to the user to ensure the path aligns with the bounds.
  *
  * @param path  The new scene graph node for the path.
  */
-void Slider::placePath(const std::shared_ptr<scene2::SceneNode>& path) {
-    if (_knob) { removeChild(_knob); } // Always need knob on top
-    if (_path) { removeChild(_path); }
+void Slider::setPath(const std::shared_ptr<SceneNode>& path) {
+    // Always need knob on top
+    if (_knob) {
+        removeChild(_knob);
+    }
+    if (_path) {
+        removeChild(_path);
+    }
     if (path == nullptr) {
         Size psize;
-        psize.width  = (_bounds.size.width > 0 ?  _bounds.size.width  : _bounds.size.width)+_bounds.origin.x;
-        psize.height = (_bounds.size.height > 0 ? _bounds.size.height : _bounds.size.height)+_bounds.origin.y;
+        psize.width  = (_bounds.size.width > 0 ? _bounds.size.width  :
+                        -_bounds.size.width)+_bounds.origin.x;
+        psize.height = (_bounds.size.height > 0 ? _bounds.size.height :
+                        -_bounds.size.height)+_bounds.origin.y;
         float radius = std::max(_bounds.origin.x,_bounds.origin.y);
         
         _path = SceneNode::allocWithBounds(psize);
@@ -303,7 +326,7 @@ void Slider::placePath(const std::shared_ptr<scene2::SceneNode>& path) {
         Path2 path;
         path.vertices.push_back(_bounds.origin);
         path.vertices.push_back(_bounds.origin+_bounds.size);
-        auto track = PathNode::allocWithPath(path,radius,
+        auto track = PathNode::allocWithPath(path,2*radius,
                                              poly2::Joint::SQUARE,
                                              poly2::EndCap::ROUND);
         track->setColor(Color4(255,255,255,32));
@@ -322,7 +345,27 @@ void Slider::placePath(const std::shared_ptr<scene2::SceneNode>& path) {
         _path = path;
     }
     addChild(_path);
-    if (_knob) { addChild(_knob); }
+    if (_knob) {
+        addChild(_knob);
+    }
+}
+
+/**
+ * Sets the sliding bounds
+ *
+ * This rectangle defines the slideable region inside of the path node. The
+ * bottom left corner of the bounds rectangle is the minimum value while
+ * the top right is the maximum. While the origin should have positive
+ * values either the width or height may be negative.
+ *
+ * The bounds should be inside of the bounding box of the path node.
+ * However, this is not enforced.
+ *
+ * @param value The new sliding bounds
+ */
+void Slider::setBounds(const Rect value) {
+    _bounds = value;
+    reposition();
 }
 
 #pragma mark -
@@ -581,43 +624,36 @@ float Slider::validate(float value) const {
 }
 
 /**
- * Resizes the node and arranges the position of the knob and path.
+ * Resizes the node to fit the knob and path.
  *
- * This method is called whenever the bounds or scene graph changes.
+ * This will adjust the bounds to match the resizing
  */
 void Slider::reconfigure() {
-    // Master node must be large enough to contain knob AND path.
+    // Need the knob to fit in the bounding box at all times
     Size ksize = _knob->getSize();
-    Size psize = _path->getSize();
     
     // Compute the left and right padding necessary.
     Vec2 left, rght;
     if (ksize.width/2.0f > _bounds.origin.x) {
         left.x = ksize.width/2.0f - _bounds.origin.x;
     }
-    if (ksize.height/2.0f > _bounds.origin.x) {
+    if (ksize.height/2.0f > _bounds.origin.y) {
         left.y = ksize.height/2.0f - _bounds.origin.y;
     }
-    if (ksize.width/2.0f > psize.width-_bounds.size.width-_bounds.origin.x) {
-        rght.x = ksize.width/2.0f-psize.width+_bounds.size.width+_bounds.origin.x;
+    if (ksize.width/2.0f > _contentSize.width-_bounds.size.width-_bounds.origin.x) {
+        rght.x = ksize.width/2.0f-_contentSize.width+_bounds.size.width+_bounds.origin.x;
     }
-    if (ksize.height/2.0f > psize.height-_bounds.size.height-_bounds.origin.y) {
-        rght.y = ksize.height/2.0f-psize.height+_bounds.size.height+_bounds.origin.y;
+    if (ksize.height/2.0f > _contentSize.height-_bounds.size.height-_bounds.origin.y) {
+        rght.y = ksize.height/2.0f-_contentSize.height+_bounds.size.height+_bounds.origin.y;
     }
     
-    // Using padding on each end to compute a symmetric padding.
-    Vec2 offset;
-    offset.x = std::max(left.x,rght.x);
-    offset.y = std::max(left.y,rght.y);
-
-    // Set size and adjust the slider track.
-    Size size = _path->getSize()+2*offset;
-    _adjust = _bounds;
-    _adjust.origin += offset;
-
+    // Resize and reposition
+    Size size = _contentSize+left+rght;
     setContentSize(size);
-    _path->setAnchor(Vec2::ANCHOR_CENTER);
-    _path->setPosition(size/2.0f);
+
+    _bounds.origin += left;
+    Vec2 pos= _path->getPosition();
+    _path->setPosition(pos+left);
     reposition();
 }
 
@@ -627,14 +663,13 @@ void Slider::reconfigure() {
  * This method is called whenever the value or its range changes.
  */
 void Slider::reposition() {
-    Vec2 pos = _adjust.origin + _adjust.size * ((_value-_range.x) / (_range.y-_range.x));
+    Vec2 pos = _bounds.origin + _bounds.size * ((_value-_range.x) / (_range.y-_range.x));
     _knob->setAnchor(Vec2::ANCHOR_CENTER);
     _knob->setPosition(pos);
     
     for(auto it = _listeners.begin(); it != _listeners.end(); ++it) {
         it->second(getName(),_value);
     }
-
 }
 
 /**
@@ -648,7 +683,9 @@ void Slider::reposition() {
  */
 void Slider::dragKnob(const Vec2 pos) {
     Vec2 off = screenToNodeCoords(pos);
-    Vec2 line = (Vec2)_adjust.size;
+    off -= _bounds.origin;
+    
+    Vec2 line = (Vec2)_bounds.size;
     Vec2 drag = off-_dragpos;
     Vec2 prog = drag.getProjection(line);
     
@@ -665,4 +702,40 @@ void Slider::dragKnob(const Vec2 pos) {
     _dragpos += drag;
     _value = result;
     reposition();
+}
+
+
+/**
+ * Arranges the child of this node using the layout manager.
+ *
+ * This process occurs recursively and top-down. A layout manager may end
+ * up resizing the children.  That is why the parent must finish its layout
+ * before we can apply a layout manager to the children.
+ */
+void Slider::doLayout() {
+    // Revision for 2024: Lazy attachment similar to that of a button
+    if (_knob == nullptr) {
+        if (_knobChild != "") {
+            std::shared_ptr<SceneNode> node = getChildByName(_knobChild);
+            if (node != nullptr) {
+                _knob = std::dynamic_pointer_cast<Button>(node);
+                if (_knob == nullptr) {
+                    removeChild(node);
+                    _knob = Button::alloc(node);
+                    addChild(_knob);
+                }
+            }
+        }
+        if (_pathChild != "") {
+            _path = getChildByName(_pathChild);
+        } else {
+            setPath(nullptr);
+        }
+        
+        if (_knob == nullptr) {
+            placeKnob(nullptr);
+        }
+        reconfigure();
+    }
+    SceneNode::doLayout();
 }

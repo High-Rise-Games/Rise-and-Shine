@@ -8,11 +8,9 @@
 #include <cugl/cugl.h>
 #include <vector>
 #include <unordered_set>
-#include "PlayerCharacter.h"
-#include "InputController.h"
-#include "CollisionController.h"
-#include "WindowGrid.h"
 
+#include "GameplayController.h"
+#include "DirtThrowInputController.h"
 
 
 /**
@@ -26,37 +24,44 @@ class GameScene : public cugl::Scene2 {
 protected:
     /** The asset manager for this game mode. */
     std::shared_ptr<cugl::AssetManager> _assets;
+        
+    /** Whether this player is the host */
+    bool _ishost;
+
+    /** Whether we quit the game */
+    bool _quit;
     
-    // CONTROLLERS are attached directly to the scene (no pointers)
-    /** The controller to manage the ship */
-    InputController _input;
-    /** The controller for managing collisions */
-    // CollisionController _collisions;
+    /** ID of the player to distinguish in multiplayer */
+    int _id;
     
+    /** The FPS of the game, as set by the App */
+    int _fps;
+    
+    /** The current frame incremeted by 1 every frame (resets to 0 every time we reach 60 frames) */
+    int _frame;
+
+    int _countdownFrame;
+    
+    /** The win screen scene */
+    std::shared_ptr<cugl::scene2::SceneNode> _winBackground;
+    /** The win screen scene */
+    std::shared_ptr<cugl::scene2::SceneNode> _loseBackground;
+    
+    /** Progress bar for this player **/
+    std::shared_ptr<cugl::scene2::ProgressBar>  _player_bar;
+    /** The progress for this player displayed on the screen */
+    float _player_progress;
+
+
+
+    /** The game controller for this scene */
+    std::shared_ptr<GameplayController> _gameController;
+    /** The input controller to manage the dirt throw logic*/
+    DirtThrowInputController _dirtThrowInput;
+
     // MODELS should be shared pointers or a data structure of shared pointers
     /** The JSON value with all of the constants */
     std::shared_ptr<cugl::JsonValue> _constants;
-    /** Location and animation information for the ship */
-    std::shared_ptr<Player> _player;
-    /** The location of all of the active asteroids */
-    // AsteroidSet _asteroids;
-    /** Grid of windows and dirt placement to be drawn */
-    WindowGrid _windows;
-    /** Random number generator for dirt generation */
-    std::mt19937 _rng;
-    /** Dirt random generation time stamp*/
-    std::set<int> _dirtGenTimes;
-    /** Dirt generation speed, equals number of random dirt generated per _fixedDirtUpdateThreshold period*/
-    int _dirtGenSpeed;
-    /** Current timer value for dirt regeneration. Increments up to _fixedDirtUpdateThreshold and resets to 0*/
-    int _dirtThrowTimer;
-    /** Timer threshold for fixed period random dirt generation in frames. E.g. 300 is one dirt generation per 5 seconds */
-    int _fixedDirtUpdateThreshold;
-    /** The max amount of dirt the bucket can hold **/
-    int _maxDirtAmount;
-    /** The amount of dirt player is currently holdinfg in the bucket **/
-    int _currentDirtAmount;
-    
     
     cugl::scheduable t;
     
@@ -64,14 +69,31 @@ protected:
     // In the future, we will replace this with the scene graph
     /** The backgrounnd image */
     std::shared_ptr<cugl::Texture> _background;
+    /** The text with the current health */
+    std::shared_ptr<cugl::TextLayout> _healthText;
+    /** The text with the current time */
+    std::shared_ptr<cugl::TextLayout> _timeText;
     /** Empty bucket texture image */
     std::shared_ptr<cugl::Texture> _emptyBucket;
     /** Full bucket texture image */
     std::shared_ptr<cugl::Texture> _fullBucket;
     /** The text with the current dirt */
     std::shared_ptr<cugl::TextLayout> _dirtText;
-    /** The sound of a ship-asteroid collision */
-    std::shared_ptr<cugl::Sound> _bang;
+    
+    
+    /** texture for number 1 */
+    std::shared_ptr<cugl::Texture> _countdown1;
+
+    /** The scene node for the UI elements (buttons, labels) */
+    std::shared_ptr<cugl::scene2::SceneNode> _scene_UI;
+    /** The back button for the menu scene */
+    std::shared_ptr<cugl::scene2::Button> _backout;
+//    /** Switch scene button texture image */
+//    std::shared_ptr<cugl::Texture> _switchSceneButton;
+//    /** Return scene button texture image */
+//    std::shared_ptr<cugl::Texture> _returnSceneButton;
+    /** Switch scene button */
+    std::shared_ptr<cugl::scene2::Button> _tn_button;
 
     
 public:
@@ -97,6 +119,17 @@ public:
      * Disposes of all (non-static) resources allocated to this mode.
      */
     void dispose() override;
+
+    /**
+     * Sets whether the scene is currently active
+     *
+     * This method should be used to toggle all the UI elements.  Buttons
+     * should be activated when it is made active and deactivated when
+     * it is not.
+     *
+     * @param value whether the scene is currently active
+     */
+    void setActive(bool value) override;
     
     /**
      * Initializes the controller contents, and starts the game
@@ -109,30 +142,16 @@ public:
      *
      * @return true if the controller is initialized properly, false otherwise.
      */
-    bool init(const std::shared_ptr<cugl::AssetManager>& assets);
+    bool init(const std::shared_ptr<cugl::AssetManager>& assets, int fps);
+
 
     
 #pragma mark -
 #pragma mark Gameplay Handling
     
-    /** sets empty bucket texture */
-    void setEmptyBucket(const std::shared_ptr<cugl::Texture>& value) { _emptyBucket = value; }
-    /** sets full bucket texture */
-    void setFullBucket(const std::shared_ptr<cugl::Texture>& value) { _fullBucket = value; }
-    
-    /** Checks whether board is full */
-    const bool checkBoardFull();
-    
-    /** Checks whether board is empty */
-    const bool checkBoardEmpty();
-    
-    /** update when dirt is generated */
-    void updateDirtGenTime();
-    
-    /** generates dirt in a fair manner */
-    void generateDirt();
-    
     /**
+     void renderCountdown(std::shared_ptr<cugl::SpriteBatch> batch);
+     
      * The method called to update the game mode.
      *
      * This method contains any gameplay code that is not an OpenGL call.
@@ -140,6 +159,26 @@ public:
      * @param timestep  The amount of time (in seconds) since the last frame
      */
     void update(float timestep) override;
+
+    /** method for drawing the countdown upon game start */
+    void renderCountdown(std::shared_ptr<cugl::SpriteBatch> batch);
+
+    /** sets empty bucket texture */
+    void setEmptyBucket(const std::shared_ptr<cugl::Texture>& value) { _emptyBucket = value; }
+    /** sets full bucket texture */
+    void setFullBucket(const std::shared_ptr<cugl::Texture>& value) { _fullBucket = value; }
+
+    /**
+     * Sets whether the player is host.
+     *
+     * We may need to have gameplay specific code for host.
+     *
+     * @param host  Whether the player is host.
+     */
+    void setHost(bool host) { _ishost = host; }
+
+    /** Sets the controller for this scene */
+    void setController(std::shared_ptr<GameplayController>& gc) { _gameController = gc; }
 
     /**
      * Draws all this scene to the given SpriteBatch.
@@ -151,11 +190,20 @@ public:
      * @param batch     The SpriteBatch to draw with.
      */
     void render(const std::shared_ptr<cugl::SpriteBatch>& batch) override;
+    
+    
+    /**
+     * Returns true if the player quits the game.
+     *
+     * @return true if the player quits the game.
+     */
+    bool didQuit() const { return _quit; }
 
     /**
      * Resets the status of the game so that we can play again.
      */
-    void reset() override;
+    // void reset() override;
+
 };
 
-#endif /* __SG_GAME_SCENE_H__ */
+#endif __GAME_SCENE_H__

@@ -4,30 +4,86 @@
 //  Author: Walker White
 //  Version: 1/20/22
 //
-#ifndef __APP_H__
-#define __APP_H__
+#ifndef __APP__
+#define __APP__
 #include <cugl/cugl.h>
 #include "GameScene.h"
+#include "GameplayController.h"
 #include "LoadingScene.h"
+#include "LobbyScene.h"
+#include "LevelScene.h"
+#include "MenuScene.h"
+#include "NetworkController.h"
 
 /**
  * This class represents the application root for the ship demo.
  */
 class App : public cugl::Application {
 protected:
+    
+    /**
+     * The current active scene
+     */
+    enum State {
+        /** The loading scene */
+        LOAD,
+        /** The main menu scene */
+        MENU,
+        /** The level select scene*/
+        LEVEL,
+        /** The scene to host or join a game */
+        LOBBY_CLIENT,
+        LOBBY_HOST,
+        /** The scene to play the game */
+        GAME
+    };
+    
+
+    
     /** The global sprite batch for drawing (only want one of these) */
     std::shared_ptr<cugl::SpriteBatch> _batch;
     /** The global asset manager */
     std::shared_ptr<cugl::AssetManager> _assets;
+    
+    /** The button click sound  */
+    std::shared_ptr<cugl::Sound> _click_sound;
 
     // Player modes
-    /** The primary controller for the game world */
-    GameScene _gameplay;
+    
     /** The controller for the loading screen */
     LoadingScene _loading;
+    /** The menu scene to choose what to do */
+    MenuScene _mainmenu;
+    /** The level select scene to choose the level */
+    LevelScene _levelscene;
+    /** The scene for hosting or joining a game */
+    LobbyScene _lobby_host;
+    
+    /** The scene for hosting or joining a game */
+    LobbyScene _lobby_client;
+    
+    
+    /** The scene for hosting or joining a game */
+    LobbyScene _lobby;
+    
+    /** The scene for the game world */
+    GameScene _gamescene;
+    /** The primary controller for the game world */
+    std::shared_ptr<GameplayController> _gameplay;
+
+    /** The controller for network during gameplay */
+    // std::shared_ptr<NetworkController> _network;
+    
+    
+    /** The current active scene */
+    State _scene;
+    
 
     /** Whether or not we have finished loading all assets */
     bool _loaded;
+    
+    // Audio Controller
+
     
 public:
     /**
@@ -125,6 +181,59 @@ public:
      * at all. The default implmentation does nothing.
      */
     virtual void draw() override;
+    
+    
+private:
+    /**
+     * Inidividualized update method for the loading scene.
+     *
+     * This method keeps the primary {@link #update} from being a mess of switch
+     * statements. It also handles the transition logic from the loading scene.
+     *
+     * @param timestep  The amount of time (in seconds) since the last frame
+     */
+    void updateLoadingScene(float timestep);
+
+    /**
+     * Inidividualized update method for the menu scene.
+     *
+     * This method keeps the primary {@link #update} from being a mess of switch
+     * statements. It also handles the transition logic from the menu scene.
+     *
+     * @param timestep  The amount of time (in seconds) since the last frame
+     */
+    void updateMenuScene(float timestep);
+    
+    /**
+     * Inidividualized update method for the level select scene.
+     *
+     * This method keeps the primary {@link #update} from being a mess of switch
+     * statements. It also handles the transition logic from the level select scene.
+     *
+     * @param timestep  The amount of time (in seconds) since the last frame
+     */
+    void updateLevelScene(float timestep);
+
+    /**
+     * Inidividualized update method for the lobby scene.
+     *
+     * This method keeps the primary {@link #update} from being a mess of switch
+     * statements. It also handles the transition logic from the host scene.
+     *
+     * @param timestep  The amount of time (in seconds) since the last frame
+     */
+    void updateLobbyScene(float timestep);
+
+    /**
+     * Inidividualized update method for the game scene.
+     *
+     * This method keeps the primary {@link #update} from being a mess of switch
+     * statements. It also handles the transition logic from the game scene.
+     *
+     * @param timestep  The amount of time (in seconds) since the last frame
+     */
+    void updateGameScene(float timestep);
+    
 };
 
-#endif /* __SL_APP_H__ */
+#endif /* __APP__ */

@@ -109,6 +109,7 @@ void InputController::update() {
             }
         }
     }
+    _moveDir = Vec2(_turning, _forward);
     _touchReleased = false;
 #else
     // This makes it easier to change the keys later
@@ -138,6 +139,8 @@ void InputController::update() {
     } else if (keys->keyPressed(right) && !keys->keyDown(left)) {
         _turning = 1;
     }
+    
+    _moveDir = Vec2(_turning, _forward);
 
     // Shooting
     if (keys->keyDown(shoot)) {
