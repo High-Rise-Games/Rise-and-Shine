@@ -1375,7 +1375,13 @@ void GameplayController::generatePoo(ProjectileSet* projectiles) {
 //    CULog("generate at: %d", (int)rand_row);
     // if add dirt already exists at location or player at location and board is not full, repeat
     cugl::Vec2 birdWorldPos = getWorldPosition(_bird.birdPosition);
-    projectiles->spawnProjectile(Vec2(birdWorldPos.x, birdWorldPos.y - _windows.getPaneHeight()/2), Vec2(0, min(-2.4f,-2-_projectileGenChance)), Vec2(birdWorldPos.x, 0), ProjectileSet::Projectile::ProjectileType::POOP);
+    // randomize the destination of bird poo, any window pane below the current bird position
+    std::uniform_int_distribution<int> rowDist(0, floor(_bird.birdPosition.y));
+    int rand_row_center = rowDist(_rng);
+    cugl::Vec2 birdPooDest = getWorldPosition(Vec2(_bird.birdPosition.x, rand_row_center));
+    CULog("%f, %f", _bird.birdPosition.x, _bird.birdPosition.y);
+    CULog("%f, %f", birdPooDest.x, birdPooDest.y);
+    projectiles->spawnProjectile(Vec2(birdWorldPos.x, birdWorldPos.y - _windows.getPaneHeight()/2), Vec2(0, min(-2.4f,-2-_projectileGenChance)), birdPooDest, ProjectileSet::Projectile::ProjectileType::POOP);
 }
 
 /** Checks whether board is full except player current location*/
