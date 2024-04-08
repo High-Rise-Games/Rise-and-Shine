@@ -701,6 +701,7 @@ void LobbyScene::setActive(bool value) {
             _select_blue->setToggle(true);
             _select_green->setToggle(true);
             _select_yellow->setToggle(true);
+            _select_red->setDown(true);
 //            _select_red->setDown(true);
         }
         else {
