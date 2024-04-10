@@ -13,18 +13,18 @@
 #include "LobbyScene.h"
 #include "LevelScene.h"
 #include "MenuScene.h"
-#include "NetworkController.h"
 
 /**
  * This class represents the application root for the ship demo.
  */
-class App : public cugl::Application {
+class App : public cugl::Application
+{
 protected:
-    
     /**
      * The current active scene
      */
-    enum State {
+    enum State
+    {
         /** The loading scene */
         LOAD,
         /** The main menu scene */
@@ -37,19 +37,17 @@ protected:
         /** The scene to play the game */
         GAME
     };
-    
 
-    
     /** The global sprite batch for drawing (only want one of these) */
     std::shared_ptr<cugl::SpriteBatch> _batch;
     /** The global asset manager */
     std::shared_ptr<cugl::AssetManager> _assets;
-    
+
     /** The button click sound  */
     std::shared_ptr<cugl::Sound> _click_sound;
 
     // Player modes
-    
+
     /** The controller for the loading screen */
     LoadingScene _loading;
     /** The menu scene to choose what to do */
@@ -58,14 +56,13 @@ protected:
     LevelScene _levelscene;
     /** The scene for hosting or joining a game */
     LobbyScene _lobby_host;
-    
+
     /** The scene for hosting or joining a game */
     LobbyScene _lobby_client;
-    
-    
+
     /** The scene for hosting or joining a game */
     LobbyScene _lobby;
-    
+
     /** The scene for the game world */
     GameScene _gamescene;
     /** The primary controller for the game world */
@@ -73,18 +70,15 @@ protected:
 
     /** The controller for network during gameplay */
     // std::shared_ptr<NetworkController> _network;
-    
-    
+
     /** The current active scene */
     State _scene;
-    
 
     /** Whether or not we have finished loading all assets */
     bool _loaded;
-    
+
     // Audio Controller
 
-    
 public:
     /**
      * Creates, but does not initialized a new application.
@@ -96,7 +90,7 @@ public:
      * advanced configuration of the application before it starts.
      */
     App() : cugl::Application(), _loaded(false) {}
-    
+
     /**
      * Disposes of this application, releasing all resources.
      *
@@ -104,8 +98,8 @@ public:
      * It simply calls the dispose() method in Application.  There is nothing
      * special to do here.
      */
-    ~App() { }
-    
+    ~App() {}
+
 #pragma mark Application State
     /**
      * The method called after OpenGL is initialized, but before running the application.
@@ -118,7 +112,7 @@ public:
      * causing the application to run.
      */
     virtual void onStartup() override;
-    
+
     /**
      * The method called when the application is ready to quit.
      *
@@ -131,7 +125,7 @@ public:
      * causing the application to be deleted.
      */
     virtual void onShutdown() override;
- 
+
     /**
      * The method called when the application is suspended and put in the background.
      *
@@ -144,7 +138,7 @@ public:
      * the background.
      */
     virtual void onSuspend() override;
-    
+
     /**
      * The method called when the application resumes and put in the foreground.
      *
@@ -155,8 +149,8 @@ public:
      * If you are using audio, you should use this method to resume any audio
      * paused before app suspension.
      */
-    virtual void onResume()  override;
-    
+    virtual void onResume() override;
+
 #pragma mark Application Loop
     /**
      * The method called to update the application data.
@@ -170,7 +164,7 @@ public:
      * @param timestep  The amount of time (in seconds) since the last frame
      */
     virtual void update(float timestep) override;
-    
+
     /**
      * The method called to draw the application to the screen.
      *
@@ -181,8 +175,7 @@ public:
      * at all. The default implmentation does nothing.
      */
     virtual void draw() override;
-    
-    
+
 private:
     /**
      * Inidividualized update method for the loading scene.
@@ -203,7 +196,7 @@ private:
      * @param timestep  The amount of time (in seconds) since the last frame
      */
     void updateMenuScene(float timestep);
-    
+
     /**
      * Inidividualized update method for the level select scene.
      *
@@ -233,7 +226,6 @@ private:
      * @param timestep  The amount of time (in seconds) since the last frame
      */
     void updateGameScene(float timestep);
-    
 };
 
 #endif /* __APP__ */
