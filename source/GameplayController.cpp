@@ -10,7 +10,7 @@
 #include <random>
 
 #include "GameplayController.h"
-#include "GameAudioController.h"
+
 
 using namespace cugl;
 using namespace std;
@@ -101,23 +101,23 @@ bool GameplayController::initLevel(int selected_level) {
     std::shared_ptr<cugl::JsonValue> level = std::make_shared<JsonValue>();
     switch (selected_level) {
         case 1:
-            CULog("garage selecting 1");
+            // CULog("garage selecting 1");
             level = _assets->get<JsonValue>("templatelevel");
             break;
         case 2:
-            CULog("garage selecting 2");
+            // CULog("garage selecting 2");
             level = _assets->get<JsonValue>("templatelevel2");
             _size = _nativeSize;
             _size.height *= 2;
             break;
         case 3:
-            CULog("garage selecting 3");
+            // CULog("garage selecting 3");
             level = _assets->get<JsonValue>("templatelevel3");
             _size = _nativeSize;
             _size.height *= 3;
             break;
         default:
-            CULog("garage selecting default");
+            // CULog("garage selecting default");
             level = _assets->get<JsonValue>("templatelevel");
             break;
     }
@@ -432,7 +432,6 @@ cugl::Vec2 GameplayController::getWorldPosition(cugl::Vec2 boardPos) {
  */
 void GameplayController::switchScene() {
     if (_curBoard != 0) {
-        CULog("leaving other player's board");
         if (_ishost) {
             _allCurBoards[0] = 0;
             _curBoard = 0;
@@ -694,7 +693,6 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
         auto type = ProjectileSet::Projectile::ProjectileType::POOP;
         if (typeStr == "DIRT") {
             type = ProjectileSet::Projectile::ProjectileType::DIRT;
-            CULog("is dirt");
         }
 
         // add the projectile to neighbor's projectile set
@@ -825,7 +823,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonSceneSwitch(bool ret
 }
 
 /**
-* Called by host only to process switch scene requests. Updates a client player's
+* Called by host only to process return to board requests. Updates a client player's
 * currently viewed board for the player at player_id based on the current board
 * value stored in the JSON value.
 *
@@ -835,24 +833,10 @@ void GameplayController::processSceneSwitchRequest(std::shared_ptr<cugl::JsonVal
 
     int playerId = std::stod(data->getString("player_id", "0"));
     int switchDestination = std::stod(data->getString("switch_destination", "0"));
-    CULog("player %d switching to %d", playerId, switchDestination);
 
     // update the board of the player to their switch destination
     if (switchDestination == 0) {
         _allCurBoards[playerId - 1] = switchDestination;
-    }
-    else {
-        int destinationId = playerId + switchDestination;
-        if (destinationId == 0) {
-            destinationId = 4;
-        }
-        else if (destinationId == 5) {
-            destinationId == 1;
-        }
-
-        if (destinationId <= _numPlayers) {
-            _allCurBoards[playerId - 1] = switchDestination;
-        }
     }
 }
 
@@ -901,7 +885,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonDirtThrow(const int 
     dirtDest->appendValue(std::to_string(boardDest.y));
     json->appendChild("dirt_dest", dirtDest);
 
-    CULog("dirt throw from player %d to %d", _id, target);
+    // CULog("dirt throw from player %d to %d", _id, target);
 
     return json;
 }
@@ -985,11 +969,11 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                         // CULog("got movement message");
                         processMovementRequest(incomingMsg);
                     } else if (incomingMsg->has("switch_destination")) {
-                        CULog("got switch scene request message");
+                        // CULog("got switch scene request message");
                         processSceneSwitchRequest(incomingMsg);
                     }
                     else if (incomingMsg->has("player_id_target")) {
-                        CULog("got dirt throw message");
+                        // CULog("got dirt throw message");
                         processDirtThrowRequest(incomingMsg);
                     }
                 }
@@ -1279,7 +1263,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
         }
         
         if (_boardWithBird == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.01)) {
-            CULog("collided with bird");
+            // CULog("collided with bird");
             _boardWithBird = _bird.isFacingRight() ? _boardWithBird + 1 : _boardWithBird - 1;
             if (_boardWithBird == 0) {
                 _boardWithBird = _numPlayers;
@@ -1289,20 +1273,6 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
             }
         }
     }
-    
-    // Generate falling hazard based on chance
-//    if (_projectileGenCountDown == 0) {
-//        std::bernoulli_distribution dist(_projectileGenChance);
-//        if (dist(_rng)) {
-//            // random projectile generation logic
-//            // CULog("generating random poo");
-//            generatePoo(projectiles);
-//        }
-//        _projectileGenCountDown = 120;
-//    }
-//    else {
-//        _projectileGenCountDown -= 1;
-//    }
 
     // Move the projectiles
     std::vector<cugl::Vec2> landedDirts = projectiles.update(getSize());
@@ -1314,25 +1284,6 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
         y_coor = std::clamp(y_coor, 0, windows.getNVertical()-1);
         windows.addDirt(y_coor, x_coor);
     }
-
-    // fixed dirt generation logic (every 5 seconds)
-    // if (!checkBoardEmpty() && !checkBoardFull()) {
-    //     if (_dirtThrowTimer <= _fixedDirtUpdateThreshold) {
-    //         auto search = _dirtGenTimes.find(_dirtThrowTimer);
-    //         if (search != _dirtGenTimes.end()) {
-    //             // random dirt generation logic
-//                CULog("generating random dirt");
-    //             generateDirt();
-    //         }
-    //         _dirtThrowTimer++;
-    //     }
-    //     else {
-    //         _dirtThrowTimer = 0;
-    //         updateDirtGenTime();
-            //            CULog("generating fixed dirt");
-    //         generateDirt();
-    //     }
-    // }
 }
 
 /** update when dirt is generated */
@@ -1352,6 +1303,7 @@ void GameplayController::generateDirt() {
     int rand_col = colDist(_rng);
 //    CULog("player at: (%f, %f)", _player->getCoors().y, _player->getCoors().x);
 //    CULog("generate at: (%d, %d)", (int)rand_row, (int) rand_col);
+
     // if add dirt already exists at location or player at location and board is not full, repeat
     while (Vec2((int)_player->getCoors().y, (int)_player->getCoors().x) == Vec2((int)rand_row, (int)rand_col) || !_windows.addDirt(rand_row, rand_col)) {
         rand_row = rowDist(_rng);
@@ -1359,21 +1311,12 @@ void GameplayController::generateDirt() {
     }
 }
 
-///** handles random poo generation */
-//void GameplayController::generateRandomPoo(ProjectileSet& projectiles) {
-//    std::uniform_real_distribution<float> rowDist(_windows.sideGap + 40, (float)getSize().getIWidth() - _windows.sideGap - 60);
-//    float rand_row = rowDist(_rng);
-////    CULog("player at: (%f, %f)", _player->getCoors().y, _player->getCoors().x);
-////    CULog("generate at: %d", (int)rand_row);
-//    // if add dirt already exists at location or player at location and board is not full, repeat
-//    projectiles.spawnProjectile(Vec2(rand_row, getSize().height - 50), Vec2(0, min(-2.4f,-2-_projectileGenChance)), Vec2(rand_row, 0), ProjectileSet::Projectile::ProjectileType::POOP);
-//}
-
 /** handles poo generation */
 void GameplayController::generatePoo(ProjectileSet* projectiles) {
 //    CULog("player at: (%f, %f)", _player->getCoors().y, _player->getCoors().x);
 //    CULog("generate at: %d", (int)rand_row);
-    // if add dirt already exists at location or player at location and board is not full, repeat
+
+// if add dirt already exists at location or player at location and board is not full, repeat
     cugl::Vec2 birdWorldPos = getWorldPosition(_bird.birdPosition);
     projectiles->spawnProjectile(Vec2(birdWorldPos.x, birdWorldPos.y - _windows.getPaneHeight()/2), Vec2(0, min(-2.4f,-2-_projectileGenChance)), Vec2(birdWorldPos.x, 0), ProjectileSet::Projectile::ProjectileType::POOP);
 }
