@@ -8,15 +8,19 @@
 #include <cugl/cugl.h>
 #include <vector>
 #include <unordered_set>
+
+// models
 #include "PlayerCharacter.h"
+#include "WindowGrid.h"
+#include "ProjectileSet.h"
+#include "Bird.h"
+
+// controllers
 #include "InputController.h"
 #include "DirtThrowInputController.h"
 #include "CollisionController.h"
-#include "WindowGrid.h"
-#include "ProjectileSet.h"
 #include "NetworkController.h"
 #include "GameAudioController.h"
-#include "Bird.h"
 
 
 

@@ -10,7 +10,6 @@
 #include <random>
 
 #include "GameScene.h"
-//#include "GLCollisionController.h"
 
 using namespace cugl;
 using namespace std;
@@ -245,8 +244,6 @@ void GameScene::update(float timestep) {
     
     _player_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow())));
     
-    CULog("Board max dirts %f",_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow()) );
-    CULog("Board curr dirts %f%f", _gameController->returnNumBoardDirts(_gameController->getPlayerWindow()));
     
     if (_left_bar->isVisible()) {
         _left_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerLeftWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerLeftWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerLeftWindow())));
