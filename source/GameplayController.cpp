@@ -128,67 +128,72 @@ bool GameplayController::initLevel(int selected_level) {
     for (string thisWindow: window_strings) {
         _windows.addTexture(_assets->get<Texture>(thisWindow));
     }
-    //_windows.addTexture(assets->get<Texture>("window_1"));
-    //_windows.addTexture(assets->get<Texture>("window_2"));
-    //_windows.addTexture(assets->get<Texture>("window_3"));
-    _windows.init(level, _size); // init depends on texture
-    _windows.setInitDirtNum(selected_level * 5);
-    _windows.setDirtTexture(_assets->get<Texture>("dirt"));
     
     // get the win background when game is win
     _winBackground = _assets->get<Texture>("win-background");
     
     // get the lose background when game is lose
     _loseBackground = _assets->get<Texture>("lose-background");
+    
+    
+    for (int i=0; i<=_numPlayers; i++) {
+        
+        if (i==0) {
+            _windows.init(level, _size); // init depends on texture
+            _windows.setInitDirtNum(selected_level * 5);
+            _windows.setDirtTexture(_assets->get<Texture>("dirt"));
+            _projectiles.setDirtTexture(_assets->get<Texture>("dirt"));
+            _projectiles.setPoopTexture(_assets->get<Texture>("poop"));
+            _projectiles.setTextureScales(_windows.getPaneHeight(), _windows.getPaneWidth());
+        }
+        
+        if (i==1) {
+            _windowsRight.setBuildingTexture(_assets->get<Texture>("building_1"));
+            _projectilesRight.setDirtTexture(_assets->get<Texture>("dirt"));
+            _projectilesRight.setPoopTexture(_assets->get<Texture>("poop"));
+            _projectilesRight.setTextureScales(_windowsRight.getPaneHeight(), _windowsRight.getPaneWidth());
+            for (string thisWindow: window_strings) {
+                _windowsRight.addTexture(_assets->get<Texture>(thisWindow));
+            }
 
-    _windowsLeft.setBuildingTexture(_assets->get<Texture>("building_1"));
-    for (string thisWindow: window_strings) {
-        _windowsLeft.addTexture(_assets->get<Texture>(thisWindow));
+            _windowsRight.init(level, _size); // init depends on texture
+            _windowsRight.setDirtTexture(_assets->get<Texture>("dirt"));
+        }
+        
+        if (i==2) {
+            _projectilesAcross.setDirtTexture(_assets->get<Texture>("dirt"));
+            _projectilesAcross.setPoopTexture(_assets->get<Texture>("poop"));
+            _projectilesAcross.setTextureScales(_windows.getPaneHeight(), _windows.getPaneWidth());
+            _windowsAcross.setBuildingTexture(_assets->get<Texture>("building_1"));
+            for (string thisWindow : window_strings) {
+                _windowsAcross.addTexture(_assets->get<Texture>(thisWindow));
+            }
+
+            _windowsAcross.init(level, getSize()); // init depends on texture
+            _windowsAcross.setDirtTexture(_assets->get<Texture>("dirt"));
+        }
+        
+        if (i==3) {
+            _windowsLeft.setBuildingTexture(_assets->get<Texture>("building_1"));
+            _projectilesLeft.setDirtTexture(_assets->get<Texture>("dirt"));
+            _projectilesLeft.setPoopTexture(_assets->get<Texture>("poop"));
+            _projectilesLeft.setTextureScales(_windowsLeft.getPaneHeight(), _windowsLeft.getPaneWidth());
+            for (string thisWindow: window_strings) {
+                _windowsLeft.addTexture(_assets->get<Texture>(thisWindow));
+            }
+
+            _windowsLeft.init(level, _size); // init depends on texture
+            _windowsLeft.setDirtTexture(_assets->get<Texture>("dirt"));
+        }
     }
-    //_windowsLeft.addTexture(assets->get<Texture>("window_1"));
-    //_windowsLeft.addTexture(assets->get<Texture>("window_2"));
-    //_windowsLeft.addTexture(assets->get<Texture>("window_3"));
-    _windowsLeft.init(level, _size); // init depends on texture
-    _windowsLeft.setDirtTexture(_assets->get<Texture>("dirt"));
 
-    _windowsRight.setBuildingTexture(_assets->get<Texture>("building_1"));
-    for (string thisWindow: window_strings) {
-        _windowsRight.addTexture(_assets->get<Texture>(thisWindow));
-    }
-    //_windowsRight.addTexture(assets->get<Texture>("window_1"));
-    //_windowsRight.addTexture(assets->get<Texture>("window_2"));
-    //_windowsRight.addTexture(assets->get<Texture>("window_3"));
-    _windowsRight.init(level, _size); // init depends on texture
-    _windowsRight.setDirtTexture(_assets->get<Texture>("dirt"));
-
-    _windowsAcross.setBuildingTexture(_assets->get<Texture>("building_1"));
-    for (string thisWindow : window_strings) {
-        _windowsAcross.addTexture(_assets->get<Texture>(thisWindow));
-    }
-    //_windowsAcross.addTexture(assets->get<Texture>("window_1"));
-    //_windowsAcross.addTexture(assets->get<Texture>("window_2"));
-    //_windowsAcross.addTexture(assets->get<Texture>("window_3"));
-    _windowsAcross.init(level, getSize()); // init depends on texture
-    _windowsAcross.setDirtTexture(_assets->get<Texture>("dirt"));
+    
+    
 
 
-    // Initialize projectiles
-    _projectiles.setDirtTexture(_assets->get<Texture>("dirt"));
-    _projectiles.setPoopTexture(_assets->get<Texture>("poop"));
-    _projectiles.setTextureScales(_windows.getPaneHeight(), _windows.getPaneWidth());
-//    _projectiles.init(_constants->get("projectiles"));
 
-    _projectilesLeft.setDirtTexture(_assets->get<Texture>("dirt"));
-    _projectilesLeft.setPoopTexture(_assets->get<Texture>("poop"));
-    _projectilesLeft.setTextureScales(_windowsLeft.getPaneHeight(), _windowsLeft.getPaneWidth());
 
-    _projectilesRight.setDirtTexture(_assets->get<Texture>("dirt"));
-    _projectilesRight.setPoopTexture(_assets->get<Texture>("poop"));
-    _projectilesRight.setTextureScales(_windowsRight.getPaneHeight(), _windowsRight.getPaneWidth());
 
-    _projectilesAcross.setDirtTexture(_assets->get<Texture>("dirt"));
-    _projectilesAcross.setPoopTexture(_assets->get<Texture>("poop"));
-    _projectilesAcross.setTextureScales(_windows.getPaneHeight(), _windows.getPaneWidth());
 
     // Initialize bird textures, but do not set a location yet. that is the host's job
     if (_birdActive) {
@@ -234,6 +239,12 @@ bool GameplayController::initLevel(int selected_level) {
 /** 
  * Initializes the player models for all players, whether host or client. 
  * Sets IDs (corresponds to side of building - TODO: change?), textures (TODO)
+ *
+ *      host: 1
+ * left: 4              right: 2
+ *     across: 3
+ *
+ *
  */
 bool GameplayController::initPlayers(const std::shared_ptr<cugl::AssetManager>& assets) {
     if (assets == nullptr) {
@@ -241,6 +252,8 @@ bool GameplayController::initPlayers(const std::shared_ptr<cugl::AssetManager>& 
     }
 
     // id of self is set while connecting to the lobby. all other players have ids set, even if they don't exist.
+    
+    
     _player->setId(_id);
     int leftId = _id == 1 ? 4 : _id - 1;
     _playerLeft->setId(leftId);
@@ -249,6 +262,27 @@ bool GameplayController::initPlayers(const std::shared_ptr<cugl::AssetManager>& 
     int acrossId = (_id + 2) % 4;
     if (acrossId == 0) acrossId = 4;
     _playerAcross->setId(acrossId);
+
+    switch (_numPlayers) {
+    case 0:
+        _playerAcross = nullptr;
+        _playerLeft = nullptr;
+        _playerRight = nullptr;
+            
+        break;
+    case 1:
+        _playerAcross = nullptr;
+        _playerLeft = nullptr;
+        break;
+    case 2:
+        _playerLeft = nullptr;
+        break;
+    default:
+        break;
+    }
+    
+    
+
 
     return true;
 }
@@ -296,35 +330,49 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
 #pragma mark -
 #pragma mark Gameplay Handling
 void GameplayController::reset() {
+    
     Vec2 startingPos = Vec2(_windows.sideGap + (_windows.getPaneWidth() / 2), _windows.getPaneHeight() / 2);
-    _player->setPosition(startingPos);
-    //_player->setAngle(0);
-    _player->setVelocity(Vec2::ZERO);
-    _player->setHealth(_constants->get("ship")->getInt("health", 0));
-
-    _playerLeft->setPosition(startingPos);
-    //_playerLeft->setAngle(0);
-    _playerLeft->setVelocity(Vec2::ZERO);
-    _playerLeft->setHealth(_constants->get("ship")->getInt("health", 0));
-
-    _playerRight->setPosition(startingPos);
-    //_playerRight->setAngle(0);
-    _playerRight->setVelocity(Vec2::ZERO);
-    _playerRight->setHealth(_constants->get("ship")->getInt("health", 0));
-
-    _windows.clearBoard();
-    _windows.generateInitialBoard(_windows.getInitDirtNum());
-    _windowsLeft.clearBoard();
-    _windowsLeft.generateInitialBoard(_windows.getInitDirtNum());
-    _windowsRight.clearBoard();
-    _windowsRight.generateInitialBoard(_windows.getInitDirtNum());
-
-    _projectiles.current.clear();
-//    _projectiles.init(_constants->get("projectiles"));
-    _projectilesLeft.current.clear();
-    _projectilesLeft.init(_constants->get("projectiles"));
-    _projectilesRight.current.clear();
-    _projectilesRight.init(_constants->get("projectiles"));
+    
+    for (int i=0; i<=_numPlayers; i++) {
+        if (i==1) {
+            // player of this controller
+            _player->setPosition(startingPos);
+            _player->setVelocity(Vec2::ZERO);
+            _windows.clearBoard();
+            _windows.generateInitialBoard(_windows.getInitDirtNum());
+            _projectiles.current.clear();
+            _projectiles.init(_constants->get("projectiles"));
+        }
+        if (i==2) {
+            // player right
+            _playerRight->setPosition(startingPos);
+            _playerRight->setVelocity(Vec2::ZERO);
+            _windowsRight.clearBoard();
+            _windowsRight.generateInitialBoard(_windows.getInitDirtNum());
+            _projectilesRight.current.clear();
+            _projectilesRight.init(_constants->get("projectiles"));
+        }
+        if (i==3) {
+            // player across
+            _playerAcross->setPosition(startingPos);
+            _playerAcross->setVelocity(Vec2::ZERO);
+            _windowsAcross.clearBoard();
+            _windowsAcross.generateInitialBoard(_windows.getInitDirtNum());
+            _projectilesAcross.current.clear();
+            _projectilesAcross.init(_constants->get("projectiles"));
+        }
+        
+        if (i==4) {
+            // player left
+            _playerLeft->setPosition(startingPos);
+            _playerLeft->setVelocity(Vec2::ZERO);
+            _windowsLeft.clearBoard();
+            _windowsLeft.generateInitialBoard(_windows.getInitDirtNum());
+            _projectilesLeft.current.clear();
+            _projectilesLeft.init(_constants->get("projectiles"));
+        }
+    }
+    
 
     _dirtThrowTimer = 0;
     _projectileGenChance = 0.1;
@@ -340,17 +388,31 @@ void GameplayController::hostReset() {
     reset();
     // starting position is most bottom left window
     Vec2 startingPos = Vec2(_windows.sideGap+(_windows.getPaneWidth()/2), _windows.getPaneHeight()/2);
-
-    _playerAcross->setPosition(startingPos);
-    //_playerAcross->setAngle(0);
-    _playerAcross->setVelocity(Vec2::ZERO);
-    _playerAcross->setHealth(_constants->get("ship")->getInt("health", 0));
     
-    _windowsAcross.clearBoard();
-    _windowsAcross.generateInitialBoard(_windows.getInitDirtNum());
-
-    _projectilesAcross.current.clear();
-    _projectilesAcross.init(_constants->get("projectiles"));
+    for (int i=1; i<=_numPlayers; i++) {
+        if (i==1) {
+            // player of this controller
+            _player->setPosition(startingPos);
+            _player->setVelocity(Vec2::ZERO);
+        }
+        if (i==2) {
+            // player right
+            _playerRight->setPosition(startingPos);
+            _playerRight->setVelocity(Vec2::ZERO);
+        }
+        if (i==3) {
+            // player across
+            _playerAcross->setPosition(startingPos);
+            _playerAcross->setVelocity(Vec2::ZERO);
+        }
+        
+        if (i==4) {
+            // player left
+            _playerAcross->setPosition(startingPos);
+            _playerAcross->setVelocity(Vec2::ZERO);
+        }
+    }
+    
 
     _allDirtAmounts = { 0, 0, 0, 0 };
     _allCurBoards = { 0, 0, 0, 0 };
@@ -446,7 +508,11 @@ void GameplayController::switchScene() {
 /** 
  * Host Only. Converts game state into a JSON value for sending over the network.
  * Only called by the host, as only the host transmits board states over the network.
- * 
+ *
+ *      host: 1
+ * left: 4              right: 2
+ *     across: 3
+ *
  * @param id    the id of the player of the board state to get
  * @returns JSON value representing game board state
  */
@@ -1095,26 +1161,64 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     }
     else {
         // not host - advance all players idle or wipe frames
-        if (_player->getWipeFrames() < _player->getMaxWipeFrames()) {
-            _player->advanceWipeFrame();
-        }
-        _player->advanceIdleFrame();
+        
+            switch (_numPlayers) {
+            case 1:
+                // player of this controller
+                break;
+            case 2:
+                // player right
+                if (_playerRight->getWipeFrames() < _playerRight->getMaxWipeFrames()) {
+                    _playerRight->advanceWipeFrame();
+                }
+                _playerRight->advanceIdleFrame();
+                break;
+            case 3:
+                // player right
+                if (_playerRight->getWipeFrames() < _playerRight->getMaxWipeFrames()) {
+                    _playerRight->advanceWipeFrame();
+                }
+                _playerRight->advanceIdleFrame();
+                    
+                // player across
+                // player across
+                // uncomment later if we are adding the ability to see opposite player's board
+                // if (_playerAcross->getWipeFrames() < _playerAcross->getMaxWipeFrames()) {
+                //     _playerAcross->advanceWipeFrame();
+                // }
+                // _playerAcross->advanceIdleFrame();
 
-        if (_playerLeft->getWipeFrames() < _playerLeft->getMaxWipeFrames()) {
-            _playerLeft->advanceWipeFrame();
-        }
-        _playerLeft->advanceIdleFrame();
-
-        if (_playerRight->getWipeFrames() < _playerRight->getMaxWipeFrames()) {
-            _playerRight->advanceWipeFrame();
-        }
-        _playerRight->advanceIdleFrame();
-
-        // uncomment later if we are adding the ability to see opposite player's board
-        // if (_playerAcross->getWipeFrames() < _playerAcross->getMaxWipeFrames()) {
-        //     _playerAcross->advanceWipeFrame();
-        // }
-        // _playerAcross->advanceIdleFrame();
+                break;
+            default:
+                // player of this controller
+                if (_player->getWipeFrames() < _player->getMaxWipeFrames()) {
+                    _player->advanceWipeFrame();
+                }
+                _player->advanceIdleFrame();
+                    
+                // player left
+                if (_playerLeft->getWipeFrames() < _playerLeft->getMaxWipeFrames()) {
+                    _playerLeft->advanceWipeFrame();
+                }
+                _playerLeft->advanceIdleFrame();
+                
+                // player right
+                if (_playerRight->getWipeFrames() < _playerRight->getMaxWipeFrames()) {
+                    _playerRight->advanceWipeFrame();
+                }
+                _playerRight->advanceIdleFrame();
+                    
+                // player across
+                // uncomment later if we are adding the ability to see opposite player's board
+                // if (_playerAcross->getWipeFrames() < _playerAcross->getMaxWipeFrames()) {
+                //     _playerAcross->advanceWipeFrame();
+                // }
+                // _playerAcross->advanceIdleFrame();
+  
+                break;
+            }
+    
+        
     }
 
     // When the player is on other's board and are able to throw dirt
@@ -1407,11 +1511,11 @@ const bool GameplayController::checkBoardEmpty(WindowGrid playerWindowGrid) {
 }
 
 /** Returns number of dirts on the player's board **/
-float GameplayController::returnNumBoardDirts() {
+float GameplayController::returnNumBoardDirts(WindowGrid playerWindowGrid) {
     float count=0;
-    for (int x = 0; x < _windows.getNHorizontal(); x++) {
-        for (int y = 0; y < _windows.getNVertical(); y++) {
-                if (_windows.getWindowState(y, x) == 1) {
+    for (int x = 0; x < playerWindowGrid.getNHorizontal(); x++) {
+        for (int y = 0; y < playerWindowGrid.getNVertical(); y++) {
+                if (playerWindowGrid.getWindowState(y, x) == 1) {
                     count=count+1;
                 }
         }
@@ -1420,8 +1524,8 @@ float GameplayController::returnNumBoardDirts() {
 }
 
 /** Returns number of max amount of dirt player's board could hold **/
-float GameplayController::returnBoardMaxDirts() {
-    return _windows.getNVertical()*_windows.getNHorizontal();
+float GameplayController::returnBoardMaxDirts(WindowGrid playerWindowGrid) {
+    return playerWindowGrid.getNVertical()*playerWindowGrid.getNHorizontal();
 }
 
 

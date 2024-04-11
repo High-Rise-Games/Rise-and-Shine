@@ -274,21 +274,41 @@ public:
     std::shared_ptr<Player> getPlayerRight() { return _playerRight; }
     
     bool isPlayerRightNull() {
-        if (_playerRight == NULL) {
+        if (&(_playerRight) == nullptr) {
             return true;
         } return false;
     }
     
     bool isPlayerLeftNull() {
-        if (_playerLeft == NULL) {
+        if (&(_playerLeft) == nullptr) {
             return true;
         } return false;
     }
     
     bool isPlayerAccrossNull() {
-        if (_playerAcross == NULL) {
+        if (&(_playerAcross) == nullptr) {
             return true;
         } return false;
+    }
+    
+    WindowGrid getPlayerWindow() {
+        return _windows;
+    }
+    
+    WindowGrid getPlayerLeftWindow() {
+        return _windowsLeft;
+    }
+    
+    WindowGrid getPlayerRightWindow() {
+        return _windowsRight;
+    }
+    
+    WindowGrid getPlayerAccrossWindow() {
+        return _windowsAcross;
+    }
+    
+    int getNumPlayers() {
+        return _numPlayers;
     }
     
 
@@ -389,10 +409,10 @@ public:
     const bool checkBoardEmpty(WindowGrid playerWindowGrid); 
     
     /** Returns number of dirts on the player's board **/
-    float returnNumBoardDirts();
+    float returnNumBoardDirts(WindowGrid playerWindowGrid);
     
     /** Returns number of max amount of dirt player's board could hold **/
-    float returnBoardMaxDirts();
+    float returnBoardMaxDirts(WindowGrid playerWindowGrid);
     
     /** update when dirt is generated */
     void updateDirtGenTime();

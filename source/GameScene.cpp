@@ -68,24 +68,26 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _accross_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("top bar"));
     
     
-    _player_bar->setVisible(true);
     
-    if (_gameController->isPlayerRightNull()) {
-        _right_bar->setVisible(true);
-    } else {
-        _right_bar->setVisible(false);
-    }
-    
-    if (!_gameController->isPlayerLeftNull()) {
-        _left_bar->setVisible(true);
-    } else {
-        _left_bar->setVisible(false);
-    }
-    
-    if (!_gameController->isPlayerAccrossNull()) {
-        _accross_bar->setVisible(true);
-    } else {
-        _accross_bar->setVisible(false);
+    _player_bar->setVisible(false);
+    _right_bar->setVisible(false);
+    _accross_bar->setVisible(false);
+    _left_bar->setVisible(false);
+    if (_gameController) {
+        for (int i=0; i<=_gameController->getNumPlayers(); i++) {
+            if (i==1) {
+                _player_bar->setVisible(true);
+            }
+            if (i==2) {
+                _right_bar->setVisible(true);
+            }
+            if (i==3) {
+                _accross_bar->setVisible(true);
+            }
+            if (i==4) {
+                _left_bar->setVisible(true);
+            }
+        }
     }
     
     
@@ -188,6 +190,22 @@ void GameScene::setActive(bool value) {
             _quit = false;
             _backout->activate();
             _tn_button->activate();
+            if (_gameController) {
+                for (int i=0; i<=_gameController->getNumPlayers(); i++) {
+                    if (i==1) {
+                        _player_bar->setVisible(true);
+                    }
+                    if (i==2) {
+                        _right_bar->setVisible(true);
+                    }
+                    if (i==3) {
+                        _accross_bar->setVisible(true);
+                    }
+                    if (i==4) {
+                        _left_bar->setVisible(true);
+                    }
+                }
+            }
         }
         else {
             _backout->deactivate();
@@ -196,6 +214,7 @@ void GameScene::setActive(bool value) {
             _backout->setDown(false);
             _tn_button->setDown(false);
         }
+        
     }
 }
 
@@ -219,17 +238,28 @@ void GameScene::update(float timestep) {
     Vec3 convertedWorldPos = screenToWorldCoords(screenPos);
     Vec2 worldPos = Vec2(convertedWorldPos.x, convertedWorldPos.y);
     
-    
-    
-    
-    
 
     _gameController->update(timestep, worldPos, _dirtThrowInput);
     
-    _player_bar->setProgress((_gameController->returnBoardMaxDirts() - 2 - _gameController->returnNumBoardDirts())/(_gameController->returnBoardMaxDirts()-2));
     
-    CULog("maxdirt %f", _gameController->returnBoardMaxDirts()-2);
-    CULog("maxdirt %f", _gameController->returnNumBoardDirts());
+    
+    _player_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow())));
+    
+    CULog("Board max dirts %f",_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow()) );
+    CULog("Board curr dirts %f%f", _gameController->returnNumBoardDirts(_gameController->getPlayerWindow()));
+    
+    if (_left_bar->isVisible()) {
+        _left_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerLeftWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerLeftWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerLeftWindow())));
+    }
+    
+    if (_right_bar->isVisible()) {
+        _right_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerRightWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerRightWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerRightWindow())));
+    }
+    
+    if (_accross_bar->isVisible()) {
+        _accross_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerAccrossWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerAccrossWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerAccrossWindow())));
+    }
+    
     
     
     
