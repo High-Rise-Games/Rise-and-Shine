@@ -53,8 +53,42 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _background = _assets->get<Texture>("background");
     _constants = _assets->get<JsonValue>("constants");
     
-    // test progress bar
+    
+    
+    // test progress bar for player
     _player_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("player bar"));
+    
+    // test progress bar for player left
+    _left_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("left bar"));
+    
+    // test progress bar for player right
+    _right_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("right bar"));
+    
+    // test progress bar for player top
+    _accross_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("top bar"));
+    
+    
+    _player_bar->setVisible(true);
+    
+    if (_gameController->isPlayerRightNull()) {
+        _right_bar->setVisible(true);
+    } else {
+        _right_bar->setVisible(false);
+    }
+    
+    if (!_gameController->isPlayerLeftNull()) {
+        _left_bar->setVisible(true);
+    } else {
+        _left_bar->setVisible(false);
+    }
+    
+    if (!_gameController->isPlayerAccrossNull()) {
+        _accross_bar->setVisible(true);
+    } else {
+        _accross_bar->setVisible(false);
+    }
+    
+    
     
     
     
@@ -120,6 +154,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     addChild(_loseBackground);
 //    _loseBackground->setVisible(false);
 //    _winBackground->setVisible(false);
+    
     setActive(false);
     return true;
 }
@@ -185,8 +220,17 @@ void GameScene::update(float timestep) {
     Vec2 worldPos = Vec2(convertedWorldPos.x, convertedWorldPos.y);
     
     
+    
+    
+    
 
     _gameController->update(timestep, worldPos, _dirtThrowInput);
+    
+    _player_bar->setProgress((_gameController->returnBoardMaxDirts() - 2 - _gameController->returnNumBoardDirts())/(_gameController->returnBoardMaxDirts()-2));
+    
+    CULog("maxdirt %f", _gameController->returnBoardMaxDirts()-2);
+    CULog("maxdirt %f", _gameController->returnNumBoardDirts());
+    
     
     
 
@@ -293,7 +337,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     }
     
 //    _player_bar->render(batch);
-//    _player_bar->setPosition(idk-getSize().operator Vec2()/2);
+
     
     batch->end();
 }

@@ -169,6 +169,8 @@ protected:
     /** The current board that the bird is on */
     int _boardWithBird;
     
+    
+    
     cugl::scheduable t;
     
     // VIEW items are going to be individual variables
@@ -261,6 +263,33 @@ public:
     
     /** Returns the main player of who owns this controller**/
     std::shared_ptr<Player> getPlayer() { return _player; }
+    
+    /** Returns player accross r**/
+    std::shared_ptr<Player> getPlayerAccross() { return _playerAcross; }
+    
+    /** Returns player on right r**/
+    std::shared_ptr<Player> getPlayerLeft() { return _playerLeft; }
+    
+    /** Returns player on right  r**/
+    std::shared_ptr<Player> getPlayerRight() { return _playerRight; }
+    
+    bool isPlayerRightNull() {
+        if (_playerRight == NULL) {
+            return true;
+        } return false;
+    }
+    
+    bool isPlayerLeftNull() {
+        if (_playerLeft == NULL) {
+            return true;
+        } return false;
+    }
+    
+    bool isPlayerAccrossNull() {
+        if (_playerAcross == NULL) {
+            return true;
+        } return false;
+    }
     
 
     /** Returns the id of this player. */
@@ -358,6 +387,12 @@ public:
     
     /** Checks whether board is empty */
     const bool checkBoardEmpty(WindowGrid playerWindowGrid); 
+    
+    /** Returns number of dirts on the player's board **/
+    float returnNumBoardDirts();
+    
+    /** Returns number of max amount of dirt player's board could hold **/
+    float returnBoardMaxDirts();
     
     /** update when dirt is generated */
     void updateDirtGenTime();
@@ -495,6 +530,8 @@ public:
      * Disconnects this scene from the network controller.
      */
     void disconnect() { _network.disconnect(); }
+    
+    
 };
 
 #endif __GAME_CONTROLLER_H__
