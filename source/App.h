@@ -13,7 +13,6 @@
 #include "LobbyScene.h"
 #include "LevelScene.h"
 #include "MenuScene.h"
-#include "NetworkController.h"
 
 /**
  * This class represents the application root for the ship demo.

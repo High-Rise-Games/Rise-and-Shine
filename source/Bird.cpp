@@ -103,7 +103,7 @@ int Bird::atColCenter(const int nHorizontal, const float windowWidth, const floa
         float xPos = i + 0.4;
         if ((_toRight) ? (birdPosition.x < xPos && birdPosition.x + _speed > xPos) :
             (birdPosition.x > xPos && birdPosition.x - _speed < xPos)) {
-            CULog("at column center %i", i);
+            // CULog("at column center %i", i);
             return i;
         }
     }
