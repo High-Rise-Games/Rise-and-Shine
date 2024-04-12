@@ -13,8 +13,8 @@
             "turn" : true,
             "address" : "206.189.184.75",
             "port" : 3478,
-            "username": "server",
-            "password": "server"
+            "username": "TEST",
+            "password": "PASS"
         }
     ],
     "max players" : 4,

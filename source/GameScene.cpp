@@ -10,7 +10,6 @@
 #include <random>
 
 #include "GameScene.h"
-//#include "GLCollisionController.h"
 
 using namespace cugl;
 using namespace std;

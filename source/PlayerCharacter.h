@@ -251,7 +251,7 @@ public:
         if (_wipeFrames < _maxwipeFrame) {
             if (_wipeFrames % step == 0) {
                 _wipeSprite->setFrame((int) (_wipeFrames / step) % _framesize);
-//                CULog("drawing frame %d", (int) (_wipeFrames / step) % _framesize);
+                // CULog("drawing frame %d", (int) (_wipeFrames / step) % _framesize);
             }
             _wipeFrames += 1;
         } else {
