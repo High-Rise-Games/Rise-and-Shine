@@ -7,7 +7,7 @@ using namespace cugl;
 
 bool Bird::init(const std::vector<cugl::Vec2> positions, const float speed, const float sf) {
     _checkpoints = positions;
-    _speed = speed * 2;
+    _speed = speed;
     _scaleFactor = sf;
     birdPosition = _checkpoints[0];
     _nextCheckpoint = 1;
