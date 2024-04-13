@@ -58,8 +58,8 @@ public:
 	int  getNHorizontal()                 { return _nHorizontal;        };
 	void setNVertical(int n)              { _nVertical = n;             };
 	int  getNVertical()                   { return _nVertical;          };
-    void  setInitDirtNum(int dirtN)       { _initDirtNum = dirtN;          };
-    int  getInitDirtNum()                 { return _initDirtNum;          };
+    void  setInitDirtNum(int dirtN)       { _initDirtNum = dirtN;       };
+    int  getInitDirtNum()                 { return _initDirtNum;        };
     float sideGap;
 
 	WindowGrid(); // constructor

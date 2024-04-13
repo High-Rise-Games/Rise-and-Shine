@@ -43,8 +43,8 @@ void ProjectileSet::Projectile::setProjectileTexture(const std::shared_ptr<cugl:
 bool ProjectileSet::Projectile::update(Size size) {
     Vec2 newPosition = position + velocity;
     // when the new position is over the destination, remove it
-    if (type == ProjectileType::DIRT && std::min(position.x, newPosition.x) <= destination.x && destination.x <= std::max(position.x, newPosition.x) && std::min(position.y, newPosition.y) <= destination.y && destination.y <= std::max(position.y, newPosition.y)) {
-        CULog("reached destination");
+    if (std::min(position.x, newPosition.x) <= destination.x && destination.x <= std::max(position.x, newPosition.x) && std::min(position.y, newPosition.y) <= destination.y && destination.y <= std::max(position.y, newPosition.y)) {
+//        CULog("reached destination");
         return true;
     }
     // when the projectile move over the edge, remove it
@@ -131,6 +131,10 @@ std::vector<std::pair<cugl::Vec2, int>> ProjectileSet::update(Size size) {
             // delete the projectile once it goes completely off screen
             if ((*it)->type == Projectile::ProjectileType::DIRT) {
                 dirtDestsAndAmts.push_back(std::make_pair((*it)->destination, (*it)->spawnAmount));
+            }
+            else {
+                (*it)->type = Projectile::ProjectileType::DIRT;
+                dirtDestsAndAmts.push_back(std::make_pair((*it)->destination, 1));
             }
             it = current.erase(it);
         } else {

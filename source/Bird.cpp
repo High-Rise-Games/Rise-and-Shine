@@ -5,13 +5,12 @@
 
 using namespace cugl;
 
-bool Bird::init(const cugl::Vec2 startP, const cugl::Vec2 endP, const float speed, const float sf) {
-    _startPos = startP;
-    _endPos = endP;
-    // _endPos.x = _endPos.x -_radius * 2;
+bool Bird::init(const std::vector<cugl::Vec2> positions, const float speed, const float sf) {
+    _checkpoints = positions;
     _speed = speed;
     _scaleFactor = sf;
-    birdPosition = _startPos;
+    birdPosition = _checkpoints[0];
+    _nextCheckpoint = 1;
     _toRight = true;
     _framecols = 5;
     _framesize = 5;
@@ -63,19 +62,25 @@ void Bird::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size
 
 /** Moves the bird on game board in direction based on current position. */
 void Bird::move() {
-    // Process movement based on flying direction
-    cugl::Vec2 target;
-    if (_toRight) {
-        target = _endPos;
+    // Process movement based on current place and next destination
+    cugl::Vec2 target = _checkpoints[_nextCheckpoint];
+    float dist = target.distance(birdPosition);
+    cugl::Vec2 newTarget = target - birdPosition;
+    if (dist > _speed) {
+//        CULog("(%f, %f)", birdPosition.x, birdPosition.y);
+        birdPosition = birdPosition.add(_speed * newTarget.normalize());
     } else {
-        target = _startPos;
+        birdPosition = _checkpoints[_nextCheckpoint];
+        if (_nextCheckpoint == _checkpoints.size() - 1) {
+            _nextCheckpoint = 0;
+        } else {
+            _nextCheckpoint += 1;
+        }
     }
-    target = target - birdPosition;
-    if ((target.x > 0 && _toRight) || (target.x < 0 && !_toRight)) {
-        birdPosition = birdPosition.add(_speed * target.normalize());
+    if (birdPosition.x <= target.x) {
+        _toRight = true;
     } else {
-        birdPosition = (_toRight ? _endPos : _startPos);
-        _toRight = !_toRight;
+        _toRight = false;
     }
 }
 
@@ -94,6 +99,31 @@ void Bird::advanceBirdFrame() {
     else {
         _frametimer -= 1;
     }
+}
+
+/** Updates(randomize row) bird position when bird moves to other player's board */
+void Bird::resetBirdPath(const int nVertial, const int nHorizontal, const int randomRow) {
+    cugl::Vec2 birdPos1;
+    cugl::Vec2 birdPos2;
+    cugl::Vec2 birdPos3;
+    cugl::Vec2 birdPos4;
+    if (randomRow < 3 ) {
+        // move in z shape upward
+        birdPos1 = cugl::Vec2(0.5, randomRow + 0.5);
+        birdPos2 = cugl::Vec2(nHorizontal - 0.5, randomRow + 0.5);
+        birdPos3 = cugl::Vec2(0.5, randomRow + 3.5);
+        birdPos4 = cugl::Vec2(nHorizontal - 0.5, randomRow + 3.5);
+    } else {
+        // move in z shape downward
+        birdPos1 = cugl::Vec2(0.5, randomRow + 0.5);
+        birdPos2 = cugl::Vec2(nHorizontal - 0.5, randomRow + 0.5);
+        birdPos3 = cugl::Vec2(0.5, randomRow - 2.5);
+        birdPos4 = cugl::Vec2(nHorizontal - 0.5, randomRow - 2.5);
+    }
+    std::vector<cugl::Vec2> positions = {birdPos1, birdPos2, birdPos3, birdPos4};
+    _checkpoints = positions;
+    birdPosition = _checkpoints[0];
+    _nextCheckpoint = 1;
 }
 
 /** Returns column number if bird is at the center of a column, else -1*/
