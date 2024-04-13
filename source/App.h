@@ -12,6 +12,7 @@
 #include "LoadingScene.h"
 #include "LobbyScene.h"
 #include "LevelScene.h"
+#include "ClientJoinScene.h"
 #include "MenuScene.h"
 
 /**
@@ -30,6 +31,8 @@ protected:
         MENU,
         /** The level select scene*/
         LEVEL,
+        /** The client joint scene*/
+        CLIENT_JOIN,
         /** The scene to host or join a game */
         LOBBY_CLIENT,
         LOBBY_HOST,
@@ -55,6 +58,8 @@ protected:
     MenuScene _mainmenu;
     /** The level select scene to choose the level */
     LevelScene _levelscene;
+    /** The client join scene */
+    ClientJoinScene _client_join_scene;
     /** The scene for hosting or joining a game */
     LobbyScene _lobby_host;
     
@@ -212,6 +217,16 @@ private:
      * @param timestep  The amount of time (in seconds) since the last frame
      */
     void updateLevelScene(float timestep);
+    
+    /**
+     * Inidividualized update method for the client join scene.
+     *
+     * This method keeps the primary {@link #update} from being a mess of switch
+     * statements. It also handles the transition logic from the level select scene.
+     *
+     * @param timestep  The amount of time (in seconds) since the last frame
+     */
+    void updateClientJoinScene(float timestep);
 
     /**
      * Inidividualized update method for the lobby scene.
