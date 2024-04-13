@@ -408,10 +408,11 @@ public:
      * @param pos   The starting position of the dirt projectile
      * @param vel   The velocity vector of the dirt projectile
      * @param dest  The destination coordinates of the dirt projectile
+     * @param amt   The amount of dirt to spawn when landing on windows
      * 
      * @returns JSON value representing a dirt throw action
      */
-    std::shared_ptr<cugl::JsonValue> getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest);
+    std::shared_ptr<cugl::JsonValue> getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest, const int amt);
 
     /**
      * Updates a neighboring or own board given the JSON value representing its game state

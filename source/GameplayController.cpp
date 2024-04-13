@@ -64,7 +64,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _rng.seed(std::time(nullptr));
     _dirtGenSpeed = 2;
     _fixedDirtUpdateThreshold = 5 * 60;
-    _maxDirtAmount = 3;
+    _maxDirtAmount = 10;
     _size = size;
     _nativeSize = size;
     
@@ -139,6 +139,7 @@ bool GameplayController::initLevel(int selected_level) {
     _windows.init(level, _size); // init depends on texture
     _windows.setInitDirtNum(selected_level * 5);
     _windows.setDirtTexture(_assets->get<Texture>("dirt"));
+    _windows.setFadedDirtTexture(_assets->get<Texture>("faded-dirt"));
     
     // get the win background when game is win
     _winBackground = _assets->get<Texture>("win-background");
@@ -155,6 +156,7 @@ bool GameplayController::initLevel(int selected_level) {
     //_windowsLeft.addTexture(assets->get<Texture>("window_3"));
     _windowsLeft.init(level, _size); // init depends on texture
     _windowsLeft.setDirtTexture(_assets->get<Texture>("dirt"));
+    _windowsLeft.setFadedDirtTexture(_assets->get<Texture>("faded-dirt"));
 
     _windowsRight.setBuildingTexture(_assets->get<Texture>("building_1"));
     for (string thisWindow: window_strings) {
@@ -165,6 +167,7 @@ bool GameplayController::initLevel(int selected_level) {
     //_windowsRight.addTexture(assets->get<Texture>("window_3"));
     _windowsRight.init(level, _size); // init depends on texture
     _windowsRight.setDirtTexture(_assets->get<Texture>("dirt"));
+    _windowsRight.setFadedDirtTexture(_assets->get<Texture>("faded-dirt"));
 
     _windowsAcross.setBuildingTexture(_assets->get<Texture>("building_1"));
     for (string thisWindow : window_strings) {
@@ -175,7 +178,7 @@ bool GameplayController::initLevel(int selected_level) {
     //_windowsAcross.addTexture(assets->get<Texture>("window_3"));
     _windowsAcross.init(level, getSize()); // init depends on texture
     _windowsAcross.setDirtTexture(_assets->get<Texture>("dirt"));
-
+    _windowsAcross.setFadedDirtTexture(_assets->get<Texture>("faded-dirt"));
 
     // Initialize projectiles
     _projectiles.setDirtTexture(_assets->get<Texture>("dirt"));
@@ -866,7 +869,7 @@ void GameplayController::processSceneSwitchRequest(std::shared_ptr<cugl::JsonVal
 *
 * @returns JSON value representing a dirt throw action
 */
-std::shared_ptr<cugl::JsonValue> GameplayController::getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest) {
+std::shared_ptr<cugl::JsonValue> GameplayController::getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest, const int amt) {
     const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
     json->init(JsonValue::Type::ObjectType);
     json->appendValue("player_id_source", std::to_string(_id));
@@ -892,6 +895,8 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonDirtThrow(const int 
     dirtDest->appendValue(std::to_string(boardDest.y));
     json->appendChild("dirt_dest", dirtDest);
 
+    json->appendValue("dirt_amount", std::to_string(amt));
+
     // CULog("dirt throw from player %d to %d", _id, target);
 
     return json;
@@ -916,20 +921,22 @@ void GameplayController::processDirtThrowRequest(std::shared_ptr<cugl::JsonValue
     const std::vector<std::shared_ptr<JsonValue>>& dest = data->get("dirt_dest")->children();
     Vec2 dirt_dest(std::stod(dest[0]->asString()), std::stod(dest[1]->asString()));
 
-    _allDirtAmounts[source_id - 1] = max(0, _allDirtAmounts[source_id - 1] - 1);
+    const int amount = std::stoi(data->getString("dirt_amount", "1"));
+
+    _allDirtAmounts[source_id - 1] = max(0, _allDirtAmounts[source_id - 1] - amount);
     _currentDirtAmount = _allDirtAmounts[0];
 
     if (target_id == 1) {
-        _projectiles.spawnProjectile(getWorldPosition(dirt_pos), dirt_vel, getWorldPosition(dirt_dest), ProjectileSet::Projectile::ProjectileType::DIRT);
+        _projectiles.spawnProjectile(getWorldPosition(dirt_pos), dirt_vel, getWorldPosition(dirt_dest), ProjectileSet::Projectile::ProjectileType::DIRT, amount);
     }
     if (target_id == 2) {
-        _projectilesRight.spawnProjectile(getWorldPosition(dirt_pos), dirt_vel, getWorldPosition(dirt_dest), ProjectileSet::Projectile::ProjectileType::DIRT);
+        _projectilesRight.spawnProjectile(getWorldPosition(dirt_pos), dirt_vel, getWorldPosition(dirt_dest), ProjectileSet::Projectile::ProjectileType::DIRT, amount);
     }
     if (target_id == 3) {
-        _projectilesAcross.spawnProjectile(getWorldPosition(dirt_pos), dirt_vel, getWorldPosition(dirt_dest), ProjectileSet::Projectile::ProjectileType::DIRT);
+        _projectilesAcross.spawnProjectile(getWorldPosition(dirt_pos), dirt_vel, getWorldPosition(dirt_dest), ProjectileSet::Projectile::ProjectileType::DIRT, amount);
     }
     if (target_id == 4) {
-        _projectilesLeft.spawnProjectile(getWorldPosition(dirt_pos), dirt_vel, getWorldPosition(dirt_dest), ProjectileSet::Projectile::ProjectileType::DIRT);
+        _projectilesLeft.spawnProjectile(getWorldPosition(dirt_pos), dirt_vel, getWorldPosition(dirt_dest), ProjectileSet::Projectile::ProjectileType::DIRT, amount);
     }
 }
 
@@ -1126,8 +1133,12 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
 
                 _dirtSelected = false;
                 Vec2 diff = worldPos - _prevInputPos;
-                Vec2 velocity = diff.getNormalization() * -5;
                 Vec2 destination = playerPos - diff * 5;
+                Vec2 snapped_dest = getBoardPosition(destination);
+                snapped_dest.x = clamp(round(snapped_dest.x), 0.0f, (float)_windows.getNHorizontal()) + 0.5;
+                snapped_dest.y = clamp(round(snapped_dest.y), 0.0f, (float)_windows.getNVertical()) + 0.5;
+                snapped_dest = getWorldPosition(snapped_dest);
+                Vec2 velocity = (snapped_dest - playerPos).getNormalization() * 5;
 
                 int targetId = _id + _curBoard;
                 if (targetId == 0) {
@@ -1137,10 +1148,10 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     targetId = 1;
                 }
                 if (_ishost) {
-                    processDirtThrowRequest(getJsonDirtThrow(targetId, playerPos, velocity, destination));
+                    processDirtThrowRequest(getJsonDirtThrow(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
                 }
                 else {
-                    _network.transmitMessage(getJsonDirtThrow(targetId, playerPos, velocity, destination));
+                    _network.transmitMessage(getJsonDirtThrow(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
                 }
                 // _player->setPosition(_prevDirtPos);
 
@@ -1151,7 +1162,10 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 std::vector<Vec2> vertices = { playerPos };
                 Vec2 diff = worldPos - _prevInputPos;
                 Vec2 destination = playerPos - diff * 5;
-                vertices.push_back(destination);
+                Vec2 snapped_dest = getBoardPosition(destination);
+                snapped_dest.x = clamp(round(snapped_dest.x), 0.0f, (float)_windows.getNHorizontal()) + 0.5;
+                snapped_dest.y = clamp(round(snapped_dest.y), 0.0f, (float)_windows.getNVertical()) + 0.5;
+                vertices.push_back(getWorldPosition(snapped_dest));
                 SimpleExtruder se;
                 se.set(Path2(vertices));
                 se.calculate(10);
@@ -1213,9 +1227,81 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     
     if (_frameCountForWin>4*_fps && _gameOver) {
         setRequestForMenu(true);
-    };
+    };  
+}
 
-    
+/**
+ * This helper method calculates all the grid coordinates in which dirt should land in
+ * given a center (where the player has aimed) and the total amount of dirt to spawn.
+ *
+ * This takes into account the size of the window grid and attempts to spawn the dirt close
+ * to a circle. It does not spawn any dirt out of bounds. For example, if the center is
+ * close to the edge of the grid, all the extra dirt that would have landed out of bounds
+ * is pushed inside.
+ */
+std::vector<cugl::Vec2> calculateLandedDirtPositions(const int width, const int height, Vec2 centerCoords, int amount) {
+    // CULog("center: %f, %f", centerCoords.x, centerCoords.y);
+    std::vector<cugl::Vec2> dirtPositions;
+
+    if (amount <= 0) {
+        // No dirt to spawn, return empty vector
+        return dirtPositions;
+    }
+
+    dirtPositions.emplace_back(centerCoords); // Start with one dirt at the center
+    amount--; // Decrement the amount of dirt left to spawn
+
+    int layer = 1;
+
+    while (amount > 0) {
+        // start at top corner of diamond
+        int currX = centerCoords.x;
+        int currY = centerCoords.y + layer;
+
+        // move down and right until at right corner of diamond
+        while (amount > 0 && currY != centerCoords.y) {
+            currX += 1;
+            currY -= 1;
+            if (currX >= 0 && currX < height && currY >= 0 && currY < width) {
+                dirtPositions.emplace_back(Vec2(currX, currY));
+                // CULog("dirt spawned at %d, %d", currX, currY);
+                amount--;
+            }
+        }
+        // move down and left until at bottom corner of diamond
+        while (amount > 0 && currX != centerCoords.x) {
+            currX -= 1;
+            currY -= 1;
+            if (currX >= 0 && currX < height && currY >= 0 && currY < width) {
+                dirtPositions.emplace_back(Vec2(currX, currY));
+                // CULog("dirt spawned at %d, %d", currX, currY);
+                amount--;
+            }
+        }
+        // move up and left until at right corner of diamond
+        while (amount > 0 && currY != centerCoords.y) {
+            currX -= 1;
+            currY += 1;
+            if (currX >= 0 && currX < height && currY >= 0 && currY < width) {
+                dirtPositions.emplace_back(Vec2(currX, currY));
+                // CULog("dirt spawned at %d, %d", currX, currY);
+                amount--;
+            }
+        }
+        // move up and right until back at the top corner of diamond
+        while (amount > 0 && currX != centerCoords.x) {
+            currX += 1;
+            currY += 1;
+            if (currX >= 0 && currX < height && currY >= 0 && currY < width) {
+                dirtPositions.emplace_back(Vec2(currX, currY));
+                // CULog("dirt spawned at %d, %d", currX, currY);
+                amount--;
+            }
+        }
+        layer++;
+    }
+
+    return dirtPositions;
 }
 
 /**
@@ -1224,6 +1310,8 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
 */
 void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid& windows, ProjectileSet& projectiles) {
     int player_id = player->getId();
+
+    std::vector<std::pair<cugl::Vec2, int>> landedDirts;
 
     if (_allCurBoards[player_id - 1] == 0) {
         // only check if player is stunned, has removed dirt, or collided with projectile
@@ -1263,10 +1351,14 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
         }
 
         // Check for collisions and play sound
-        if (_collisions.resolveCollision(player, projectiles)) {
+        auto collision_result = _collisions.resolveCollision(player, projectiles);
+        if (collision_result.first) { // if collision occurred
             if (player_id == _id) {
                 AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
             };
+            if (collision_result.second.has_value()) {
+                landedDirts.push_back(collision_result.second.value());
+            }
         }
         
         if (_boardWithBird == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.01) && _numPlayers > 1) {
@@ -1285,17 +1377,27 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
         }
     }
 
-    // Move the projectiles
-    std::vector<cugl::Vec2> landedDirts = projectiles.update(getSize());
+    // Move the projectiles, get the center destination and amount of landed dirts
+    auto landedProjs = projectiles.update(getSize());;
+    landedDirts.insert(landedDirts.end(), landedProjs.begin(), landedProjs.end());
     // Add any landed dirts
-    for (auto dirtPos : landedDirts) {
-        int x_coor = ((int)(dirtPos.x - windows.sideGap) / windows.getPaneWidth());
-        int y_coor = (int)(dirtPos.y / windows.getPaneHeight());
-        x_coor = std::clamp(x_coor, 0, windows.getNHorizontal()-1);
-        y_coor = std::clamp(y_coor, 0, windows.getNVertical()-1);
-        windows.addDirt(y_coor, x_coor);
+    for (auto landedDirt : landedDirts) {
+        cugl::Vec2 center = landedDirt.first;
+        int x_coor = (int)((center.x - windows.sideGap) / windows.getPaneWidth());
+        int y_coor = (int)(center.y / windows.getPaneHeight());
+        x_coor = std::clamp(x_coor, 0, windows.getNHorizontal() - 1);
+        y_coor = std::clamp(y_coor, 0, windows.getNVertical() - 1);
+
+        int amount = landedDirt.second;
+        std::vector<cugl::Vec2> landedCoords = calculateLandedDirtPositions(windows.getNVertical(), windows.getNHorizontal(), Vec2(x_coor, y_coor), amount);
+        for (cugl::Vec2 dirtPos : landedCoords) {
+            windows.addDirt(dirtPos.y, dirtPos.x);
+        }
+        
     }
 }
+
+
 
 /** update when dirt is generated */
 void GameplayController::updateDirtGenTime() {
@@ -1397,10 +1499,21 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         }
         _player->drawPeeking(batch, getSize(), _curBoard, _windows.sideGap);
         _projectilesLeft.draw(batch, getSize(), _windowsLeft.getPaneWidth(), _windowsLeft.getPaneHeight());
+
+        vector<Vec2> potentialDirts;
         if (_dirtSelected && _dirtPath.size() != 0) {
             batch->setColor(Color4::BLACK);
             batch->fill(_dirtPath);
+            Vec2 dirtDest = _dirtPath.getVertices().back() - Vec2(0.5, 0.5);
+            Vec2 landedDirtCoords = getBoardPosition(dirtDest);
+            landedDirtCoords.y = std::clamp(static_cast<int>(landedDirtCoords.y), 0, _windowsRight.getNVertical() - 1);
+            landedDirtCoords.x = std::clamp(static_cast<int>(landedDirtCoords.x), 0, _windowsRight.getNHorizontal() - 1);
+            potentialDirts = calculateLandedDirtPositions(_windowsLeft.getNVertical(), _windowsLeft.getNHorizontal(), landedDirtCoords, _currentDirtAmount);
         }
+        if (potentialDirts.size() > 0) {
+            _windowsLeft.drawPotentialDirt(batch, getSize(), potentialDirts);
+        }
+
         if (_curBirdBoard == -1) {
             _bird.draw(batch, getSize(), _curBirdPos);
         }
@@ -1412,9 +1525,19 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         }
         _player->drawPeeking(batch, getSize(), _curBoard, _windows.sideGap);
         _projectilesRight.draw(batch, getSize(), _windowsRight.getPaneWidth(), _windowsRight.getPaneHeight());
+
+        vector<Vec2> potentialDirts;
         if (_dirtSelected && _dirtPath.size() != 0) {
             batch->setColor(Color4::BLACK);
             batch->fill(_dirtPath);
+            Vec2 dirtDest = _dirtPath.getVertices().back();
+            Vec2 landedDirtCoords = getBoardPosition(dirtDest);
+            landedDirtCoords.y = std::clamp(static_cast<int>(landedDirtCoords.y), 0, _windowsRight.getNVertical() - 1);
+            landedDirtCoords.x = std::clamp(static_cast<int>(landedDirtCoords.x), 0, _windowsRight.getNHorizontal() - 1);
+            potentialDirts = calculateLandedDirtPositions(_windowsRight.getNVertical(), _windowsRight.getNHorizontal(), landedDirtCoords, _currentDirtAmount);
+        }
+        if (potentialDirts.size() > 0) {
+            _windowsRight.drawPotentialDirt(batch, getSize(), potentialDirts);
         }
         if (_curBirdBoard == 1) {
             _bird.draw(batch, getSize(), _curBirdPos);
