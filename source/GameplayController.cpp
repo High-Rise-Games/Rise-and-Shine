@@ -1126,8 +1126,12 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
 
                 _dirtSelected = false;
                 Vec2 diff = worldPos - _prevInputPos;
-                Vec2 velocity = diff.getNormalization() * -5;
                 Vec2 destination = playerPos - diff * 5;
+                Vec2 snapped_dest = getBoardPosition(destination);
+                snapped_dest.x = clamp(round(snapped_dest.x), 0.0f, (float)_windows.getNHorizontal()) + 0.5;
+                snapped_dest.y = clamp(round(snapped_dest.y), 0.0f, (float)_windows.getNVertical()) + 0.5;
+                snapped_dest = getWorldPosition(snapped_dest);
+                Vec2 velocity = (snapped_dest - playerPos).getNormalization() * 5;
 
                 int targetId = _id + _curBoard;
                 if (targetId == 0) {
@@ -1137,10 +1141,10 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     targetId = 1;
                 }
                 if (_ishost) {
-                    processDirtThrowRequest(getJsonDirtThrow(targetId, playerPos, velocity, destination, _currentDirtAmount));
+                    processDirtThrowRequest(getJsonDirtThrow(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
                 }
                 else {
-                    _network.transmitMessage(getJsonDirtThrow(targetId, playerPos, velocity, destination, _currentDirtAmount));
+                    _network.transmitMessage(getJsonDirtThrow(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
                 }
                 // _player->setPosition(_prevDirtPos);
 
@@ -1151,7 +1155,10 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 std::vector<Vec2> vertices = { playerPos };
                 Vec2 diff = worldPos - _prevInputPos;
                 Vec2 destination = playerPos - diff * 5;
-                vertices.push_back(destination);
+                Vec2 snapped_dest = getBoardPosition(destination);
+                snapped_dest.x = clamp(round(snapped_dest.x), 0.0f, (float)_windows.getNHorizontal()) + 0.5;
+                snapped_dest.y = clamp(round(snapped_dest.y), 0.0f, (float)_windows.getNVertical()) + 0.5;
+                vertices.push_back(getWorldPosition(snapped_dest));
                 SimpleExtruder se;
                 se.set(Path2(vertices));
                 se.calculate(10);
@@ -1483,7 +1490,7 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         if (_dirtSelected && _dirtPath.size() != 0) {
             batch->setColor(Color4::BLACK);
             batch->fill(_dirtPath);
-            Vec2 dirtDest = _dirtPath.getVertices().back();
+            Vec2 dirtDest = _dirtPath.getVertices().back() - Vec2(0.5, 0.5);
             Vec2 landedDirtCoords = getBoardPosition(dirtDest);
             landedDirtCoords.y = std::clamp(static_cast<int>(landedDirtCoords.y), 0, _windowsRight.getNVertical() - 1);
             landedDirtCoords.x = std::clamp(static_cast<int>(landedDirtCoords.x), 0, _windowsRight.getNHorizontal() - 1);
