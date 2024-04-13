@@ -271,7 +271,9 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
 
     _startgame = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("client_bottom_start"));
     _backout = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("client_back"));
-    _gameid_client = std::dynamic_pointer_cast<scene2::TextField>(_assets->get<scene2::SceneNode>("client_bottom_game_field_text"));
+    _gameid_client = "";
+    _clientField = std::dynamic_pointer_cast<scene2::TextField>(_assets->get<scene2::SceneNode>("client_bottom_game_field_text"));
+
     _player_field = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("client_bottom_players_field_text"));
     _level_field = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("client_bottom_level_field_text"));
     _status = Status::IDLE;
@@ -284,17 +286,6 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
             _status = Status::ABORT;
             _quit = true;
         }
-    });
-
-    _startgame->addListener([=](const std::string& name, bool down) {
-        if (down) {
-            // This will call the _gameid listener
-            _gameid_client->releaseFocus();
-        }
-    });
-    
-    _gameid_client->addExitListener([this](const std::string& name, const std::string& value) {
-        connect(value);
     });
 
     _select_red->addListener([this](const std::string& name, bool down) {
@@ -659,8 +650,8 @@ void LobbyScene::configureStartButton() {
             _startgame->activate();
         }
     } else if (!isHost()) {
-        if (_status == IDLE && !_gameid_client->getText().empty() && !_network) {
-            connect(_gameid_client->getText());
+        if (_status == IDLE && !_gameid_client.empty() && !_network) {
+            connect(_gameid_client);
         }
 
         if (_status == WAIT) {
@@ -737,7 +728,7 @@ void LobbyScene::setActive(bool value) {
             Scene2::setActive(value);
             if (value) {
                 _status = IDLE;
-                _gameid_client->activate();
+                _clientField->setText(_gameid_client);
                 _network = nullptr;
                 _player_field->setText("1");
                 _level_field->setText("1");

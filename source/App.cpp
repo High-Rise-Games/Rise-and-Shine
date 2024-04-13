@@ -74,6 +74,7 @@ void App::onShutdown() {
     _lobby_host.dispose();
     _lobby_client.dispose();
     _levelscene.dispose();
+    _client_join_scene.dispose();
     _assets = nullptr;
     _batch = nullptr;
 
@@ -152,6 +153,9 @@ void App::update(float timestep) {
         case LEVEL:
             updateLevelScene(timestep);
             break;
+        case CLIENT_JOIN:
+            updateClientJoinScene(timestep);
+            break;
         case LOBBY_CLIENT:
             updateLobbyScene(timestep);
             break;
@@ -196,6 +200,9 @@ void App::draw() {
         case LEVEL:
             _levelscene.render(_batch);
             break;
+        case CLIENT_JOIN:
+            _client_join_scene.render(_batch);
+            break;
         case LOBBY_HOST:
             _lobby_host.render(_batch);
             break;
@@ -225,9 +232,10 @@ void App::updateLoadingScene(float timestep) {
         _loading.dispose(); // Permanently disables the input listeners in this mode
         _mainmenu.init(_assets);
         _levelscene.init(_assets);
+        _client_join_scene.init(_assets);
         _lobby_host.init_host(_assets);
-        _lobby_client.init_client(_assets);
         _gamescene.init(_assets, getFPS());
+        _lobby_client.init_client(_assets);
         _gameplay = std::make_shared<GameplayController>();
         _gameplay->init(_assets, getFPS(), _gamescene.getBounds(), _gamescene.getSize());
         _gamescene.setController(_gameplay);
@@ -257,10 +265,8 @@ void App::updateMenuScene(float timestep) {
         case MenuScene::Choice::JOIN:
             AudioEngine::get()->play("click", _click_sound);
             _mainmenu.setActive(false);
-            _lobby_client.setActive(true);
-            _lobby_client.setHost(false);
-            _lobby_host.setActive(false);
-            _scene = State::LOBBY_CLIENT;
+            _client_join_scene.setActive(true);
+            _scene = State::CLIENT_JOIN;
             break;
         case MenuScene::Choice::NONE:
             // DO NOTHING
@@ -295,6 +301,37 @@ void App::updateLevelScene(float timestep) {
             _scene = State::MENU;
             break;
         case LevelScene::Choice::NONE:
+            break;
+    }
+}
+
+/**
+ * Inidividualized update method for the client join scene.
+ *
+ * This method keeps the primary {@link #update} from being a mess of switch
+ * statements. It also handles the transition logic from the level select scene.
+ *
+ * @param timestep  The amount of time (in seconds) since the last frame
+ */
+void App::updateClientJoinScene(float timestep) {
+    _client_join_scene.update(timestep);
+    switch (_client_join_scene.getChoice()) {
+        case ClientJoinScene::Choice::NEXT:
+            AudioEngine::get()->play("click", _click_sound);
+            _client_join_scene.setActive(false);
+            _lobby_client.setGameidClient(_client_join_scene.getClientID());
+            _lobby_client.setActive(true);
+            _lobby_client.setHost(false);
+            _lobby_host.setActive(false);
+            _scene = State::LOBBY_CLIENT;
+            break;
+        case ClientJoinScene::Choice::BACK:
+            AudioEngine::get()->play("click", _click_sound);
+            _client_join_scene.setActive(false);
+            _mainmenu.setActive(true);
+            _scene = State::MENU;
+            break;
+        case ClientJoinScene::Choice::NONE:
             break;
     }
 }
@@ -349,8 +386,8 @@ void App::updateLobbyScene(float timestep) {
             case LobbyScene::Status::ABORT:
                 AudioEngine::get()->play("click", _click_sound);
                 _lobby_client.setActive(false);
-                _mainmenu.setActive(true);
-                _scene = State::MENU;
+                _client_join_scene.setActive(true);
+                _scene = State::CLIENT_JOIN;
                 break;
             case LobbyScene::Status::START:
                 _gameplay->initLevel(_lobby_client.getLevel());
