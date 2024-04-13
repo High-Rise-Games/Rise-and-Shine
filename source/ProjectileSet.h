@@ -33,7 +33,7 @@ public:
         cugl::Vec2 position;
         /** projectile velocity */
         cugl::Vec2 velocity;
-        /** projectile destination, ONLY active for dirt*/
+        /** projectile destination, ONLY active for dirt. In board position. */
         cugl::Vec2 destination;
         /** type of projectile */
         ProjectileType type;

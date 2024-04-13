@@ -1297,6 +1297,8 @@ std::vector<cugl::Vec2> calculateLandedDirtPositions(const int width, const int 
 void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid& windows, ProjectileSet& projectiles) {
     int player_id = player->getId();
 
+    std::vector<std::pair<cugl::Vec2, int>> landedDirts;
+
     if (_allCurBoards[player_id - 1] == 0) {
         // only check if player is stunned, has removed dirt, or collided with projectile
         // if they are on their own board.
@@ -1335,10 +1337,14 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
         }
 
         // Check for collisions and play sound
-        if (_collisions.resolveCollision(player, projectiles)) {
+        auto collision_result = _collisions.resolveCollision(player, projectiles);
+        if (collision_result.first) { // if collision occurred
             if (player_id == _id) {
                 AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
             };
+            if (collision_result.second.has_value()) {
+                landedDirts.push_back(collision_result.second.value());
+            }
         }
         
         if (_boardWithBird == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.01)) {
@@ -1354,12 +1360,13 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
     }
 
     // Move the projectiles, get the center destination and amount of landed dirts
-    std::vector<std::pair<cugl::Vec2, int>> landedDirts = projectiles.update(getSize());
+    auto landedProjs = projectiles.update(getSize());;
+    landedDirts.insert(landedDirts.end(), landedProjs.begin(), landedProjs.end());
     // Add any landed dirts
     for (auto landedDirt : landedDirts) {
         cugl::Vec2 center = landedDirt.first;
-        int x_coor = ((int)(center.x - windows.sideGap) / windows.getPaneWidth());
-        int y_coor = (int)(center.y / windows.getPaneHeight()) + max(0, (int)(player->getCoors().y) - 2);
+        int x_coor = (int)((center.x - windows.sideGap) / windows.getPaneWidth());
+        int y_coor = (int)(center.y / windows.getPaneHeight());
         x_coor = std::clamp(x_coor, 0, windows.getNHorizontal() - 1);
         y_coor = std::clamp(y_coor, 0, windows.getNVertical() - 1);
 
@@ -1477,8 +1484,9 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
             batch->setColor(Color4::BLACK);
             batch->fill(_dirtPath);
             Vec2 dirtDest = _dirtPath.getVertices().back();
-            dirtDest.y += max(0, (int)(_player->getCoors().y) - 2);
             Vec2 landedDirtCoords = getBoardPosition(dirtDest);
+            landedDirtCoords.y = std::clamp(static_cast<int>(landedDirtCoords.y), 0, _windowsRight.getNVertical() - 1);
+            landedDirtCoords.x = std::clamp(static_cast<int>(landedDirtCoords.x), 0, _windowsRight.getNHorizontal() - 1);
             potentialDirts = calculateLandedDirtPositions(_windowsLeft.getNVertical(), _windowsLeft.getNHorizontal(), landedDirtCoords, _currentDirtAmount);
         }
         if (potentialDirts.size() > 0) {
@@ -1501,7 +1509,8 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         if (_dirtSelected && _dirtPath.size() != 0) {
             batch->setColor(Color4::BLACK);
             batch->fill(_dirtPath);
-            Vec2 landedDirtCoords = getBoardPosition(_dirtPath.getVertices().back());
+            Vec2 dirtDest = _dirtPath.getVertices().back();
+            Vec2 landedDirtCoords = getBoardPosition(dirtDest);
             landedDirtCoords.y = std::clamp(static_cast<int>(landedDirtCoords.y), 0, _windowsRight.getNVertical() - 1);
             landedDirtCoords.x = std::clamp(static_cast<int>(landedDirtCoords.x), 0, _windowsRight.getNHorizontal() - 1);
             potentialDirts = calculateLandedDirtPositions(_windowsRight.getNVertical(), _windowsRight.getNHorizontal(), landedDirtCoords, _currentDirtAmount);
