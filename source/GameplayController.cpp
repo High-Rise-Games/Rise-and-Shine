@@ -1273,7 +1273,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
                 _boardWithBird = 1;
             }
             
-            std::uniform_int_distribution<> distr(0, _windows.getNVertical());
+            std::uniform_int_distribution<> distr(0, _windows.getNVertical() - 1);
             int spawnRow = distr(_rng);
 //            CULog("bird spawn at row %d", spawnRow);
             _bird.resetBirdPath(_windows.getNVertical(), _windows.getNHorizontal(), spawnRow);

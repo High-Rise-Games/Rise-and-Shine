@@ -103,22 +103,24 @@ void Bird::advanceBirdFrame() {
 
 /** Updates(randomize row) bird position when bird moves to other player's board */
 void Bird::resetBirdPath(const int nVertial, const int nHorizontal, const int randomRow) {
-    cugl::Vec2 birdTopLeftPos;
-    cugl::Vec2 birdTopRightPos;
-    cugl::Vec2 birdBotLeftPos;
-    cugl::Vec2 birdBotRightPos;
-    if (randomRow < 3) {
-        birdTopLeftPos = cugl::Vec2(0.5, randomRow + 0.5);
-        birdTopRightPos = cugl::Vec2(nHorizontal - 0.5, randomRow + 0.5);
-        birdBotLeftPos = cugl::Vec2(0.5, randomRow + 3.5);
-        birdBotRightPos = cugl::Vec2(nHorizontal - 0.5, randomRow + 3.5);
+    cugl::Vec2 birdPos1;
+    cugl::Vec2 birdPos2;
+    cugl::Vec2 birdPos3;
+    cugl::Vec2 birdPos4;
+    if (randomRow < 3 ) {
+        // move in z shape upward
+        birdPos1 = cugl::Vec2(0.5, randomRow + 0.5);
+        birdPos2 = cugl::Vec2(nHorizontal - 0.5, randomRow + 0.5);
+        birdPos3 = cugl::Vec2(0.5, randomRow + 3.5);
+        birdPos4 = cugl::Vec2(nHorizontal - 0.5, randomRow + 3.5);
     } else {
-        birdTopLeftPos = cugl::Vec2(0.5, randomRow - 0.5);
-        birdTopRightPos = cugl::Vec2(nHorizontal - 0.5, randomRow - 0.5);
-        birdBotLeftPos = cugl::Vec2(0.5, randomRow - 3.5);
-        birdBotRightPos = cugl::Vec2(nHorizontal - 0.5, randomRow - 3.5);
+        // move in z shape downward
+        birdPos1 = cugl::Vec2(0.5, randomRow + 0.5);
+        birdPos2 = cugl::Vec2(nHorizontal - 0.5, randomRow + 0.5);
+        birdPos3 = cugl::Vec2(0.5, randomRow - 2.5);
+        birdPos4 = cugl::Vec2(nHorizontal - 0.5, randomRow - 2.5);
     }
-    std::vector<cugl::Vec2> positions = {birdTopLeftPos, birdTopRightPos, birdBotLeftPos, birdBotRightPos};
+    std::vector<cugl::Vec2> positions = {birdPos1, birdPos2, birdPos3, birdPos4};
     _checkpoints = positions;
     birdPosition = _checkpoints[0];
     _nextCheckpoint = 1;
