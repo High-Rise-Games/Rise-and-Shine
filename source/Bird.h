@@ -18,10 +18,10 @@ private:
     
     /** speed of the bird */
     float _speed;
-    /** start position of the bird */
-    cugl::Vec2 _startPos;
-    /** end position of the bird */
-    cugl::Vec2 _endPos;
+    /** locations the bird will fly through */
+    std::vector<cugl::Vec2> _checkpoints;
+    /** next checkpoint */
+    int _nextCheckpoint;
     /** true if flying to the right */
     bool _toRight;
     /** drawing scale */
@@ -53,8 +53,8 @@ public:
      */
     Bird() {}
     
-    /** Use this consturctor to generate bird on window board moving between startP and endP back and forth  */
-    bool init(const cugl::Vec2 startP, const cugl::Vec2 endP, const float speed, const float sf);
+    /** Use this consturctor to generate bird on window board moving through a list of positions  */
+    bool init(const std::vector<cugl::Vec2> positions, const float speed, const float sf);
 
     float getRadius() {return _radius;}
 
@@ -93,6 +93,9 @@ public:
 
     /** Advances the bird frame by 1 */
     void advanceBirdFrame();
+    
+    /** Updates(randomize row) bird position when bird moves to other player's board */
+    void resetBirdPath(const int nVertial, const int nHorizontal, const int randomRow);
     
     /**
      * Returns column number if bird is at the center of a column, else -1

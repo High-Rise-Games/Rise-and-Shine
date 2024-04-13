@@ -192,10 +192,12 @@ bool GameplayController::initLevel(int selected_level) {
 
     // Initialize bird textures, but do not set a location yet. that is the host's job
     if (_birdActive) {
-        float birdHeight = (_windows.getNVertical() - 1) * _windows.getPaneHeight() + _windows.getPaneHeight()/2;
-        cugl::Vec2 birdStartPos = getBoardPosition(cugl::Vec2(_windows.sideGap + _windows.getPaneWidth() / 8, birdHeight));
-        cugl::Vec2 birdEndPos = getBoardPosition(cugl::Vec2(_size.getIWidth() - _windows.sideGap - _windows.getPaneWidth() / 4, birdHeight));
-        _bird.init(birdStartPos, birdEndPos, 0.01, 0.04);
+        cugl::Vec2 birdTopLeftPos = cugl::Vec2(0.5, _windows.getNVertical() - 0.5);
+        cugl::Vec2 birdTopRightPos = cugl::Vec2(_windows.getNHorizontal() - 0.5, _windows.getNVertical() - 0.5);
+        cugl::Vec2 birdBotLeftPos = cugl::Vec2(0.5, _windows.getNVertical() - 3.5);
+        cugl::Vec2 birdBotRightPos = cugl::Vec2(_windows.getNHorizontal() - 0.5, _windows.getNVertical() - 3.5);
+        std::vector<cugl::Vec2> positions = {birdTopLeftPos, birdTopRightPos, birdBotLeftPos, birdBotRightPos};
+        _bird.init(positions, 0.01, 0.04);
         _curBirdBoard = 2;
         _bird.setTexture(_assets->get<Texture>("bird"));
     }
@@ -1262,8 +1264,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
             };
         }
         
-        if (_boardWithBird == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.01)) {
-            // CULog("collided with bird");
+        if (_boardWithBird == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.01) && _numPlayers > 1) {
             _boardWithBird = _bird.isFacingRight() ? _boardWithBird + 1 : _boardWithBird - 1;
             if (_boardWithBird == 0) {
                 _boardWithBird = _numPlayers;
@@ -1271,6 +1272,11 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
             if (_boardWithBird > _numPlayers) {
                 _boardWithBird = 1;
             }
+            
+            std::uniform_int_distribution<> distr(0, _windows.getNVertical() - 1);
+            int spawnRow = distr(_rng);
+//            CULog("bird spawn at row %d", spawnRow);
+            _bird.resetBirdPath(_windows.getNVertical(), _windows.getNHorizontal(), spawnRow);
         }
     }
 
@@ -1318,7 +1324,11 @@ void GameplayController::generatePoo(ProjectileSet* projectiles) {
 
 // if add dirt already exists at location or player at location and board is not full, repeat
     cugl::Vec2 birdWorldPos = getWorldPosition(_bird.birdPosition);
-    projectiles->spawnProjectile(Vec2(birdWorldPos.x, birdWorldPos.y - _windows.getPaneHeight()/2), Vec2(0, min(-2.4f,-2-_projectileGenChance)), Vec2(birdWorldPos.x, 0), ProjectileSet::Projectile::ProjectileType::POOP);
+    // randomize the destination of bird poo, any window pane below the current bird position
+    std::uniform_int_distribution<int> rowDist(0, floor(_bird.birdPosition.y));
+    int rand_row_center = rowDist(_rng);
+    cugl::Vec2 birdPooDest = getWorldPosition(Vec2(_bird.birdPosition.x, rand_row_center));
+    projectiles->spawnProjectile(Vec2(birdWorldPos.x, birdWorldPos.y - _windows.getPaneHeight()/2), Vec2(0, min(-2.4f,-2-_projectileGenChance)), birdPooDest, ProjectileSet::Projectile::ProjectileType::POOP);
 }
 
 /** Checks whether board is full except player current location*/
