@@ -47,8 +47,12 @@ protected:
     
     /** ID of the player to distinguish in multiplayer */
     int _id;
-    /** Seconds left in the game */
+    
+    /** Length of a game session*/
     int _gameTime;
+    
+    /** Seconds left in the game */
+    int _gameTimeLeft;
     
     /** The FPS of the game, as set by the App */
     int _fps;
@@ -305,7 +309,7 @@ public:
     int getPlayerHealth() { return _player->getHealth(); }
 
     /** Returns the current game time */
-    int getTime() { return _gameTime; }
+    int getTime() { return _gameTimeLeft; }
 
     /** Returns the player's current board */
     int getCurBoard() { return _curBoard; }

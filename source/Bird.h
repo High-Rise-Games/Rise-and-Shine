@@ -54,7 +54,7 @@ public:
     Bird() {}
     
     /** Use this consturctor to generate bird on window board moving through a list of positions  */
-    bool init(const std::vector<cugl::Vec2> positions, const float speed, const float sf);
+    bool init(const std::vector<cugl::Vec2> positions, const float speed, const float sf, const float windowHeight);
 
     float getRadius() {return _radius;}
 

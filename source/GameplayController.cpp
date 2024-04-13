@@ -39,6 +39,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     
     // time of the game set to 200 seconds
     _gameTime = 200;
+    _gameTimeLeft = _gameTime;
     
 
     _frame=0;
@@ -103,6 +104,8 @@ bool GameplayController::initLevel(int selected_level) {
         case 1:
             // CULog("garage selecting 1");
             level = _assets->get<JsonValue>("templatelevel");
+            _size = _nativeSize;
+            _size.height *= 1.5;
             break;
         case 2:
             // CULog("garage selecting 2");
@@ -119,6 +122,8 @@ bool GameplayController::initLevel(int selected_level) {
         default:
             // CULog("garage selecting default");
             level = _assets->get<JsonValue>("templatelevel");
+            _size = _nativeSize;
+            _size.height *= 1.5;
             break;
     }
 
@@ -192,12 +197,12 @@ bool GameplayController::initLevel(int selected_level) {
 
     // Initialize bird textures, but do not set a location yet. that is the host's job
     if (_birdActive) {
-        cugl::Vec2 birdTopLeftPos = cugl::Vec2(0.5, _windows.getNVertical() - 0.5);
-        cugl::Vec2 birdTopRightPos = cugl::Vec2(_windows.getNHorizontal() - 0.5, _windows.getNVertical() - 0.5);
-        cugl::Vec2 birdBotLeftPos = cugl::Vec2(0.5, _windows.getNVertical() - 3.5);
-        cugl::Vec2 birdBotRightPos = cugl::Vec2(_windows.getNHorizontal() - 0.5, _windows.getNVertical() - 3.5);
+        cugl::Vec2 birdTopLeftPos = cugl::Vec2(0.4, _windows.getNVertical() - 0.5);
+        cugl::Vec2 birdTopRightPos = cugl::Vec2(_windows.getNHorizontal() - 0.6, _windows.getNVertical() - 0.5);
+        cugl::Vec2 birdBotLeftPos = cugl::Vec2(0.4, _windows.getNVertical() - 3.5);
+        cugl::Vec2 birdBotRightPos = cugl::Vec2(_windows.getNHorizontal() - 0.6, _windows.getNVertical() - 3.5);
         std::vector<cugl::Vec2> positions = {birdTopLeftPos, birdTopRightPos, birdBotLeftPos, birdBotRightPos};
-        _bird.init(positions, 0.01, 0.04);
+        _bird.init(positions, 0.01, 0.04, _windows.getPaneHeight());
         _curBirdBoard = 2;
         _bird.setTexture(_assets->get<Texture>("bird"));
     }
@@ -492,7 +497,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
     json->appendValue("health", std::to_string((player->getHealth())));
     json->appendValue("stun_frames", std::to_string(player->getStunFrames()));
     json->appendValue("wipe_frames", std::to_string(player->getWipeFrames()));
-    json->appendValue("timer", std::to_string(_gameTime));
+    json->appendValue("timer", std::to_string(_gameTimeLeft));
     json->appendValue("has_bird", (id == _boardWithBird));
     
     const std::shared_ptr<JsonValue> birdPos = std::make_shared<JsonValue>();
@@ -1189,11 +1194,11 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     _bird.advanceBirdFrame();
 
     // update time
-    if ((_gameTime>=1)) {
+    if ((_gameTimeLeft>=1)) {
         _frame = _frame+1;
-    } if (_frame==_fps && (_gameTime>=1)) {
-        _gameTime=_gameTime-1;
-        _projectileGenChance = 0.8 / (1 + exp(-0.05 * (_gameTime - 50)));
+    } if (_frame==_fps) {
+        _gameTimeLeft=max(0, _gameTimeLeft-1);
+        _projectileGenChance = 0.95 / (1 + exp(-0.05 * (100 - _gameTimeLeft/2)));
         _frame = 0;
     }
     
@@ -1428,7 +1433,6 @@ void GameplayController::setActive(bool f) {
         setRequestForMenu(false);
         setGameOver(false);
         setWin(false);
-        
     } else {
         _isActive = true;
         setRequestForMenu(false);
@@ -1436,4 +1440,5 @@ void GameplayController::setActive(bool f) {
         setWin(false);
         _frameCountForWin = 0;
     };
+    _gameTimeLeft = _gameTime;
 }
