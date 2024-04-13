@@ -226,8 +226,8 @@ void App::updateLoadingScene(float timestep) {
         _mainmenu.init(_assets);
         _levelscene.init(_assets);
         _lobby_host.init_host(_assets);
-        _lobby_client.init_client(_assets);
         _gamescene.init(_assets, getFPS());
+        _lobby_client.init_client(_assets);
         _gameplay = std::make_shared<GameplayController>();
         _gameplay->init(_assets, getFPS(), _gamescene.getBounds(), _gamescene.getSize());
         _gamescene.setController(_gameplay);

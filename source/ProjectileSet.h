@@ -37,6 +37,8 @@ public:
         cugl::Vec2 destination;
         /** type of projectile */
         ProjectileType type;
+        /** amount of dirt to land */
+        int spawnAmount;
     
     private:
         /** The drawing scale factor for this projectile */
@@ -57,7 +59,7 @@ public:
         /** Use this constructor to generate a specialized projectile 
          * @param t     type of projectile
         */
-        Projectile(const cugl::Vec2 p, const cugl::Vec2 v, const cugl::Vec2 dest, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t);
+        Projectile(const cugl::Vec2 p, const cugl::Vec2 v, const cugl::Vec2 dest, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t, int s);
 
         /** sets projectile scale for drawing */
         void setScale(float s) { _scaleFactor = s; }
@@ -235,8 +237,9 @@ public:
      * @param v     The projectile velocity.
      * @param dest  The projectile's destination.
      * @param t     The projectile type.
+     * @param amt   The amount of filth to spawn when landing
      */
-    void spawnProjectile(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2 dest, Projectile::ProjectileType t);
+    void spawnProjectile(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2 dest, Projectile::ProjectileType t, int amt = 1);
 
     /**
      * ONLY CALLED ON CLIENT SIDE. Adds a projectile directly to the current set. 
@@ -266,7 +269,7 @@ public:
      * 
      * @returns list of destinations to spawn filth objects
      */
-    std::vector<cugl::Vec2> update(cugl::Size size);
+    std::vector<std::pair<cugl::Vec2, int>> update(cugl::Size size);
 
     /**
      * Draws all active projectiles to the sprite batch within the given bounds.

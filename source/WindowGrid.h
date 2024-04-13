@@ -43,6 +43,8 @@ private:
 	std::vector<std::shared_ptr<cugl::Texture>> _textures;
 	/** Dirt texture image */
 	std::shared_ptr<cugl::Texture> _dirt;
+	/** Faded dirt texture image for potential dirts when aiming */
+	std::shared_ptr<cugl::Texture> _fadedDirtTexture;
 
 
 public:
@@ -77,6 +79,9 @@ public:
 
 	/** sets dirt texture */
 	void setDirtTexture(const std::shared_ptr<cugl::Texture>& value) { _dirt = value; }
+
+	/** sets the faded dirt texture */
+	void setFadedDirtTexture(const std::shared_ptr<cugl::Texture>& value) { _fadedDirtTexture = value; }
 
 	/** sets building texture */
 	void setBuildingTexture(const std::shared_ptr<cugl::Texture>& value) { _buildingTexture = value; }
@@ -148,6 +153,9 @@ public:
 
 	/** draws entire grid of window panes to fit in "size" */
 	void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size);
+
+	/** draws potential dirts when aiming */
+	void drawPotentialDirt(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, std::vector<cugl::Vec2> potentialFilth);
 };
 
 #endif

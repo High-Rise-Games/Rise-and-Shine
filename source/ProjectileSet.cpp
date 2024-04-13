@@ -6,11 +6,13 @@
 using namespace cugl;
 
 /** Use this constructor to generate a specific projectile */
-ProjectileSet::Projectile::Projectile(const cugl::Vec2 p, const cugl::Vec2 v, const cugl::Vec2 dest, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t) {
+ProjectileSet::Projectile::Projectile(const cugl::Vec2 p, const cugl::Vec2 v, const cugl::Vec2 dest, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t, int s = 1) {
     position = p;
     velocity = v;
     destination = dest;
     type = t;
+    spawnAmount = s;
+
     _projectileTexture = texture;
     _radius = std::min(texture->getSize().height, texture->getSize().width) / 2;
     if (type == ProjectileType::DIRT) {
@@ -61,28 +63,6 @@ bool ProjectileSet::init(std::shared_ptr<cugl::JsonValue> data) {
         // Reset all data
         current.clear();
         _pending.clear();
-
-        // This is an iterator over all of the elements of projectiles
-        if (data->get("start")) {
-            auto projs = data->get("start")->children();
-            for (auto it = projs.begin(); it != projs.end(); ++it) {
-                std::shared_ptr<JsonValue> entry = (*it);
-                Vec2 pos;
-                pos.x = entry->get(0)->get(0)->asFloat(0);
-                pos.y = entry->get(0)->get(1)->asFloat(0);
-                Vec2 vel;
-                vel.x = entry->get(1)->get(0)->asFloat(0);
-                vel.y = entry->get(1)->get(1)->asFloat(0);
-                std::string type = entry->get(2)->asString();
-                if (type == "DIRT") {
-                    spawnProjectile(pos, vel, Vec2::ZERO, Projectile::ProjectileType::DIRT);
-                }
-                else if (type == "POOP") {
-                    spawnProjectile(pos, vel, Vec2::ZERO, Projectile::ProjectileType::POOP);
-                }
-                
-            }
-        }
         return true;
     }
     return false;
@@ -105,7 +85,7 @@ void ProjectileSet::setTextureScales(const float windowHeight, const float windo
 
 
 
-void ProjectileSet::spawnProjectile(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2 dest, Projectile::ProjectileType t) {
+void ProjectileSet::spawnProjectile(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2 dest, Projectile::ProjectileType t, int amt) {
     // Determine direction and velocity of the projectile.
     std::shared_ptr<cugl::Texture> texture = _dirtTexture;
     float scale = _dirtScaleFactor;
@@ -113,7 +93,7 @@ void ProjectileSet::spawnProjectile(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2 dest,
         texture = _poopTexture;
         scale = _poopScaleFactor;
     }
-    std::shared_ptr<Projectile> proj = std::make_shared<Projectile>(p, v, dest, texture, scale, t);
+    std::shared_ptr<Projectile> proj = std::make_shared<Projectile>(p, v, dest, texture, scale, t, amt);
     _pending.emplace(proj);
 }
 
@@ -141,16 +121,16 @@ void ProjectileSet::spawnProjectileClient(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2
 * 
 * @returns list of destinations to spawn filth objects
 */
-std::vector<cugl::Vec2> ProjectileSet::update(Size size) {
+std::vector<std::pair<cugl::Vec2, int>> ProjectileSet::update(Size size) {
     // Move projectiles, updating the animation frame
-    std::vector<cugl::Vec2> dirtDests;
+    std::vector<std::pair<cugl::Vec2, int>> dirtDestsAndAmts;
     auto it = current.begin();
     while (it != current.end()) {
         bool erased = (*it)->update(size);
         if (erased) {
             // delete the projectile once it goes completely off screen
             if ((*it)->type == Projectile::ProjectileType::DIRT) {
-                dirtDests.push_back((*it)->destination);
+                dirtDestsAndAmts.push_back(std::make_pair((*it)->destination, (*it)->spawnAmount));
             }
             it = current.erase(it);
         } else {
@@ -163,7 +143,7 @@ std::vector<cugl::Vec2> ProjectileSet::update(Size size) {
         current.emplace(*it);
     }
     _pending.clear();
-    return dirtDests;
+    return dirtDestsAndAmts;
 }
 
 /**

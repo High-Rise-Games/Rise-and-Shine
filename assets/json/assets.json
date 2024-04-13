@@ -368,6 +368,9 @@
         "dirt": {
             "file": "textures/GenericDirt.png"
         },
+        "faded-dirt": {
+            "file": "textures/FadedDirt.png"
+        },
         "bucketempty": {
             "file": "textures/bucket_empty.png"
         },
