@@ -367,6 +367,12 @@ public:
     /** Checks whether board is empty */
     const bool checkBoardEmpty(WindowGrid playerWindowGrid); 
     
+    /** Returns number of dirts on the player's board **/
+    float returnNumBoardDirts(WindowGrid playerWindowGrid);
+    
+    /** Returns number of max amount of dirt player's board could hold **/
+    float returnBoardMaxDirts(WindowGrid playerWindowGrid);
+
     /** update when dirt is generated */
     void updateDirtGenTime();
     
