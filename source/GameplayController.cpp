@@ -38,7 +38,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     // Initialize the scene to a locked width
     
     // time of the game set to 200 seconds
-    _gameTime = 200;
+    _gameTime = 160;
     _gameTimeLeft = _gameTime;
     
 
@@ -484,14 +484,84 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
         windows = &_windowsLeft;
         projectiles = &_projectilesLeft;
     }
+    
+    
 
 
     const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
     json->init(JsonValue::Type::ObjectType);
     json->appendValue("player_id", std::to_string(id));
     json->appendValue("player_char", player->getChar());
-    std::string win_str = checkBoardEmpty(*windows) ? "true" : "false";
-    json->appendValue("has_won", win_str);
+    
+    
+//    std::string win_str = checkBoardEmpty(*windows) ? "true" : "false";
+    
+    if (_gameTimeLeft == 0) {
+        std::vector<int> winners;
+        int player_id =  player->getId();
+        int playerID = -1;
+        int count = 100000;
+        for (int i = 1; i <= _numPlayers; i++) {
+   
+            
+            if (i==1) {
+                if (returnNumBoardDirts(_windows) < count) {
+                    winners.clear();
+                    count = returnNumBoardDirts(_windows);
+                    playerID = _player->getId();
+                    if (player_id == playerID) {
+                        winners.push_back(playerID);
+                    }
+                }
+            }
+                
+            if (i==2)  {
+                if (returnNumBoardDirts(_windowsRight) < count) {
+                    winners.clear();
+                    count = returnNumBoardDirts(_windowsRight);
+                    playerID = _playerRight->getId();
+                    if (player_id == playerID) {
+                        winners.push_back(playerID);
+                    }
+                }
+            }
+            if (i==3) {
+                if (returnNumBoardDirts(_windowsAcross) < count) {
+                    winners.clear();
+                    count = returnNumBoardDirts(_windowsAcross);
+                    playerID = _playerAcross->getId();
+                    if (player_id == playerID) {
+                        winners.push_back(playerID);
+                    }
+                }
+            }
+            if (i==4) {
+                if (returnNumBoardDirts(_windowsLeft) < count) {
+                    winners.clear();
+                    count = returnNumBoardDirts(_windowsLeft);
+                    playerID = _playerLeft->getId();
+                    if (player_id == playerID) {
+                        winners.push_back(player_id);
+                    }
+                }
+            }
+            
+        }
+        
+        for (int i = 0; i < winners.size(); i++) {
+            if (winners.at(i) == player->getId()) {
+                json->appendValue("has_won", "true");
+                setWin(playerID == player_id);
+            }
+        }
+        
+        setGameOver(true);
+        
+    } else {
+
+    }
+    
+//    json->appendValue("has_won", win_str);
     json->appendValue("num_dirt", std::to_string(_allDirtAmounts[id - 1]));
     json->appendValue("curr_board", std::to_string(_allCurBoards[id - 1]));
 
@@ -611,11 +681,12 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     int playerId = std::stod(data->getString("player_id", "0"));
     std::string playerChar = data->getString("player_char");
     std::string playerHasWon = data->getString("has_won", "false");
-    if (playerHasWon == "true" && !isGameOver()) {
-        setGameOver(true);
-        setWin(playerId == _id);
-        return;
-    }
+        
+//    if (playerHasWon == "true") {
+//        setWin(playerId == _id);
+//        return;
+//    }
+    
 
     std::shared_ptr<Player> player;
     WindowGrid* windows;
@@ -975,7 +1046,9 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     if (incomingMsg->has("dirts")) {
                         // CULog("got board state message");
                         updateBoard(incomingMsg);
-                    } 
+                    } else if (incomingMsg->has("game over")) {
+                        setGameOver(true);
+                    }
                 }
                 else { // is host
                     // process action data - movement or dirt throw
@@ -991,6 +1064,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                         // CULog("got dirt throw message");
                         processDirtThrowRequest(incomingMsg);
                     }
+                    
                 }
             });
         _network.checkConnection();
@@ -1029,6 +1103,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             }
             
         }
+        
 
         stepForward(_player, _windows, _projectiles);
         if (_numPlayers > 1) {
@@ -1043,6 +1118,13 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         for (int i = 1; i <= _numPlayers; i++) {
             _network.transmitMessage(getJsonBoard(i));
             // CULog("transmitting board state for player %d", i);
+        }
+        
+        if (isGameOver()) {
+            std::shared_ptr<JsonValue> q = std::make_shared<JsonValue>();
+            q->init(JsonValue::Type::ObjectType);
+            q->appendValue("game over", "true");
+            _network.transmitMessage(q);
         }
         
         _input.update();
@@ -1062,6 +1144,9 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         
     }
     else {
+        
+
+        
         // not host - advance all players idle or wipe frames
         if (_player->getWipeFrames() < _player->getMaxWipeFrames()) {
             _player->advanceWipeFrame();
@@ -1281,10 +1366,12 @@ std::vector<cugl::Vec2> calculateLandedDirtPositions(const int width, const int 
 void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid& windows, ProjectileSet& projectiles) {
     int player_id = player->getId();
 
-    if (checkBoardEmpty(windows) && !isGameOver()) {
-        setGameOver(true);
-        setWin(player_id == _id); // sets the host's local _gameWin property
-    }
+//    if (checkBoardEmpty(windows) && !isGameOver()) {
+//        setGameOver(true);
+//        setWin(player_id == _id); // sets the host's local _gameWin property
+//    }
+//    
+
 
     std::vector<std::pair<cugl::Vec2, int>> landedDirts;
 
@@ -1439,6 +1526,24 @@ const bool GameplayController::checkBoardEmpty(WindowGrid playerWindowGrid) {
         }
     }
     return true; // No dirt found, board is clear
+}
+
+/** Returns number of dirts on the player's board **/
+float GameplayController::returnNumBoardDirts(WindowGrid playerWindowGrid) {
+    float count=0;
+    for (int x = 0; x < playerWindowGrid.getNHorizontal(); x++) {
+        for (int y = 0; y < playerWindowGrid.getNVertical(); y++) {
+                if (playerWindowGrid.getWindowState(y, x) == 1) {
+                    count=count+1;
+                }
+        }
+    }
+    return count; // No 1s found, board is clear
+}
+
+/** Returns number of max amount of dirt player's board could hold **/
+float GameplayController::returnBoardMaxDirts(WindowGrid playerWindowGrid) {
+    return playerWindowGrid.getNVertical()*playerWindowGrid.getNHorizontal();
 }
 
 /**
