@@ -112,6 +112,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
         }
     });
     
+    _dirtThrowButton = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("game_throw"));
     
     _quit = false;
     addChild(_scene_UI);
@@ -131,6 +132,7 @@ void GameScene::dispose() {
         removeAllChildren();
         _active = false;
         _tn_button = nullptr;
+        _dirtThrowButton = nullptr;
         _winBackground = nullptr;
         _loseBackground = nullptr;
     }
@@ -152,13 +154,16 @@ void GameScene::setActive(bool value) {
             _quit = false;
             _backout->activate();
             _tn_button->activate();
+            _dirtThrowButton->activate();
         }
         else {
             _backout->deactivate();
             _tn_button->deactivate();
+            _dirtThrowButton->deactivate();
             // If any were pressed, reset them
             _backout->setDown(false);
             _tn_button->setDown(false);
+            _dirtThrowButton->setDown(false);
         }
     }
 }
@@ -183,12 +188,8 @@ void GameScene::update(float timestep) {
     Vec3 convertedWorldPos = screenToWorldCoords(screenPos);
     Vec2 worldPos = Vec2(convertedWorldPos.x, convertedWorldPos.y);
     
+    _gameController->update(timestep, worldPos, _dirtThrowInput, _dirtThrowButton);
     
-
-    _gameController->update(timestep, worldPos, _dirtThrowInput);
-    
-    
-
     // each player manages their own UI elements/text boxes for displaying resource information
     // Update the health meter
 //    
@@ -274,10 +275,15 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _tn_button->setVisible(true);
         _tn_button->activate();
         _tn_button->setDown(false);
+        _dirtThrowButton->setVisible(true);
+        _dirtThrowButton->activate();
+        _dirtThrowButton->setDown(false);
     }
     else {
         _tn_button->setVisible(false);
         _tn_button->deactivate();
+        _dirtThrowButton->setVisible(false);
+        _dirtThrowButton->deactivate();
     }
     _scene_UI->render(batch);
     

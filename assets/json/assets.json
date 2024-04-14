@@ -2214,6 +2214,30 @@
                         "priority": 1,
                         "absolute": true
                     }
+                },
+                "throw": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.0, 0.0 ],
+                        "scale": 0.25
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "button"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "bottom",
+                        "y_offset": 50,
+                        "x_offset": -150,
+                        "priority": 1,
+                        "absolute": true
+                    }
                 }
             }
         }

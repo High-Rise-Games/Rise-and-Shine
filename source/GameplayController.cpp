@@ -960,8 +960,9 @@ void GameplayController::processDirtThrowRequest(std::shared_ptr<cugl::JsonValue
  * @param timestep  The amount of time (in seconds) since the last frame
  * @param worldPos  The position of the user's touch in world positions, used for dirt throwing
  * @param dirtCon   The dirt throw input controller used by the game scene
+ * @param dirtThrowButton   The dirt throw button from the game scene
  */
-void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputController& dirtCon) {
+void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton) {
     
     // update the audio controller
     _audioController.update(isActive());
@@ -1059,7 +1060,6 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         _curBirdBoard = _boardWithBird == 4 ? -1 : _boardWithBird - 1;
         _curBirdPos = getWorldPosition(_bird.birdPosition);
 
-        
     }
     else {
         // not host - advance all players idle or wipe frames
@@ -1088,19 +1088,18 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     // When the player is on other's board and are able to throw dirt
     if (_curBoard != 0 && _currentDirtAmount > 0) {
         // _dirtThrowInput.update();
+        float player_x = _curBoard == -1 ? getSize().width - _windows.sideGap : _windows.sideGap;
+        float button_x = _curBoard == -1 ? getSize().width - _windows.sideGap + 150 : _windows.sideGap - 150;
+        cugl::Vec2 playerPos(player_x, _player->getPosition().y);
+        cugl::Vec2 buttonPos(button_x, Application::get()->getDisplaySize().height / 2);
+        dirtThrowButton->setPosition(buttonPos);
         if (!_dirtSelected) {
-            if (dirtCon.didPress()) {
-                // float distance = (worldPos - _player->getPosition()).length();
-                // if (distance <= _player->getRadius()) {
+            if (dirtCon.didPress() && dirtThrowButton->isDown()) {
                 _dirtSelected = true;
                 _prevInputPos = worldPos;
-                // }
             }
         } else {
             if (dirtCon.didRelease()) {
-                float player_x = _curBoard == -1 ? getSize().width - _windows.sideGap : _windows.sideGap;
-                cugl::Vec2 playerPos(player_x, _player->getPosition().y);
-
                 _dirtSelected = false;
                 Vec2 diff = worldPos - _prevInputPos;
                 Vec2 destination = playerPos - diff * 5;
@@ -1123,15 +1122,13 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 else {
                     _network.transmitMessage(getJsonDirtThrow(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
                 }
-                // _player->setPosition(_prevDirtPos);
+                dirtThrowButton->setPosition(buttonPos);
 
             } else if (dirtCon.isDown()) {
-                float player_x = _curBoard == -1 ? getSize().width - _windows.sideGap : _windows.sideGap;
-                cugl::Vec2 playerPos(player_x, _player->getPosition().y);
-                // _player->setPosition(worldPos);
                 std::vector<Vec2> vertices = { playerPos };
                 Vec2 diff = worldPos - _prevInputPos;
                 Vec2 destination = playerPos - diff * 5;
+                dirtThrowButton->setPosition(buttonPos + diff);
                 Vec2 snapped_dest = getBoardPosition(destination);
                 snapped_dest.x = clamp(round(snapped_dest.x), 0.0f, (float)_windows.getNHorizontal()) + 0.5;
                 snapped_dest.y = clamp(round(snapped_dest.y), 0.0f, (float)_windows.getNVertical()) + 0.5;
