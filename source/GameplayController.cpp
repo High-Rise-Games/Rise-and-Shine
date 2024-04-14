@@ -791,8 +791,8 @@ void GameplayController::processMovementRequest(std::shared_ptr<cugl::JsonValue>
             if (destinationId == 0) {
                 destinationId = 4;
             }
-            else if (destinationId == 5) {
-                destinationId == 1;
+            else if (destinationId > 4) {
+                destinationId = 1;
             }
 
             if (destinationId <= _numPlayers) {
@@ -805,7 +805,7 @@ void GameplayController::processMovementRequest(std::shared_ptr<cugl::JsonValue>
 
 
 /**
-* Called by the client only. Returns a JSON value representing a scene switch request
+* Called by the client only. Returns a JSON value representing a return to board request
 * for sending over the network.
 * 
 * pre-condition: if not returning, guarantee that the player is on an edge
@@ -868,7 +868,8 @@ void GameplayController::processSceneSwitchRequest(std::shared_ptr<cugl::JsonVal
     "player_id_target":  2,
     "dirt_pos": [0, 14.76],
     "dirt_vel": [0.0, 5.0],
-    "dirt_dest": [30.2, 122.4]
+    "dirt_dest": [30.2, 122.4],
+    "dirt_amount": 10
 * }
 *
 * @param target The id of the player whose board the current player is sending dirt to
