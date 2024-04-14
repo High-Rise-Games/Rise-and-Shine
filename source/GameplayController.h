@@ -47,8 +47,12 @@ protected:
     
     /** ID of the player to distinguish in multiplayer */
     int _id;
-    /** Seconds left in the game */
+    
+    /** Length of a game session*/
     int _gameTime;
+    
+    /** Seconds left in the game */
+    int _gameTimeLeft;
     
     /** The FPS of the game, as set by the App */
     int _fps;
@@ -305,7 +309,7 @@ public:
     int getPlayerHealth() { return _player->getHealth(); }
 
     /** Returns the current game time */
-    int getTime() { return _gameTime; }
+    int getTime() { return _gameTimeLeft; }
 
     /** Returns the player's current board */
     int getCurBoard() { return _curBoard; }
@@ -404,10 +408,11 @@ public:
      * @param pos   The starting position of the dirt projectile
      * @param vel   The velocity vector of the dirt projectile
      * @param dest  The destination coordinates of the dirt projectile
+     * @param amt   The amount of dirt to spawn when landing on windows
      * 
      * @returns JSON value representing a dirt throw action
      */
-    std::shared_ptr<cugl::JsonValue> getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest);
+    std::shared_ptr<cugl::JsonValue> getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest, const int amt);
 
     /**
      * Updates a neighboring or own board given the JSON value representing its game state

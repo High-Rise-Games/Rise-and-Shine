@@ -92,7 +92,10 @@ protected:
     std::shared_ptr<cugl::scene2::Label> _gameid_host;
     
     /** The game id label (for updating) */
-    std::shared_ptr<cugl::scene2::TextField> _gameid_client;
+    std::shared_ptr<cugl::scene2::TextField> _clientField;
+    
+    /** The game id label passed from client id input */
+    std::string _gameid_client;
     
     /** The players label (for updating) */
     std::shared_ptr<cugl::scene2::Label> _player_field;
@@ -181,6 +184,9 @@ public:
 
     /** Returns the id of this player based on when they joined */
     int getId() { return _id; }
+    
+    /** set client room ID */
+    void setGameidClient(std::string client_id) { _gameid_client = client_id; }
 
     /** Returns the number of peers/players currently in this lobby. */
     int getNumPlayers() { return _network->getPeers().size() + 1; }

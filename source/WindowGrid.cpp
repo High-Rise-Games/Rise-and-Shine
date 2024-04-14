@@ -209,4 +209,20 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 	}
 }
 
+void WindowGrid::drawPotentialDirt(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, std::vector<cugl::Vec2> potentialFilth) {
+	float dirtScaleFactor = std::min(_windowWidth / _fadedDirtTexture->getWidth(), _windowHeight / _fadedDirtTexture->getHeight()) * 0.75;
+	float dirtWidth = (float)_fadedDirtTexture->getWidth() * dirtScaleFactor;
+	float dirtHeight = (float)_fadedDirtTexture->getHeight() * dirtScaleFactor;
+
+	float dirt_horizontal_trans = (_windowWidth - dirtWidth) / 2;
+	float dirt_vertical_trans = (_windowHeight - dirtHeight) / 2;
+
+	for (auto coords : potentialFilth) {
+		Affine2 dirt_trans = Affine2();
+		dirt_trans.scale(dirtScaleFactor);
+		dirt_trans.translate(sideGap + (_windowWidth * coords.x) + dirt_horizontal_trans, (_windowHeight * coords.y) + dirt_vertical_trans);
+		batch->draw(_fadedDirtTexture, Vec2(), dirt_trans);
+	}
+}
+
 #endif
