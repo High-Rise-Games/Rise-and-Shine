@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -520,6 +520,7 @@
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_NAME = box2d;
 				SECTORDER_FLAGS = "";
+				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 				WARNING_CFLAGS = "$(inherited)";
 			};
@@ -599,6 +600,7 @@
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_NAME = box2d;
 				SECTORDER_FLAGS = "";
+				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 				WARNING_CFLAGS = "$(inherited)";
 			};
@@ -628,6 +630,7 @@
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_NAME = box2d;
 				SECTORDER_FLAGS = "";
+				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 				WARNING_CFLAGS = "$(inherited)";
 			};
@@ -658,6 +661,7 @@
 				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_NAME = box2d;
 				SECTORDER_FLAGS = "";
+				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 				WARNING_CFLAGS = "$(inherited)";
 			};

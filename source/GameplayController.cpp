@@ -38,7 +38,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     // Initialize the scene to a locked width
     
     // time of the game set to 200 seconds
-    _gameTime = 5;
+    _gameTime = 160;
     _gameTimeLeft = _gameTime;
     
 
@@ -545,13 +545,17 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
                     }
                 }
             }
+            
         }
         
         for (int i = 0; i < winners.size(); i++) {
             if (winners.at(i) == player->getId()) {
                 json->appendValue("has_won", "true");
+                setWin(playerID == player_id);
             }
         }
+        
+        setGameOver(true);
         
     } else {
 
@@ -678,11 +682,11 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     std::string playerChar = data->getString("player_char");
     std::string playerHasWon = data->getString("has_won", "false");
         
-    if (playerHasWon == "true" && !isGameOver()) {
-        setGameOver(true);
-        setWin(playerId == _id);
-        return;
-    }
+//    if (playerHasWon == "true") {
+//        setWin(playerId == _id);
+//        return;
+//    }
+    
 
     std::shared_ptr<Player> player;
     WindowGrid* windows;
@@ -1042,7 +1046,9 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     if (incomingMsg->has("dirts")) {
                         // CULog("got board state message");
                         updateBoard(incomingMsg);
-                    } 
+                    } else if (incomingMsg->has("game over")) {
+                        setGameOver(true);
+                    }
                 }
                 else { // is host
                     // process action data - movement or dirt throw
@@ -1058,6 +1064,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                         // CULog("got dirt throw message");
                         processDirtThrowRequest(incomingMsg);
                     }
+                    
                 }
             });
         _network.checkConnection();
@@ -1113,6 +1120,13 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             // CULog("transmitting board state for player %d", i);
         }
         
+        if (isGameOver()) {
+            std::shared_ptr<JsonValue> q = std::make_shared<JsonValue>();
+            q->init(JsonValue::Type::ObjectType);
+            q->appendValue("game over", "true");
+            _network.transmitMessage(q);
+        }
+        
         _input.update();
         if (_input.didPressReset()) {
             // host resets game for all players
@@ -1130,6 +1144,9 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         
     }
     else {
+        
+
+        
         // not host - advance all players idle or wipe frames
         if (_player->getWipeFrames() < _player->getMaxWipeFrames()) {
             _player->advanceWipeFrame();
