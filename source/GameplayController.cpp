@@ -482,6 +482,8 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
     json->init(JsonValue::Type::ObjectType);
     json->appendValue("player_id", std::to_string(id));
     json->appendValue("player_char", player->getChar());
+    std::string win_str = checkBoardEmpty(*windows) ? "true" : "false";
+    json->appendValue("has_won", win_str);
     json->appendValue("num_dirt", std::to_string(_allDirtAmounts[id - 1]));
     json->appendValue("curr_board", std::to_string(_allCurBoards[id - 1]));
 
@@ -546,12 +548,12 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
         projDest->appendValue(std::to_string(projDestBoardPos.y));
         projJson->appendChild("dest", projDest);
 
+        std::string projTypeStr = "POOP";
         if (proj->type == ProjectileSet::Projectile::ProjectileType::DIRT) {
-            projJson->appendValue("type", "DIRT");
+            projTypeStr = "DIRT" ;
         }
-        else if (proj->type == ProjectileSet::Projectile::ProjectileType::POOP) {
-            projJson->appendValue("type", "POOP");
-        }
+        projJson->appendValue("type", projTypeStr);
+        
         projArray->appendChild(projJson);
     }
     json->appendChild("projectiles", projArray);
@@ -566,6 +568,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
  * {
     "player_id":  "1",
     "player_char": "Frog",
+    "has_won": "false",
     "num_dirt": "1",
     "curr_board": "0",
     "player_x": "3.0",
@@ -599,6 +602,12 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
 void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     int playerId = std::stod(data->getString("player_id", "0"));
     std::string playerChar = data->getString("player_char");
+    std::string playerHasWon = data->getString("has_won", "false");
+    if (playerHasWon == "true" && !isGameOver()) {
+        setGameOver(true);
+        setWin(playerId == _id);
+        return;
+    }
 
     std::shared_ptr<Player> player;
     WindowGrid* windows;
@@ -953,16 +962,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     if (incomingMsg->has("dirts")) {
                         // CULog("got board state message");
                         updateBoard(incomingMsg);
-                    } // set the game to lose because host has won
-                        else if (incomingMsg->has("win") && incomingMsg->getBool("win") == true
-                                 && !isGameOver()) {
-                            setGameOver(true);
-                            setWin(true);
-                        } else if (incomingMsg->has("win") && incomingMsg->getBool("win") == false
-                                   && !isGameOver()) {
-                              setGameOver(true);
-                              setWin(false);
-                          }
+                    } 
                 }
                 else { // is host
                     // process action data - movement or dirt throw
@@ -1017,43 +1017,14 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             
         }
 
-        if (checkBoardEmpty(_windows)) {
-            setGameOver(true);
-            setWin(true);
-            const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-            json->init(JsonValue::Type::ObjectType);
-            json->appendValue("win", false);
-            _network.transmitMessage(json);
-        };
         stepForward(_player, _windows, _projectiles);
         if (_numPlayers > 1) {
-            if (checkBoardEmpty(_windowsRight)) {
-                const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-                json->init(JsonValue::Type::ObjectType);
-                json->appendValue("win", true);
-                setGameOver(true);
-                _network.transmitMessage(json);
-            };
             stepForward(_playerRight, _windowsRight, _projectilesRight);
         }
         if (_numPlayers > 2) {
-            if (checkBoardEmpty(_windowsAcross)) {
-                const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-                json->init(JsonValue::Type::ObjectType);
-                json->appendValue("win", true);
-                setGameOver(true);
-                _network.transmitMessage(json);
-            };
             stepForward(_playerAcross, _windowsAcross, _projectilesAcross);
         }
         if (_numPlayers > 3) {
-            if (checkBoardEmpty(_windowsLeft)) {
-                const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-                json->init(JsonValue::Type::ObjectType);
-                json->appendValue("win", true);
-                setGameOver(true);
-                _network.transmitMessage(json);
-            };
             stepForward(_playerLeft, _windowsLeft, _projectilesLeft);
         }
         for (int i = 1; i <= _numPlayers; i++) {
@@ -1061,8 +1032,6 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             // CULog("transmitting board state for player %d", i);
         }
         
-        
-
         _input.update();
         if (_input.didPressReset()) {
             // host resets game for all players
@@ -1220,6 +1189,11 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
 void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid& windows, ProjectileSet& projectiles) {
     int player_id = player->getId();
 
+    if (checkBoardEmpty(windows) && !isGameOver()) {
+        setGameOver(true);
+        setWin(player_id == _id); // sets the host's local _gameWin property
+    }
+
     if (_allCurBoards[player_id - 1] == 0) {
         // only check if player is stunned, has removed dirt, or collided with projectile
         // if they are on their own board.
@@ -1351,12 +1325,12 @@ const bool GameplayController::checkBoardFull() {
 const bool GameplayController::checkBoardEmpty(WindowGrid playerWindowGrid) {
     for (int x = 0; x < playerWindowGrid.getNHorizontal(); x++) {
         for (int y = 0; y < playerWindowGrid.getNVertical(); y++) {
-                if (playerWindowGrid.getWindowState(y, x) == 1) {
+                if (playerWindowGrid.getWindowState(y, x)) {
                     return false;
                 }
         }
     }
-    return true; // No 1s found, board is clear
+    return true; // No dirt found, board is clear
 }
 
 /**

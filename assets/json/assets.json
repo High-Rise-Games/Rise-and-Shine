@@ -467,7 +467,7 @@
         "lose": {
             "type": "Image",
             "data": {
-                "texture": "win-background"
+                "texture": "lose-background"
             }
         },
         "invalid": {
