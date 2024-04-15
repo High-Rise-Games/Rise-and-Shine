@@ -2179,6 +2179,56 @@
                         "foreground" : "progress_foreground",
                         "left_cap"   : "progress_leftcap",
                         "right_cap"  : "progress_rightcap"
+                    },
+                    "layout": {
+                        "x_offset": -600,
+                        "y_offset" : 265,
+                        "absolute": true
+                    }
+                },
+                "right bar"  : {
+                    "type"   : "Progress",
+                    "data"   : {
+                        "anchor"     : [0.5,0.5],
+                        "background" : "progress_background",
+                        "foreground" : "progress_foreground",
+                        "left_cap"   : "progress_leftcap",
+                        "right_cap"  : "progress_rightcap"
+                    },
+                    "layout": {
+                        "x_offset": -565,
+                        "y_offset" : 265,
+                        "absolute": true
+                    }
+                },
+                "left bar"  : {
+                    "type"   : "Progress",
+                    "data"   : {
+                        "anchor"     : [0.5,0.5],
+                        "background" : "progress_background",
+                        "foreground" : "progress_foreground",
+                        "left_cap"   : "progress_leftcap",
+                        "right_cap"  : "progress_rightcap"
+                    },
+                    "layout": {
+                        "x_offset": -530,
+                        "y_offset" : 265,
+                        "absolute": true
+                    }
+                },
+                "bottom bar"  : {
+                    "type"   : "Progress",
+                    "data"   : {
+                        "anchor"     : [0.5,0.5],
+                        "background" : "progress_background",
+                        "foreground" : "progress_foreground",
+                        "left_cap"   : "progress_leftcap",
+                        "right_cap"  : "progress_rightcap"
+                    },
+                    "layout": {
+                        "x_offset": -495,
+                        "y_offset" : 265,
+                        "absolute": true
                     }
                 },
                 "back": {

@@ -268,7 +268,27 @@ public:
 #pragma mark -
 #pragma mark Gameplay Handling
     
+    WindowGrid getPlayerWindow() {
+            return _windows;
+    }
+        
+    WindowGrid getPlayerLeftWindow() {
+        return _windowsLeft;
+    }
     
+    WindowGrid getPlayerRightWindow() {
+        return _windowsRight;
+    }
+    
+    WindowGrid getPlayerAccrossWindow() {
+        return _windowsAcross;
+    }
+
+    /** Returns number of dirts on the player's board **/
+        float returnNumBoardDirts(WindowGrid playerWindowGrid);
+        
+        /** Returns number of max amount of dirt player's board could hold **/
+        float returnBoardMaxDirts(WindowGrid playerWindowGrid);
     /** Returns the main player of who owns this controller**/
     std::shared_ptr<Player> getPlayer() { return _player; }
     
@@ -368,6 +388,7 @@ public:
     
     /** Checks whether board is empty */
     const bool checkBoardEmpty(WindowGrid playerWindowGrid); 
+    
     
     /** update when dirt is generated */
     void updateDirtGenTime();

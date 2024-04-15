@@ -1473,6 +1473,25 @@ const bool GameplayController::checkBoardEmpty(WindowGrid playerWindowGrid) {
     return true; // No dirt found, board is clear
 }
 
+/** Returns number of dirts on the player's board **/
+float GameplayController::returnNumBoardDirts(WindowGrid playerWindowGrid) {
+    float count=0;
+    for (int x = 0; x < playerWindowGrid.getNHorizontal(); x++) {
+        for (int y = 0; y < playerWindowGrid.getNVertical(); y++) {
+                if (playerWindowGrid.getWindowState(y, x) == 1) {
+                    count=count+1;
+                }
+        }
+    }
+    return count; // No 1s found, board is clear
+}
+
+/** Returns number of max amount of dirt player's board could hold **/
+float GameplayController::returnBoardMaxDirts(WindowGrid playerWindowGrid) {
+    return playerWindowGrid.getNVertical()*playerWindowGrid.getNHorizontal();
+}
+
+
 /**
  * Draws all this scene to the given SpriteBatch.
  *

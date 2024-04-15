@@ -52,9 +52,40 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _background = _assets->get<Texture>("background");
     _constants = _assets->get<JsonValue>("constants");
     
-    // test progress bar
+
+    // test progress bar for player
     _player_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("player bar"));
     
+    _player_bar->setAngle(1.5708);
+    
+    _player_bar->setScale(0.5);
+    
+    
+    
+    
+    
+    // test progress bar for player left
+    _left_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("left bar"));
+    
+    _left_bar->setAngle(1.5708);
+    
+    _left_bar->setScale(0.5);
+    
+    // test progress bar for player right
+    _right_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("right bar"));
+    
+    _right_bar->setAngle(1.5708);
+    
+    _right_bar->setScale(0.5);
+    
+    // test progress bar for player top
+    _accross_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("bottom bar"));
+    
+    _accross_bar->setAngle(1.5708);
+    
+    _accross_bar->setScale(0.5);
+    
+
     
     
     // Initialize dirt bucket
@@ -190,14 +221,18 @@ void GameScene::update(float timestep) {
     
     _gameController->update(timestep, worldPos, _dirtThrowInput, _dirtThrowButton);
     
-    // each player manages their own UI elements/text boxes for displaying resource information
-    // Update the health meter
-//    
-//    _healthText->setText(strtool::format("Health %d", _gameController->getPlayerHealth()));
+    _player_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow())));
+    
+    _left_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerLeftWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerLeftWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerLeftWindow())));
+    
+    _right_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerRightWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerRightWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerRightWindow())));
+    
+    _accross_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerAccrossWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerAccrossWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerAccrossWindow())));
+
+
     _timeText->setText(strtool::format("Time %d", _gameController->getTime()));
         
-        
-//    _healthText->layout();
+
     _timeText->layout();
         
     // Update the dirt display

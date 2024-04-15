@@ -47,8 +47,7 @@ protected:
     /** The win screen scene */
     std::shared_ptr<cugl::scene2::SceneNode> _loseBackground;
     
-    /** Progress bar for this player **/
-    std::shared_ptr<cugl::scene2::ProgressBar>  _player_bar;
+ 
     /** The progress for this player displayed on the screen */
     float _player_progress;
 
@@ -64,6 +63,15 @@ protected:
     std::shared_ptr<cugl::JsonValue> _constants;
     
     cugl::scheduable t;
+    
+    /** Progress bar for this player **/
+    std::shared_ptr<cugl::scene2::ProgressBar>  _player_bar;
+    /** Progress bar for player left **/
+    std::shared_ptr<cugl::scene2::ProgressBar>  _left_bar;
+    /** Progress bar for player right **/
+    std::shared_ptr<cugl::scene2::ProgressBar>  _right_bar;
+    /** Progress bar for player accross **/
+    std::shared_ptr<cugl::scene2::ProgressBar>  _accross_bar;
     
     // VIEW items are going to be individual variables
     // In the future, we will replace this with the scene graph
