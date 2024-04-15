@@ -232,7 +232,7 @@ void Player::drawPeeking(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::
 
         // flip sprite and translate position depending on peeking side
         if (peekDirection == -1) {
-            player_trans.translate(-(int)(_throwSprite->getFrameSize().width)*0.85, 0);
+            player_trans.translate(-(int)(_throwSprite->getFrameSize().width)*0.65, 0);
             player_trans.scale(-player_scale, player_scale);
             player_trans.translate(size.width - sideGap, _pos.y);
         }

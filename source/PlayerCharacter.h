@@ -91,6 +91,8 @@ private:
     /** The number of frames in the throw sprite sheet */
     int _throwframesize;
 
+    /** player profile texture */
+    std::shared_ptr<cugl::Texture> _profileTexture;
     /** player idle sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _idleSprite;
     /** Reference to the player wiping animation sprite sheet */
@@ -134,6 +136,12 @@ public:
 
     /** Sets the character of the player. */
     void setChar(std::string c) { _character = c; }
+
+    /** Sets the profile texture of the player */
+    void setProfileTexture(std::shared_ptr<cugl::Texture> t) { _profileTexture = t; }
+
+    /** Gets the profile texture of the player */
+    std::shared_ptr<cugl::Texture> getProfileTexture() { return _profileTexture; }
 
     /**
      * Returns the position of this ship.

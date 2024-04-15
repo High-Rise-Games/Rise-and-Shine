@@ -166,6 +166,8 @@ protected:
     // for host only
     /** Number of players in the lobby */
     int _numPlayers;
+    /** Whether a player has won */
+    std::vector<bool> _hasWon;
     /** The amount of dirt held by each player in the lobby */
     std::vector<int> _allDirtAmounts;
     /** The current board being displayed for each player in the lobby */
@@ -193,12 +195,10 @@ protected:
     std::shared_ptr<cugl::TextLayout> _healthText;
     /** The text with the current time */
     std::shared_ptr<cugl::TextLayout> _text;
-    /** Empty bucket texture image */
-    std::shared_ptr<cugl::Texture> _emptyBucket;
-    /** Full bucket texture image */
-    std::shared_ptr<cugl::Texture> _fullBucket;
     /** The text with the current dirt */
     std::shared_ptr<cugl::TextLayout> _dirtText;
+    /** Arrow texture for showing opponent player locations */
+    std::shared_ptr<cugl::Texture> _arrowTexture;
 
     /** The scene node for the UI elements (buttons, labels) */
     std::shared_ptr<cugl::scene2::SceneNode> _scene_UI;

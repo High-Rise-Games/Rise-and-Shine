@@ -103,6 +103,17 @@ public:
     bool getWindowState(const int row, const int col) {
         return _boardFilth[row][col] != nullptr ;
     }
+	
+	/** Returns total amount of dirt on board */
+	int getTotalDirt() {
+		int count = 0;
+		for (int i = 0; i < _nVertical; i++) {
+			for (int j = 0; j < _nHorizontal; j++) {
+				count += getWindowState(i, j);
+			}
+		}
+		return count;
+	}
 
 	/**
 	 * Get discrete indices of the window tile that a given vector is on
