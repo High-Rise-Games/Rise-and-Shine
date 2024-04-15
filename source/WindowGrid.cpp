@@ -36,7 +36,7 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
              std::vector<int> temp = l->get("data")->asIntArray();
              for (int i = _nHorizontal*_nVertical; i>0; i=i-_nHorizontal) {
                  for (int ii=_nHorizontal; ii>0; ii--) {
-					 _window_map.push_back(temp.at(i-ii)-1);
+					 _window_map.push_back(temp.at(i-ii));
                  }
              }
 		 }
@@ -44,7 +44,7 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 			 std::vector<int> temp = l->get("data")->asIntArray();
 			 for (int i = _nHorizontal * _nVertical; i > 0; i = i - _nHorizontal) {
 				 for (int ii = _nHorizontal; ii > 0; ii--) {
-					 _left_blocked_map.push_back(temp.at(i - ii) - 1);
+					 _left_blocked_map.push_back(temp.at(i - ii));
 				 }
 			 }
 		 }
@@ -52,7 +52,7 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 			 std::vector<int> temp = l->get("data")->asIntArray();
 			 for (int i = _nHorizontal * _nVertical; i > 0; i = i - _nHorizontal) {
 				 for (int ii = _nHorizontal; ii > 0; ii--) {
-					 _down_blocked_map.push_back(temp.at(i - ii) - 1);
+					 _down_blocked_map.push_back(temp.at(i - ii));
 				 }
 			 }
 		 }
@@ -60,7 +60,7 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 			 std::vector<int> temp = l->get("data")->asIntArray();
 			 for (int i = _nHorizontal * _nVertical; i > 0; i = i - _nHorizontal) {
 				 for (int ii = _nHorizontal; ii > 0; ii--) {
-					 _fully_blocked_map.push_back(temp.at(i - ii) - 1);
+					 _fully_blocked_map.push_back(temp.at(i - ii));
 				 }
 			 }
 		 }
