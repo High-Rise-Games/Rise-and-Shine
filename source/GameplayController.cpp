@@ -37,8 +37,8 @@ using namespace std;
 bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps, cugl::Rect bounds, cugl::Size size) {
     // Initialize the scene to a locked width
     
-    // time of the game set to 90 seconds
-    _gameTime = 90;
+    // time of the game set to 120 seconds
+    _gameTime = 120;
     _gameTimeLeft = _gameTime;
     
 
@@ -1518,25 +1518,25 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _windows.draw(batch, getSize());
         _player->draw(batch, getSize());
 
-        Affine2 rightTrans = Affine2();
-        rightTrans.translate(_playerRight->getProfileTexture()->getSize() * -0.5);
-        rightTrans.scale(0.4);
-        rightTrans.translate(_windows.sideGap - 50, _player->getPosition().y);
-        batch->draw(_playerRight->getProfileTexture(), Vec2(), rightTrans);
-        Affine2 rightTransArrow = Affine2();
-        rightTransArrow.scale(0.75);
-        rightTransArrow.translate(_windows.sideGap - 130, _player->getPosition().y - (_arrowTexture->getHeight() / 2));
-        batch->draw(_arrowTexture, Vec2(), rightTransArrow);
-
         Affine2 leftTrans = Affine2();
         leftTrans.translate(_playerLeft->getProfileTexture()->getSize() * -0.5);
         leftTrans.scale(0.4);
-        leftTrans.translate(getSize().width - _windows.sideGap + 50, _player->getPosition().y);
+        leftTrans.translate(_windows.sideGap - 50, _player->getPosition().y);
         batch->draw(_playerLeft->getProfileTexture(), Vec2(), leftTrans);
         Affine2 leftTransArrow = Affine2();
-        leftTransArrow.scale(Vec2(-0.75, 0.75));
-        leftTransArrow.translate(getSize().width - _windows.sideGap + 130, _player->getPosition().y - (_arrowTexture->getHeight() / 2));
+        leftTransArrow.scale(0.75);
+        leftTransArrow.translate(_windows.sideGap - 130, _player->getPosition().y - (_arrowTexture->getHeight() / 2));
         batch->draw(_arrowTexture, Vec2(), leftTransArrow);
+
+        Affine2 rightTrans = Affine2();
+        rightTrans.translate(_playerRight->getProfileTexture()->getSize() * -0.5);
+        rightTrans.scale(0.4);
+        rightTrans.translate(getSize().width - _windows.sideGap + 50, _player->getPosition().y);
+        batch->draw(_playerRight->getProfileTexture(), Vec2(), rightTrans);
+        Affine2 rightTransArrow = Affine2();
+        rightTransArrow.scale(Vec2(-0.75, 0.75));
+        rightTransArrow.translate(getSize().width - _windows.sideGap + 130, _player->getPosition().y - (_arrowTexture->getHeight() / 2));
+        batch->draw(_arrowTexture, Vec2(), rightTransArrow);
 
         if (_curBoardLeft == 1) {
             // left neighbor is on this player's board
