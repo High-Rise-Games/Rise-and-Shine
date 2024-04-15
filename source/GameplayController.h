@@ -195,12 +195,10 @@ protected:
     std::shared_ptr<cugl::TextLayout> _healthText;
     /** The text with the current time */
     std::shared_ptr<cugl::TextLayout> _text;
-    /** Empty bucket texture image */
-    std::shared_ptr<cugl::Texture> _emptyBucket;
-    /** Full bucket texture image */
-    std::shared_ptr<cugl::Texture> _fullBucket;
     /** The text with the current dirt */
     std::shared_ptr<cugl::TextLayout> _dirtText;
+    /** Arrow texture for showing opponent player locations */
+    std::shared_ptr<cugl::Texture> _arrowTexture;
 
     /** The scene node for the UI elements (buttons, labels) */
     std::shared_ptr<cugl::scene2::SceneNode> _scene_UI;

@@ -84,6 +84,9 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     // Get the constant values
     _constants = _assets->get<JsonValue>("constants");
 
+    // get the arrow texture
+    _arrowTexture = _assets->get<Texture>("arrow");
+
     // Initialize existence of enemies
     _birdActive = true;
     _birdLeaving = false;
@@ -402,24 +405,28 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
         player->setWipeTexture(_assets->get<Texture>("wipe_frog"));
         player->setShooTexture(_assets->get<Texture>("shoo_frog"));
         player->setThrowTexture(_assets->get<Texture>("throw_frog"));
+        player->setProfileTexture(_assets->get<Texture>("profile_frog"));
     }
     else if (charChoice == "Flower") {
         player->setIdleTexture(_assets->get<Texture>("idle_flower"));
         player->setWipeTexture(_assets->get<Texture>("wipe_flower"));
         player->setShooTexture(_assets->get<Texture>("shoo_flower"));
         player->setThrowTexture(_assets->get<Texture>("throw_flower"));
+        player->setProfileTexture(_assets->get<Texture>("profile_flower"));
     }
     else if (charChoice == "Chameleon") {
         player->setIdleTexture(_assets->get<Texture>("idle_chameleon"));
         player->setWipeTexture(_assets->get<Texture>("wipe_chameleon"));
         player->setShooTexture(_assets->get<Texture>("shoo_chameleon"));
         player->setThrowTexture(_assets->get<Texture>("throw_chameleon"));
+        player->setProfileTexture(_assets->get<Texture>("profile_chameleon"));
     }
     else {
         player->setIdleTexture(_assets->get<Texture>("idle_mushroom"));
         player->setWipeTexture(_assets->get<Texture>("wipe_mushroom"));
         player->setShooTexture(_assets->get<Texture>("shoo_mushroom"));
         player->setThrowTexture(_assets->get<Texture>("throw_mushroom"));
+        player->setProfileTexture(_assets->get<Texture>("profile_mushroom"));
     }
 }
 
@@ -1512,13 +1519,36 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     if (_curBoard == 0) {
         _windows.draw(batch, getSize());
         _player->draw(batch, getSize());
+
+        Affine2 rightTrans = Affine2();
+        rightTrans.translate(_playerRight->getProfileTexture()->getSize() * -0.5);
+        rightTrans.scale(0.4);
+        rightTrans.translate(_windows.sideGap - 50, _player->getPosition().y);
+        batch->draw(_playerRight->getProfileTexture(), Vec2(), rightTrans);
+        Affine2 rightTransArrow = Affine2();
+        rightTransArrow.scale(0.75);
+        rightTransArrow.translate(_windows.sideGap - 130, _player->getPosition().y - (_arrowTexture->getHeight() / 2));
+        batch->draw(_arrowTexture, Vec2(), rightTransArrow);
+
+        Affine2 leftTrans = Affine2();
+        leftTrans.translate(_playerLeft->getProfileTexture()->getSize() * -0.5);
+        leftTrans.scale(0.4);
+        leftTrans.translate(getSize().width - _windows.sideGap + 50, _player->getPosition().y);
+        batch->draw(_playerLeft->getProfileTexture(), Vec2(), leftTrans);
+        Affine2 leftTransArrow = Affine2();
+        leftTransArrow.scale(Vec2(-0.75, 0.75));
+        leftTransArrow.translate(getSize().width - _windows.sideGap + 130, _player->getPosition().y - (_arrowTexture->getHeight() / 2));
+        batch->draw(_arrowTexture, Vec2(), leftTransArrow);
+
         if (_curBoardLeft == 1) {
             // left neighbor is on this player's board
             _playerLeft->drawPeeking(batch, getSize(), _curBoardLeft, _windows.sideGap);
+            // TODO: draw danger/warning
         }
         if (_curBoardRight == -1) {
             // right neighbor is on this player's board
             _playerRight->drawPeeking(batch, getSize(), _curBoardRight, _windows.sideGap);
+            // TODO: draw danger/warning
         }
         _projectiles.draw(batch, getSize(), _windows.getPaneWidth(), _windows.getPaneHeight());
         if (_curBirdBoard == 0) {

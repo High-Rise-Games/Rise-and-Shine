@@ -1,16 +1,16 @@
 {
     "textures": {
         "progress": {
-            "file":      "textures/progress.png",
-            "wrapS":     "clamp",
-            "wrapT":     "clamp",
+            "file": "textures/progress.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
             "minfilter": "linear",
             "magfilter": "linear",
-            "atlas":     {
-                "background" : [0,    0, 320, 45],
-                "foreground" : [24,  45, 296, 90],
-                "leftcap"    : [0,   45,  24, 90],
-                "rightcap"   : [296, 45, 320, 90]
+            "atlas": {
+                "background": [ 0, 0, 320, 45 ],
+                "foreground": [ 24, 45, 296, 90 ],
+                "leftcap": [ 0, 45, 24, 90 ],
+                "rightcap": [ 296, 45, 320, 90 ]
             }
         },
         "invalid": {
@@ -411,6 +411,18 @@
         "throw_mushroom": {
             "file": "textures/throw-m-4096.png"
         },
+        "profile_flower": {
+            "file": "textures/profile_fl.png"
+        },
+        "profile_chameleon": {
+            "file": "textures/profile_c.png"
+        },
+        "profile_frog": {
+            "file": "textures/profile_fr.png"
+        },
+        "profile_mushroom": {
+            "file": "textures/profile_m.png"
+        },
         "start_game": {
             "file": "textures/StartButton.png",
             "wrapS": "clamp",
@@ -424,6 +436,9 @@
             "wrapT": "clamp",
             "minfilter": "linear",
             "magfilter": "linear"
+        },
+        "arrow": {
+            "file": "textures/Arrow.png"
         },
         "player_id": {
             "file": "textures/PlayerID.png",
@@ -462,7 +477,7 @@
         "window_2": {
             "file": "textures/window_2.png"
         },
-	"window_3": {
+        "window_3": {
             "file": "textures/window_3.png"
         },
         "window_4": {
