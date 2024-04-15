@@ -139,7 +139,7 @@ public:
 
     /** Sets the profile texture of the player */
     void setProfileTexture(std::shared_ptr<cugl::Texture> t) { _profileTexture = t; }
-
+    
     /** Gets the profile texture of the player */
     std::shared_ptr<cugl::Texture> getProfileTexture() { return _profileTexture; }
 

@@ -211,6 +211,8 @@ void GameScene::update(float timestep) {
     
     _player_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow())));
     
+    
+    
     _left_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerLeftWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerLeftWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerLeftWindow())));
     
     _right_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerRightWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerRightWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerRightWindow())));
@@ -257,6 +259,10 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     
 
     _gameController->draw(batch);
+    
+    
+    
+    
 
     batch->setColor(Color4::BLACK);
 //    batch->drawText(_timeText, Vec2(getSize().width - 10 - _timeText->getBounds().size.width, getSize().height - _timeText->getBounds().size.height));
@@ -314,6 +320,28 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _loseBackground->setVisible(true);
         _loseBackground->render(batch);
     }
+    
+
+    Affine2 profileTrans = Affine2();
+    profileTrans.scale(0.2);
+    profileTrans.translate(_player_bar->getPosition());
+    batch->draw(_gameController->getPlayer()->getProfileTexture(), getSize()/2, profileTrans);
+    
+    Affine2 profileTransLeft = Affine2();
+    profileTransLeft.scale(0.2);
+    profileTransLeft.translate(_left_bar->getPosition());
+    batch->draw(_gameController->getPlayerLeft()->getProfileTexture(), getSize()/2, profileTransLeft);
+    
+    Affine2 profileTransRight = Affine2();
+    profileTransRight.scale(0.2);
+    profileTransRight.translate(_player_bar->getPosition());
+    batch->draw(_gameController->getPlayer()->getProfileTexture(), getSize()/2, profileTransRight);
+    
+    Affine2 profileTransAcross = Affine2();
+    profileTransAcross.scale(0.2);
+    profileTransAcross.translate(_player_bar->getPosition());
+    batch->draw(_gameController->getPlayer()->getProfileTexture(), getSize()/2, profileTransAcross);
+
     
 //    _player_bar->render(batch);
 //    _player_bar->setPosition(idk-getSize().operator Vec2()/2);

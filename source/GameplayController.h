@@ -292,6 +292,15 @@ public:
     /** Returns the main player of who owns this controller**/
     std::shared_ptr<Player> getPlayer() { return _player; }
     
+    /** Returns player accross r**/
+    std::shared_ptr<Player> getPlayerAccross() { return _playerAcross; }
+    
+    /** Returns player on right r**/
+    std::shared_ptr<Player> getPlayerLeft() { return _playerLeft; }
+    
+    /** Returns player on right  r**/
+    std::shared_ptr<Player> getPlayerRight() { return _playerRight; }
+    
 
     /** Returns the id of this player. */
     const int getId() const { return _id; }

@@ -73,6 +73,11 @@ protected:
     /** Progress bar for player accross **/
     std::shared_ptr<cugl::scene2::ProgressBar>  _accross_bar;
     
+    std::shared_ptr<cugl::scene2::SceneNode> _profilePlayer;
+    std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerLeft;
+    std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerRight;
+    std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerAcross;
+    
     // VIEW items are going to be individual variables
     // In the future, we will replace this with the scene graph
     /** The backgrounnd image */
