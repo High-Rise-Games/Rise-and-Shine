@@ -166,6 +166,8 @@ protected:
     // for host only
     /** Number of players in the lobby */
     int _numPlayers;
+    /** Whether a player has won */
+    std::vector<bool> _hasWon;
     /** The amount of dirt held by each player in the lobby */
     std::vector<int> _allDirtAmounts;
     /** The current board being displayed for each player in the lobby */

@@ -37,8 +37,8 @@ using namespace std;
 bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps, cugl::Rect bounds, cugl::Size size) {
     // Initialize the scene to a locked width
     
-    // time of the game set to 200 seconds
-    _gameTime = 200;
+    // time of the game set to 90 seconds
+    _gameTime = 90;
     _gameTimeLeft = _gameTime;
     
 
@@ -341,6 +341,8 @@ void GameplayController::reset() {
     _projectileGenCountDown = 120;
     _currentDirtAmount = 0;
     _curBoard = 0;
+    _gameOver = false;
+    _gameWin = false;
 }
 
 /**
@@ -364,6 +366,7 @@ void GameplayController::hostReset() {
 
     _allDirtAmounts = { 0, 0, 0, 0 };
     _allCurBoards = { 0, 0, 0, 0 };
+    _hasWon = { false, false, false, false };
 }
 
 /**
@@ -494,7 +497,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
     json->init(JsonValue::Type::ObjectType);
     json->appendValue("player_id", std::to_string(id));
     json->appendValue("player_char", player->getChar());
-    std::string win_str = checkBoardEmpty(*windows) ? "true" : "false";
+    std::string win_str = _hasWon[id-1] ? "true" : "false";
     json->appendValue("has_won", win_str);
     json->appendValue("num_dirt", std::to_string(_allDirtAmounts[id - 1]));
     json->appendValue("curr_board", std::to_string(_allCurBoards[id - 1]));
@@ -617,8 +620,8 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     int playerId = std::stod(data->getString("player_id", "0"));
     std::string playerChar = data->getString("player_char");
     std::string playerHasWon = data->getString("has_won", "false");
-    if (playerHasWon == "true" && !isGameOver()) {
-        setGameOver(true);
+    if (playerHasWon == "true" && !_gameOver) {
+        _gameOver = true;
         setWin(playerId == _id);
         return;
     }
@@ -697,7 +700,7 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     player->setStunFrames(std::stoi(data->getString("stun_frames")));
     player->setWipeFrames(std::stoi(data->getString("wipe_frames")));
     player->setShooFrames(std::stoi(data->getString("shoo_frames")));
-//    _gameTime = data->getInt("timer");
+    _gameTimeLeft = std::stoi(data->getString("timer"));
         
     // populate player's projectile setZ
     projectiles->clearCurrentSet(); // clear current set to rewrite
@@ -1008,6 +1011,32 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     
     // host steps all boards forward
     if (_ishost) {
+        // update time
+        if ((_gameTimeLeft >= 1)) {
+            _frame = _frame + 1;
+        } if (_frame == _fps) {
+            _gameTimeLeft = max(0, _gameTimeLeft - 1);
+            _projectileGenChance = 0.95 / (1 + exp(-0.05 * (100 - _gameTimeLeft / 2)));
+            _frame = 0;
+        }
+
+        // check if game is over when timer hits 0
+        if (_gameTimeLeft == 0 && !_gameOver) {
+            _gameOver = true;
+            vector<int> v = { _windows.getTotalDirt() };
+            if (_numPlayers > 1) {
+                v.push_back(_windowsRight.getTotalDirt());
+            }
+            if (_numPlayers > 2) {
+                v.push_back(_windowsAcross.getTotalDirt());
+            }
+            if (_numPlayers > 3) {
+                v.push_back(_windowsLeft.getTotalDirt());
+            }
+            auto min_idx = std::distance(v.begin(), std::min_element(v.begin(), v.end()));
+            _hasWon[min_idx] = true;
+        }
+
         // update bird if active
         if (_birdActive) {
             _bird.move();
@@ -1037,7 +1066,6 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     generatePoo(projectiles);
                 }
             }
-            
         }
 
         stepForward(_player, _windows, _projectiles);
@@ -1063,6 +1091,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         // update the game state for self (host). Updates for the rest of the players are done in processMovementRequest(),
         // called whenever the host recieves a movement or other action message.
         _currentDirtAmount = _allDirtAmounts[0];
+        _gameWin = _hasWon[0];
         _curBoard = _allCurBoards[0];
         _curBoardLeft = _allCurBoards[_numPlayers - 1];
         _curBoardRight = _allCurBoards[1];
@@ -1197,15 +1226,6 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     // advance bird flying frame
     _bird.advanceBirdFrame();
 
-    // update time
-    if ((_gameTimeLeft>=1)) {
-        _frame = _frame+1;
-    } if (_frame==_fps) {
-        _gameTimeLeft=max(0, _gameTimeLeft-1);
-        _projectileGenChance = 0.95 / (1 + exp(-0.05 * (100 - _gameTimeLeft/2)));
-        _frame = 0;
-    }
-    
     // update frame count for win / lose screen
     // if a number of frames have passed,
     // we will call setRequestForMenu
@@ -1301,9 +1321,9 @@ std::vector<cugl::Vec2> calculateLandedDirtPositions(const int width, const int 
 void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid& windows, ProjectileSet& projectiles) {
     int player_id = player->getId();
 
-    if (checkBoardEmpty(windows) && !isGameOver()) {
-        setGameOver(true);
-        setWin(player_id == _id); // sets the host's local _gameWin property
+    if (checkBoardEmpty(windows) && !_gameOver) {
+        _gameOver = true;
+        _hasWon[player_id - 1] = true;
     }
 
     std::vector<std::pair<cugl::Vec2, int>> landedDirts;
