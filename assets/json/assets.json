@@ -2206,30 +2206,6 @@
                         "absolute": true
                     }
                 },
-                "switch": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [ 0.0, 0.0 ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "switchSceneButton"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "right",
-                        "y_anchor": "bottom",
-                        "y_offset": 100,
-                        "x_offset": -250,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
                 "throw": {
                     "type": "Button",
                     "data": {

@@ -94,9 +94,6 @@ protected:
 //    std::shared_ptr<cugl::Texture> _returnSceneButton;
     /** Dirt throw button */
     std::shared_ptr<cugl::scene2::Button> _dirtThrowButton;
-    /** Switch scene button */
-    std::shared_ptr<cugl::scene2::Button> _tn_button;
-
     
 public:
 #pragma mark -
