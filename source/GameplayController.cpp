@@ -1141,6 +1141,9 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
 
     // When the player is on other's board and are able to throw dirt
     if (_curBoard != 0) {
+        float button_x = _curBoard == -1 ? getSize().width - _windows.sideGap + 150 : _windows.sideGap - 150;
+        cugl::Vec2 buttonPos(button_x, SCENE_HEIGHT / 2);
+        dirtThrowButton->setPosition(buttonPos);
         if ((_curBoard == -1 && _input.getDir().x == 1) || (_curBoard == 1 && _input.getDir().x == -1)) {
             switchScene();
         }
@@ -1148,11 +1151,6 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             // _dirtThrowInput.update();
             float player_x = _curBoard == -1 ? getSize().width - _windows.sideGap : _windows.sideGap;
             cugl::Vec2 playerPos(player_x, _player->getPosition().y);
-
-            float button_x = _curBoard == -1 ? getSize().width - _windows.sideGap + 150 : _windows.sideGap - 150;
-            cugl::Vec2 buttonPos(button_x, SCENE_HEIGHT / 2);
-
-            dirtThrowButton->setPosition(buttonPos);
             if (!_dirtSelected) {
                 if (dirtCon.didPress() && dirtThrowButton->isDown()) {
                     _dirtSelected = true;
