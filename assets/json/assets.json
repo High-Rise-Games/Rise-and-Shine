@@ -522,6 +522,9 @@
         "bucketfull": {
             "file": "textures/bucket_full.png"
         },
+        "throwButton": {
+            "file": "textures/ThrowButton.png"
+        },
         "button": {
             "file": "textures/button.png"
         },
@@ -2231,22 +2234,22 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 0.0 ],
-                        "scale": 0.25
+                        "anchor": [ 0.5, 0.5 ],
+                        "scale": 0.5
                     },
                     "children": {
                         "up": {
                             "type": "Image",
                             "data": {
-                                "texture": "button"
+                                "texture": "throwButton"
                             }
                         }
                     },
                     "layout": {
                         "x_anchor": "right",
-                        "y_anchor": "bottom",
-                        "y_offset": 50,
-                        "x_offset": -150,
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
                         "priority": 1,
                         "absolute": true
                     }

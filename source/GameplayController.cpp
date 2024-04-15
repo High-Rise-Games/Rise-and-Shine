@@ -1107,9 +1107,11 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     if (_curBoard != 0 && _currentDirtAmount > 0) {
         // _dirtThrowInput.update();
         float player_x = _curBoard == -1 ? getSize().width - _windows.sideGap : _windows.sideGap;
-        float button_x = _curBoard == -1 ? getSize().width - _windows.sideGap + 150 : _windows.sideGap - 150;
         cugl::Vec2 playerPos(player_x, _player->getPosition().y);
-        cugl::Vec2 buttonPos(button_x, Application::get()->getDisplaySize().height / 2);
+
+        float button_x = _curBoard == -1 ? getSize().width - _windows.sideGap + 150 : _windows.sideGap - 150;
+        cugl::Vec2 buttonPos(button_x, SCENE_HEIGHT / 2);
+
         dirtThrowButton->setPosition(buttonPos);
         if (!_dirtSelected) {
             if (dirtCon.didPress() && dirtThrowButton->isDown()) {
@@ -1143,6 +1145,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 dirtThrowButton->setPosition(buttonPos);
 
             } else if (dirtCon.isDown()) {
+                // cugl::Vec2 buttonPos(button_x, dirtThrowButton->getPositionY());
                 std::vector<Vec2> vertices = { playerPos };
                 Vec2 diff = worldPos - _prevInputPos;
                 Vec2 destination = playerPos - diff * 5;
