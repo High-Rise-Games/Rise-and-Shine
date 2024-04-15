@@ -127,6 +127,31 @@ void Bird::resetBirdPath(const int nVertial, const int nHorizontal, const int ra
     _nextCheckpoint = 1;
 }
 
+/** Updates  bird position when bird is shooed, flies away and upon reaching destination go to other player's board */
+void Bird::resetBirdPathToExit(const int nHorizontal) {
+    if (_checkpoints.size() != 1) {
+        cugl::Vec2 birdExit;
+        if (!_toRight) {
+            birdExit = cugl::Vec2(- nHorizontal/2, birdPosition.y);
+        } else {
+            birdExit = cugl::Vec2(nHorizontal + nHorizontal/2, birdPosition.y);
+        }
+        _speed *= 3;
+        std::vector<cugl::Vec2> positions = {birdExit};
+        _checkpoints = positions;
+        _nextCheckpoint = 0;
+    }
+}
+
+/** Returns True when bird position reaches exit */
+bool Bird::birdReachesExit() {
+    if (_checkpoints.size() == 1 && birdPosition == _checkpoints[0]) {
+        _speed /= 3;
+        return true;
+    }
+    return false;
+}
+
 /** Returns column number if bird is at the center of a column, else -1*/
 int Bird::atColCenter(const int nHorizontal, const float windowWidth, const float sideGap) {
 

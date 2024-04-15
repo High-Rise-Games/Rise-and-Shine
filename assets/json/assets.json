@@ -375,6 +375,18 @@
         "wipe_mushroom": {
             "file": "textures/wipe-mush-4096.png"
         },
+        "shoo_mushroom": {
+            "file": "textures/shoo-m-4096.png"
+        },
+        "shoo_flower": {
+            "file": "textures/shoo-fl-4096.png"
+        },
+        "shoo_chameleon": {
+            "file": "textures/shoo-c-4096.png"
+        },
+        "shoo_frog": {
+            "file": "textures/shoo-fr-4096.png"
+        },
         "idle_flower": {
             "file": "textures/idle-fl-4096.png"
         },

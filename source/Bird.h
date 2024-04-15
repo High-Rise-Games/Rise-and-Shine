@@ -97,6 +97,12 @@ public:
     /** Updates(randomize row) bird position when bird moves to other player's board */
     void resetBirdPath(const int nVertial, const int nHorizontal, const int randomRow);
     
+    /** Updates bird position when bird is shooed, flies away and upon reaching destination go to other player's board */
+    void resetBirdPathToExit(const int nHorizontal);
+    
+    /** Returns True when bird position reaches exit */
+    bool birdReachesExit();
+    
     /**
      * Returns column number if bird is at the center of a column, else -1
      */

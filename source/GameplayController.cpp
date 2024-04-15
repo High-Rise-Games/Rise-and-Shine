@@ -86,6 +86,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
 
     // Initialize existence of enemies
     _birdActive = true;
+    _birdLeaving = false;
 
     // Initialize all starting current boards
     _curBoard = 0;
@@ -234,7 +235,6 @@ bool GameplayController::initLevel(int selected_level) {
 
     // Get the bang sound
     _bang = _assets->get<Sound>("bang");
-    
     _clean = _assets->get<Sound>("clean");
     
     reset();
@@ -397,21 +397,25 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
     if (charChoice == "Frog") {
         player->setIdleTexture(_assets->get<Texture>("idle_frog"));
         player->setWipeTexture(_assets->get<Texture>("wipe_frog"));
+        player->setShooTexture(_assets->get<Texture>("shoo_frog"));
         player->setThrowTexture(_assets->get<Texture>("throw_frog"));
     }
     else if (charChoice == "Flower") {
         player->setIdleTexture(_assets->get<Texture>("idle_flower"));
         player->setWipeTexture(_assets->get<Texture>("wipe_flower"));
+        player->setShooTexture(_assets->get<Texture>("shoo_flower"));
         player->setThrowTexture(_assets->get<Texture>("throw_flower"));
     }
     else if (charChoice == "Chameleon") {
         player->setIdleTexture(_assets->get<Texture>("idle_chameleon"));
         player->setWipeTexture(_assets->get<Texture>("wipe_chameleon"));
+        player->setShooTexture(_assets->get<Texture>("shoo_chameleon"));
         player->setThrowTexture(_assets->get<Texture>("throw_chameleon"));
     }
     else {
         player->setIdleTexture(_assets->get<Texture>("idle_mushroom"));
         player->setWipeTexture(_assets->get<Texture>("wipe_mushroom"));
+        player->setShooTexture(_assets->get<Texture>("shoo_mushroom"));
         player->setThrowTexture(_assets->get<Texture>("throw_mushroom"));
     }
 }
@@ -502,6 +506,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
     json->appendValue("health", std::to_string((player->getHealth())));
     json->appendValue("stun_frames", std::to_string(player->getStunFrames()));
     json->appendValue("wipe_frames", std::to_string(player->getWipeFrames()));
+    json->appendValue("shoo_frames", std::to_string(player->getShooFrames()));
     json->appendValue("timer", std::to_string(_gameTimeLeft));
     json->appendValue("has_bird", (id == _boardWithBird));
     
@@ -584,6 +589,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
     "health": "3",
     "stun_frames": "0",
     "wipe_frames": "0",
+    "shoo_frames": "0",
     "timer": "145",
     "has_bird": True,
     "bird_pos": ["2.4", "6.0"],
@@ -690,6 +696,7 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
 
     player->setStunFrames(std::stoi(data->getString("stun_frames")));
     player->setWipeFrames(std::stoi(data->getString("wipe_frames")));
+    player->setShooFrames(std::stoi(data->getString("shoo_frames")));
 //    _gameTime = data->getInt("timer");
         
     // populate player's projectile setZ
@@ -782,7 +789,9 @@ void GameplayController::processMovementRequest(std::shared_ptr<cugl::JsonValue>
 
     // Check if player is stunned for this frame
 
-    if (player->getStunFrames() == 0 && player->getWipeFrames() == player->getMaxWipeFrames()) {
+    if (player->getStunFrames() == 0 && 
+        player->getWipeFrames() == player->getMaxWipeFrames() &&
+        player->getShooFrames() == player->getMaxShooFrames()) {
         // Move the player, ignoring collisions
         int moveResult = player->move(moveVec, getSize(), windows);
         if (moveResult == -1 || moveResult == 1) {
@@ -1021,7 +1030,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 projectiles = &_projectilesLeft;
             }
 
-            if (_bird.atColCenter(windows->getNHorizontal(), windows->getPaneWidth(), windows->sideGap) >= 0) {
+            if (!_birdLeaving && _bird.atColCenter(windows->getNHorizontal(), windows->getPaneWidth(), windows->sideGap) >= 0) {
                 std::bernoulli_distribution dist(_projectileGenChance);
                 if (dist(_rng)) {
                     // random chance to generate bird poo at column center
@@ -1062,19 +1071,28 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
 
     }
     else {
-        // not host - advance all players idle or wipe frames
+        // not host - advance all players idle or wipe or shoo frames
         if (_player->getWipeFrames() < _player->getMaxWipeFrames()) {
             _player->advanceWipeFrame();
+        }
+        if (_player->getShooFrames() < _player->getMaxShooFrames()) {
+            _player->advanceShooFrame();
         }
         _player->advanceIdleFrame();
 
         if (_playerLeft->getWipeFrames() < _playerLeft->getMaxWipeFrames()) {
             _playerLeft->advanceWipeFrame();
         }
+        if (_playerLeft->getShooFrames() < _playerLeft->getMaxShooFrames()) {
+            _playerLeft->advanceShooFrame();
+        }
         _playerLeft->advanceIdleFrame();
 
         if (_playerRight->getWipeFrames() < _playerRight->getMaxWipeFrames()) {
             _playerRight->advanceWipeFrame();
+        }
+        if (_playerRight->getShooFrames() < _playerRight->getMaxShooFrames()) {
+            _playerRight->advanceShooFrame();
         }
         _playerRight->advanceIdleFrame();
 
@@ -1159,7 +1177,9 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         }
         if (_ishost) {
             // Check if player is stunned for this frame
-            if (_player->getStunFrames() == 0 && _player->getWipeFrames() == _player->getMaxWipeFrames()) {
+            if (_player->getStunFrames() == 0 && 
+                _player->getWipeFrames() == _player->getMaxWipeFrames() &&
+                _player->getShooFrames() == _player->getMaxShooFrames()) {
                 // Move the player, ignoring collisions
                 int moveResult = _player->move(_input.getDir(), getSize(), &_windows);
                 if (moveResult == -1 && _numPlayers == 4) {
@@ -1298,6 +1318,9 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
         if (player->getWipeFrames() < player->getMaxWipeFrames()) {
             player->advanceWipeFrame();
         }
+        if (player->getShooFrames() < player->getMaxShooFrames()) {
+            player->advanceShooFrame();
+        }
         else {
             player->move();
         }
@@ -1333,7 +1356,18 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
             }
         }
         
-        if (_boardWithBird == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.01) && _numPlayers > 1) {
+        if (!_birdLeaving && _boardWithBird == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 4)) {
+            // set amount of frames plaer is frozen for for shooing bird
+            player->resetShooFrames();
+            _birdLeaving = true;
+        }
+        
+        if (_birdLeaving && player->getShooFrames() == player->getMaxShooFrames()) {
+            // send bird away after shooing
+            _bird.resetBirdPathToExit(_windows.getNHorizontal());
+        }
+        
+        if (_birdLeaving && _bird.birdReachesExit()) {
             _boardWithBird = _bird.isFacingRight() ? _boardWithBird + 1 : _boardWithBird - 1;
             if (_boardWithBird == 0) {
                 _boardWithBird = _numPlayers;
@@ -1346,6 +1380,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
             int spawnRow = distr(_rng);
 //            CULog("bird spawn at row %d", spawnRow);
             _bird.resetBirdPath(_windows.getNVertical(), _windows.getNHorizontal(), spawnRow);
+            _birdLeaving = false;
         }
     }
 

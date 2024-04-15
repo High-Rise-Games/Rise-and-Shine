@@ -172,8 +172,10 @@ protected:
     std::vector<int> _allCurBoards;
     /** Bird enemy for entire game */
     Bird _bird;
-    /** True if bird exists in this level */;
+    /** True if bird exists in this level */
     bool _birdActive;
+    /** True if the is shooed and is leaving the current board */
+    bool _birdLeaving;
     /** The current board that the bird is on */
     int _boardWithBird;
     
