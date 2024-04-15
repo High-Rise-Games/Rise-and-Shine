@@ -324,23 +324,24 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 
     Affine2 profileTrans = Affine2();
     profileTrans.scale(0.2);
-    profileTrans.translate(_player_bar->getPosition());
-    batch->draw(_gameController->getPlayer()->getProfileTexture(), getSize()/2, profileTrans);
+    profileTrans.translate((idk-getSize().operator Vec2()/2)+_player_bar->getPosition());
+    batch->draw(_gameController->getPlayer()->getProfileTexture(), _gameController->getPlayer()->getProfileTexture()->getSize().operator Vec2()/2, profileTrans);
     
     Affine2 profileTransLeft = Affine2();
     profileTransLeft.scale(0.2);
-    profileTransLeft.translate(_left_bar->getPosition());
-    batch->draw(_gameController->getPlayerLeft()->getProfileTexture(), getSize()/2, profileTransLeft);
+    profileTransLeft.translate((idk-getSize().operator Vec2()/2)+_left_bar->getPosition());
+    batch->draw(_gameController->getPlayerLeft()->getProfileTexture(), _gameController->getPlayerLeft()->getProfileTexture()->getSize().operator Vec2()/2, profileTransLeft);
     
-    Affine2 profileTransRight = Affine2();
-    profileTransRight.scale(0.2);
-    profileTransRight.translate(_player_bar->getPosition());
-    batch->draw(_gameController->getPlayer()->getProfileTexture(), getSize()/2, profileTransRight);
+    // Transgender Rights so based !!!!!
+    Affine2 profileTransRights = Affine2();
+    profileTransRights.scale(0.2);
+    profileTransRights.translate((idk-getSize().operator Vec2()/2)+_right_bar->getPosition());
+    batch->draw(_gameController->getPlayerRight()->getProfileTexture(), _gameController->getPlayerRight()->getProfileTexture()->getSize().operator Vec2()/2, profileTransRights);
     
     Affine2 profileTransAcross = Affine2();
     profileTransAcross.scale(0.2);
-    profileTransAcross.translate(_player_bar->getPosition());
-    batch->draw(_gameController->getPlayer()->getProfileTexture(), getSize()/2, profileTransAcross);
+    profileTransAcross.translate((idk-getSize().operator Vec2()/2)+_accross_bar->getPosition());
+    batch->draw(_gameController->getPlayerAccross()->getProfileTexture(), _gameController->getPlayerAccross()->getProfileTexture()->getSize().operator Vec2()/2, profileTransAcross);
 
     
 //    _player_bar->render(batch);
