@@ -128,7 +128,7 @@ bool GameplayController::initLevel(int selected_level) {
             break;
     }
 
-    string window_strings[13] = { "window_1", "window_2", "window_3", "window_4", "window_5", "window_6", "window_7", "window_8", "window_9", "window_10", "window_11", "window_12", "window_13", };
+    string window_strings[9] = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "down_blocked_1", "fully_blocked_1", "left_blocked_1", "nightBuilding" };
     
     _windows.setBuildingTexture(_assets->get<Texture>("building_1"));
     for (string thisWindow: window_strings) {

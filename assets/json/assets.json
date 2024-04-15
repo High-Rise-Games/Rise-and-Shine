@@ -462,7 +462,7 @@
         "window_2": {
             "file": "textures/window_2.png"
         },
-	"window_3": {
+	    "window_3": {
             "file": "textures/window_3.png"
         },
         "window_4": {
@@ -509,6 +509,33 @@
         },
         "nightmare_window5": {
             "file": "textures/window5nightmare.png"
+        },
+        "down_blocked_1": {
+            "file": "textures/down_blocked_1.png"
+        },
+        "left_blocked_1": {
+            "file": "textures/left_blocked_1.png"
+        },
+        "fully_blocked_1": {
+            "file": "textures/fully_blocked_1.png"
+        },
+        "nightWindow1": {
+            "file": "textures/nightWindow1.png"
+        },
+        "nightWindow2": {
+            "file": "textures/nightWindow2.png"
+        },
+        "nightWindow3": {
+            "file": "textures/nightWindow3.png"
+        },
+        "nightWindow4": {
+            "file": "textures/nightWindow4.png"
+        },
+        "nightWindow5": {
+            "file": "textures/nightWindow5.png"
+        },
+        "nightBuilding": {
+            "file": "textures/nightBuilding.png"
         },
         "dirt": {
             "file": "textures/GenericDirt.png"

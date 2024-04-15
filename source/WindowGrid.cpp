@@ -23,7 +23,10 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 	 _nHorizontal = data->getInt("width", 2);
 	 _nVertical = data->getInt("height", 4);
  
-     _map.clear();
+	 _window_map.clear();
+	 _left_blocked_map.clear();
+	 _down_blocked_map.clear();
+	 _fully_blocked_map.clear();
 	 std::vector<std::shared_ptr<cugl::JsonValue>> layers = data->get("layers")->children();
 	 for (std::shared_ptr<cugl::JsonValue> l : layers) {
 		 if (l->getString("name") == "Building") {
@@ -33,9 +36,33 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
              std::vector<int> temp = l->get("data")->asIntArray();
              for (int i = _nHorizontal*_nVertical; i>0; i=i-_nHorizontal) {
                  for (int ii=_nHorizontal; ii>0; ii--) {
-                     _map.push_back(temp.at(i-ii)-1);
+					 _window_map.push_back(temp.at(i-ii)-1);
                  }
              }
+		 }
+		 else if (l->getString("name") == "Pipes Left") {
+			 std::vector<int> temp = l->get("data")->asIntArray();
+			 for (int i = _nHorizontal * _nVertical; i > 0; i = i - _nHorizontal) {
+				 for (int ii = _nHorizontal; ii > 0; ii--) {
+					 _left_blocked_map.push_back(temp.at(i - ii) - 1);
+				 }
+			 }
+		 }
+		 else if (l->getString("name") == "Pipes Down") {
+			 std::vector<int> temp = l->get("data")->asIntArray();
+			 for (int i = _nHorizontal * _nVertical; i > 0; i = i - _nHorizontal) {
+				 for (int ii = _nHorizontal; ii > 0; ii--) {
+					 _down_blocked_map.push_back(temp.at(i - ii) - 1);
+				 }
+			 }
+		 }
+		 else if (l->getString("name") == "Blocked Tiles") {
+			 std::vector<int> temp = l->get("data")->asIntArray();
+			 for (int i = _nHorizontal * _nVertical; i > 0; i = i - _nHorizontal) {
+				 for (int ii = _nHorizontal; ii > 0; ii--) {
+					 _fully_blocked_map.push_back(temp.at(i - ii) - 1);
+				 }
+			 }
 		 }
 	 }
 
@@ -83,25 +110,25 @@ bool WindowGrid::getCanMoveBetween(int x_origin, int y_origin, int x_dest, int y
 	if (x_dest < 0 || y_dest < 0 || x_dest >= getNHorizontal() || y_dest >= getNVertical()) { // invalid destination
 		return false;
 	}
-	bool impassableDest = _impassableTiles.count(_map.at(destMapIndex));
+	bool impassableDest = _fully_blocked_map.at(destMapIndex) != 0; // any tile present in this layer blocks passage completely
 	if (impassableDest) { // dest is not a tile the player can ever access
 		return false;
 	}
 	// check relevant directional blockages on both tiles involved, allow if neither tile blocks
 	if (y_origin == y_dest) { // horizontal move
 		if (x_dest == x_origin + 1) { // right
-			return ! ( _rightBlockedTiles.count(_map.at(originMapIndex))  ||   _leftBlockedTiles.count(_map.at(destMapIndex)) );
+			return _left_blocked_map.at(destMapIndex) == 0;
 		}
 		else if (x_dest == x_origin - 1) { // left
-			return ! ( _leftBlockedTiles.count(_map.at(originMapIndex))   ||   _rightBlockedTiles.count(_map.at(destMapIndex)) );
+			return _left_blocked_map.at(originMapIndex) == 0;
 		}
 	}
 	else if (x_origin == x_dest) { // vertical move
 		if (y_dest == y_origin + 1) { // up
-			return ! ( _topBlockedTiles.count(_map.at(originMapIndex))    ||   _bottomBlockedTiles.count(_map.at(destMapIndex)) );
+			return _down_blocked_map.at(destMapIndex) == 0;
 		}
 		else if (y_dest == y_origin - 1) { // down
-			return ! ( _bottomBlockedTiles.count(_map.at(originMapIndex)) ||   _topBlockedTiles.count(_map.at(destMapIndex)) );
+			return _down_blocked_map.at(originMapIndex) == 0;
 		}
 	}
 	return false; // don't allow unanticipated movement modes
@@ -109,7 +136,7 @@ bool WindowGrid::getCanMoveBetween(int x_origin, int y_origin, int x_dest, int y
 
 bool WindowGrid::getCanBeDirtied(int x_index, int y_index) {
 	int tileMapIndex = x_index + getNHorizontal() * y_index;
-	return !( _noDirtTiles.count(_map.at(tileMapIndex)) ); // check if tile is on list of non-dirtiable tiles
+	return _fully_blocked_map.at(tileMapIndex) == 0; // check that tile is not inaccessible
 }
 
 void WindowGrid::generateInitialBoard(int dirtNumber) {
@@ -180,13 +207,16 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 	for (int x = 0; x < _nHorizontal; x++) {
 		for (int y = 0; y < _nVertical; y++) {
 			int mapIdx = y * _nHorizontal + x;
-			std::shared_ptr<cugl::Texture> texture = _textures[_map[mapIdx] - 1];
+			std::shared_ptr<cugl::Texture> window_texture  = _window_map[mapIdx]        == 0 ? NULL : _textures[_window_map       [mapIdx] - 1];
+			std::shared_ptr<cugl::Texture> left_texture    = _left_blocked_map[mapIdx]  == 0 ? NULL : _textures[_left_blocked_map [mapIdx] - 1];
+			std::shared_ptr<cugl::Texture> down_texture    = _down_blocked_map[mapIdx]  == 0 ? NULL : _textures[_down_blocked_map [mapIdx] - 1];
+			std::shared_ptr<cugl::Texture> blocked_texture = _fully_blocked_map[mapIdx] == 0 ? NULL : _textures[_fully_blocked_map[mapIdx] - 1];
 
 			// get scale and size of window pane drawing as transform
 			Affine2 trans = Affine2();
-			float paneScaleFactor = std::min(_windowHeight / (float)texture->getHeight(), _windowWidth / (float)texture->getWidth()) * 0.9;
-			float paneWidth = (float)texture->getWidth() * paneScaleFactor;
-			float paneHeight = (float)texture->getHeight() * paneScaleFactor;
+			float paneScaleFactor = std::min(_windowHeight / (float)window_texture->getHeight(), _windowWidth / (float)window_texture->getWidth()) * 0.9;
+			float paneWidth = (float)window_texture->getWidth() * paneScaleFactor;
+			float paneHeight = (float)window_texture->getHeight() * paneScaleFactor;
 
 			float pane_horizontal_trans = (_windowWidth - paneWidth) / 2;
 			float pane_vertical_trans = (_windowHeight - paneHeight) / 2;
@@ -194,7 +224,11 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 			trans.translate(sideGap + (_windowWidth * x) + pane_horizontal_trans, (_windowHeight * y) + pane_vertical_trans);
 
 			// draw window panes and dirt
-			batch->draw(texture, Vec2(), trans);
+			if (window_texture  != NULL) { batch->draw(window_texture,  Vec2(), trans); }
+			if (left_texture    != NULL) { batch->draw(left_texture,    Vec2(), trans); }
+			if (down_texture    != NULL) { batch->draw(down_texture,    Vec2(), trans); }
+			if (blocked_texture != NULL) { batch->draw(blocked_texture, Vec2(), trans); }
+			
 			if (_boardFilth[y][x] != nullptr) {
 				_boardFilth[y][x]->drawStatic(batch, size, dirt_trans);
 //				CULog("dirt added to coors: (%d, %d)", x, y);

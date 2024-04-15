@@ -1,46 +1,33 @@
 { "compressionlevel":-1,
- "height":6,
+ "height":4,
  "infinite":false,
  "layers":[
         {
-         "draworder":"topdown",
          "id":4,
+         "image":"",
          "name":"Background",
-         "objects":[
-                {
-                 "gid":16,
-                 "height":2120,
-                 "id":3,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":3600,
-                 "x":-1200,
-                 "y":1400
-                }],
          "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
+         "type":"imagelayer",
+         "visible":false,
          "x":0,
          "y":0
         }, 
         {
          "draworder":"topdown",
-         "id":2,
+         "id":3,
          "name":"Building",
          "objects":[
                 {
-                 "gid":15,
-                 "height":1400,
-                 "id":2,
+                 "gid":9,
+                 "height":1000,
+                 "id":16,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":1200,
-                 "x":0,
-                 "y":1400
+                 "width":600,
+                 "x":-67,
+                 "y":903
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -49,69 +36,79 @@
          "y":0
         }, 
         {
-            "data": [
-                3,
-                2,
-                3,
-                2,
-                2,
-                4,
-                3,
-                2,
-                11,
-                5,
-                3,
-                8,
-                3,
-                2,
-                3,
-                2,
-                2,
-                4,
-                3,
-                2,
-                10,
-                5,
-                3,
-                8
-            ],
-         "height":6,
+         "data":[5, 2, 1,
+            2, 4, 3,
+            1, 1, 3,
+            3, 4, 4],
+         "height":4,
          "id":1,
          "name":"Windows",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
-         "width":4,
+         "width":3,
+         "x":0,
+         "y":0
+        },
+    
+        {
+         "data":[0, 8, 0,
+            0, 0, 8,
+            0, 0, 0,
+            0, 0, 0],
+         "height":4,
+         "id":5,
+         "name":"Pipes Left",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":3,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 0, 0,
+            0, 0, 0,
+            0, 0, 7,
+            0, 0, 0],
+         "height":4,
+         "id":11,
+         "name":"Blocked Tiles",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":3,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 0, 0,
+            6, 0, 0,
+            0, 6, 0,
+            0, 0, 0],
+         "height":4,
+         "id":2,
+         "name":"Pipes Down",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":3,
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":4,
+ "nextlayerid":12,
+ "nextobjectid":17,
  "orientation":"orthogonal",
- "properties":[
-        {
-         "name":"number dirts",
-         "type":"int",
-         "value":5
-        }],
- "renderorder":"left-down",
- "tiledversion":"1.10.0",
- "tileheight":350,
+ "renderorder":"right-down",
+ "tiledversion":"1.10.2",
+ "tileheight":158,
  "tilesets":[
         {
          "firstgid":1,
-         "source":"..\/..\/..\/..\/Phillip Tiled\/Tilesets\/windows.tsx"
-        }, 
-        {
-         "firstgid":15,
-         "source":"..\/..\/..\/..\/Phillip Tiled\/Tilesets\/buildings.tsx"
-        }, 
-        {
-         "firstgid":16,
-         "source":"..\/..\/..\/..\/Phillip Tiled\/Tilesets\/backgrounds.tsx"
+         "source":"Tilesets\/Night Level Tileset.tsx"
         }],
- "tilewidth":400,
+ "tilewidth":158,
  "type":"map",
  "version":"1.10",
- "width":4
+ "width":3
 }
