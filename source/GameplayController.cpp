@@ -1125,7 +1125,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 snapped_dest.x = clamp(round(snapped_dest.x), 0.0f, (float)_windows.getNHorizontal()) + 0.5;
                 snapped_dest.y = clamp(round(snapped_dest.y), 0.0f, (float)_windows.getNVertical()) + 0.5;
                 snapped_dest = getWorldPosition(snapped_dest);
-                Vec2 velocity = (snapped_dest - playerPos).getNormalization() * 5;
+                Vec2 velocity = (snapped_dest - playerPos).getNormalization() * 7.5;
 
                 int targetId = _id + _curBoard;
                 if (targetId == 0) {
