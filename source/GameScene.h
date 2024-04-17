@@ -82,6 +82,8 @@ protected:
     // In the future, we will replace this with the scene graph
     /** The backgrounnd image */
     std::shared_ptr<cugl::Texture> _background;
+    /** The parallax image */
+    std::shared_ptr<cugl::Texture> _parallax;
     /** The text with the current health */
     std::shared_ptr<cugl::TextLayout> _healthText;
     /** The text with the current time */

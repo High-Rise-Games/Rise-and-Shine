@@ -452,6 +452,21 @@
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
+        "nightLevel": {
+            "file": "textures/nightLevel.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
+        "night level background": {
+            "file": "textures/level3_backdrop.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
+        "night level parallax": {
+            "file": "textures/level3_parallax.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
         "win-background": {
             "file": "textures/win-screen.png",
             "wrapS": "repeat",
