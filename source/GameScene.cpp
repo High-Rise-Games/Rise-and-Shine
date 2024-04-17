@@ -50,6 +50,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
 
     // Get the background image and constant values
     _background = _assets->get<Texture>("background");
+    _background->setWrapS(GL_CLAMP_TO_EDGE);
+    _background->setWrapT(GL_CLAMP_TO_EDGE);
     _constants = _assets->get<JsonValue>("constants");
     
 
@@ -254,8 +256,8 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->begin(getCamera()->getCombined());
     _scene_UI->setPosition(idk-getSize().operator Vec2()/2);
     
-    batch->draw(_background,Rect(Vec2::ZERO,getSize()));
-    
+//    batch->draw(_background,Rect(Vec2::ZERO));
+    batch->draw(_background,(idk-getSize().operator Vec2()/2));
     
 
     _gameController->draw(batch);
