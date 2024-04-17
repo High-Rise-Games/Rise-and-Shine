@@ -225,16 +225,21 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 			float paneScaleFactor = std::min(_windowHeight / (float)window_texture->getHeight(), _windowWidth / (float)window_texture->getWidth()) * 0.9;
 			float paneWidth = (float)window_texture->getWidth() * paneScaleFactor;
 			float paneHeight = (float)window_texture->getHeight() * paneScaleFactor;
+			float pipeDownOffset = paneHeight * .2; // push pipes into gaps between windows
+			float pipeLeftOffset = paneWidth  * .2; // push pipes into gaps between windows
 
 			float pane_horizontal_trans = (_windowWidth - paneWidth) / 2;
 			float pane_vertical_trans = (_windowHeight - paneHeight) / 2;
 			trans.scale(paneScaleFactor);
 			trans.translate(sideGap + (_windowWidth * x) + pane_horizontal_trans, (_windowHeight * y) + pane_vertical_trans);
 
+			Affine2 leftTrans = Affine2(trans).translate(-pipeLeftOffset, 0);
+			Affine2 downTrans = Affine2(trans).translate(0, -pipeDownOffset);
+
 			// draw window panes and dirt
 			if (window_texture  != NULL) { batch->draw(window_texture,  Vec2(), trans); }
-			if (left_texture    != NULL) { batch->draw(left_texture,    Vec2(), trans); }
-			if (down_texture    != NULL) { batch->draw(down_texture,    Vec2(), trans); }
+			if (left_texture    != NULL) { batch->draw(left_texture,    Vec2(), leftTrans); }
+			if (down_texture    != NULL) { batch->draw(down_texture,    Vec2(), downTrans); }
 			if (blocked_texture != NULL) { batch->draw(blocked_texture, Vec2(), trans); }
 			
 			if (_boardFilth[y][x] != nullptr) {
