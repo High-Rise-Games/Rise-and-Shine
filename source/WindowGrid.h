@@ -50,6 +50,11 @@ private:
 	std::shared_ptr<cugl::Texture> _buildingTexture;
 	/** Window texture images */
 	std::vector<std::shared_ptr<cugl::Texture>> _textures;
+	/** Texture id mapping from _textures index to Tiled id */
+	std::vector<int> _texture_ids;
+	/** mapping from Tiled id to _textures index */
+	std::map<int, int> _texture_indices;
+
 	/** Dirt texture image */
 	std::shared_ptr<cugl::Texture> _dirt;
 	/** Faded dirt texture image for potential dirts when aiming */
@@ -94,6 +99,9 @@ public:
 
 	/** sets building texture */
 	void setBuildingTexture(const std::shared_ptr<cugl::Texture>& value) { _buildingTexture = value; }
+
+	/** sets the texture id mapping */
+	void setTextureIds(std::vector<int> texture_ids) { _texture_ids = texture_ids; }
 	
 	/** gets window pane texture */
 	const std::shared_ptr<cugl::Texture>& getTexture(int idx) const {

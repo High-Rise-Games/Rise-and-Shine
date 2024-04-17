@@ -23,6 +23,13 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 	 _nHorizontal = data->getInt("width", 2);
 	 _nVertical = data->getInt("height", 4);
  
+	 // compute mapping from Tiled ids to _textures index
+	 int i = 0;
+	 for (int texture_id : _texture_ids) {
+		 _texture_indices[texture_id] = i;
+		 i++;
+	 }
+
 	 _window_map.clear();
 	 _left_blocked_map.clear();
 	 _down_blocked_map.clear();
@@ -32,8 +39,8 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 		 if (l->getString("name") == "Building") {
 			 // TODO: set building constants?
 			 std::shared_ptr<cugl::JsonValue> buildingObject = l->get("objects")->children().at(0);
-			 int buildingTextureIndex = buildingObject->get("gid")->asInt() - 1;
-			 setBuildingTexture(_textures[buildingTextureIndex]);
+			 int buildingTextureIndex = buildingObject->get("gid")->asInt();
+			 setBuildingTexture(_textures[_texture_indices[buildingTextureIndex]]);
 			 float buildingTextureX = buildingObject->get("x")->asFloat();
 			 float buildingTextureY = buildingObject->get("y")->asFloat();
 			 _buildingTexturePosition = Vec2(buildingTextureX, buildingTextureY);
@@ -215,10 +222,10 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 	for (int x = 0; x < _nHorizontal; x++) {
 		for (int y = 0; y < _nVertical; y++) {
 			int mapIdx = y * _nHorizontal + x;
-			std::shared_ptr<cugl::Texture> window_texture  = _window_map[mapIdx]        == 0 ? NULL : _textures[_window_map       [mapIdx] - 1];
-			std::shared_ptr<cugl::Texture> left_texture    = _left_blocked_map[mapIdx]  == 0 ? NULL : _textures[_left_blocked_map [mapIdx] - 1];
-			std::shared_ptr<cugl::Texture> down_texture    = _down_blocked_map[mapIdx]  == 0 ? NULL : _textures[_down_blocked_map [mapIdx] - 1];
-			std::shared_ptr<cugl::Texture> blocked_texture = _fully_blocked_map[mapIdx] == 0 ? NULL : _textures[_fully_blocked_map[mapIdx] - 1];
+			std::shared_ptr<cugl::Texture> window_texture  = _window_map[mapIdx]        == 0 ? NULL : _textures[_texture_indices[_window_map       [mapIdx]]];
+			std::shared_ptr<cugl::Texture> left_texture    = _left_blocked_map[mapIdx]  == 0 ? NULL : _textures[_texture_indices[_left_blocked_map [mapIdx]]];
+			std::shared_ptr<cugl::Texture> down_texture    = _down_blocked_map[mapIdx]  == 0 ? NULL : _textures[_texture_indices[_down_blocked_map [mapIdx]]];
+			std::shared_ptr<cugl::Texture> blocked_texture = _fully_blocked_map[mapIdx] == 0 ? NULL : _textures[_texture_indices[_fully_blocked_map[mapIdx]]];
 
 			// get scale and size of window pane drawing as transform
 			Affine2 trans = Affine2();
@@ -244,7 +251,6 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 			
 			if (_boardFilth[y][x] != nullptr) {
 				_boardFilth[y][x]->drawStatic(batch, size, dirt_trans);
-//				CULog("dirt added to coors: (%d, %d)", x, y);
 			}
 
 			// update vertical translation for dirt

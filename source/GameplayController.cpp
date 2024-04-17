@@ -128,15 +128,38 @@ bool GameplayController::initLevel(int selected_level) {
             break;
     }
 
-    string window_strings[9] = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "down_blocked_1", "fully_blocked_1", "left_blocked_1", "nightBuilding" };
+    // texture mappings for each level (update these from the python script)
+    std::vector<string> texture_strings_level_1 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
+    std::vector<string> texture_strings_level_2 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
+    std::vector<string> texture_strings_level_3 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
+    std::vector<string> texture_strings_level_4 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
+    std::vector<string> texture_strings_level_5 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
+    std::vector<std::vector<string>> texture_strings_levels;
+    std::vector<int> texture_ids_level_1 = { 1, 2, 3, 4, 5, 15, 16, 17, 18, 19 };
+    std::vector<int> texture_ids_level_2 = { 1, 2, 3, 4, 5, 15, 16, 17, 18, 19 };
+    std::vector<int> texture_ids_level_3 = { 1, 2, 3, 4, 5, 15, 16, 17, 18, 19 };
+    std::vector<int> texture_ids_level_4 = { 1, 2, 3, 4, 5, 15, 16, 17, 18, 19 };
+    std::vector<int> texture_ids_level_5 = { 1, 2, 3, 4, 5, 15, 16, 17, 18, 19 };
+    std::vector<std::vector<int>> texture_ids_levels;
+    texture_strings_levels.push_back(texture_strings_level_1);
+    texture_strings_levels.push_back(texture_strings_level_2);
+    texture_strings_levels.push_back(texture_strings_level_3);
+    texture_strings_levels.push_back(texture_strings_level_4);
+    texture_strings_levels.push_back(texture_strings_level_5);
+    texture_ids_levels.push_back(texture_ids_level_1);
+    texture_ids_levels.push_back(texture_ids_level_2);
+    texture_ids_levels.push_back(texture_ids_level_3);
+    texture_ids_levels.push_back(texture_ids_level_4);
+    texture_ids_levels.push_back(texture_ids_level_5);
+    // select the correct mapping for this level
+    std::vector<string> texture_strings_selected = texture_strings_levels.at(selected_level);
+    std::vector<int>    texture_ids_selected     = texture_ids_levels.at(selected_level);
     
-    //_windows.setBuildingTexture(_assets->get<Texture>("building_1"));
-    for (string thisWindow: window_strings) {
+    for (string thisWindow: texture_strings_selected) {
         _windows.addTexture(_assets->get<Texture>(thisWindow));
     }
-    //_windows.addTexture(assets->get<Texture>("window_1"));
-    //_windows.addTexture(assets->get<Texture>("window_2"));
-    //_windows.addTexture(assets->get<Texture>("window_3"));
+    _windows.setTextureIds(texture_ids_selected);
+
     _windows.init(level, _size); // init depends on texture
     _windows.setInitDirtNum(selected_level * 5);
     _windows.setDirtTexture(_assets->get<Texture>("dirt"));
@@ -149,34 +172,25 @@ bool GameplayController::initLevel(int selected_level) {
     _loseBackground = _assets->get<Texture>("lose-background");
 
     _windowsLeft.setBuildingTexture(_assets->get<Texture>("building_1"));
-    for (string thisWindow: window_strings) {
+    for (string thisWindow: texture_strings_selected) {
         _windowsLeft.addTexture(_assets->get<Texture>(thisWindow));
     }
-    //_windowsLeft.addTexture(assets->get<Texture>("window_1"));
-    //_windowsLeft.addTexture(assets->get<Texture>("window_2"));
-    //_windowsLeft.addTexture(assets->get<Texture>("window_3"));
     _windowsLeft.init(level, _size); // init depends on texture
     _windowsLeft.setDirtTexture(_assets->get<Texture>("dirt"));
     _windowsLeft.setFadedDirtTexture(_assets->get<Texture>("faded-dirt"));
 
     _windowsRight.setBuildingTexture(_assets->get<Texture>("building_1"));
-    for (string thisWindow: window_strings) {
+    for (string thisWindow: texture_strings_selected) {
         _windowsRight.addTexture(_assets->get<Texture>(thisWindow));
     }
-    //_windowsRight.addTexture(assets->get<Texture>("window_1"));
-    //_windowsRight.addTexture(assets->get<Texture>("window_2"));
-    //_windowsRight.addTexture(assets->get<Texture>("window_3"));
     _windowsRight.init(level, _size); // init depends on texture
     _windowsRight.setDirtTexture(_assets->get<Texture>("dirt"));
     _windowsRight.setFadedDirtTexture(_assets->get<Texture>("faded-dirt"));
 
     _windowsAcross.setBuildingTexture(_assets->get<Texture>("building_1"));
-    for (string thisWindow : window_strings) {
+    for (string thisWindow : texture_strings_selected) {
         _windowsAcross.addTexture(_assets->get<Texture>(thisWindow));
     }
-    //_windowsAcross.addTexture(assets->get<Texture>("window_1"));
-    //_windowsAcross.addTexture(assets->get<Texture>("window_2"));
-    //_windowsAcross.addTexture(assets->get<Texture>("window_3"));
     _windowsAcross.init(level, getSize()); // init depends on texture
     _windowsAcross.setDirtTexture(_assets->get<Texture>("dirt"));
     _windowsAcross.setFadedDirtTexture(_assets->get<Texture>("faded-dirt"));
