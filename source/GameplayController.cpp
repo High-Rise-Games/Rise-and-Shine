@@ -1387,7 +1387,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, WindowGrid
             }
         }
         
-        if (!_birdLeaving && _boardWithBird == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 4)) {
+        if (!_birdLeaving && _boardWithBird == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.5)) {
             // set amount of frames plaer is frozen for for shooing bird
             player->resetShooFrames();
             _birdLeaving = true;

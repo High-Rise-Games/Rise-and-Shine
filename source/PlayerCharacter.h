@@ -61,6 +61,8 @@ private:
     /** The maximum allowable velocity */
     float _maxvel;
     
+    /** The shadow offset in pixels */
+    float _shadows;
     // Asset references. These should be set by GameScene
     /** The number of columns in the sprite sheet */
     int _framecols;
