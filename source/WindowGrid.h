@@ -21,6 +21,7 @@ private:
 	float _windowWidth;
     float _buildingWidth;
     float _buildingHeight;
+	cugl::Vec2 _buildingTexturePosition;
 	/** Map of window tile layer, for drawing only */
 	std::vector<int> _window_map;
 	/** Map of left-facing blockages, prevents movement through that side of a tile */

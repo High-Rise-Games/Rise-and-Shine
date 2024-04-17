@@ -31,6 +31,12 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 	 for (std::shared_ptr<cugl::JsonValue> l : layers) {
 		 if (l->getString("name") == "Building") {
 			 // TODO: set building constants?
+			 std::shared_ptr<cugl::JsonValue> buildingObject = l->get("objects")->children().at(0);
+			 int buildingTextureIndex = buildingObject->get("gid")->asInt() - 1;
+			 setBuildingTexture(_textures[buildingTextureIndex]);
+			 float buildingTextureX = buildingObject->get("x")->asFloat();
+			 float buildingTextureY = buildingObject->get("y")->asFloat();
+			 _buildingTexturePosition = Vec2(buildingTextureX, buildingTextureY);
 		 }
 		 else if (l->getString("name") == "Windows") {
              std::vector<int> temp = l->get("data")->asIntArray();
@@ -74,6 +80,7 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 	 _windowWidth = (float)tileWidth * _scaleFactor; // final width of each window grid
 	 _windowHeight = (float)tileHeight * _scaleFactor; // final height of each window grid
 	 sideGap = ((float)size.getIWidth() - _windowWidth * _nHorizontal) / 2; // final gap width from side of screen to side of building
+	 _buildingTexturePosition.y = (_buildingTexturePosition.y - (tileHeight * _nVertical)) * -1;
 
 	// Initialize the dirt board
 	_boardFilth = std::vector<std::vector<std::shared_ptr<StaticFilth>>>(_nVertical, std::vector<std::shared_ptr<StaticFilth>>(_nHorizontal, nullptr));
@@ -182,10 +189,11 @@ bool WindowGrid::addDirt(const int row, const int col) {
 void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size) {
 	// draw building background
 	Affine2 building_trans = Affine2();
-/*	building_trans.scale(std::max(_windowWidth * _nHorizontal / _buildingTexture->getWidth(), _windowHeight * _nVertical / _buildingTexture->getHeight()))*/;
-    building_trans.scale(getPaneWidth() * _nHorizontal / _buildingTexture->getWidth(), getPaneHeight() * _nVertical / _buildingTexture->getHeight());
-
+    //building_trans.scale(getPaneWidth() * _nHorizontal / _buildingTexture->getWidth(), getPaneHeight() * _nVertical / _buildingTexture->getHeight());
+	building_trans.translate(_buildingTexturePosition);
+	building_trans.scale(_scaleFactor);
 	building_trans.translate(sideGap, 0);
+	
 	batch->draw(_buildingTexture, Vec2(), building_trans);
 	
 	// calculate scale and size of dirt drawing in reference to a window pane so that it is centered
