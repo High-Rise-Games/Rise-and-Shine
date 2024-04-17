@@ -121,7 +121,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
 //    // Acquire the invalid texture to draw on the screen when player picks
 //    // an already selected player charatcer
 //    _invalid = _assets->get<scene2::SceneNode>("invalid");
-//    
+//
 //    scene->addChild(_invalid);
 //    _invalid->setVisible(false);
     
@@ -456,7 +456,7 @@ void LobbyScene::processData(const std::string source,
 //        // read level message sent from host and update level
 //        setInvalidCharacterChoice(true);
 //    }
-//    
+//
     else if (jsonData->has("char") && isHost()) {
         // read character selection message sent from clients and update internal state
         std::string char_selection = jsonData->getString("char");
@@ -692,7 +692,6 @@ void LobbyScene::setActive(bool value) {
             _select_blue->setToggle(true);
             _select_green->setToggle(true);
             _select_yellow->setToggle(true);
-            _select_red->setDown(true);
 //            _select_red->setDown(true);
         }
         else {

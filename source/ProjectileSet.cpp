@@ -118,7 +118,7 @@ void ProjectileSet::spawnProjectileClient(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2
 * This movement code does not support "wrap around".
 * This method performs no collision detection. Collisions
 * are resolved afterwards.
-* 
+*
 * @returns list of destinations to spawn filth objects
 */
 std::vector<std::pair<cugl::Vec2, int>> ProjectileSet::update(Size size) {

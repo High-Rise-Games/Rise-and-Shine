@@ -166,18 +166,20 @@ protected:
     // for host only
     /** Number of players in the lobby */
     int _numPlayers;
+    /** Whether a player has won */
+    std::vector<bool> _hasWon;
     /** The amount of dirt held by each player in the lobby */
     std::vector<int> _allDirtAmounts;
     /** The current board being displayed for each player in the lobby */
     std::vector<int> _allCurBoards;
     /** Bird enemy for entire game */
     Bird _bird;
-    /** True if bird exists in this level */;
+    /** True if bird exists in this level */
     bool _birdActive;
+    /** True if the is shooed and is leaving the current board */
+    bool _birdLeaving;
     /** The current board that the bird is on */
     int _boardWithBird;
-    
-    
     
     cugl::scheduable t;
     
@@ -193,12 +195,10 @@ protected:
     std::shared_ptr<cugl::TextLayout> _healthText;
     /** The text with the current time */
     std::shared_ptr<cugl::TextLayout> _text;
-    /** Empty bucket texture image */
-    std::shared_ptr<cugl::Texture> _emptyBucket;
-    /** Full bucket texture image */
-    std::shared_ptr<cugl::Texture> _fullBucket;
     /** The text with the current dirt */
     std::shared_ptr<cugl::TextLayout> _dirtText;
+    /** Arrow texture for showing opponent player locations */
+    std::shared_ptr<cugl::Texture> _arrowTexture;
 
     /** The scene node for the UI elements (buttons, labels) */
     std::shared_ptr<cugl::scene2::SceneNode> _scene_UI;
@@ -268,41 +268,10 @@ public:
 #pragma mark -
 #pragma mark Gameplay Handling
     
-    
-    /** Returns the main player of who owns this controller**/
-    std::shared_ptr<Player> getPlayer() { return _player; }
-    
-    /** Returns player accross r**/
-    std::shared_ptr<Player> getPlayerAccross() { return _playerAcross; }
-    
-    /** Returns player on right r**/
-    std::shared_ptr<Player> getPlayerLeft() { return _playerLeft; }
-    
-    /** Returns player on right  r**/
-    std::shared_ptr<Player> getPlayerRight() { return _playerRight; }
-    
-    bool isPlayerRightNull() {
-        if (&(_playerRight) == nullptr) {
-            return true;
-        } return false;
-    }
-    
-    bool isPlayerLeftNull() {
-        if (&(_playerLeft) == nullptr) {
-            return true;
-        } return false;
-    }
-    
-    bool isPlayerAccrossNull() {
-        if (&(_playerAcross) == nullptr) {
-            return true;
-        } return false;
-    }
-    
     WindowGrid getPlayerWindow() {
-        return _windows;
+            return _windows;
     }
-    
+        
     WindowGrid getPlayerLeftWindow() {
         return _windowsLeft;
     }
@@ -314,10 +283,23 @@ public:
     WindowGrid getPlayerAccrossWindow() {
         return _windowsAcross;
     }
+
+    /** Returns number of dirts on the player's board **/
+        float returnNumBoardDirts(WindowGrid playerWindowGrid);
+        
+        /** Returns number of max amount of dirt player's board could hold **/
+        float returnBoardMaxDirts(WindowGrid playerWindowGrid);
+    /** Returns the main player of who owns this controller**/
+    std::shared_ptr<Player> getPlayer() { return _player; }
     
-    int getNumPlayers() {
-        return _numPlayers;
-    }
+    /** Returns player accross r**/
+    std::shared_ptr<Player> getPlayerAccross() { return _playerAcross; }
+    
+    /** Returns player on right r**/
+    std::shared_ptr<Player> getPlayerLeft() { return _playerLeft; }
+    
+    /** Returns player on right  r**/
+    std::shared_ptr<Player> getPlayerRight() { return _playerRight; }
     
 
     /** Returns the id of this player. */
@@ -363,7 +345,7 @@ public:
     /** Returns the player's current board */
     int getCurBoard() { return _curBoard; }
 
-    /** 
+    /**
      * Given the world positions, convert it to the board position
      * based off of grid coordinates. Ex. [2, 3] or [2.3, 3] if the
      * player is in the process of moving in between x = 2 and x = 3.
@@ -414,13 +396,8 @@ public:
     const bool checkBoardFull(); // TODO: Unimplemented
     
     /** Checks whether board is empty */
-    const bool checkBoardEmpty(WindowGrid playerWindowGrid); 
+    const bool checkBoardEmpty(WindowGrid playerWindowGrid);
     
-    /** Returns number of dirts on the player's board **/
-    float returnNumBoardDirts(WindowGrid playerWindowGrid);
-    
-    /** Returns number of max amount of dirt player's board could hold **/
-    float returnBoardMaxDirts(WindowGrid playerWindowGrid);
     
     /** update when dirt is generated */
     void updateDirtGenTime();
@@ -433,7 +410,7 @@ public:
 
     /**
      * Called by host only. Converts game state into a JSON value for sending over the network
-     * 
+     *
      * @param id    the id of the player of the board state to get
      * @returns JSON value representing game board state
      */
@@ -441,7 +418,7 @@ public:
 
     /**
      * Called by client only. Converts a movement vector into a JSON value for sending over the network.
-     * 
+     *
      * @param move    the movement vector
      * @returns JSON value representing a movement
      */
@@ -464,14 +441,14 @@ public:
      * @param vel   The velocity vector of the dirt projectile
      * @param dest  The destination coordinates of the dirt projectile
      * @param amt   The amount of dirt to spawn when landing on windows
-     * 
+     *
      * @returns JSON value representing a dirt throw action
      */
     std::shared_ptr<cugl::JsonValue> getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest, const int amt);
 
     /**
      * Updates a neighboring or own board given the JSON value representing its game state
-     * 
+     *
      * @params data     The data to update
      */
     void updateBoard(std::shared_ptr<cugl::JsonValue> data);
@@ -484,17 +461,17 @@ public:
      */
     void processMovementRequest(std::shared_ptr<cugl::JsonValue> data);
 
-    /** 
+    /**
      * Called by host only to process switch scene requests. Updates a client player's
      * currently viewed board for the player at player_id based on the current board
      * value stored in the JSON value.
-     * 
+     *
      * @params data     The data to update
      */
     void processSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data);
 
     /**
-     * Called by host only. Updates the boards of both the dirt thrower and the player 
+     * Called by host only. Updates the boards of both the dirt thrower and the player
      * receiving the dirt projectile given the information stored in the JSON value.
      *
      * @params data     The data to update
@@ -509,8 +486,9 @@ public:
      * @param timestep  The amount of time (in seconds) since the last frame
      * @param worldPos  The position of the user's touch in world positions, used for dirt throwing
      * @param dirtCon   The dirt throw input controller used by the game scene
+     * @param dirtThrowButton   The dirt throw button from the game scene
      */
-    void update(float timestep, cugl::Vec2 worldPos, DirtThrowInputController& dirtCon);
+    void update(float timestep, cugl::Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton);
 
     /**
      * This method does all the heavy lifting work for update.
@@ -559,8 +537,6 @@ public:
      * Disconnects this scene from the network controller.
      */
     void disconnect() { _network.disconnect(); }
-    
-    
 };
 
 #endif __GAME_CONTROLLER_H__

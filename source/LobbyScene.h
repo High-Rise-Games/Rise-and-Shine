@@ -145,7 +145,7 @@ public:
      */
     void dispose() override;
     
-//    
+//
 //    void setInvalidCharacterChoice(bool b) {
 //        _invalid=b;
 //    }

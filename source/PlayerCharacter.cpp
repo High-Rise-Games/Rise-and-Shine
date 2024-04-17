@@ -8,7 +8,7 @@ using namespace cugl;
 
 /**
  * Creates a player with the given fields.
- * 
+ *
  * @param id    The player's id
  * @param pos   The player position
  * @param data  The data defining the constants
@@ -20,12 +20,15 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     _pos = pos;
     _coors = Vec2();
     _speed = 10;
+    _shadows = 10;
     _framecols = 7;
     _framesize = 7;
     _idleframecols = 4;
     _idleframesize = 8;
     _throwframecols = 7;
     _throwframesize = 7;
+    _shooframecols = 4;
+    _shooframesize = 16;
     
     // height of a window pane of the game board
     _windowWidth = windowWidth;
@@ -39,11 +42,17 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     // number of frames the player is frozen for because wiping dirt
     _wipeFrames = 3;
     // number of total frames the player will play wipe animation
-    _maxwipeFrame = _wipeFrames * _framesize * 2;
+    _maxwipeFrame = _wipeFrames * _framesize;
+    _wipeFrames = _maxwipeFrame;
+    
+    // number of frames the player is frozen for because shooing bird
+    _shooFrames = 2;
+    // number of total frames the player will play shoo animation
+    _maxshooFrame = _shooFrames * _shooframesize;
+    _shooFrames = _maxshooFrame;
     
     _idleFrames = 5;
     _maxidleFrame = _idleFrames * _idleframesize;
-    _idleFrames = _maxwipeFrame/_idleframesize;
     
     // rotation property of player when player is stunned
     _stunRotate = 0;
@@ -121,8 +130,24 @@ void Player::setWipeTexture(const std::shared_ptr<cugl::Texture>& texture) {
 }
 
 /**
+ * Sets the shooing texture for player.
+ *
+ * @param texture   The texture for the sprite sheet
+ */
+void Player::setShooTexture(const std::shared_ptr<cugl::Texture>& texture) {
+    if (_shooframecols > 0) {
+        int rows = _shooframesize/_shooframecols;
+        if (_shooframesize % _shooframecols != 0) {
+            rows++;
+        }
+        _shooSprite = SpriteSheet::alloc(texture, rows, _shooframecols, _shooframesize);
+        _shooSprite->setFrame(0);
+    }
+}
+
+/**
 * Sets the player dirt throwing sprite.
-* 
+*
 * @param texture   The texture for the sprite sheet
 */
 void Player::setThrowTexture(const std::shared_ptr<cugl::Texture>& texture) {
@@ -156,7 +181,7 @@ const cugl::Vec2& Player::getCoorsFromPos(const float windowHeight, const float 
 void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) {
     // Transform to place the ship, start with centered version
     Affine2 player_trans;
-    if (_idleSprite && _wipeFrames == _maxwipeFrame) {
+    if (_idleSprite && _wipeFrames == _maxwipeFrame && _shooFrames == _maxshooFrame) {
         player_trans.translate( -(int)(_idleSprite->getFrameSize().width)/2 , -(int)(_idleSprite->getFrameSize().height) / 2);
         double player_scale = _windowHeight / _idleSprite->getFrameSize().height;
         player_trans.scale(player_scale);
@@ -164,6 +189,11 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
     else if (_wipeSprite && _wipeFrames < _maxwipeFrame) {
         player_trans.translate( -(int)(_wipeSprite->getFrameSize().width)/2 , -(int)(_wipeSprite->getFrameSize().height) / 2);
         double player_scale = _windowHeight / _wipeSprite->getFrameSize().height;
+        player_trans.scale(player_scale);
+    }
+    else if (_shooSprite && _shooFrames < _maxshooFrame) {
+        player_trans.translate( -(int)(_shooSprite->getFrameSize().width)/2 , -(int)(_shooSprite->getFrameSize().height) / 2);
+        double player_scale = _windowHeight / _shooSprite->getFrameSize().height;
         player_trans.scale(player_scale);
     }
     // Don't draw if texture not set
@@ -175,12 +205,21 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
         player_trans.rotate(0);
     }
     player_trans.translate(_pos);
-    if (_idleSprite && _wipeFrames == _maxwipeFrame) {
+    Affine2 shadtrans = player_trans;
+    shadtrans.translate(_shadows,-_shadows);
+    Color4f shadow(0,0,0,0.5f);
+    if (_idleSprite && _wipeFrames == _maxwipeFrame && _shooFrames == _maxshooFrame) {
         // CULog("drawing player at (%f, %f)", _pos.x, _pos.y);
+        _idleSprite->draw(batch, shadow, shadtrans);
         _idleSprite->draw(batch, player_trans);
     }
     else if (_wipeSprite && _wipeFrames < _maxwipeFrame) {
+        _wipeSprite->draw(batch, shadow, shadtrans);
         _wipeSprite->draw(batch, player_trans);
+    }
+    else if (_shooSprite && _shooFrames < _maxshooFrame) {
+        _shooSprite->draw(batch, shadow, shadtrans);
+        _shooSprite->draw(batch, player_trans);
     }
 }
 
@@ -199,7 +238,7 @@ void Player::drawPeeking(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::
 
         // flip sprite and translate position depending on peeking side
         if (peekDirection == -1) {
-            player_trans.translate(-(int)(_throwSprite->getFrameSize().width)*0.85, 0);
+            player_trans.translate(-(int)(_throwSprite->getFrameSize().width)*0.65, 0);
             player_trans.scale(-player_scale, player_scale);
             player_trans.translate(size.width - sideGap, _pos.y);
         }

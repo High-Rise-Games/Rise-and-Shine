@@ -13,6 +13,7 @@ bool Bird::init(const std::vector<cugl::Vec2> positions, const float speed, cons
     _radius = windowHeight / 2;
     _nextCheckpoint = 1;
     _toRight = true;
+    _shadows = 10;
     _framecols = 5;
     _framesize = 5;
     _frameflat = 4;
@@ -31,7 +32,7 @@ void Bird::setTexture(const std::shared_ptr<cugl::Texture>& texture) {
         _sprite = SpriteSheet::alloc(texture, rows, _framecols, _framesize);
         _sprite->setFrame(_frameflat);
         // shift bird origin to left and down to simulate poop effect from stomach
-        _sprite->setOrigin(Vec2(_sprite->getFrameSize().width/2-1000, _sprite->getFrameSize().height/2-400));
+        _sprite->setOrigin(Vec2(_sprite->getFrameSize().width/2, _sprite->getFrameSize().height/2));
     }
 }
 
@@ -42,19 +43,19 @@ void Bird::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size
         Affine2 birdTrans;
         double bird_scale = _radius * 2 / _sprite->getFrameSize().height;
         if (!_toRight) {
-            _sprite->setOrigin(Vec2(_sprite->getFrameSize().width/2, _sprite->getFrameSize().height/2-400));
+            _sprite->setOrigin(Vec2(_sprite->getFrameSize().width/2, _sprite->getFrameSize().height/2));
             birdTrans.scale(Vec2(-bird_scale, bird_scale));
         } else {
-            _sprite->setOrigin(Vec2(_sprite->getFrameSize().width/2-1000, _sprite->getFrameSize().height/2-400));
+            _sprite->setOrigin(Vec2(_sprite->getFrameSize().width/2, _sprite->getFrameSize().height/2));
             birdTrans.scale(bird_scale);
         }
         birdTrans.translate(birdWorldPos);
         // Transform to place the shadow, and its color
-//        Affine2 shadtrans = shiptrans;
-//        shadtrans.translate(_shadows,-_shadows);
-//        Color4f shadow(0,0,0,0.5f);
-//        
-//        _sprite->draw(batch,shadow,shadtrans);
+        Affine2 shadtrans = birdTrans;
+        shadtrans.translate(_shadows,-_shadows);
+        Color4f shadow(0,0,0,0.5f);
+        
+        _sprite->draw(batch,shadow,shadtrans);
         _sprite->draw(batch,birdTrans);
         
          
@@ -125,6 +126,31 @@ void Bird::resetBirdPath(const int nVertial, const int nHorizontal, const int ra
     _checkpoints = positions;
     birdPosition = _checkpoints[0];
     _nextCheckpoint = 1;
+}
+
+/** Updates  bird position when bird is shooed, flies away and upon reaching destination go to other player's board */
+void Bird::resetBirdPathToExit(const int nHorizontal) {
+    if (_checkpoints.size() != 1) {
+        cugl::Vec2 birdExit;
+        if (_toRight) {
+            birdExit = cugl::Vec2(- nHorizontal/2, birdPosition.y + 1);
+        } else {
+            birdExit = cugl::Vec2(nHorizontal + nHorizontal/2, birdPosition.y + 1);
+        }
+        _speed *= 4;
+        std::vector<cugl::Vec2> positions = {birdExit};
+        _checkpoints = positions;
+        _nextCheckpoint = 0;
+    }
+}
+
+/** Returns True when bird position reaches exit */
+bool Bird::birdReachesExit() {
+    if (_checkpoints.size() == 1 && birdPosition == _checkpoints[0]) {
+        _speed /= 4;
+        return true;
+    }
+    return false;
 }
 
 /** Returns column number if bird is at the center of a column, else -1*/

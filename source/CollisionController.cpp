@@ -36,7 +36,7 @@ std::pair<bool, std::optional<std::pair<cugl::Vec2, int>>> CollisionController::
         float distance = norm.length();
         float impactDistance = (player->getRadius() + proj->getRadius() * proj->getScale());
 
-        // finds the NEAREST collision 
+        // finds the NEAREST collision
         Vec2 pos = proj->position;
         pos = player->getPosition() - pos;
         float dist = pos.length();
@@ -77,7 +77,7 @@ bool CollisionController::resolveBirdCollision(const std::shared_ptr<Player>& pl
 
     Vec2 norm = player->getPosition() - birdWorldPos;
     float distance = norm.length();
-    float impactDistance = (player->getRadius() + bird.getRadius() * bird.getScale() * radiusMultiplier);
+    float impactDistance = (player->getRadius() + bird.getRadius() * radiusMultiplier);
 
     // finds the NEAREST collision
     Vec2 pos = birdWorldPos;

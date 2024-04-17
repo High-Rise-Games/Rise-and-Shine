@@ -1,5 +1,5 @@
 {
-	"ship" : {
+    "ship" : {
         "health": 3,
         "mass": 1.0,
         "thrust factor": 0.4,
@@ -13,11 +13,11 @@
         "sprite size": 18,
         "sprite frame": 9
     },
-	"photons" : {
-		"speed" : 5,
-		"mass" : 5,
-		"max age": 50
-	},
+    "photons" : {
+        "speed" : 5,
+        "mass" : 5,
+        "max age": 50
+    },
     "projectiles": {
         "start": [
         ]
@@ -94,5 +94,5 @@
         "type": "map",
         "version": "1.10",
         "width": 3
-    }    
+    }
 }

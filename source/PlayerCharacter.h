@@ -61,6 +61,8 @@ private:
     /** The maximum allowable velocity */
     float _maxvel;
     
+    /** The shadow offset in pixels */
+    float _shadows;
     // Asset references. These should be set by GameScene
     /** The number of columns in the sprite sheet */
     int _framecols;
@@ -78,15 +80,27 @@ private:
     int _maxidleFrame;
     // number of frames that the player is idling for
     int _idleFrames;
+    /** The number of columns in the sprite sheet */
+    int _shooframecols;
+    /** The number of frames in the sprite sheet */
+    int _shooframesize;
+    /** total number of frames */
+    int _maxshooFrame;
+    // number of frames that the player is shooing
+    int _shooFrames;
     /** The number of columns in the throw sprite sheet */
     int _throwframecols;
     /** The number of frames in the throw sprite sheet */
     int _throwframesize;
 
+    /** player profile texture */
+    std::shared_ptr<cugl::Texture> _profileTexture;
     /** player idle sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _idleSprite;
     /** Reference to the player wiping animation sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _wipeSprite;
+    /** Reference to the player shooing animation sprite sheet */
+    std::shared_ptr<cugl::SpriteSheet> _shooSprite;
     /** Reference to the player throwing animation sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _throwSprite;
     /** Radius of the ship in pixels (derived from sprite sheet) */
@@ -124,6 +138,12 @@ public:
 
     /** Sets the character of the player. */
     void setChar(std::string c) { _character = c; }
+
+    /** Sets the profile texture of the player */
+    void setProfileTexture(std::shared_ptr<cugl::Texture> t) { _profileTexture = t; }
+    
+    /** Gets the profile texture of the player */
+    std::shared_ptr<cugl::Texture> getProfileTexture() { return _profileTexture; }
 
     /**
      * Returns the position of this ship.
@@ -168,14 +188,14 @@ public:
      */
     const cugl::Vec2& getCoors() const { return _coors; }
 
-    /** 
+    /**
      * Sets the coordinates of the player in relation to the window grid.
      */
     void setCoors(cugl::Vec2 value) { _coors = value; }
 
-    /** 
+    /**
      * Calculates the coordinates of the player in relation to the window grid
-     * using the scene position of the player (_pos). 
+     * using the scene position of the player (_pos).
      */
     const cugl::Vec2& getCoorsFromPos(const float windowHeight, const float windowWidth, const float sideGap);
     
@@ -201,7 +221,7 @@ public:
     
     /**
      * Returns the current player's health.
-     * 
+     *
      * When the health of the player is 0, it is "dead"
      *
      * @return the current player health.
@@ -210,7 +230,7 @@ public:
 
     /**
      * Sets the current ship health.
-     * 
+     *
      * When the health of the ship is 0, it is "dead"
      *
      * @param value The current ship health.
@@ -230,7 +250,7 @@ public:
     void setStunFrames(int value) { _stunFrames = value; }
     
     /**
-     * Sets the player's wiping time to the max  frames to freeze the player.
+     * Sets the player's wiping time to the initial frame to play and freeze the player.
      *
      * @param value The time in frames to stun the player.
      */
@@ -241,21 +261,71 @@ public:
      */
     int getMaxWipeFrames() const { return _maxwipeFrame; }
     
+    /**
+     * Gets the amount of frames that the player is wiping dirt for
+     * @returns _wipeFrames
+     */
+    int getWipeFrames() {
+        return _wipeFrames;
+    }
+    
+    /** Sets the wipe frames */
+    void setWipeFrames(int n) { _wipeFrames = n; }
+    
+    /**
+     * Sets the player's shoo time to the inital frames to play and freeze the player.
+     *
+     * @param value The time in frames to stun the player.
+     */
+    void resetShooFrames() { _shooFrames = 0; }
+    
+    /**
+     * Returns the current player's maximum shoo time in frames.
+     */
+    int getMaxShooFrames() const { return _maxshooFrame; }
+    
+    /**
+     * Gets the amount of frames that the player is shooing bird for
+     * @returns _shooFrames
+     */
+    int getShooFrames() {
+        return _shooFrames;
+    }
+    
+    /** Sets the shoo frames */
+    void setShooFrames(int n) { _shooFrames = n; }
     
     /**
      * Sets the player's movement freeze time to the given time in frames
      * .Used when player wipes dirt
      */
     void advanceWipeFrame() {
-        int step = _maxwipeFrame / (_framesize * 2);
+        int step = _maxwipeFrame / _framesize;
         if (_wipeFrames < _maxwipeFrame) {
             if (_wipeFrames % step == 0) {
-                _wipeSprite->setFrame((int) (_wipeFrames / step) % _framesize);
+                _wipeSprite->setFrame((int) _wipeFrames / step);
                 // CULog("drawing frame %d", (int) (_wipeFrames / step) % _framesize);
             }
             _wipeFrames += 1;
         } else {
             _wipeSprite->setFrame(0);
+        }
+    };
+    
+    /**
+     * Sets the player's movement freeze time to the given time in frames
+     * .Used when player shoos bird
+     */
+    void advanceShooFrame() {
+        int step = _maxshooFrame / _shooframesize;
+        if (_shooFrames < _maxshooFrame) {
+            if (_shooFrames % step == 0) {
+                _shooSprite->setFrame((int) _shooFrames / step);
+                // CULog("drawing frame %d", (int) (_wipeFrames / step) % _framesize);
+            }
+            _shooFrames += 1;
+        } else {
+            _shooSprite->setFrame(0);
         }
     };
     
@@ -272,17 +342,6 @@ public:
         }
         _idleFrames = _idleFrames+1;
     };
-    
-    /**
-     * Gets the amount of frames that the player is wiping dirt for
-     * @returns _wipeFrames
-     */
-    int getWipeFrames() {
-        return _wipeFrames;
-    }
-    
-    /** Sets the wipe frames */
-    void setWipeFrames(int n) { _wipeFrames = n; }
 
     /** Decreases the stun frames by one, unless it is already at 0 then does nothing. */
     void decreaseStunFrames();
@@ -327,8 +386,8 @@ public:
     /**
      * Sets the idle texture for the player.
      *
-     * The texture should be formated as a sprite sheet, and the size and 
-     * layout of the sprite sheet should already be specified in the 
+     * The texture should be formated as a sprite sheet, and the size and
+     * layout of the sprite sheet should already be specified in the
      * initializing JSON. If so, this method will construct a sprite sheet
      * from this texture. Otherwise, the texture will be ignored.
      *
@@ -356,12 +415,34 @@ public:
      * @param texture   The texture for the sprite sheet
      */
     void setWipeTexture(const std::shared_ptr<cugl::Texture>& texture);
+    
+    
+    /** Gets player shoo sprite.
+     *
+     * The size and layout of the sprite sheet should already be specified
+     * in the initializing step.
+     * @return the sprite sheet for the ship
+     */
+    const std::shared_ptr<cugl::SpriteSheet>& getShooSprite() const {
+        return _shooSprite;
+    }
+    
+    /**
+     * Sets the player shoo sprite.
+     *
+     * The texture should be formated as a sprite sheet, and the size and
+     * layout of the sprite sheet should already be specified in the
+     * initializing step. If so, this method will construct a sprite sheet
+     * from this texture.
+     * @param texture   The texture for the sprite sheet
+     */
+    void setShooTexture(const std::shared_ptr<cugl::Texture>& texture);
 
    /** Gets player dirt throwing sprite.
     *
     * The size and layout of the sprite sheet should already be specified
     * in the initializing step.
-    * 
+    *
     * @return the sprite sheet
     */
     const std::shared_ptr<cugl::SpriteSheet>& getThrowSprite() const { return _throwSprite; }
@@ -373,7 +454,7 @@ public:
      * layout of the sprite sheet should already be specified in the
      * initializing step. If so, this method will construct a sprite sheet
      * from this texture.
-     * 
+     *
      * @param texture   The texture for the sprite sheet
      */
     void setThrowTexture(const std::shared_ptr<cugl::Texture>& texture);
