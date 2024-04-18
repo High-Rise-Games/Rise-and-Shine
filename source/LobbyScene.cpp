@@ -180,7 +180,6 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
             _select_blue->setDown(false);
             _select_green->setDown(false);
             _select_yellow->setDown(false);
-            AudioEngine::get()->play("click", _assets->get<cugl::Sound>("click"));
         }
         });
     _select_blue->addListener([this](const std::string& name, bool down) {
@@ -195,7 +194,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
             _select_red->setDown(false);
             _select_green->setDown(false);
             _select_yellow->setDown(false);
-            AudioEngine::get()->play("click", _assets->get<cugl::Sound>("click"));
+
         }
         });
     _select_green->addListener([this](const std::string& name, bool down) {
@@ -210,7 +209,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
             _select_red->setDown(false);
             _select_blue->setDown(false);
             _select_yellow->setDown(false);
-            AudioEngine::get()->play("click", _assets->get<cugl::Sound>("click"));
+   
         }
         });
     _select_yellow->addListener([this](const std::string& name, bool down) {
@@ -225,7 +224,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
             _select_red->setDown(false);
             _select_blue->setDown(false);
             _select_green->setDown(false);
-            AudioEngine::get()->play("click", _assets->get<cugl::Sound>("click"));
+   
         }
         });
     
@@ -378,45 +377,7 @@ void LobbyScene::dispose() {
 void LobbyScene::update(float timestep) {
     _level_field->setText(std::to_string(_level));
     
-    
-    if (!isHost()) {
-//        const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-//        json->init(JsonValue::Type::ObjectType);
-//        
-//        NetcodeSerializer netSerializer;
-//        netSerializer.writeJson(json);
-//        const std::vector<std::byte>& byteState = netSerializer.serialize();
-//        _network->broadcast(byteState);
-//        netSerializer.reset();
-    }
-    
-    // Assign UUID logic
-    
-    if (isHost() && !_UUIDisProcessed) {
-        _numAssignedPlayers = _network.getNumPlayers();
-        int i=1;
-        for (auto &peer : _network.getConnection()->getPeers()) {
-            i++;
-            std::shared_ptr<cugl::net::NetcodePeer> peerConnection = peer.second;
-            const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-            json->init(JsonValue::Type::ObjectType);
-            json->appendValue(peerConnection->getUUID(), std::to_string(i));
-            _network.transmitMessage(json);
-            _UUIDmap[peerConnection->getUUID()] = i;
-        }
-        _UUIDisProcessed = true;
-    } if (isHost() && _UUIDisProcessed && _numAssignedPlayers != _network.getNumPlayers()) {
-        int i=1;
-        for (auto &peer : _network.getConnection()->getPeers()) {
-            i++;
-            std::shared_ptr<cugl::net::NetcodePeer> peerConnection = peer.second;
-            const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-            json->init(JsonValue::Type::ObjectType);
-            json->appendValue(peerConnection->getUUID(), std::to_string(i));
-            _network.transmitMessage(json);
-            _UUIDmap[peerConnection->getUUID()] = i;
-        }
-    }
+
 
     if (isHost()) {
         _all_characters[0] = character;
@@ -442,25 +403,33 @@ void LobbyScene::update(float timestep) {
             json->init(JsonValue::Type::ObjectType);
             json->appendValue("level", std::to_string(_level));
 
-            NetcodeSerializer netSerializer;
-            netSerializer.writeJson(json);
-            const std::vector<std::byte>& levelJSON = netSerializer.serialize();
-            _network.getConnection()->broadcast(levelJSON);
-
-            netSerializer.reset();
+            _network.transmitMessage(json);
         }
+        
+        if (isHost() && !_UUIDisProcessed) {
+            _numAssignedPlayers = _network.getNumPlayers();
+            int i=1;
+            for (auto &peer : _network.getConnection()->getPeers()) {
+                i++;
+                std::shared_ptr<cugl::net::NetcodePeer> peerConnection = peer.second;
+                if (_UUIDmap[peerConnection->getUUID()] != i) {
+                    const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+                    json->init(JsonValue::Type::ObjectType);
+                    json->appendValue(peerConnection->getUUID(), std::to_string(i));
+                    _network.transmitMessage(json);
+                    _UUIDmap[peerConnection->getUUID()] = i;
+                }
+            }
+            _UUIDisProcessed = true;
+        }
+        
         else if ((!isHost() && _status == WAIT) || isHost()) {
             // sends current character selection across network
             const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
             json->init(JsonValue::Type::ObjectType);
             json->appendValue("id", std::to_string(_id));
             json->appendValue("char", character);
-
-            NetcodeSerializer netSerializer;
-            netSerializer.writeJson(json);
-            const std::vector<std::byte>& charJSON = netSerializer.serialize();
-            _network.getConnection()->broadcast(charJSON);
-            netSerializer.reset();
+            _network.transmitMessage(json);
         }
     }
 }
@@ -479,19 +448,16 @@ void LobbyScene::update(float timestep) {
 void LobbyScene::processData(const std::string source,
                             const std::vector<std::byte>& data) {
     
+    std::shared_ptr<JsonValue> jsonData = _network.processMessage(source, data);
     
     if (isHost() && _status == START) {
         return;
     }
-    if (!isHost() && data.at(0) == std::byte{ 0xff } && _status != START) {
+    if (!isHost() && jsonData->has("start") && _status != START) {
         // read game start message sent from host
         _status = START;
         return;
     }
-
-    NetcodeDeserializer netDeserializer;
-    netDeserializer.receive(data);
-    std::shared_ptr<JsonValue> jsonData = netDeserializer.readJson();
 
     if (jsonData->has("level") && !isHost()) {
         // read level message sent from host and update level
@@ -499,7 +465,7 @@ void LobbyScene::processData(const std::string source,
     }
     
     if (jsonData->has(_network.getConnection()->getUUID()) && !isHost()) {
-        _id = jsonData->getInt(_network.getConnection()->getUUID());
+        _id = std::stoi(jsonData->getString(_network.getConnection()->getUUID()));
     }
     
 //    if (jsonData->has("invalid") == (std::stoi(jsonData->getString("invalid"))) && !isHost()) {
@@ -526,7 +492,6 @@ void LobbyScene::processData(const std::string source,
 //    _all_characters[player_id - 1] = char_selection;
 //    response->appendValue("char", character);
 
-    netDeserializer.reset();
 }
 
 
@@ -618,11 +583,11 @@ void LobbyScene::startGame() {
     if (isHost()) {
         _status = Status::START;
         
-        std::vector<std::byte> byteVec;
+        const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+        json->init(JsonValue::Type::ObjectType);
+        json->appendValue("start", "start");
+        _network.transmitMessage(json);
 
-        // sends data indicating game has started
-        byteVec.push_back(std::byte{0xff});
-        _network.getConnection()->broadcast(byteVec);
     }
     
 }
