@@ -63,6 +63,9 @@ public:
     
 protected:
     
+    /** The counter for IDs, increment by one after assigning an ID to a client**/
+    int _hostIDcounter;
+    
     /** The backgrounnd image */
     std::shared_ptr<cugl::Texture> _id2;
     

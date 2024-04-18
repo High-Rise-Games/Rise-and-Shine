@@ -90,6 +90,8 @@ void LobbyScene::updateText(const std::shared_ptr<scene2::Button>& button, const
 bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Initialize the scene to a locked width
     
+    _hostIDcounter = 2;
+    
     _UUIDisProcessed = false;
     
     _numAssignedPlayers = 0;
@@ -406,23 +408,6 @@ void LobbyScene::update(float timestep) {
             _network.transmitMessage(json);
         }
         
-        if (isHost() && !_UUIDisProcessed) {
-            _numAssignedPlayers = _network.getNumPlayers();
-            int i=1;
-            for (auto &peer : _network.getConnection()->getPeers()) {
-                i++;
-                std::shared_ptr<cugl::net::NetcodePeer> peerConnection = peer.second;
-                if (_UUIDmap[peerConnection->getUUID()] != i) {
-                    const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-                    json->init(JsonValue::Type::ObjectType);
-                    json->appendValue(peerConnection->getUUID(), std::to_string(i));
-                    _network.transmitMessage(json);
-                    _UUIDmap[peerConnection->getUUID()] = i;
-                }
-            }
-            _UUIDisProcessed = true;
-        }
-        
         else if ((!isHost() && _status == WAIT) || isHost()) {
             // sends current character selection across network
             const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
@@ -431,6 +416,30 @@ void LobbyScene::update(float timestep) {
             json->appendValue("char", character);
             _network.transmitMessage(json);
         }
+        
+        if (!isHost()) {
+            const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+            json->init(JsonValue::Type::ObjectType);
+            json->appendValue("id request", (_network.getConnection()->getUUID()));
+            _network.transmitMessage(json);
+        }
+        
+//        if (isHost()) {
+//            int i=1;
+//            for (auto &peer : _network.getConnection()->getPeers()) {
+//                i++;
+//                std::shared_ptr<cugl::net::NetcodePeer> peerConnection = peer.second;
+//                if (_UUIDmap[peerConnection->getUUID()] != i) {
+//                    const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+//                    json->init(JsonValue::Type::ObjectType);
+//                    json->appendValue(peerConnection->getUUID(), std::to_string(i));
+//                    _network.transmitMessage(json);
+//                    _UUIDmap[peerConnection->getUUID()] = i;
+//                }
+//            }
+//        }
+        
+        
     }
 }
 
@@ -464,10 +473,32 @@ void LobbyScene::processData(const std::string source,
         _level = std::stoi(jsonData->getString("level"));
     }
     
-    if (jsonData->has(_network.getConnection()->getUUID()) && !isHost()) {
-        _id = std::stoi(jsonData->getString(_network.getConnection()->getUUID()));
+    if (jsonData->has("id request") && isHost()) {
+        
+        // see if it exists in the map
+        if ((_UUIDmap.count(jsonData->getString("id request"))>0)) {
+            _UUIDmap[jsonData->getString("id request")] = _hostIDcounter;
+            _hostIDcounter++;
+            const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+            string idToSend = std::to_string(_UUIDmap[jsonData->getString("id request")]);
+            json->init(JsonValue::Type::ObjectType);
+            json->appendValue(source,idToSend);
+            _network.transmitMessage(json);
+        }
+        
     }
     
+    if (!isHost()) {
+        
+        
+        if (jsonData->has(_network.getConnection()->getUUID()) && !isHost()) {
+            _id = std::stoi(jsonData->getString(_network.getConnection()->getUUID()));
+        }
+        
+        
+    }
+    
+
 //    if (jsonData->has("invalid") == (std::stoi(jsonData->getString("invalid"))) && !isHost()) {
 //        // read level message sent from host and update level
 //        setInvalidCharacterChoice(true);
