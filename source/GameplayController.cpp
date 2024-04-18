@@ -981,7 +981,7 @@ void GameplayController::processDirtThrowRequest(std::shared_ptr<cugl::JsonValue
  * @param dirtCon   The dirt throw input controller used by the game scene
  * @param dirtThrowButton   The dirt throw button from the game scene
  */
-void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton) {
+void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton, std::shared_ptr<cugl::scene2::SceneNode> dirtThrowArc) {
     
     // update the audio controller
     _audioController.update(isActive());
@@ -1141,22 +1141,28 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
 
     // When the player is on other's board and are able to throw dirt
     if (_curBoard != 0) {
+        bool ifSwitch = false;
         float button_x = _curBoard == -1 ? getSize().width - _windows.sideGap + 150 : _windows.sideGap - 150;
-        cugl::Vec2 buttonPos(button_x, SCENE_HEIGHT / 2);
+        float arc_start = _curBoard == -1 ? 270 : 90;
+        Vec2 buttonPos(button_x, SCENE_HEIGHT / 2);
         dirtThrowButton->setPosition(buttonPos);
+        dirtThrowArc->setPosition(buttonPos);
+//        std::cout<<"arc: "<<dirtThrowArc->getPosition().x<<", "<<dirtThrowArc->getPosition().y<<"\n";
+//        std::cout<<"button: "<<dirtThrowButton->getPosition().x<<", "<<dirtThrowButton->getPosition().y<<"\n";
         if ((_curBoard == -1 && _input.getDir().x == 1) || (_curBoard == 1 && _input.getDir().x == -1)) {
-            switchScene();
+            ifSwitch = true;
         }
         if (_currentDirtAmount > 0) {
             // _dirtThrowInput.update();
             float player_x = _curBoard == -1 ? getSize().width - _windows.sideGap : _windows.sideGap;
-            cugl::Vec2 playerPos(player_x, _player->getPosition().y);
+            Vec2 playerPos(player_x, _player->getPosition().y);
             if (!_dirtSelected) {
                 if (dirtCon.didPress() && dirtThrowButton->isDown()) {
                     _dirtSelected = true;
                     _prevInputPos = worldPos;
                 }
             } else {
+                ifSwitch = false;
                 if (dirtCon.didRelease()) {
                     _dirtSelected = false;
                     Vec2 diff = worldPos - _prevInputPos;
@@ -1196,6 +1202,9 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     _dirtPath = se.getPolygon();
                 }
             }
+        }
+        if (ifSwitch) {
+            switchScene();
         }
     }
     // When a player is on their own board

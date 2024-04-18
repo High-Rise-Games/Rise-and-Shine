@@ -109,6 +109,8 @@ protected:
 //    std::shared_ptr<cugl::Texture> _returnSceneButton;
     /** Dirt throw button */
     std::shared_ptr<cugl::scene2::Button> _dirtThrowButton;
+    /** The semicircle that constains the dirt throw button*/
+    std::shared_ptr<cugl::scene2::SceneNode> _dirtThrowArc;
     
 public:
 #pragma mark -

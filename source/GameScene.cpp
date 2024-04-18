@@ -120,6 +120,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     
     // Acquire the scene built by the asset loader and resize it the scene
     _scene_UI = _assets->get<scene2::SceneNode>("game");
+    
+//    _scene_UI->addChild(_dirtThrowArc);
     _scene_UI->setContentSize(dimen);
     _scene_UI->doLayout(); // Repositions the HUD
     
@@ -139,6 +141,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     });
     
     _dirtThrowButton = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("game_throw"));
+    
+    _dirtThrowArc = std::make_shared<scene2::SceneNode>();
     
     _quit = false;
     addChild(_scene_UI);
@@ -210,7 +214,7 @@ void GameScene::update(float timestep) {
     Vec3 convertedWorldPos = screenToWorldCoords(screenPos);
     Vec2 worldPos = Vec2(convertedWorldPos.x, convertedWorldPos.y);
     
-    _gameController->update(timestep, worldPos, _dirtThrowInput, _dirtThrowButton);
+    _gameController->update(timestep, worldPos, _dirtThrowInput, _dirtThrowButton, _dirtThrowArc);
     
     _player_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow())));
     
@@ -314,6 +318,8 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _dirtThrowButton->deactivate();
     }
     _scene_UI->render(batch);
+//    std::cout<<"arc: "<<_dirtThrowArc->getPosition().x<<", "<<_dirtThrowArc->getPosition().y<<"\n";
+//    std::cout<<"button: "<<_dirtThrowButton->getPosition().x<<", "<<_dirtThrowButton->getPosition().y<<"\n";
     
     if (_gameController->isGameWin()) {
         _winBackground->setPosition(idk-getSize().operator Vec2()/2);
@@ -325,6 +331,10 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _loseBackground->render(batch);
     }
     
+//    Affine2 arcTrans = Affine2();
+//    arcTrans.scale(1);
+//    arcTrans.translate((idk-getSize().operator Vec2()/2)+_dirtThrowArc->getPosition());
+//    batch->fill(_dirtThrowArc, Vec2::ZERO, arcTrans);
 
     Affine2 profileTrans = Affine2();
     profileTrans.scale(0.2);
