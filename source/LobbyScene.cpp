@@ -416,28 +416,21 @@ void LobbyScene::update(float timestep) {
             json->appendValue("char", character);
             _network.transmitMessage(json);
         }
+
         
-        if (!isHost()) {
-            const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-            json->init(JsonValue::Type::ObjectType);
-            json->appendValue("id request", (_network.getConnection()->getUUID()));
-            _network.transmitMessage(json);
+        if (isHost()) {
+            int i=0;
+            for (auto peer : _network.getConnection()->getPlayers()) {
+                i++;
+                if (_UUIDmap[peer] != i) {
+                    const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+                    json->init(JsonValue::Type::ObjectType);
+                    json->appendValue(peer, std::to_string(i));
+                    _network.transmitMessage(json);
+                    _UUIDmap[peer] = i;
+                }
+            }
         }
-        
-//        if (isHost()) {
-//            int i=1;
-//            for (auto &peer : _network.getConnection()->getPeers()) {
-//                i++;
-//                std::shared_ptr<cugl::net::NetcodePeer> peerConnection = peer.second;
-//                if (_UUIDmap[peerConnection->getUUID()] != i) {
-//                    const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-//                    json->init(JsonValue::Type::ObjectType);
-//                    json->appendValue(peerConnection->getUUID(), std::to_string(i));
-//                    _network.transmitMessage(json);
-//                    _UUIDmap[peerConnection->getUUID()] = i;
-//                }
-//            }
-//        }
         
         
     }
@@ -472,31 +465,13 @@ void LobbyScene::processData(const std::string source,
         // read level message sent from host and update level
         _level = std::stoi(jsonData->getString("level"));
     }
-    
-    if (jsonData->has("id request") && isHost()) {
-        
-        // see if it exists in the map
-        if ((_UUIDmap.count(jsonData->getString("id request"))>0)) {
-            _UUIDmap[jsonData->getString("id request")] = _hostIDcounter;
-            _hostIDcounter++;
-            const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-            string idToSend = std::to_string(_UUIDmap[jsonData->getString("id request")]);
-            json->init(JsonValue::Type::ObjectType);
-            json->appendValue(source,idToSend);
-            _network.transmitMessage(json);
-        }
-        
+
+    if (jsonData->has(_network.getConnection()->getUUID()) && !isHost()) {
+        _id = std::stoi(jsonData->getString(_network.getConnection()->getUUID()));
     }
     
-    if (!isHost()) {
-        
-        
-        if (jsonData->has(_network.getConnection()->getUUID()) && !isHost()) {
-            _id = std::stoi(jsonData->getString(_network.getConnection()->getUUID()));
-        }
-        
-        
-    }
+
+   
     
 
 //    if (jsonData->has("invalid") == (std::stoi(jsonData->getString("invalid"))) && !isHost()) {
@@ -504,7 +479,7 @@ void LobbyScene::processData(const std::string source,
 //        setInvalidCharacterChoice(true);
 //    }
 //    
-    else if (jsonData->has("char") && isHost()) {
+    if (jsonData->has("char") && isHost()) {
         // read character selection message sent from clients and update internal state
         std::string char_selection = jsonData->getString("char");
         int player_id = std::stoi(jsonData->getString("id"));
