@@ -484,7 +484,7 @@
             "file": "textures/ships.png"
         },
         "building_1": {
-            "file": "textures/building.png"
+            "file": "textures/day1Building.png"
         },
         "window": {
             "file": "textures/GenericWindow.png"
@@ -528,6 +528,21 @@
         "window_13": {
             "file": "textures/window_13.png"
         },
+        "day1window1": {
+            "file": "textures/day1window1.png"
+        },
+        "day1window2": {
+            "file": "textures/day1window2.png"
+        },
+        "day1window3": {
+            "file": "textures/day1window3.png"
+        },
+        "day1window4": {
+            "file": "textures/day1window4.png"
+        },
+        "day1window1": {
+            "file": "textures/window_13.png"
+        },
         "nightmare_window1": {
             "file": "textures/window1nightmare.png"
         },
@@ -542,6 +557,33 @@
         },
         "nightmare_window5": {
             "file": "textures/window5nightmare.png"
+        },
+        "down_blocked_1": {
+            "file": "textures/down_blocked_1.png"
+        },
+        "left_blocked_1": {
+            "file": "textures/left_blocked_1.png"
+        },
+        "fully_blocked_1": {
+            "file": "textures/fully_blocked_1.png"
+        },
+        "nightWindow1": {
+            "file": "textures/nightWindow1.png"
+        },
+        "nightWindow2": {
+            "file": "textures/nightWindow2.png"
+        },
+        "nightWindow3": {
+            "file": "textures/nightWindow3.png"
+        },
+        "nightWindow4": {
+            "file": "textures/nightWindow4.png"
+        },
+        "nightWindow5": {
+            "file": "textures/nightWindow5.png"
+        },
+        "nightBuilding": {
+            "file": "textures/nightBuilding.png"
         },
         "dirt": {
             "file": "textures/GenericDirt.png"
@@ -633,7 +675,8 @@
         "server": "json/server.json",
         "templatelevel": "json/templatelevel.json",
         "templatelevel2": "json/templatelevel2.json",
-        "templatelevel3": "json/templatelevel3.json"
+        "templatelevel3": "json/templatelevel3.json",
+        "nightlevel": "json/nightlevel.json"
     },
     "widgets": {
         "colorbutton" : "widgets/colorbutton.json",
