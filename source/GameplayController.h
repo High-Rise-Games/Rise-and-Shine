@@ -84,14 +84,8 @@ protected:
     /** The JSON value with all of the constants */
     std::shared_ptr<cugl::JsonValue> _constants;
 
-    /** Location and animation information for the player */
-    std::shared_ptr<Player> _player;
-    /** Location and animation information for the player to the left */
-    std::shared_ptr<Player> _playerLeft;
-    /** Location and animation information for the player to the right */
-    std::shared_ptr<Player> _playerRight;
-    /** Location and animation information for the player across the building. Only non-null for host. */
-    std::shared_ptr<Player> _playerAcross;
+    /** Location and animation information for all players in the game */
+    std::vector<std::shared_ptr<Player>> _playerVec;
 
     /** True if a neighobr player's board is on display */
     bool _onAdjacentBoard;
@@ -239,8 +233,8 @@ public:
      */
     bool init(const std::shared_ptr<cugl::AssetManager>& assets, int fps, cugl::Rect bounds, cugl::Size size);
 
-    /** Initializes the player models for all players, whether host or client. */
-    bool initPlayers(const std::shared_ptr<cugl::AssetManager>& assets);
+    /** Initializes the player model for client. */
+    bool initClient(const std::shared_ptr<cugl::AssetManager>& assets);
     
     /** Returns true if gameplay is active, and false if not. Tells us if the game is running */
     bool isActive() {

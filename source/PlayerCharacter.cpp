@@ -15,7 +15,7 @@ using namespace cugl;
  * @param windowWidth   The width of the window panes
  * @param windowHeight  The height of the window panes
  */
-Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data, const float windowWidth, const float windowHeight) {
+Player::Player(const int id, const cugl::Vec2& pos, const float windowWidth, const float windowHeight) {
     _id = id;
     _pos = pos;
     _coors = Vec2();
@@ -59,18 +59,6 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
 
     // radius of player for collisions
     _radius = _windowHeight / 2;
-    
-    // Physics
-    _mass = data->getFloat("mass",1.0);
-    //_shadows  = data->getFloat("shadow",0.0);
-    _maxvel   = data->getFloat("max velocity",0.0);
-
-    // Sprite sheet information
-    //_framecols = data->getInt("sprite cols",0);
-    //_framesize = data->getInt("sprite size",0);
-    //_frameflat = data->getInt("sprite frame",0);
-    
-    _health = data->getInt("health",0);
 }
 
 /**
