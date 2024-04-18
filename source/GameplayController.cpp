@@ -104,27 +104,33 @@ bool GameplayController::initLevel(int selected_level) {
     switch (selected_level) {
         case 1:
             // CULog("garage selecting 1");
-            level = _assets->get<JsonValue>("templatelevel");
+            level = _assets->get<JsonValue>("nightlevel");
             _size = _nativeSize;
-            _size.height *= 1.5;
+            _size.height *= 2;
             break;
         case 2:
             // CULog("garage selecting 2");
-            level = _assets->get<JsonValue>("templatelevel2");
+            level = _assets->get<JsonValue>("nightlevel");
             _size = _nativeSize;
             _size.height *= 2;
             break;
         case 3:
             // CULog("garage selecting 3");
-            level = _assets->get<JsonValue>("templatelevel3");
+            level = _assets->get<JsonValue>("nightlevel");
             _size = _nativeSize;
-            _size.height *= 3;
+            _size.height *= 2;
+            break;
+        case 4:
+            // CULog("garage selecting 4");
+            level = _assets->get<JsonValue>("nightlevel");
+            _size = _nativeSize;
+            _size.height *= 2;
             break;
         default:
             // CULog("garage selecting default");
-            level = _assets->get<JsonValue>("templatelevel");
+            level = _assets->get<JsonValue>("nightlevel");
             _size = _nativeSize;
-            _size.height *= 1.5;
+            _size.height *= 2;
             break;
     }
 

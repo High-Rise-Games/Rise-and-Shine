@@ -639,7 +639,8 @@
         "server": "json/server.json",
         "templatelevel": "json/templatelevel.json",
         "templatelevel2": "json/templatelevel2.json",
-        "templatelevel3": "json/templatelevel3.json"
+        "templatelevel3": "json/templatelevel3.json",
+        "nightlevel": "json/nightlevel.json"
     },
     "widgets": {
         "colorbutton" : "widgets/colorbutton.json",

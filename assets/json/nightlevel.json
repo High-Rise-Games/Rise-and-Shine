@@ -26,8 +26,8 @@
                  "type":"",
                  "visible":true,
                  "width":1144,
-                 "x":-184,
-                 "y":1904
+                 "x":-71.0606,
+                 "y":2224.79
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -131,17 +131,17 @@
         }],
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
- "tileheight":158,
+ "tileheight":190,
  "tilesets":[
         {
          "firstgid":1,
          "source":"Tilesets\/Night Level Tileset.tsx"
         }, 
         {
-         "firstgid":15,
+         "firstgid":6,
          "source":"Tilesets\/Buildings.tsx"
         }],
- "tilewidth":158,
+ "tilewidth":200,
  "type":"map",
  "version":"1.10",
  "width":5
