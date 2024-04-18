@@ -152,7 +152,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Program the buttons
     _backout->addListener([this](const std::string& name, bool down) {
         if (down) {
-            disconnect();
+            _network.disconnect();
             _status = Status::ABORT;
             _quit = true;
         }
@@ -282,7 +282,7 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
     
     _backout->addListener([this](const std::string& name, bool down) {
         if (down) {
-            disconnect();
+            _network.disconnect();
             _status = Status::ABORT;
             _quit = true;
         }
@@ -358,7 +358,7 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
 void LobbyScene::dispose() {
     if (_active) {
         removeAllChildren();
-        _network = nullptr;
+        _network.setConnection(nullptr);
         _active = false;
     }
 }
@@ -373,13 +373,24 @@ void LobbyScene::dispose() {
  */
 void LobbyScene::update(float timestep) {
     _level_field->setText(std::to_string(_level));
+    
+    if (!isHost()) {
+//        const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+//        json->init(JsonValue::Type::ObjectType);
+//        
+//        NetcodeSerializer netSerializer;
+//        netSerializer.writeJson(json);
+//        const std::vector<std::byte>& byteState = netSerializer.serialize();
+//        _network->broadcast(byteState);
+//        netSerializer.reset();
+    }
 
     if (isHost()) {
         _all_characters[0] = character;
     }
 
-    if (_network) {
-        _network->receive([this](const std::string source,
+    if (_network.getConnection()) {
+        _network.getConnection()->receive([this](const std::string source,
             const std::vector<std::byte>& data) {
                 processData(source, data);
                 
@@ -390,7 +401,7 @@ void LobbyScene::update(float timestep) {
         
         configureStartButton();
 
-        _player_field->setText(std::to_string(_network->getPeers().size() + 1));
+        _player_field->setText(std::to_string(_network.getNumPlayers()));
         
         if (isHost()) {
             // sends level data across network
@@ -401,7 +412,7 @@ void LobbyScene::update(float timestep) {
             NetcodeSerializer netSerializer;
             netSerializer.writeJson(json);
             const std::vector<std::byte>& levelJSON = netSerializer.serialize();
-            _network->broadcast(levelJSON);
+            _network.getConnection()->broadcast(levelJSON);
 
             netSerializer.reset();
         }
@@ -415,7 +426,7 @@ void LobbyScene::update(float timestep) {
             NetcodeSerializer netSerializer;
             netSerializer.writeJson(json);
             const std::vector<std::byte>& charJSON = netSerializer.serialize();
-            _network->broadcast(charJSON);
+            _network.getConnection()->broadcast(charJSON);
             netSerializer.reset();
         }
     }
@@ -480,59 +491,6 @@ void LobbyScene::processData(const std::string source,
 }
 
 
-/**
- * FUNCTION FOR HOST ONLY
- *
- * Connects to the game server as specified in the assets file for a player with this Network
- * Config object.
- *
- * The {@link #init} method set the configuration data. This method simply uses
- * this to create a new {@Link NetworkConnection}. It also immediately calls
- * {@link #checkConnection} to determine the scene state.
- *
- * @return true if the connection was successful
- */
-bool LobbyScene::connect() {
-    // IMPLEMENT ME
-    
-    _network = cugl::net::NetcodeConnection().alloc(_config);
-    _network->open();
-    
-    if (checkConnection()) {
-        return true;
-    }
-    
-    return false;
-    
-}
-
-
-/**
- * FUNCTION FOR CLIENT ONLY
- *
- * Connects to the game server as specified in the assets file
- *
- * The {@link #init} method set the configuration data. This method simply uses
- * this to create a new {@Link NetworkConnection}. It also immediately calls
- * {@link #checkConnection} to determine the scene state.
- *
- * @param room  The room ID to use
- *
- * @return true if the connection was successful
- */
-bool LobbyScene::connect(const std::string room) {
-
-    _network = cugl::net::NetcodeConnection().alloc(_config, dec2hex(room));
-    _network->open();
-    
-    if (checkConnection()) {
-        return true;
-    }
-    
-    return false;
-    
-    
-}
 
 
 
@@ -550,14 +508,14 @@ bool LobbyScene::checkConnection() {
         
    
     if (isHost()) {
-        switch(_network->getState()) {
+        switch(_network.getConnection()->getState()) {
             case cugl::net::NetcodeConnection::State::NEGOTIATING:
                 _status = WAIT;
                 break;
             case cugl::net::NetcodeConnection::State::CONNECTED:
                 if (_status == WAIT) {
                     _status = IDLE;
-                    _gameid_host->setText(hex2dec(_network->getRoom()));
+                    _gameid_host->setText(hex2dec(_network.getConnection()->getRoom()));
                 }
                 break;
             case cugl::net::NetcodeConnection::State::MISMATCHED:
@@ -566,7 +524,7 @@ bool LobbyScene::checkConnection() {
             case cugl::net::NetcodeConnection::State::DENIED:
             case cugl::net::NetcodeConnection::State::DISCONNECTED:
                 // code block
-                disconnect();
+                _network.disconnect();
                 _status = WAIT;
             default:
                 return false;
@@ -574,7 +532,7 @@ bool LobbyScene::checkConnection() {
         return true;
     }
      else if (!isHost()) {
-        switch(_network->getState()) {
+        switch(_network.getConnection()->getState()) {
             case cugl::net::NetcodeConnection::State::NEGOTIATING:
             // code block
                 _status = JOIN;
@@ -584,12 +542,12 @@ bool LobbyScene::checkConnection() {
                     _status = WAIT;
                 }
                 if (_id == 0) {
-                    _id = _network->getPeers().size() + 1;
+                    _id = _network.getNumPlayers();
                 }
                 return true;
             case cugl::net::NetcodeConnection::State::MISMATCHED:
             // code block
-                disconnect();
+                _network.disconnect();
                 _status = WAIT;
                 return false;
             case cugl::net::NetcodeConnection::State::INVALID:
@@ -628,7 +586,7 @@ void LobbyScene::startGame() {
 
         // sends data indicating game has started
         byteVec.push_back(std::byte{0xff});
-        _network->broadcast(byteVec);
+        _network.getConnection()->broadcast(byteVec);
     }
     
 }
@@ -650,8 +608,8 @@ void LobbyScene::configureStartButton() {
             _startgame->activate();
         }
     } else if (!isHost()) {
-        if (_status == IDLE && !_gameid_client.empty() && !_network) {
-            connect(_gameid_client);
+        if (_status == IDLE && !_gameid_client.empty() && !_network.getConnection()) {
+            _network.connect(_gameid_client,_config);
         }
 
         if (_status == WAIT) {
@@ -719,7 +677,7 @@ void LobbyScene::setActive(bool value) {
                 configureStartButton();
                 _player_field->setText("1");
                 _level_field->setText("1");
-                connect();
+                _network.connect(_config);
             }
         }
     } else if (!isHost()) {
@@ -728,7 +686,7 @@ void LobbyScene::setActive(bool value) {
             if (value) {
                 _status = IDLE;
                 _clientField->setText(_gameid_client);
-                _network = nullptr;
+                _network.setConnection(nullptr);
                 _player_field->setText("1");
                 _level_field->setText("1");
                 configureStartButton();

@@ -15,6 +15,7 @@
 #define LobbyScene_h
 
 #include <stdio.h>
+#include "NetworkController.h"
 
 #include <cugl/cugl.h>
 #include <vector>
@@ -49,12 +50,29 @@ public:
 
     std::string character;
     
+    /**
+     * Returns the network connection (as made by this scene)
+     *
+     * This value will be reset every time the scene is made active.
+     *
+     * @return the network connection (as made by this scene)
+     */
+    NetworkController getNetworkController()  {
+        return _network;
+    }
+    
 protected:
+    
+    /** UUID mapings to player us */
+    std::map<std::string, int> myMap;
     
     /** The asset manager  for main game scene to access server json file. */
     std::shared_ptr<cugl::AssetManager> _assets;
 
-    std::shared_ptr<cugl::net::NetcodeConnection> _network;
+//    std::shared_ptr<cugl::net::NetcodeConnection> _network;
+    
+    /** The controller for managing network data */
+    NetworkController _network;
     
     /** Frame variable used to increment frames used to determine
      time to display invalid character choice image**/
@@ -188,24 +206,10 @@ public:
     /** set client room ID */
     void setGameidClient(std::string client_id) { _gameid_client = client_id; }
 
-    /** Returns the number of peers/players currently in this lobby. */
-    int getNumPlayers() { return _network->getPeers().size() + 1; }
 
     /** HOST ONLY. Returns all character selections for players in this lobby. */
     std::vector<std::string>& getAllCharacters() { return _all_characters; }
     
-    /**
-     * Returns the network connection (as made by this scene)
-     *
-     * This value will be reset every time the scene is made active.
-     * In addition, this method will return nullptr if {@link #disconnect}
-     * has been called.
-     *
-     * @return the network connection (as made by this scene)
-     */
-    std::shared_ptr<cugl::net::NetcodeConnection> getConnection() const {
-        return _network;
-    }
 
     /**
      * Returns the scene status.
@@ -225,15 +229,7 @@ public:
      * @param timestep  The amount of time (in seconds) since the last frame
      */
     void update(float timestep) override;
-    
-    /**
-     * Disconnects this scene from the network controller.
-     *
-     * Technically, this method does not actually disconnect the network controller.
-     * Since the network controller is a smart pointer, it is only fully disconnected
-     * when ALL scenes have been disconnected.
-     */
-    void disconnect() { _network = nullptr; }
+
     
     // Sets the NetworkConfig of this object to be host of the network game
     void setHost(bool host) {_host = host; }
@@ -268,37 +264,11 @@ private:
      * @param text      The new text value
      */
     void updateText(const std::shared_ptr<cugl::scene2::Button>& button, const std::string text);
+    
+  
+
 
     
-
-    /**
-     * FUNCTION FOR HOST ONLY
-     *
-     * Connects to the game server as specified in the assets file
-     *
-     * The {@link #init} method set the configuration data. This method simply uses
-     * this to create a new {@Link NetworkConnection}. It also immediately calls
-     * {@link #checkConnection} to determine the scene state.
-     *
-     * @return true if the connection was successful
-     */
-    bool connect();
-    
-    /**
-     * FUNCTION FOR CLIENT ONLY
-     *
-     * Connects to the game server as specified in the assets file
-     *
-     * The {@link #init} method set the configuration data. This method simply uses
-     * this to create a new {@Link NetworkConnection}. It also immediately calls
-     * {@link #checkConnection} to determine the scene state.
-     *
-     * @param room  The room ID to use
-     *
-     * @return true if the connection was successful
-     */
-    bool connect(const std::string room);
-
     /**
      * Processes data sent over the network.
      *
