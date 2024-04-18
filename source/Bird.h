@@ -26,6 +26,8 @@ private:
     bool _toRight;
     /** drawing scale */
     float _scaleFactor;
+    /** The shadow offset in pixels */
+    float _shadows;
     
     /** The number of columns in the sprite sheet */
     int _framecols;

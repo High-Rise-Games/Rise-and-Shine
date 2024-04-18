@@ -49,12 +49,46 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _dirtThrowInput.init();
 
     // Get the background image and constant values
-    _background = _assets->get<Texture>("background");
+    _background = _assets->get<Texture>("night level background");
+    _parallax = _assets->get<Texture>("night level parallax");
+    _background->setWrapS(GL_CLAMP_TO_EDGE);
+    _background->setWrapT(GL_CLAMP_TO_EDGE);
     _constants = _assets->get<JsonValue>("constants");
     
-    // test progress bar
+
+    // test progress bar for player
     _player_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("player bar"));
     
+    _player_bar->setAngle(1.5708);
+    
+    _player_bar->setScale(0.5);
+    
+    
+    
+    
+    
+    // test progress bar for player left
+    _left_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("left bar"));
+    
+    _left_bar->setAngle(1.5708);
+    
+    _left_bar->setScale(0.5);
+    
+    // test progress bar for player right
+    _right_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("right bar"));
+    
+    _right_bar->setAngle(1.5708);
+    
+    _right_bar->setScale(0.5);
+    
+    // test progress bar for player top
+    _accross_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("bottom bar"));
+    
+    _accross_bar->setAngle(1.5708);
+    
+    _accross_bar->setScale(0.5);
+    
+
     
     
     // Initialize dirt bucket
@@ -86,6 +120,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     
     // Acquire the scene built by the asset loader and resize it the scene
     _scene_UI = _assets->get<scene2::SceneNode>("game");
+    
+//    _scene_UI->addChild(_dirtThrowArc);
     _scene_UI->setContentSize(dimen);
     _scene_UI->doLayout(); // Repositions the HUD
     
@@ -103,16 +139,10 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
             _quit = true;
         }
     });
-
-    _tn_button = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("game_switch"));
-    _tn_button->addListener([=](const std::string& name, bool down) {
-        if (down) {
-            CULog("switch scene button pressed");
-            _gameController->switchScene();
-        }
-    });
     
     _dirtThrowButton = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("game_throw"));
+    
+    _dirtThrowArc = std::make_shared<scene2::SceneNode>();
     
     _quit = false;
     addChild(_scene_UI);
@@ -131,7 +161,6 @@ void GameScene::dispose() {
     if (_active) {
         removeAllChildren();
         _active = false;
-        _tn_button = nullptr;
         _dirtThrowButton = nullptr;
         _winBackground = nullptr;
         _loseBackground = nullptr;
@@ -153,16 +182,13 @@ void GameScene::setActive(bool value) {
         if (value) {
             _quit = false;
             _backout->activate();
-            _tn_button->activate();
             _dirtThrowButton->activate();
         }
         else {
             _backout->deactivate();
-            _tn_button->deactivate();
             _dirtThrowButton->deactivate();
             // If any were pressed, reset them
             _backout->setDown(false);
-            _tn_button->setDown(false);
             _dirtThrowButton->setDown(false);
         }
     }
@@ -188,16 +214,22 @@ void GameScene::update(float timestep) {
     Vec3 convertedWorldPos = screenToWorldCoords(screenPos);
     Vec2 worldPos = Vec2(convertedWorldPos.x, convertedWorldPos.y);
     
-    _gameController->update(timestep, worldPos, _dirtThrowInput, _dirtThrowButton);
+    _gameController->update(timestep, worldPos, _dirtThrowInput, _dirtThrowButton, _dirtThrowArc);
     
-    // each player manages their own UI elements/text boxes for displaying resource information
-    // Update the health meter
-//    
-//    _healthText->setText(strtool::format("Health %d", _gameController->getPlayerHealth()));
+    _player_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow())));
+    
+    
+    
+    _left_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerLeftWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerLeftWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerLeftWindow())));
+    
+    _right_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerRightWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerRightWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerRightWindow())));
+    
+    _accross_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerAccrossWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerAccrossWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerAccrossWindow())));
+
+
     _timeText->setText(strtool::format("Time %d", _gameController->getTime()));
         
-        
-//    _healthText->layout();
+
     _timeText->layout();
         
     // Update the dirt display
@@ -229,11 +261,16 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->begin(getCamera()->getCombined());
     _scene_UI->setPosition(idk-getSize().operator Vec2()/2);
     
-    batch->draw(_background,Rect(Vec2::ZERO,getSize()));
-    
+//    batch->draw(_background,Rect(Vec2::ZERO));
+    batch->draw(_background,(idk-getSize().operator Vec2()/2)-Vec2(0,idk.y-400));
+    batch->draw(_parallax, (idk-getSize().operator Vec2()/2)-Vec2(0,idk.y));
     
 
     _gameController->draw(batch);
+    
+    
+    
+    
 
     batch->setColor(Color4::BLACK);
 //    batch->drawText(_timeText, Vec2(getSize().width - 10 - _timeText->getBounds().size.width, getSize().height - _timeText->getBounds().size.height));
@@ -272,20 +309,17 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->setColor(Color4::WHITE);
     
     if (_gameController->getCurBoard() != 0) {
-        _tn_button->setVisible(true);
-        _tn_button->activate();
-        _tn_button->setDown(false);
         _dirtThrowButton->setVisible(true);
         _dirtThrowButton->activate();
         _dirtThrowButton->setDown(false);
     }
     else {
-        _tn_button->setVisible(false);
-        _tn_button->deactivate();
         _dirtThrowButton->setVisible(false);
         _dirtThrowButton->deactivate();
     }
     _scene_UI->render(batch);
+//    std::cout<<"arc: "<<_dirtThrowArc->getPosition().x<<", "<<_dirtThrowArc->getPosition().y<<"\n";
+//    std::cout<<"button: "<<_dirtThrowButton->getPosition().x<<", "<<_dirtThrowButton->getPosition().y<<"\n";
     
     if (_gameController->isGameWin()) {
         _winBackground->setPosition(idk-getSize().operator Vec2()/2);
@@ -296,6 +330,33 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _loseBackground->setVisible(true);
         _loseBackground->render(batch);
     }
+    
+//    Affine2 arcTrans = Affine2();
+//    arcTrans.scale(1);
+//    arcTrans.translate((idk-getSize().operator Vec2()/2)+_dirtThrowArc->getPosition());
+//    batch->fill(_dirtThrowArc, Vec2::ZERO, arcTrans);
+
+    Affine2 profileTrans = Affine2();
+    profileTrans.scale(0.2);
+    profileTrans.translate((idk-getSize().operator Vec2()/2)+_player_bar->getPosition());
+    batch->draw(_gameController->getPlayer()->getProfileTexture(), _gameController->getPlayer()->getProfileTexture()->getSize().operator Vec2()/2, profileTrans);
+    
+    Affine2 profileTransLeft = Affine2();
+    profileTransLeft.scale(0.2);
+    profileTransLeft.translate((idk-getSize().operator Vec2()/2)+_left_bar->getPosition());
+    batch->draw(_gameController->getPlayerLeft()->getProfileTexture(), _gameController->getPlayerLeft()->getProfileTexture()->getSize().operator Vec2()/2, profileTransLeft);
+    
+    // Transgender Rights so based !!!!!
+    Affine2 profileTransRights = Affine2();
+    profileTransRights.scale(0.2);
+    profileTransRights.translate((idk-getSize().operator Vec2()/2)+_right_bar->getPosition());
+    batch->draw(_gameController->getPlayerRight()->getProfileTexture(), _gameController->getPlayerRight()->getProfileTexture()->getSize().operator Vec2()/2, profileTransRights);
+    
+    Affine2 profileTransAcross = Affine2();
+    profileTransAcross.scale(0.2);
+    profileTransAcross.translate((idk-getSize().operator Vec2()/2)+_accross_bar->getPosition());
+    batch->draw(_gameController->getPlayerAccross()->getProfileTexture(), _gameController->getPlayerAccross()->getProfileTexture()->getSize().operator Vec2()/2, profileTransAcross);
+
     
 //    _player_bar->render(batch);
 //    _player_bar->setPosition(idk-getSize().operator Vec2()/2);

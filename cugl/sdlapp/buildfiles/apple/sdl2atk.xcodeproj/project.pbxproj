@@ -7,20 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EBA373542B0BF7C1001427EA /* ogg.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA373522B0BF7C1001427EA /* ogg.h */; };
-		EBA373552B0BF7C1001427EA /* os_types.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA373532B0BF7C1001427EA /* os_types.h */; };
-		EBA373572B0BF7D5001427EA /* crctable.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA373562B0BF7D5001427EA /* crctable.h */; };
 		EBA3735A2B0BF7ED001427EA /* bitwise.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA373582B0BF7ED001427EA /* bitwise.c */; };
 		EBA3735B2B0BF7ED001427EA /* framing.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA373592B0BF7ED001427EA /* framing.c */; };
-		EBA375E02B0BFB78001427EA /* assert.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA375D72B0BFB78001427EA /* assert.h */; };
-		EBA375E12B0BFB78001427EA /* metadata.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA375D82B0BFB78001427EA /* metadata.h */; };
-		EBA375E22B0BFB78001427EA /* callback.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA375D92B0BFB78001427EA /* callback.h */; };
-		EBA375E32B0BFB78001427EA /* ordinals.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA375DA2B0BFB78001427EA /* ordinals.h */; };
-		EBA375E42B0BFB78001427EA /* format.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA375DB2B0BFB78001427EA /* format.h */; };
-		EBA375E52B0BFB78001427EA /* stream_decoder.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA375DC2B0BFB78001427EA /* stream_decoder.h */; };
-		EBA375E62B0BFB78001427EA /* stream_encoder.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA375DD2B0BFB78001427EA /* stream_encoder.h */; };
-		EBA375E72B0BFB78001427EA /* all.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA375DE2B0BFB78001427EA /* all.h */; };
-		EBA375E82B0BFB78001427EA /* export.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA375DF2B0BFB78001427EA /* export.h */; };
 		EBA3760A2B0BFBB9001427EA /* ogg_decoder_aspect.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA375E92B0BFBB8001427EA /* ogg_decoder_aspect.c */; };
 		EBA3760B2B0BFBB9001427EA /* bitwriter.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA375EA2B0BFBB8001427EA /* bitwriter.c */; };
 		EBA3760C2B0BFBB9001427EA /* format.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA375EB2B0BFBB8001427EA /* format.c */; };
@@ -54,25 +42,6 @@
 		EBA376282B0BFBB9001427EA /* stream_encoder_intrin_avx2.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376072B0BFBB8001427EA /* stream_encoder_intrin_avx2.c */; };
 		EBA376292B0BFBB9001427EA /* lpc_intrin_avx2.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376082B0BFBB9001427EA /* lpc_intrin_avx2.c */; };
 		EBA3762A2B0BFBB9001427EA /* crc.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376092B0BFBB9001427EA /* crc.c */; };
-		EBA3766E2B0BFD56001427EA /* masking.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA3765B2B0BFD55001427EA /* masking.h */; };
-		EBA3766F2B0BFD56001427EA /* window.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA3765C2B0BFD56001427EA /* window.h */; };
-		EBA376702B0BFD56001427EA /* bitrate.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA3765D2B0BFD56001427EA /* bitrate.h */; };
-		EBA376712B0BFD56001427EA /* codebook.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA3765E2B0BFD56001427EA /* codebook.h */; };
-		EBA376722B0BFD56001427EA /* highlevel.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA3765F2B0BFD56001427EA /* highlevel.h */; };
-		EBA376732B0BFD56001427EA /* lpc.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA376602B0BFD56001427EA /* lpc.h */; };
-		EBA376742B0BFD56001427EA /* lookup.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA376612B0BFD56001427EA /* lookup.h */; };
-		EBA376752B0BFD56001427EA /* lookup_data.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA376622B0BFD56001427EA /* lookup_data.h */; };
-		EBA376762B0BFD56001427EA /* misc.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA376632B0BFD56001427EA /* misc.h */; };
-		EBA376772B0BFD56001427EA /* os.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA376642B0BFD56001427EA /* os.h */; };
-		EBA376782B0BFD56001427EA /* lsp.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA376652B0BFD56001427EA /* lsp.h */; };
-		EBA376792B0BFD56001427EA /* registry.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA376662B0BFD56001427EA /* registry.h */; };
-		EBA3767A2B0BFD56001427EA /* codec_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA376672B0BFD56001427EA /* codec_internal.h */; };
-		EBA3767B2B0BFD56001427EA /* backends.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA376682B0BFD56001427EA /* backends.h */; };
-		EBA3767C2B0BFD56001427EA /* smallft.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA376692B0BFD56001427EA /* smallft.h */; };
-		EBA3767D2B0BFD56001427EA /* envelope.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA3766A2B0BFD56001427EA /* envelope.h */; };
-		EBA3767E2B0BFD56001427EA /* psy.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA3766B2B0BFD56001427EA /* psy.h */; };
-		EBA3767F2B0BFD56001427EA /* scales.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA3766C2B0BFD56001427EA /* scales.h */; };
-		EBA376802B0BFD56001427EA /* mdct.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA3766D2B0BFD56001427EA /* mdct.h */; };
 		EBA3769C2B0BFDA9001427EA /* res0.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376822B0BFDA9001427EA /* res0.c */; };
 		EBA3769D2B0BFDA9001427EA /* block.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376832B0BFDA9001427EA /* block.c */; };
 		EBA3769E2B0BFDA9001427EA /* analysis.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376842B0BFDA9001427EA /* analysis.c */; };
@@ -94,9 +63,6 @@
 		EBA376B22B0BFDA9001427EA /* mapping0.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376982B0BFDA9001427EA /* mapping0.c */; };
 		EBA376B42B0BFDA9001427EA /* floor0.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA3769A2B0BFDA9001427EA /* floor0.c */; };
 		EBA376B72B0BFE16001427EA /* vorbisenc.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376812B0BFDA9001427EA /* vorbisenc.c */; };
-		EBA376BC2B0BFE34001427EA /* codec.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA376B92B0BFE34001427EA /* codec.h */; };
-		EBA376BD2B0BFE34001427EA /* vorbisenc.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA376BA2B0BFE34001427EA /* vorbisenc.h */; };
-		EBA376BE2B0BFE34001427EA /* vorbisfile.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA376BB2B0BFE34001427EA /* vorbisfile.h */; };
 		EBA376BF2B0BFE54001427EA /* vorbisfile.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376992B0BFDA9001427EA /* vorbisfile.c */; };
 		EBA376C12B0C019A001427EA /* libFLAC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBA373602B0BF828001427EA /* libFLAC.a */; };
 		EBA376C22B0C019A001427EA /* libkissfft.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EBFE91132AFC12270091303A /* libkissfft.a */; };
@@ -108,7 +74,6 @@
 		EBA376CC2B0C0393001427EA /* ATK_MathComplex.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376C92B0C0393001427EA /* ATK_MathComplex.c */; };
 		EBA376CD2B0C0393001427EA /* ATK_MathPoly.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376CA2B0C0393001427EA /* ATK_MathPoly.c */; };
 		EBA376CE2B0C0393001427EA /* ATK_MathVec.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376CB2B0C0393001427EA /* ATK_MathVec.c */; };
-		EBA376D12B0C1F49001427EA /* ATK_file_c.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA376CF2B0C1F49001427EA /* ATK_file_c.h */; };
 		EBA376D22B0C1F49001427EA /* ATK_file.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376D02B0C1F49001427EA /* ATK_file.c */; };
 		EBA376D72B0C1F6A001427EA /* ATK_DSPConvolve.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376D32B0C1F6A001427EA /* ATK_DSPConvolve.c */; };
 		EBA376D82B0C1F6A001427EA /* ATK_DSPFilter.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376D42B0C1F6A001427EA /* ATK_DSPFilter.c */; };
@@ -117,30 +82,11 @@
 		EBA376E22B0C1F7C001427EA /* ATK_Codec.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376DB2B0C1F7C001427EA /* ATK_Codec.c */; };
 		EBA376E32B0C1F7C001427EA /* ATK_CodecFLAC.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376DC2B0C1F7C001427EA /* ATK_CodecFLAC.c */; };
 		EBA376E42B0C1F7C001427EA /* ATK_CodecWAV.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376DD2B0C1F7C001427EA /* ATK_CodecWAV.c */; };
-		EBA376E52B0C1F7C001427EA /* ATK_CodecWav_c.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA376DE2B0C1F7C001427EA /* ATK_CodecWav_c.h */; };
 		EBA376E62B0C1F7C001427EA /* ATK_CodecVorbis.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376DF2B0C1F7C001427EA /* ATK_CodecVorbis.c */; };
-		EBA376E72B0C1F7C001427EA /* ATK_Codec_c.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA376E02B0C1F7C001427EA /* ATK_Codec_c.h */; };
 		EBA376E82B0C1F7C001427EA /* ATK_CodecMP3.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376E12B0C1F7C001427EA /* ATK_CodecMP3.c */; };
 		EBA376EE2B0C1F8E001427EA /* ATK_AudioCVT.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376E92B0C1F8E001427EA /* ATK_AudioCVT.c */; };
 		EBA376EF2B0C1F8E001427EA /* ATK_AlgoReverb.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376EA2B0C1F8E001427EA /* ATK_AlgoReverb.c */; };
 		EBA376F02B0C1F8E001427EA /* ATK_LatencyAdapter.c in Sources */ = {isa = PBXBuildFile; fileRef = EBA376EB2B0C1F8E001427EA /* ATK_LatencyAdapter.c */; };
-		EBA376F12B0C1F8E001427EA /* ATK_Redistribute.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA376EC2B0C1F8E001427EA /* ATK_Redistribute.h */; };
-		EBA376F22B0C1F8E001427EA /* ATK_Reformat.h in Headers */ = {isa = PBXBuildFile; fileRef = EBA376ED2B0C1F8E001427EA /* ATK_Reformat.h */; };
-		EBFE91012AFBF2C30091303A /* ATK_rand.h in Headers */ = {isa = PBXBuildFile; fileRef = EBFE90F92AFBF2C30091303A /* ATK_rand.h */; };
-		EBFE91022AFBF2C30091303A /* ATK_file.h in Headers */ = {isa = PBXBuildFile; fileRef = EBFE90FA2AFBF2C30091303A /* ATK_file.h */; };
-		EBFE91032AFBF2C30091303A /* ATK_codec.h in Headers */ = {isa = PBXBuildFile; fileRef = EBFE90FB2AFBF2C30091303A /* ATK_codec.h */; };
-		EBFE91042AFBF2C30091303A /* ATK_math.h in Headers */ = {isa = PBXBuildFile; fileRef = EBFE90FC2AFBF2C30091303A /* ATK_math.h */; };
-		EBFE91052AFBF2C30091303A /* ATK_audio.h in Headers */ = {isa = PBXBuildFile; fileRef = EBFE90FD2AFBF2C30091303A /* ATK_audio.h */; };
-		EBFE91062AFBF2C30091303A /* ATK_error.h in Headers */ = {isa = PBXBuildFile; fileRef = EBFE90FE2AFBF2C30091303A /* ATK_error.h */; };
-		EBFE91072AFBF2C30091303A /* SDL_atk.h in Headers */ = {isa = PBXBuildFile; fileRef = EBFE90FF2AFBF2C30091303A /* SDL_atk.h */; };
-		EBFE91082AFBF2C30091303A /* ATK_dsp.h in Headers */ = {isa = PBXBuildFile; fileRef = EBFE91002AFBF2C30091303A /* ATK_dsp.h */; };
-		EBFE912A2AFC12B00091303A /* kiss_fft.h in Headers */ = {isa = PBXBuildFile; fileRef = EBFE91212AFC12B00091303A /* kiss_fft.h */; };
-		EBFE912C2AFC12B00091303A /* kiss_fftndr.h in Headers */ = {isa = PBXBuildFile; fileRef = EBFE91232AFC12B00091303A /* kiss_fftndr.h */; };
-		EBFE912D2AFC12B00091303A /* kiss_fftnd.h in Headers */ = {isa = PBXBuildFile; fileRef = EBFE91242AFC12B00091303A /* kiss_fftnd.h */; };
-		EBFE912E2AFC12B00091303A /* kfc.h in Headers */ = {isa = PBXBuildFile; fileRef = EBFE91252AFC12B00091303A /* kfc.h */; };
-		EBFE91302AFC12B00091303A /* kiss_fft_log.h in Headers */ = {isa = PBXBuildFile; fileRef = EBFE91272AFC12B00091303A /* kiss_fft_log.h */; };
-		EBFE91312AFC12B00091303A /* _kiss_fft_guts.h in Headers */ = {isa = PBXBuildFile; fileRef = EBFE91282AFC12B00091303A /* _kiss_fft_guts.h */; };
-		EBFE91322AFC12B00091303A /* kiss_fftr.h in Headers */ = {isa = PBXBuildFile; fileRef = EBFE91292AFC12B00091303A /* kiss_fftr.h */; };
 		EBFE913D2AFC15D80091303A /* kfc.c in Sources */ = {isa = PBXBuildFile; fileRef = EBFE91332AFC12C00091303A /* kfc.c */; };
 		EBFE913E2AFC15DD0091303A /* kiss_fftr.c in Sources */ = {isa = PBXBuildFile; fileRef = EBFE91372AFC12C00091303A /* kiss_fftr.c */; };
 		EBFE913F2AFC15DD0091303A /* kiss_fftnd.c in Sources */ = {isa = PBXBuildFile; fileRef = EBFE91342AFC12C00091303A /* kiss_fftnd.c */; };
@@ -689,118 +635,11 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXHeadersBuildPhase section */
-		EBA373402B0BF3D8001427EA /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EBA375E42B0BFB78001427EA /* format.h in Headers */,
-				EBA375E32B0BFB78001427EA /* ordinals.h in Headers */,
-				EBA375E62B0BFB78001427EA /* stream_encoder.h in Headers */,
-				EBA375E02B0BFB78001427EA /* assert.h in Headers */,
-				EBA375E72B0BFB78001427EA /* all.h in Headers */,
-				EBA375E12B0BFB78001427EA /* metadata.h in Headers */,
-				EBA375E22B0BFB78001427EA /* callback.h in Headers */,
-				EBA375E82B0BFB78001427EA /* export.h in Headers */,
-				EBA375E52B0BFB78001427EA /* stream_decoder.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EBA3735C2B0BF828001427EA /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EBA3762B2B0BFCA2001427EA /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EBA376782B0BFD56001427EA /* lsp.h in Headers */,
-				EBA3767F2B0BFD56001427EA /* scales.h in Headers */,
-				EBA376732B0BFD56001427EA /* lpc.h in Headers */,
-				EBA376722B0BFD56001427EA /* highlevel.h in Headers */,
-				EBA376802B0BFD56001427EA /* mdct.h in Headers */,
-				EBA3766F2B0BFD56001427EA /* window.h in Headers */,
-				EBA3767C2B0BFD56001427EA /* smallft.h in Headers */,
-				EBA376BD2B0BFE34001427EA /* vorbisenc.h in Headers */,
-				EBA376BC2B0BFE34001427EA /* codec.h in Headers */,
-				EBA3766E2B0BFD56001427EA /* masking.h in Headers */,
-				EBA3767B2B0BFD56001427EA /* backends.h in Headers */,
-				EBA376762B0BFD56001427EA /* misc.h in Headers */,
-				EBA376742B0BFD56001427EA /* lookup.h in Headers */,
-				EBA376712B0BFD56001427EA /* codebook.h in Headers */,
-				EBA3767A2B0BFD56001427EA /* codec_internal.h in Headers */,
-				EBA376BE2B0BFE34001427EA /* vorbisfile.h in Headers */,
-				EBA3767E2B0BFD56001427EA /* psy.h in Headers */,
-				EBA376752B0BFD56001427EA /* lookup_data.h in Headers */,
-				EBA376792B0BFD56001427EA /* registry.h in Headers */,
-				EBA376772B0BFD56001427EA /* os.h in Headers */,
-				EBA3767D2B0BFD56001427EA /* envelope.h in Headers */,
-				EBA376702B0BFD56001427EA /* bitrate.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EBA3763A2B0BFCB2001427EA /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EBA376492B0BFCC0001427EA /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EBFE90E42AFBF2480091303A /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EBFE91312AFC12B00091303A /* _kiss_fft_guts.h in Headers */,
-				EBA376F22B0C1F8E001427EA /* ATK_Reformat.h in Headers */,
-				EBFE91062AFBF2C30091303A /* ATK_error.h in Headers */,
-				EBFE912D2AFC12B00091303A /* kiss_fftnd.h in Headers */,
-				EBFE91032AFBF2C30091303A /* ATK_codec.h in Headers */,
-				EBFE91042AFBF2C30091303A /* ATK_math.h in Headers */,
-				EBA373542B0BF7C1001427EA /* ogg.h in Headers */,
-				EBFE912A2AFC12B00091303A /* kiss_fft.h in Headers */,
-				EBA376D12B0C1F49001427EA /* ATK_file_c.h in Headers */,
-				EBFE91052AFBF2C30091303A /* ATK_audio.h in Headers */,
-				EBFE91012AFBF2C30091303A /* ATK_rand.h in Headers */,
-				EBFE91082AFBF2C30091303A /* ATK_dsp.h in Headers */,
-				EBFE91072AFBF2C30091303A /* SDL_atk.h in Headers */,
-				EBA376F12B0C1F8E001427EA /* ATK_Redistribute.h in Headers */,
-				EBA376E52B0C1F7C001427EA /* ATK_CodecWav_c.h in Headers */,
-				EBFE91022AFBF2C30091303A /* ATK_file.h in Headers */,
-				EBFE912C2AFC12B00091303A /* kiss_fftndr.h in Headers */,
-				EBFE91302AFC12B00091303A /* kiss_fft_log.h in Headers */,
-				EBFE91322AFC12B00091303A /* kiss_fftr.h in Headers */,
-				EBA373572B0BF7D5001427EA /* crctable.h in Headers */,
-				EBFE912E2AFC12B00091303A /* kfc.h in Headers */,
-				EBA376E72B0C1F7C001427EA /* ATK_Codec_c.h in Headers */,
-				EBA373552B0BF7C1001427EA /* os_types.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		EBFE910F2AFC12270091303A /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
-
 /* Begin PBXNativeTarget section */
 		EBA373432B0BF3D8001427EA /* ogg */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = EBA3734E2B0BF3D9001427EA /* Build configuration list for PBXNativeTarget "ogg" */;
 			buildPhases = (
-				EBA373402B0BF3D8001427EA /* Headers */,
 				EBA373412B0BF3D8001427EA /* Sources */,
 				EBA373422B0BF3D8001427EA /* Frameworks */,
 			);
@@ -817,7 +656,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EBA373682B0BF828001427EA /* Build configuration list for PBXNativeTarget "FLAC" */;
 			buildPhases = (
-				EBA3735C2B0BF828001427EA /* Headers */,
 				EBA3735D2B0BF828001427EA /* Sources */,
 				EBA3735E2B0BF828001427EA /* Frameworks */,
 			);
@@ -834,7 +672,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EBA376372B0BFCA2001427EA /* Build configuration list for PBXNativeTarget "vorbis" */;
 			buildPhases = (
-				EBA3762B2B0BFCA2001427EA /* Headers */,
 				EBA3762C2B0BFCA2001427EA /* Sources */,
 				EBA3762D2B0BFCA2001427EA /* Frameworks */,
 			);
@@ -851,7 +688,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EBA376462B0BFCB2001427EA /* Build configuration list for PBXNativeTarget "vorbisenc" */;
 			buildPhases = (
-				EBA3763A2B0BFCB2001427EA /* Headers */,
 				EBA3763B2B0BFCB2001427EA /* Sources */,
 				EBA3763C2B0BFCB2001427EA /* Frameworks */,
 			);
@@ -868,7 +704,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EBA376552B0BFCC0001427EA /* Build configuration list for PBXNativeTarget "vorbisfile" */;
 			buildPhases = (
-				EBA376492B0BFCC0001427EA /* Headers */,
 				EBA3764A2B0BFCC0001427EA /* Sources */,
 				EBA3764B2B0BFCC0001427EA /* Frameworks */,
 			);
@@ -885,7 +720,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EBFE90F32AFBF2480091303A /* Build configuration list for PBXNativeTarget "sdl2atk" */;
 			buildPhases = (
-				EBFE90E42AFBF2480091303A /* Headers */,
 				EBFE90E52AFBF2480091303A /* Sources */,
 				EBFE90E62AFBF2480091303A /* Frameworks */,
 			);
@@ -902,7 +736,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EBFE911B2AFC12270091303A /* Build configuration list for PBXNativeTarget "kissfft" */;
 			buildPhases = (
-				EBFE910F2AFC12270091303A /* Headers */,
 				EBFE91102AFC12270091303A /* Sources */,
 				EBFE91112AFC12270091303A /* Frameworks */,
 			);
@@ -1333,6 +1166,7 @@
 				);
 				OTHER_CFLAGS = "-fPIC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -1359,6 +1193,7 @@
 					"-fPIC",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};

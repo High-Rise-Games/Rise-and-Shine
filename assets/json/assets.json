@@ -1,16 +1,16 @@
 {
     "textures": {
         "progress": {
-            "file":      "textures/progress.png",
-            "wrapS":     "clamp",
-            "wrapT":     "clamp",
+            "file": "textures/progress.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
             "minfilter": "linear",
             "magfilter": "linear",
-            "atlas":     {
-                "background" : [0,    0, 320, 45],
-                "foreground" : [24,  45, 296, 90],
-                "leftcap"    : [0,   45,  24, 90],
-                "rightcap"   : [296, 45, 320, 90]
+            "atlas": {
+                "background": [ 0, 0, 320, 45 ],
+                "foreground": [ 24, 45, 296, 90 ],
+                "leftcap": [ 0, 45, 24, 90 ],
+                "rightcap": [ 296, 45, 320, 90 ]
             }
         },
         "invalid": {
@@ -363,6 +363,9 @@
             "minfilter": "linear",
             "magfilter": "linear"
         },
+        "number2": {
+            "file": "textures/number2.png"
+        },
         "wipe_flower": {
             "file": "textures/wipe-fl-4096.png"
         },
@@ -411,6 +414,18 @@
         "throw_mushroom": {
             "file": "textures/throw-m-4096.png"
         },
+        "profile_flower": {
+            "file": "textures/profile_fl.png"
+        },
+        "profile_chameleon": {
+            "file": "textures/profile_c.png"
+        },
+        "profile_frog": {
+            "file": "textures/profile_fr.png"
+        },
+        "profile_mushroom": {
+            "file": "textures/profile_m.png"
+        },
         "start_game": {
             "file": "textures/StartButton.png",
             "wrapS": "clamp",
@@ -425,6 +440,9 @@
             "minfilter": "linear",
             "magfilter": "linear"
         },
+        "arrow": {
+            "file": "textures/Arrow.png"
+        },
         "player_id": {
             "file": "textures/PlayerID.png",
             "wrapS": "clamp",
@@ -434,6 +452,21 @@
         },
         "background": {
             "file": "textures/ice.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
+        "nightLevel": {
+            "file": "textures/nightLevel.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
+        "night level background": {
+            "file": "textures/level3_backdrop.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
+        "night level parallax": {
+            "file": "textures/level3_parallax.png",
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
@@ -462,7 +495,7 @@
         "window_2": {
             "file": "textures/window_2.png"
         },
-	    "window_3": {
+        "window_3": {
             "file": "textures/window_3.png"
         },
         "window_4": {
@@ -563,6 +596,9 @@
         },
         "bucketfull": {
             "file": "textures/bucket_full.png"
+        },
+        "throwButton": {
+            "file": "textures/ThrowButton.png"
         },
         "button": {
             "file": "textures/button.png"
@@ -2222,6 +2258,56 @@
                         "foreground" : "progress_foreground",
                         "left_cap"   : "progress_leftcap",
                         "right_cap"  : "progress_rightcap"
+                    },
+                    "layout": {
+                        "x_offset": -600,
+                        "y_offset" : 265,
+                        "absolute": true
+                    }
+                },
+                "right bar"  : {
+                    "type"   : "Progress",
+                    "data"   : {
+                        "anchor"     : [0.5,0.5],
+                        "background" : "progress_background",
+                        "foreground" : "progress_foreground",
+                        "left_cap"   : "progress_leftcap",
+                        "right_cap"  : "progress_rightcap"
+                    },
+                    "layout": {
+                        "x_offset": -565,
+                        "y_offset" : 265,
+                        "absolute": true
+                    }
+                },
+                "left bar"  : {
+                    "type"   : "Progress",
+                    "data"   : {
+                        "anchor"     : [0.5,0.5],
+                        "background" : "progress_background",
+                        "foreground" : "progress_foreground",
+                        "left_cap"   : "progress_leftcap",
+                        "right_cap"  : "progress_rightcap"
+                    },
+                    "layout": {
+                        "x_offset": -530,
+                        "y_offset" : 265,
+                        "absolute": true
+                    }
+                },
+                "bottom bar"  : {
+                    "type"   : "Progress",
+                    "data"   : {
+                        "anchor"     : [0.5,0.5],
+                        "background" : "progress_background",
+                        "foreground" : "progress_foreground",
+                        "left_cap"   : "progress_leftcap",
+                        "right_cap"  : "progress_rightcap"
+                    },
+                    "layout": {
+                        "x_offset": -495,
+                        "y_offset" : 265,
+                        "absolute": true
                     }
                 },
                 "back": {
@@ -2246,50 +2332,26 @@
                         "absolute": true
                     }
                 },
-                "switch": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [ 0.0, 0.0 ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "switchSceneButton"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "right",
-                        "y_anchor": "bottom",
-                        "y_offset": 100,
-                        "x_offset": -250,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
                 "throw": {
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 0.0 ],
-                        "scale": 0.25
+                        "anchor": [ 0.5, 0.5 ],
+                        "scale": 0.35
                     },
                     "children": {
                         "up": {
                             "type": "Image",
                             "data": {
-                                "texture": "button"
+                                "texture": "throwButton"
                             }
                         }
                     },
                     "layout": {
                         "x_anchor": "right",
-                        "y_anchor": "bottom",
-                        "y_offset": 50,
-                        "x_offset": -150,
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
                         "priority": 1,
                         "absolute": true
                     }

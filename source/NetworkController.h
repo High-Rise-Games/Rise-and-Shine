@@ -51,6 +51,35 @@ public:
     void setConnection(const std::shared_ptr<cugl::net::NetcodeConnection>& network) {
         _network = network;
     }
+    
+    /**
+     *
+     * FUNCTION FOR HOST ONLY
+     *
+     * Connects to the game server as specified in the assets file
+     *
+     * The {@link #init} method set the configuration data. This method simply uses
+     * this to create a new {@Link NetworkConnection}. It also immediately calls
+     * {@link #checkConnection} to determine the scene state.
+     *
+     * @return true if the connection was successful
+     */
+    bool connect(cugl::net::NetcodeConfig config);
+    
+    /**
+     * FUNCTION FOR CLIENT ONLY
+     *
+     * Connects to the game server as specified in the assets file
+     *
+     * The {@link #init} method set the configuration data. This method simply uses
+     * this to create a new {@Link NetworkConnection}. It also immediately calls
+     * {@link #checkConnection} to determine the scene state.
+     *
+     * @param room  The room ID to use
+     *
+     * @return true if the connection was successful
+     */
+    bool connect(const std::string room, cugl::net::NetcodeConfig config);
 
     /** Returns the number of players on this network. */
     int getNumPlayers() { return _network->getPeers().size() + 1; }

@@ -47,8 +47,7 @@ protected:
     /** The win screen scene */
     std::shared_ptr<cugl::scene2::SceneNode> _loseBackground;
     
-    /** Progress bar for this player **/
-    std::shared_ptr<cugl::scene2::ProgressBar>  _player_bar;
+ 
     /** The progress for this player displayed on the screen */
     float _player_progress;
 
@@ -65,10 +64,26 @@ protected:
     
     cugl::scheduable t;
     
+    /** Progress bar for this player **/
+    std::shared_ptr<cugl::scene2::ProgressBar>  _player_bar;
+    /** Progress bar for player left **/
+    std::shared_ptr<cugl::scene2::ProgressBar>  _left_bar;
+    /** Progress bar for player right **/
+    std::shared_ptr<cugl::scene2::ProgressBar>  _right_bar;
+    /** Progress bar for player accross **/
+    std::shared_ptr<cugl::scene2::ProgressBar>  _accross_bar;
+    
+    std::shared_ptr<cugl::scene2::SceneNode> _profilePlayer;
+    std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerLeft;
+    std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerRight;
+    std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerAcross;
+    
     // VIEW items are going to be individual variables
     // In the future, we will replace this with the scene graph
     /** The backgrounnd image */
     std::shared_ptr<cugl::Texture> _background;
+    /** The parallax image */
+    std::shared_ptr<cugl::Texture> _parallax;
     /** The text with the current health */
     std::shared_ptr<cugl::TextLayout> _healthText;
     /** The text with the current time */
@@ -94,9 +109,8 @@ protected:
 //    std::shared_ptr<cugl::Texture> _returnSceneButton;
     /** Dirt throw button */
     std::shared_ptr<cugl::scene2::Button> _dirtThrowButton;
-    /** Switch scene button */
-    std::shared_ptr<cugl::scene2::Button> _tn_button;
-
+    /** The semicircle that constains the dirt throw button*/
+    std::shared_ptr<cugl::scene2::SceneNode> _dirtThrowArc;
     
 public:
 #pragma mark -

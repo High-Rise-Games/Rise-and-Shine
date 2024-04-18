@@ -3,3 +3,4 @@ build/
 .DS_Store
 /.vs/slnx.sqlite
 /.vs/CMakeWorkspaceSettings.json
+cugl/scripts/__pycache__

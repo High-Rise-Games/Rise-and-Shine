@@ -161,11 +161,11 @@ protected:
     /** The projectile set of the neighbor across the building. Only non-null if host */
     ProjectileSet _projectilesAcross;
     
-    
-    
     // for host only
     /** Number of players in the lobby */
     int _numPlayers;
+    /** Whether a player has won */
+    std::vector<bool> _hasWon;
     /** The amount of dirt held by each player in the lobby */
     std::vector<int> _allDirtAmounts;
     /** The current board being displayed for each player in the lobby */
@@ -193,12 +193,10 @@ protected:
     std::shared_ptr<cugl::TextLayout> _healthText;
     /** The text with the current time */
     std::shared_ptr<cugl::TextLayout> _text;
-    /** Empty bucket texture image */
-    std::shared_ptr<cugl::Texture> _emptyBucket;
-    /** Full bucket texture image */
-    std::shared_ptr<cugl::Texture> _fullBucket;
     /** The text with the current dirt */
     std::shared_ptr<cugl::TextLayout> _dirtText;
+    /** Arrow texture for showing opponent player locations */
+    std::shared_ptr<cugl::Texture> _arrowTexture;
 
     /** The scene node for the UI elements (buttons, labels) */
     std::shared_ptr<cugl::scene2::SceneNode> _scene_UI;
@@ -268,9 +266,38 @@ public:
 #pragma mark -
 #pragma mark Gameplay Handling
     
+    WindowGrid getPlayerWindow() {
+            return _windows;
+    }
+        
+    WindowGrid getPlayerLeftWindow() {
+        return _windowsLeft;
+    }
     
+    WindowGrid getPlayerRightWindow() {
+        return _windowsRight;
+    }
+    
+    WindowGrid getPlayerAccrossWindow() {
+        return _windowsAcross;
+    }
+
+    /** Returns number of dirts on the player's board **/
+        float returnNumBoardDirts(WindowGrid playerWindowGrid);
+        
+        /** Returns number of max amount of dirt player's board could hold **/
+        float returnBoardMaxDirts(WindowGrid playerWindowGrid);
     /** Returns the main player of who owns this controller**/
     std::shared_ptr<Player> getPlayer() { return _player; }
+    
+    /** Returns player accross r**/
+    std::shared_ptr<Player> getPlayerAccross() { return _playerAcross; }
+    
+    /** Returns player on right r**/
+    std::shared_ptr<Player> getPlayerLeft() { return _playerLeft; }
+    
+    /** Returns player on right  r**/
+    std::shared_ptr<Player> getPlayerRight() { return _playerRight; }
     
 
     /** Returns the id of this player. */
@@ -369,6 +396,7 @@ public:
     /** Checks whether board is empty */
     const bool checkBoardEmpty(WindowGrid playerWindowGrid); 
     
+    
     /** update when dirt is generated */
     void updateDirtGenTime();
     
@@ -457,8 +485,9 @@ public:
      * @param worldPos  The position of the user's touch in world positions, used for dirt throwing
      * @param dirtCon   The dirt throw input controller used by the game scene
      * @param dirtThrowButton   The dirt throw button from the game scene
+     * @param dirtThrowArc   The dirt throw arc from the game scene
      */
-    void update(float timestep, cugl::Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton);
+    void update(float timestep, cugl::Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton, std::shared_ptr<cugl::scene2::SceneNode> dirtThrowArc);
 
     /**
      * This method does all the heavy lifting work for update.

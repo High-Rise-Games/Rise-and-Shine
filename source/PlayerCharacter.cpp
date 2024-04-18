@@ -20,6 +20,7 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     _pos = pos;
     _coors = Vec2();
     _speed = 10;
+    _shadows = 10;
     _framecols = 7;
     _framesize = 7;
     _idleframecols = 4;
@@ -204,15 +205,20 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
         player_trans.rotate(0);
     }
     player_trans.translate(_pos);
+    Affine2 shadtrans = player_trans;
+    shadtrans.translate(_shadows,-_shadows);
+    Color4f shadow(0,0,0,0.5f);
     if (_idleSprite && _wipeFrames == _maxwipeFrame && _shooFrames == _maxshooFrame) {
         // CULog("drawing player at (%f, %f)", _pos.x, _pos.y);
+        _idleSprite->draw(batch, shadow, shadtrans);
         _idleSprite->draw(batch, player_trans);
     }
     else if (_wipeSprite && _wipeFrames < _maxwipeFrame) {
+        _wipeSprite->draw(batch, shadow, shadtrans);
         _wipeSprite->draw(batch, player_trans);
     }
     else if (_shooSprite && _shooFrames < _maxshooFrame) {
-        CULog("drawing shoo bird at (%f, %f)", _pos.x, _pos.y);
+        _shooSprite->draw(batch, shadow, shadtrans);
         _shooSprite->draw(batch, player_trans);
     }
 }
@@ -232,7 +238,7 @@ void Player::drawPeeking(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::
 
         // flip sprite and translate position depending on peeking side
         if (peekDirection == -1) {
-            player_trans.translate(-(int)(_throwSprite->getFrameSize().width)*0.85, 0);
+            player_trans.translate(-(int)(_throwSprite->getFrameSize().width)*0.65, 0);
             player_trans.scale(-player_scale, player_scale);
             player_trans.translate(size.width - sideGap, _pos.y);
         }

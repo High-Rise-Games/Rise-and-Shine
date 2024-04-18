@@ -77,7 +77,7 @@ bool CollisionController::resolveBirdCollision(const std::shared_ptr<Player>& pl
 
     Vec2 norm = player->getPosition() - birdWorldPos;
     float distance = norm.length();
-    float impactDistance = (player->getRadius() + bird.getRadius() * bird.getScale() * radiusMultiplier);
+    float impactDistance = (player->getRadius() + bird.getRadius() * radiusMultiplier);
 
     // finds the NEAREST collision
     Vec2 pos = birdWorldPos;
