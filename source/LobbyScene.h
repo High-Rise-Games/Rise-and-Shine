@@ -63,8 +63,18 @@ public:
     
 protected:
     
+    /** The backgrounnd image */
+    std::shared_ptr<cugl::Texture> _id2;
+    
     /** UUID mapings to player us */
-    std::map<std::string, int> myMap;
+    std::map<std::string, int> _UUIDmap;
+    
+    /** To let us know that player IDs have been sent out to all players **/
+    bool _UUIDisProcessed;
+    
+    /** After processing all the UUIDs to send messages to all clients to tell them what their
+     game IDs are, this variable tells us the number of players that we assigned IDs to **/
+    int _numAssignedPlayers;
     
     /** The asset manager  for main game scene to access server json file. */
     std::shared_ptr<cugl::AssetManager> _assets;

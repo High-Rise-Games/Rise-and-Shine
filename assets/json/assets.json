@@ -363,6 +363,9 @@
             "minfilter": "linear",
             "magfilter": "linear"
         },
+        "number2": {
+            "file": "textures/number2.png"
+        },
         "wipe_flower": {
             "file": "textures/wipe-fl-4096.png"
         },
