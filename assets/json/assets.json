@@ -483,9 +483,6 @@
         "ship": {
             "file": "textures/ships.png"
         },
-        "building_1": {
-            "file": "textures/day1Building.png"
-        },
         "window": {
             "file": "textures/GenericWindow.png"
         },
@@ -527,6 +524,12 @@
         },
         "window_13": {
             "file": "textures/window_13.png"
+        },
+        "level1Window1": {
+            "file": "textures/level1Window1.png"
+        },
+        "level1Window2": {
+            "file": "textures/level1Window2.png"
         },
         "day1window1": {
             "file": "textures/day1window1.png"
@@ -581,6 +584,9 @@
         },
         "nightWindow5": {
             "file": "textures/nightWindow5.png"
+        },
+        "day1Building": {
+            "file": "textures/day1Building.png"
         },
         "nightBuilding": {
             "file": "textures/nightBuilding.png"
@@ -676,6 +682,7 @@
         "templatelevel": "json/templatelevel.json",
         "templatelevel2": "json/templatelevel2.json",
         "templatelevel3": "json/templatelevel3.json",
+        "level1": "json/level1.json",
         "nightlevel": "json/nightlevel.json"
     },
     "widgets": {

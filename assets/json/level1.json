@@ -1,0 +1,128 @@
+{ "compressionlevel":-1,
+ "height":5,
+ "infinite":false,
+ "layers":[
+        {
+         "id":4,
+         "image":"",
+         "name":"Background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Building",
+         "objects":[
+                {
+                 "gid":1,
+                 "height":2631,
+                 "id":22,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1234,
+                 "x":-116.515695067265,
+                 "y":1974.16143497758
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[7, 6, 7, 6,
+            6, 6, 6, 6,
+            7, 7, 6, 7,
+            6, 6, 6, 7,
+            7, 6, 7, 6],
+         "height":5,
+         "id":1,
+         "name":"Windows",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":4,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 0, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0],
+         "height":5,
+         "id":5,
+         "name":"Pipes Left",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":false,
+         "width":4,
+         "x":0,
+         "y":0
+        },
+    
+        {
+         "data":[0, 0, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0],
+         "height":5,
+         "id":11,
+         "name":"Blocked Tiles",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":false,
+         "width":4,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 0, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0],
+         "height":5,
+         "id":2,
+         "name":"Pipes Down",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":false,
+         "width":4,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":12,
+ "nextobjectid":23,
+ "orientation":"orthogonal",
+ "properties":[
+        {
+         "name":"number dirts",
+         "type":"int",
+         "value":5
+        }],
+ "renderorder":"right-down",
+ "tiledversion":"1.10.2",
+ "tileheight":250,
+ "tilesets":[
+        {
+         "firstgid":1,
+         "source":"Tilesets\/Buildings.tsx"
+        }, 
+        {
+         "firstgid":6,
+         "source":"Tilesets\/level1.tsx"
+        }],
+ "tilewidth":250,
+ "type":"map",
+ "version":"1.10",
+ "width":4
+}
