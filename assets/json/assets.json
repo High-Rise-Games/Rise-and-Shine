@@ -492,6 +492,18 @@
         "level1Window2": {
             "file": "textures/level1Window2.png"
         },
+        "level2Window1": {
+            "file": "textures/level2Window1.png"
+        },
+        "level2Window2": {
+            "file": "textures/level2Window2.png"
+        },
+        "level2Window3": {
+            "file": "textures/level2Window3.png"
+        },
+        "level2Window4": {
+            "file": "textures/level2Window4.png"
+        },
         "down_blocked_1": {
             "file": "textures/down_blocked_1.png"
         },
@@ -518,6 +530,9 @@
         },
         "day1Building": {
             "file": "textures/day1Building.png"
+        },
+        "day2Building": {
+            "file": "textures/day2Building.png"
         },
         "nightBuilding": {
             "file": "textures/nightBuilding.png"
@@ -614,6 +629,7 @@
         "templatelevel2": "json/templatelevel2.json",
         "templatelevel3": "json/templatelevel3.json",
         "level1": "json/level1.json",
+        "level2": "json/level2.json",
         "nightlevel": "json/nightlevel.json"
     },
     "widgets": {
