@@ -531,21 +531,6 @@
         "level1Window2": {
             "file": "textures/level1Window2.png"
         },
-        "day1window1": {
-            "file": "textures/day1window1.png"
-        },
-        "day1window2": {
-            "file": "textures/day1window2.png"
-        },
-        "day1window3": {
-            "file": "textures/day1window3.png"
-        },
-        "day1window4": {
-            "file": "textures/day1window4.png"
-        },
-        "day1window1": {
-            "file": "textures/window_13.png"
-        },
         "nightmare_window1": {
             "file": "textures/window1nightmare.png"
         },
