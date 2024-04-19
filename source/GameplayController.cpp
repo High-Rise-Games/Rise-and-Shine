@@ -184,6 +184,7 @@ bool GameplayController::initLevel(int selected_level) {
     for (string thisWindow: texture_strings_selected) {
         _windowsLeft.addTexture(_assets->get<Texture>(thisWindow));
     }
+    _windowsLeft.setTextureIds(texture_ids_selected);
     _windowsLeft.init(level, _size); // init depends on texture
     _windowsLeft.setDirtTexture(_assets->get<Texture>("dirt"));
     _windowsLeft.setFadedDirtTexture(_assets->get<Texture>("faded-dirt"));
@@ -192,6 +193,7 @@ bool GameplayController::initLevel(int selected_level) {
     for (string thisWindow: texture_strings_selected) {
         _windowsRight.addTexture(_assets->get<Texture>(thisWindow));
     }
+    _windowsRight.setTextureIds(texture_ids_selected);
     _windowsRight.init(level, _size); // init depends on texture
     _windowsRight.setDirtTexture(_assets->get<Texture>("dirt"));
     _windowsRight.setFadedDirtTexture(_assets->get<Texture>("faded-dirt"));
@@ -200,6 +202,7 @@ bool GameplayController::initLevel(int selected_level) {
     for (string thisWindow : texture_strings_selected) {
         _windowsAcross.addTexture(_assets->get<Texture>(thisWindow));
     }
+    _windowsAcross.setTextureIds(texture_ids_selected);
     _windowsAcross.init(level, getSize()); // init depends on texture
     _windowsAcross.setDirtTexture(_assets->get<Texture>("dirt"));
     _windowsAcross.setFadedDirtTexture(_assets->get<Texture>("faded-dirt"));
