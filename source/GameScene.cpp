@@ -193,7 +193,7 @@ void GameScene::update(float timestep) {
     Vec3 convertedWorldPos = screenToWorldCoords(screenPos);
     Vec2 worldPos = Vec2(convertedWorldPos.x, convertedWorldPos.y);
     
-    _gameController->update(timestep, worldPos, _dirtThrowInput, _dirtThrowButton);
+    _gameController->update(timestep, worldPos, _dirtThrowInput, _dirtThrowButton, _dirtThrowArc);
     
     int currBarIdx = 0;
     for(int id = 1; id <= 4; id++) {

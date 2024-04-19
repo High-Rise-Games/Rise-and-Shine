@@ -631,16 +631,32 @@
             "file": "textures/ProgressBars/MedalYellow.png"
         },
         "progress_fg_blue": {
-            "file": "textures/ProgressBars/FgBlue.png"
+            "file": "textures/ProgressBars/FgBlue.png",
+            "atlas": {
+                "leftcap": [ 0, 0, 2, 18 ],
+                "rightcap": [ 81, 0, 83, 18 ]
+            }
         },
         "progress_fg_green": {
-            "file": "textures/ProgressBars/FgGreen.png"
+            "file": "textures/ProgressBars/FgGreen.png",
+            "atlas": {
+                "leftcap": [ 0, 0, 2, 18 ],
+                "rightcap": [ 81, 0, 83, 18 ]
+            }
         },
         "progress_fg_red": {
-            "file": "textures/ProgressBars/FgRed.png"
+            "file": "textures/ProgressBars/FgRed.png",
+            "atlas": {
+                "leftcap": [ 0, 0, 2, 18 ],
+                "rightcap": [ 81, 0, 83, 18 ]
+            }
         },
         "progress_fg_yellow": {
-            "file": "textures/ProgressBars/FgYellow.png"
+            "file": "textures/ProgressBars/FgYellow.png",
+            "atlas": {
+                "leftcap": [ 0, 0, 2, 18 ],
+                "rightcap": [ 81, 0, 83, 18 ]
+            }
         }
     },
     "fonts": {
@@ -2272,11 +2288,16 @@
                 "bar1"  : {
                     "type"   : "Progress",
                     "data": {
-                        "anchor": [ 0, 0 ],
+                        "anchor": [ 0.5, 0.5 ],
                         "background": "progress_bg",
-                        "foreground": "progress_fg_blue"
+                        "foreground": "progress_fg_blue",
+                        "left_cap": "progress_fg_blue_leftcap",
+                        "right_cap": "progress_fg_blue_rightcap"
                     },
                     "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "middle",
+                        "y_offset": 265,
                         "absolute": true
                     }
                 },
@@ -2315,21 +2336,6 @@
                     },
                     "layout": {
                         "x_offset": 100,
-                        "y_offset" : 265,
-                        "absolute": true
-                    }
-                },
-                "bottom bar"  : {
-                    "type"   : "Progress",
-                    "data"   : {
-                        "anchor"     : [0.5,0.5],
-                        "background" : "progress_background",
-                        "foreground" : "progress_foreground",
-                        "left_cap"   : "progress_leftcap",
-                        "right_cap"  : "progress_rightcap"
-                    },
-                    "layout": {
-                        "x_offset": -495,
                         "y_offset" : 265,
                         "absolute": true
                     }

@@ -158,18 +158,10 @@ bool GameplayController::initLevel(int selected_level) {
     texture_ids_levels.push_back(texture_ids_level_4);
     texture_ids_levels.push_back(texture_ids_level_5);
     // select the correct mapping for this level
-    std::vector<string> texture_strings_selected = texture_strings_levels.at(selected_level - 1);
-    std::vector<int>    texture_ids_selected     = texture_ids_levels.at(selected_level - 1);
+    _texture_strings_selected = texture_strings_levels.at(selected_level - 1);
+    _texture_ids_selected = texture_ids_levels.at(selected_level - 1);
     
-    for (string thisWindow: texture_strings_selected) {
-        _windows.addTexture(_assets->get<Texture>(thisWindow));
-    }
-    _windows.setTextureIds(texture_ids_selected);
-
-    _windows.init(level, _size); // init depends on texture
-    _windows.setInitDirtNum(selected_level * 5);
-    _windows.setDirtTexture(_assets->get<Texture>("dirt"));
-    _windows.setFadedDirtTexture(_assets->get<Texture>("faded-dirt"));
+    _initDirtCount = selected_level * 5;
     
     // get the win background when game is win
     _winBackground = _assets->get<Texture>("win-background");
@@ -200,10 +192,10 @@ bool GameplayController::initClient(const std::shared_ptr<cugl::AssetManager>& a
 
     // Initialize window grid for self
     _windowVec[_id - 1] = make_shared<WindowGrid>();
-    _windowVec[_id - 1]->setBuildingTexture(assets->get<Texture>("building_1"));
-    for (string thisWindow : _windowStrings) {
-        _windowVec[_id - 1]->addTexture(assets->get<Texture>(thisWindow));
+    for (string thisWindow : _texture_strings_selected) {
+        _windowVec[_id - 1]->addTexture(_assets->get<Texture>(thisWindow));
     }
+    _windowVec[_id - 1]->setTextureIds(_texture_ids_selected);
     _windowVec[_id - 1]->init(_levelJson, _size); // init depends on texture
     _windowVec[_id - 1]->setInitDirtNum(_initDirtCount);
     _windowVec[_id - 1]->setDirtTexture(assets->get<Texture>("dirt"));
@@ -270,10 +262,10 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
         for (int i = 1; i <= _numPlayers; i++) {
             // Initialize window grids
             _windowVec[i - 1] = make_shared<WindowGrid>();
-            _windowVec[i - 1]->setBuildingTexture(assets->get<Texture>("building_1"));
-            for (string thisWindow : _windowStrings) {
-                _windowVec[i - 1]->addTexture(assets->get<Texture>(thisWindow));
+            for (string thisWindow : _texture_strings_selected) {
+                _windowVec[i - 1]->addTexture(_assets->get<Texture>(thisWindow));
             }
+            _windowVec[i - 1]->setTextureIds(_texture_ids_selected);
             _windowVec[i - 1]->init(_levelJson, _size); // init depends on texture
             _windowVec[i - 1]->setInitDirtNum(_initDirtCount);
             _windowVec[i - 1]->setDirtTexture(assets->get<Texture>("dirt"));
@@ -606,10 +598,10 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
 
         // instantiate this player's window grid in this client's game instance
         _windowVec[playerId - 1] = make_shared<WindowGrid>();
-        _windowVec[playerId - 1]->setBuildingTexture(_assets->get<Texture>("building_1"));
-        for (string thisWindow : _windowStrings) {
+        for (string thisWindow : _texture_strings_selected) {
             _windowVec[playerId - 1]->addTexture(_assets->get<Texture>(thisWindow));
         }
+        _windowVec[playerId - 1]->setTextureIds(_texture_ids_selected);
         _windowVec[playerId - 1]->init(_levelJson, _size); // init depends on texture
         _windowVec[playerId - 1]->setInitDirtNum(_initDirtCount);
         _windowVec[playerId - 1]->setDirtTexture(_assets->get<Texture>("dirt"));
@@ -634,13 +626,6 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     player->setStunFrames(std::stoi(data->getString("stun_frames")));
     player->setWipeFrames(std::stoi(data->getString("wipe_frames")));
     player->setShooFrames(std::stoi(data->getString("shoo_frames")));
-
-    std::string playerHasWon = data->getString("has_won", "false");
-    if (playerHasWon == "true" && !_gameOver) {
-        _gameOver = true;
-        setWin(playerId == _id);
-        return;
-    }
 
     _gameTimeLeft = std::stoi(data->getString("timer"));
 

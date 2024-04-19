@@ -117,8 +117,9 @@ protected:
     /** The position of the dirt when it is selected*/
     cugl::Vec2 _prevInputPos;
     
-    /** Const for window texture names */
-    const std::vector<std::string> _windowStrings = { "window_1", "window_2", "window_3", "window_4", "window_5", "window_6", "window_7", "window_8", "window_9", "window_10", "window_11", "window_12", "window_13" };
+    /** Window texture names and ids */
+    std::vector<std::string> _texture_strings_selected;
+    std::vector<int> _texture_ids_selected;
     /** Vector of windows and dirt placements for all players */
     std::vector<std::shared_ptr<WindowGrid>> _windowVec;
 
