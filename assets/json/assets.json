@@ -2295,8 +2295,6 @@
                         "right_cap": "progress_fg_blue_rightcap"
                     },
                     "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
                         "y_offset": 265,
                         "absolute": true
                     }
@@ -2306,10 +2304,11 @@
                     "data": {
                         "anchor": [ 0.5, 0.5 ],
                         "background": "progress_bg",
-                        "foreground": "progress_fg_green"
+                        "foreground": "progress_fg_green",
+                        "left_cap": "progress_fg_green_leftcap",
+                        "right_cap": "progress_fg_green_rightcap"
                     },
                     "layout": {
-                        "x_offset": 0,
                         "y_offset": 265,
                         "absolute": true
                     }
@@ -2319,10 +2318,11 @@
                     "data": {
                         "anchor": [ 0.5, 0.5 ],
                         "background": "progress_bg",
-                        "foreground": "progress_fg_red"
+                        "foreground": "progress_fg_red",
+                        "left_cap": "progress_fg_red_leftcap",
+                        "right_cap": "progress_fg_red_rightcap"
                     },
                     "layout": {
-                        "x_offset": 50,
                         "y_offset" : 265,
                         "absolute": true
                     }
@@ -2332,10 +2332,11 @@
                     "data": {
                         "anchor": [ 0.5, 0.5 ],
                         "background": "progress_bg",
-                        "foreground": "progress_fg_yellow"
+                        "foreground": "progress_fg_yellow",
+                        "left_cap": "progress_fg_yellow_leftcap",
+                        "right_cap": "progress_fg_yellow_rightcap"
                     },
                     "layout": {
-                        "x_offset": 100,
                         "y_offset" : 265,
                         "absolute": true
                     }

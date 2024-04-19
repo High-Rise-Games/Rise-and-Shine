@@ -401,6 +401,26 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
     }
 }
 
+int calculateNeighborId(int myId, int dir, std::vector<std::shared_ptr<Player>> playerVec) {
+    int nbrId = myId + dir;
+    if (nbrId <= 0) {
+        nbrId = 4;
+    }
+    if (nbrId > 4) {
+        nbrId = 1;
+    }
+    while (playerVec[nbrId - 1] == nullptr) {
+        nbrId += dir;
+        if (nbrId <= 0) {
+            nbrId = 4;
+        }
+        else if (nbrId > 4) {
+            nbrId = 1;
+        }
+    }
+    return nbrId;
+}
+
 /**
 * Given the world positions, convert it to the board position
 * based off of grid coordinates. Ex. [2, 3] or [2.3, 3] if the
@@ -1058,13 +1078,8 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     snapped_dest.y = clamp(round(snapped_dest.y), 0.0f, (float)_windowVec[_id - 1]->getNVertical()) + 0.5;
                     snapped_dest = getWorldPosition(snapped_dest);
                     Vec2 velocity = (snapped_dest - playerPos).getNormalization() * 5;
-                    int targetId = _id + _curBoard;
-                    if (targetId == 0) {
-                        targetId = 4;
-                    }
-                    if (targetId == 5) {
-                        targetId = 1;
-                    }
+                    int targetId = calculateNeighborId(_id, _curBoard, _playerVec);
+
                     if (_ishost) {
                         processDirtThrowRequest(getJsonDirtThrow(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
                     }
@@ -1088,6 +1103,9 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     _dirtPath = se.getPolygon();
                 }
             }
+        }
+        if (ifSwitch) {
+            switchScene();
         }
     }
     // When a player is on their own board
@@ -1114,7 +1132,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 _playerVec[_id - 1]->getShooFrames() == _playerVec[_id - 1]->getMaxShooFrames()) {
                 // Move the player, ignoring collisions
                 int moveResult = _playerVec[_id - 1]->move(_input.getDir(), getSize(), _windowVec[_id - 1]);
-                if (moveResult == -1 || moveResult == 1) {
+                if (_numPlayers > 1 && (moveResult == -1 || moveResult == 1)) {
                     _allCurBoards[0] = moveResult;
                 } 
             }
@@ -1382,27 +1400,6 @@ const bool GameplayController::checkBoardFull() {
     }
     return true; // No 0s found, all dirty spots
 }
-
-int calculateNeighborId(int myId, int dir, std::vector<std::shared_ptr<Player>> playerVec) {
-    int nbrId = myId + dir;  
-    if (nbrId <= 0) {
-        nbrId = 4;
-    }
-    if (nbrId > 4) {
-        nbrId = 1;
-    }
-    while (playerVec[nbrId - 1] == nullptr) {
-        nbrId += dir;
-        if (nbrId <= 0) {
-            nbrId = 4;
-        }
-        else if (nbrId > 4) {
-            nbrId = 1;
-        }
-    }
-    return nbrId;
-}
-
 
 /**
  * Draws all this scene to the given SpriteBatch.
