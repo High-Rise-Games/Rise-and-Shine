@@ -578,6 +578,33 @@
         },
         "countdown1": {
             "file": "textures/countdown1.png"
+        },
+        "progress_bg": {
+            "file": "textures/ProgressBars/Bg.png"
+        },
+        "progress_medal_blue": {
+            "file": "textures/ProgressBars/MedalBlue.png"
+        },
+        "progress_medal_green": {
+            "file": "textures/ProgressBars/MedalGreen.png"
+        },
+        "progress_medal_red": {
+            "file": "textures/ProgressBars/MedalRed.png"
+        },
+        "progress_medal_yellow": {
+            "file": "textures/ProgressBars/MedalYellow.png"
+        },
+        "progress_fg_blue": {
+            "file": "textures/ProgressBars/FgBlue.png"
+        },
+        "progress_fg_green": {
+            "file": "textures/ProgressBars/FgGreen.png"
+        },
+        "progress_fg_red": {
+            "file": "textures/ProgressBars/FgRed.png"
+        },
+        "progress_fg_yellow": {
+            "file": "textures/ProgressBars/FgYellow.png"
         }
     },
     "fonts": {
@@ -2204,62 +2231,52 @@
                 "anchor": [ 0.5, 0.5 ]
             },
             "children": {
-                "player bar"  : {
+                "bar1"  : {
                     "type"   : "Progress",
-                    "data"   : {
-                        "anchor"     : [0.5,0.5],
-                        "background" : "progress_background",
-                        "foreground" : "progress_foreground",
-                        "left_cap"   : "progress_leftcap",
-                        "right_cap"  : "progress_rightcap"
+                    "data": {
+                        "anchor": [ 0, 0 ],
+                        "background": "progress_bg",
+                        "foreground": "progress_fg_blue"
                     },
                     "layout": {
-                        "x_offset": -600,
+                        "absolute": true
+                    }
+                },
+                "bar2"  : {
+                    "type"   : "Progress",
+                    "data": {
+                        "anchor": [ 0.5, 0.5 ],
+                        "background": "progress_bg",
+                        "foreground": "progress_fg_green"
+                    },
+                    "layout": {
+                        "x_offset": 0,
+                        "y_offset": 265,
+                        "absolute": true
+                    }
+                },
+                "bar3"  : {
+                    "type"   : "Progress",
+                    "data": {
+                        "anchor": [ 0.5, 0.5 ],
+                        "background": "progress_bg",
+                        "foreground": "progress_fg_red"
+                    },
+                    "layout": {
+                        "x_offset": 50,
                         "y_offset" : 265,
                         "absolute": true
                     }
                 },
-                "right bar"  : {
+                "bar4"  : {
                     "type"   : "Progress",
-                    "data"   : {
-                        "anchor"     : [0.5,0.5],
-                        "background" : "progress_background",
-                        "foreground" : "progress_foreground",
-                        "left_cap"   : "progress_leftcap",
-                        "right_cap"  : "progress_rightcap"
+                    "data": {
+                        "anchor": [ 0.5, 0.5 ],
+                        "background": "progress_bg",
+                        "foreground": "progress_fg_yellow"
                     },
                     "layout": {
-                        "x_offset": -565,
-                        "y_offset" : 265,
-                        "absolute": true
-                    }
-                },
-                "left bar"  : {
-                    "type"   : "Progress",
-                    "data"   : {
-                        "anchor"     : [0.5,0.5],
-                        "background" : "progress_background",
-                        "foreground" : "progress_foreground",
-                        "left_cap"   : "progress_leftcap",
-                        "right_cap"  : "progress_rightcap"
-                    },
-                    "layout": {
-                        "x_offset": -530,
-                        "y_offset" : 265,
-                        "absolute": true
-                    }
-                },
-                "bottom bar"  : {
-                    "type"   : "Progress",
-                    "data"   : {
-                        "anchor"     : [0.5,0.5],
-                        "background" : "progress_background",
-                        "foreground" : "progress_foreground",
-                        "left_cap"   : "progress_leftcap",
-                        "right_cap"  : "progress_rightcap"
-                    },
-                    "layout": {
-                        "x_offset": -495,
+                        "x_offset": 100,
                         "y_offset" : 265,
                         "absolute": true
                     }

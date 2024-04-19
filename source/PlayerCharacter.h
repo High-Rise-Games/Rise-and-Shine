@@ -117,7 +117,7 @@ public:
      * @param windowWidth   The width of the window panes
      * @param windowHeight  The height of the window panes
      */
-    Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data, const float windowWidth, const float windowHeight);
+    Player(const int id, const cugl::Vec2& pos, const float windowWidth, const float windowHeight);
     
     /**
      * Disposes the ship, releasing all resources.
@@ -495,7 +495,7 @@ public:
      * @param size      The size of the window (for wrap around)
      * @return 0 if moved, -1 if moving off of left edge, 1 if moving off of right edge, 2 otherwise
      */
-    int move(cugl::Vec2 dir, cugl::Size size, WindowGrid* windows);
+    int move(cugl::Vec2 dir, cugl::Size size, std::shared_ptr<WindowGrid> windows);
 
     /** Continues a movement between two grid spots */
     bool move();

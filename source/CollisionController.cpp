@@ -22,12 +22,12 @@ using namespace cugl;
  *
  * @return true if there is a ship-asteroid collision
  */
-std::pair<bool, std::optional<std::pair<cugl::Vec2, int>>> CollisionController::resolveCollision(const std::shared_ptr<Player>& player, ProjectileSet& pset) {
+std::pair<bool, std::optional<std::pair<cugl::Vec2, int>>> CollisionController::resolveCollision(const std::shared_ptr<Player>& player, std::shared_ptr<ProjectileSet>& pset) {
     bool collision = false;
     std::optional<std::pair<cugl::Vec2, int>> landedDirt;
 
-    auto it = pset.current.begin();
-    while (it != pset.current.end()) {
+    auto it = pset->current.begin();
+    while (it != pset->current.end()) {
         // Calculate the normal of the (possible) point of collision
         std::shared_ptr<ProjectileSet::Projectile> proj = *it;
 
@@ -61,7 +61,7 @@ std::pair<bool, std::optional<std::pair<cugl::Vec2, int>>> CollisionController::
             }
 
             // delete projectile from set after colliding
-            it = pset.current.erase(it);
+            it = pset->current.erase(it);
             collision = true;
         }
         else {

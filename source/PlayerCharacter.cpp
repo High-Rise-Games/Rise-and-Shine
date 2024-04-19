@@ -256,7 +256,7 @@ void Player::drawPeeking(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::
  * @param size      Size of the game scene
  * @return 0 if moved, -1 if moving off of left edge, 1 if moving off of right edge, 2 otherwise
  */
-int Player::move(Vec2 dir, Size size, WindowGrid* windows) {
+int Player::move(Vec2 dir, Size size, std::shared_ptr<WindowGrid> windows) {
 
     float sideGap = windows->sideGap;
 

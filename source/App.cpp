@@ -401,7 +401,7 @@ void App::updateLobbyScene(float timestep) {
                 _gameplay->setHost(false);
                 _gameplay->setActive(true);
                 _gameplay->setId(_lobby_client.getId());
-                _gameplay->initPlayers(_assets);
+                _gameplay->initClient(_assets);
                 CULog("my id: %d", _gameplay->getId());
                break;
             case LobbyScene::Status::WAIT:
