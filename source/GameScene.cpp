@@ -36,6 +36,11 @@ using namespace std;
 bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps) {
     
     Size dimen = Application::get()->getDisplaySize();
+    
+    _player_progress=0;
+    _right_progress=0;
+    _across_progress=0;
+    _left_progress=0;
 
     dimen *= SCENE_HEIGHT/dimen.height;
     if (assets == nullptr) {
@@ -216,13 +221,22 @@ void GameScene::update(float timestep) {
     
     _gameController->update(timestep, worldPos, _dirtThrowInput, _dirtThrowButton, _dirtThrowArc);
     
+    _player_progress = (_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow()));
+    
     _player_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow())));
+    
+    
+    _left_progress = (_gameController->returnBoardMaxDirts(_gameController->getPlayerLeftWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerLeftWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerLeftWindow()));
     
     
     
     _left_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerLeftWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerLeftWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerLeftWindow())));
     
+    _right_progress = (_gameController->returnBoardMaxDirts(_gameController->getPlayerRightWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerRightWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerRightWindow()));
+    
     _right_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerRightWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerRightWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerRightWindow())));
+    
+    _across_progress = (_gameController->returnBoardMaxDirts(_gameController->getPlayerAccrossWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerAccrossWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerAccrossWindow()));
     
     _accross_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerAccrossWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerAccrossWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerAccrossWindow())));
 
@@ -335,26 +349,30 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 //    arcTrans.scale(1);
 //    arcTrans.translate((idk-getSize().operator Vec2()/2)+_dirtThrowArc->getPosition());
 //    batch->fill(_dirtThrowArc, Vec2::ZERO, arcTrans);
+    
+    _player_progress = (_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow()));
 
     Affine2 profileTrans = Affine2();
     profileTrans.scale(0.2);
-    profileTrans.translate((idk-getSize().operator Vec2()/2)+_player_bar->getPosition());
+    profileTrans.translate((idk-getSize().operator Vec2()/2)+_player_bar->getPosition()-Vec2(0,(_player_bar->getHeight()/2)-_player_progress*180));
     batch->draw(_gameController->getPlayer()->getProfileTexture(), _gameController->getPlayer()->getProfileTexture()->getSize().operator Vec2()/2, profileTrans);
+    
+    
     
     Affine2 profileTransLeft = Affine2();
     profileTransLeft.scale(0.2);
-    profileTransLeft.translate((idk-getSize().operator Vec2()/2)+_left_bar->getPosition());
+    profileTransLeft.translate((idk-getSize().operator Vec2()/2)+_left_bar->getPosition()-Vec2(0,(_left_bar->getHeight()/2)-_left_progress*180));
     batch->draw(_gameController->getPlayerLeft()->getProfileTexture(), _gameController->getPlayerLeft()->getProfileTexture()->getSize().operator Vec2()/2, profileTransLeft);
     
     // Transgender Rights so based !!!!!
     Affine2 profileTransRights = Affine2();
     profileTransRights.scale(0.2);
-    profileTransRights.translate((idk-getSize().operator Vec2()/2)+_right_bar->getPosition());
+    profileTransRights.translate((idk-getSize().operator Vec2()/2)+_right_bar->getPosition()-Vec2(0,(_right_bar->getHeight()/2)-_right_progress*180));
     batch->draw(_gameController->getPlayerRight()->getProfileTexture(), _gameController->getPlayerRight()->getProfileTexture()->getSize().operator Vec2()/2, profileTransRights);
     
     Affine2 profileTransAcross = Affine2();
     profileTransAcross.scale(0.2);
-    profileTransAcross.translate((idk-getSize().operator Vec2()/2)+_accross_bar->getPosition());
+    profileTransAcross.translate((idk-getSize().operator Vec2()/2)+_accross_bar->getPosition()-Vec2(0,(_accross_bar->getHeight()/2)-_across_progress*180));
     batch->draw(_gameController->getPlayerAccross()->getProfileTexture(), _gameController->getPlayerAccross()->getProfileTexture()->getSize().operator Vec2()/2, profileTransAcross);
 
     

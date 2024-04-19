@@ -50,6 +50,13 @@ protected:
  
     /** The progress for this player displayed on the screen */
     float _player_progress;
+    
+    /** The progress for this right player displayed on the screen */
+    float _right_progress;
+    
+    float _left_progress;
+    
+    float _across_progress;
 
 
 
