@@ -445,8 +445,9 @@ public:
      * @param worldPos  The position of the user's touch in world positions, used for dirt throwing
      * @param dirtCon   The dirt throw input controller used by the game scene
      * @param dirtThrowButton   The dirt throw button from the game scene
+     * @param dirtThrowArc   The dirt throw arc from the game scene
      */
-    void update(float timestep, cugl::Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton);
+    void update(float timestep, cugl::Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton, std::shared_ptr<cugl::scene2::SceneNode> dirtThrowArc);
 
     /**
      * This method does all the heavy lifting work for update.

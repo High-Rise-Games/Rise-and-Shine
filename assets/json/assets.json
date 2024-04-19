@@ -363,6 +363,9 @@
             "minfilter": "linear",
             "magfilter": "linear"
         },
+        "number2": {
+            "file": "textures/number2.png"
+        },
         "wipe_flower": {
             "file": "textures/wipe-fl-4096.png"
         },
@@ -480,9 +483,6 @@
         "ship": {
             "file": "textures/ships.png"
         },
-        "building_1": {
-            "file": "textures/building.png"
-        },
         "window": {
             "file": "textures/GenericWindow.png"
         },
@@ -525,6 +525,12 @@
         "window_13": {
             "file": "textures/window_13.png"
         },
+        "level1Window1": {
+            "file": "textures/level1Window1.png"
+        },
+        "level1Window2": {
+            "file": "textures/level1Window2.png"
+        },
         "nightmare_window1": {
             "file": "textures/window1nightmare.png"
         },
@@ -539,6 +545,36 @@
         },
         "nightmare_window5": {
             "file": "textures/window5nightmare.png"
+        },
+        "down_blocked_1": {
+            "file": "textures/down_blocked_1.png"
+        },
+        "left_blocked_1": {
+            "file": "textures/left_blocked_1.png"
+        },
+        "fully_blocked_1": {
+            "file": "textures/fully_blocked_1.png"
+        },
+        "nightWindow1": {
+            "file": "textures/nightWindow1.png"
+        },
+        "nightWindow2": {
+            "file": "textures/nightWindow2.png"
+        },
+        "nightWindow3": {
+            "file": "textures/nightWindow3.png"
+        },
+        "nightWindow4": {
+            "file": "textures/nightWindow4.png"
+        },
+        "nightWindow5": {
+            "file": "textures/nightWindow5.png"
+        },
+        "day1Building": {
+            "file": "textures/day1Building.png"
+        },
+        "nightBuilding": {
+            "file": "textures/nightBuilding.png"
         },
         "dirt": {
             "file": "textures/GenericDirt.png"
@@ -657,7 +693,9 @@
         "server": "json/server.json",
         "templatelevel": "json/templatelevel.json",
         "templatelevel2": "json/templatelevel2.json",
-        "templatelevel3": "json/templatelevel3.json"
+        "templatelevel3": "json/templatelevel3.json",
+        "level1": "json/level1.json",
+        "nightlevel": "json/nightlevel.json"
     },
     "widgets": {
         "colorbutton" : "widgets/colorbutton.json",
@@ -2277,6 +2315,21 @@
                     },
                     "layout": {
                         "x_offset": 100,
+                        "y_offset" : 265,
+                        "absolute": true
+                    }
+                },
+                "bottom bar"  : {
+                    "type"   : "Progress",
+                    "data"   : {
+                        "anchor"     : [0.5,0.5],
+                        "background" : "progress_background",
+                        "foreground" : "progress_foreground",
+                        "left_cap"   : "progress_leftcap",
+                        "right_cap"  : "progress_rightcap"
+                    },
+                    "layout": {
+                        "x_offset": -495,
                         "y_offset" : 265,
                         "absolute": true
                     }

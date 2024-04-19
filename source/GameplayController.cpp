@@ -104,30 +104,72 @@ bool GameplayController::initLevel(int selected_level) {
     switch (selected_level) {
         case 1:
             // CULog("garage selecting 1");
-            _levelJson = _assets->get<JsonValue>("templatelevel");
+            _levelJson = _assets->get<JsonValue>("level1");
             _size = _nativeSize;
             _size.height *= 1.5;
             break;
         case 2:
             // CULog("garage selecting 2");
-            _levelJson = _assets->get<JsonValue>("templatelevel2");
+            _levelJson = _assets->get<JsonValue>("nightlevel");
             _size = _nativeSize;
             _size.height *= 2;
             break;
         case 3:
             // CULog("garage selecting 3");
-            _levelJson = _assets->get<JsonValue>("templatelevel3");
+            _levelJson = _assets->get<JsonValue>("nightlevel");
             _size = _nativeSize;
-            _size.height *= 3;
+            _size.height *= 2;
+            break;
+        case 4:
+            // CULog("garage selecting 4");
+            _levelJson = _assets->get<JsonValue>("nightlevel");
+            _size = _nativeSize;
+            _size.height *= 2;
             break;
         default:
             // CULog("garage selecting default");
-            _levelJson = _assets->get<JsonValue>("templatelevel");
+            _levelJson = _assets->get<JsonValue>("nightlevel");
             _size = _nativeSize;
-            _size.height *= 1.5;
+            _size.height *= 2;
             break;
     }
-    _initDirtCount = selected_level * 5;
+
+    // texture mappings for each level (update these from the python script)
+    std::vector<string> texture_strings_level_1 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level1Window1", "level1Window2" };
+    std::vector<string> texture_strings_level_2 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
+    std::vector<string> texture_strings_level_3 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
+    std::vector<string> texture_strings_level_4 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
+    std::vector<string> texture_strings_level_5 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
+    std::vector<std::vector<string>> texture_strings_levels;
+    std::vector<int> texture_ids_level_1 = { 1, 2, 3, 4, 5, 6, 7 };
+    std::vector<int> texture_ids_level_2 = { 1, 2, 3, 4, 5, 15, 16, 17, 18, 19 };
+    std::vector<int> texture_ids_level_3 = { 1, 2, 3, 4, 5, 15, 16, 17, 18, 19 };
+    std::vector<int> texture_ids_level_4 = { 1, 2, 3, 4, 5, 15, 16, 17, 18, 19 };
+    std::vector<int> texture_ids_level_5 = { 1, 2, 3, 4, 5, 15, 16, 17, 18, 19 };
+    std::vector<std::vector<int>> texture_ids_levels;
+    texture_strings_levels.push_back(texture_strings_level_1);
+    texture_strings_levels.push_back(texture_strings_level_2);
+    texture_strings_levels.push_back(texture_strings_level_3);
+    texture_strings_levels.push_back(texture_strings_level_4);
+    texture_strings_levels.push_back(texture_strings_level_5);
+    texture_ids_levels.push_back(texture_ids_level_1);
+    texture_ids_levels.push_back(texture_ids_level_2);
+    texture_ids_levels.push_back(texture_ids_level_3);
+    texture_ids_levels.push_back(texture_ids_level_4);
+    texture_ids_levels.push_back(texture_ids_level_5);
+    // select the correct mapping for this level
+    std::vector<string> texture_strings_selected = texture_strings_levels.at(selected_level - 1);
+    std::vector<int>    texture_ids_selected     = texture_ids_levels.at(selected_level - 1);
+    
+    for (string thisWindow: texture_strings_selected) {
+        _windows.addTexture(_assets->get<Texture>(thisWindow));
+    }
+    _windows.setTextureIds(texture_ids_selected);
+
+    _windows.init(level, _size); // init depends on texture
+    _windows.setInitDirtNum(selected_level * 5);
+    _windows.setDirtTexture(_assets->get<Texture>("dirt"));
+    _windows.setFadedDirtTexture(_assets->get<Texture>("faded-dirt"));
     
     // get the win background when game is win
     _winBackground = _assets->get<Texture>("win-background");
@@ -543,6 +585,12 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id) {
 void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     int playerId = std::stod(data->getString("player_id", "0"));
     std::string playerChar = data->getString("player_char");
+    std::string playerHasWon = data->getString("has_won", "false");
+    if (playerHasWon == "true" && !_gameOver) {
+        _gameOver = true;
+        setWin(playerId == _id);
+        return;
+    }
 
     // get x, y positions of player
     Vec2 playerBoardPos(std::stod(data->getString("player_x", "0")), std::stod(data->getString("player_y", "0")));
@@ -884,7 +932,7 @@ void GameplayController::processDirtThrowRequest(std::shared_ptr<cugl::JsonValue
  * @param dirtCon   The dirt throw input controller used by the game scene
  * @param dirtThrowButton   The dirt throw button from the game scene
  */
-void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton) {
+void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton, std::shared_ptr<cugl::scene2::SceneNode> dirtThrowArc) {
     
     // update the audio controller
     _audioController.update(isActive());
@@ -998,11 +1046,13 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
 
     // When the player is on other's board and are able to throw dirt
     if (_curBoard != 0) {
+        bool ifSwitch = false;
         float button_x = _curBoard == -1 ? getSize().width - _windowVec[_id-1]->sideGap + 150 : _windowVec[_id - 1]->sideGap - 150;
+        float arc_start = _curBoard == -1 ? 270 : 90;
         cugl::Vec2 buttonPos(button_x, SCENE_HEIGHT / 2);
         dirtThrowButton->setPosition(buttonPos);
         if ((_curBoard == -1 && _input.getDir().x == 1) || (_curBoard == 1 && _input.getDir().x == -1)) {
-            switchScene();
+            ifSwitch = true;
         }
         if (_currentDirtAmount > 0) {
             // _dirtThrowInput.update();
@@ -1243,7 +1293,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
             }
         }
         
-        if (!_birdLeaving && _boardWithBird == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 4)) {
+        if (!_birdLeaving && _boardWithBird == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.5)) {
             // set amount of frames plaer is frozen for for shooing bird
             player->resetShooFrames();
             _birdLeaving = true;
@@ -1367,6 +1417,7 @@ int calculateNeighborId(int myId, int dir, std::vector<std::shared_ptr<Player>> 
     }
     return nbrId;
 }
+
 
 /**
  * Draws all this scene to the given SpriteBatch.

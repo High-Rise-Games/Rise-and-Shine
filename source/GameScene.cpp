@@ -36,6 +36,11 @@ using namespace std;
 bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps) {
     
     Size dimen = Application::get()->getDisplaySize();
+    
+    _player_progress=0;
+    _right_progress=0;
+    _across_progress=0;
+    _left_progress=0;
 
     dimen *= SCENE_HEIGHT/dimen.height;
     if (assets == nullptr) {
@@ -94,6 +99,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     
     // Acquire the scene built by the asset loader and resize it the scene
     _scene_UI = _assets->get<scene2::SceneNode>("game");
+    
+//    _scene_UI->addChild(_dirtThrowArc);
     _scene_UI->setContentSize(dimen);
     _scene_UI->doLayout(); // Repositions the HUD
     
@@ -113,6 +120,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     });
     
     _dirtThrowButton = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("game_throw"));
+    
+    _dirtThrowArc = std::make_shared<scene2::SceneNode>();
     
     _quit = false;
     addChild(_scene_UI);
@@ -283,6 +292,8 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _dirtThrowButton->deactivate();
     }
     _scene_UI->render(batch);
+//    std::cout<<"arc: "<<_dirtThrowArc->getPosition().x<<", "<<_dirtThrowArc->getPosition().y<<"\n";
+//    std::cout<<"button: "<<_dirtThrowButton->getPosition().x<<", "<<_dirtThrowButton->getPosition().y<<"\n";
     
     if (_gameController->isGameWin()) {
         _winBackground->setPosition(idk-getSize().operator Vec2()/2);

@@ -50,6 +50,13 @@ protected:
  
     /** The progress for this player displayed on the screen */
     float _player_progress;
+    
+    /** The progress for this right player displayed on the screen */
+    float _right_progress;
+    
+    float _left_progress;
+    
+    float _across_progress;
 
 
 
@@ -103,6 +110,8 @@ protected:
 //    std::shared_ptr<cugl::Texture> _returnSceneButton;
     /** Dirt throw button */
     std::shared_ptr<cugl::scene2::Button> _dirtThrowButton;
+    /** The semicircle that constains the dirt throw button*/
+    std::shared_ptr<cugl::scene2::SceneNode> _dirtThrowArc;
     
 public:
 #pragma mark -
