@@ -525,6 +525,12 @@
         "fully_blocked_1": {
             "file": "textures/fully_blocked_1.png"
         },
+        "fully_blocked_2": {
+            "file": "textures/fully_blocked_2.png"
+        },
+        "fully_blocked_3": {
+            "file": "textures/fully_blocked_3.png"
+        },
         "nightWindow1": {
             "file": "textures/nightWindow1.png"
         },
