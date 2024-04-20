@@ -175,9 +175,13 @@ public:
             _boardFilth[row][col].reset();
             _boardFilth[row][col] = nullptr;
         }
-        return dirtExisted;
-    }
-    
+		return dirtExisted;
+	}
+
+	/**
+	 * Clears grid-related texture variables for a fresh start every time we reuse the window grid for a new level
+	 */
+	void clearWindowTextures();
 
     /** draws entire grid of window panes to fit in "size" */
     void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size);
