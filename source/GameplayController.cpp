@@ -320,7 +320,6 @@ void GameplayController::reset() {
     for (auto window : _windowVec) {
         if (window == nullptr) continue;
         window->clearBoard();
-        window->clearWindowTextures();
         window->generateInitialBoard(window->getInitDirtNum());
     }
 
