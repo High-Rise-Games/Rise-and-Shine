@@ -2342,8 +2342,8 @@
                     "layout": {
                         "x_anchor": "left",
                         "y_anchor": "bottom",
-                        "y_offset": 10,
-                        "x_offset": 10,
+                        "y_offset": 625,
+                        "x_offset": 20,
                         "absolute": true
                     }
                 },
