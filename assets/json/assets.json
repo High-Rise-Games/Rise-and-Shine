@@ -2285,7 +2285,7 @@
                 "anchor": [ 0.5, 0.5 ]
             },
             "children": {
-                "bar1"  : {
+                "bluebar"  : {
                     "type"   : "Progress",
                     "data": {
                         "anchor": [ 0.5, 0.5 ],
@@ -2299,7 +2299,7 @@
                         "absolute": true
                     }
                 },
-                "bar2"  : {
+                "greenbar"  : {
                     "type"   : "Progress",
                     "data": {
                         "anchor": [ 0.5, 0.5 ],
@@ -2313,7 +2313,7 @@
                         "absolute": true
                     }
                 },
-                "bar3"  : {
+                "redbar"  : {
                     "type"   : "Progress",
                     "data": {
                         "anchor": [ 0.5, 0.5 ],
@@ -2327,7 +2327,7 @@
                         "absolute": true
                     }
                 },
-                "bar4"  : {
+                "yellowbar"  : {
                     "type"   : "Progress",
                     "data": {
                         "anchor": [ 0.5, 0.5 ],

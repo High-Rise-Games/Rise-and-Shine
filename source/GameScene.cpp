@@ -36,11 +36,6 @@ using namespace std;
 bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps) {
     
     Size dimen = Application::get()->getDisplaySize();
-    
-    _player_progress=0;
-    _right_progress=0;
-    _across_progress=0;
-    _left_progress=0;
 
     dimen *= SCENE_HEIGHT/dimen.height;
     if (assets == nullptr) {
@@ -61,14 +56,18 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _constants = _assets->get<JsonValue>("constants");
 
     // test progress bar for player
-    vector<string> barNames = { "bar1", "bar2", "bar3", "bar4" };
+    vector<string> barNames = { "greenbar", "bluebar", "redbar", "yellowbar" };
     for (int i = 0; i < 4; i++) {
         auto currBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_" + barNames[i]));
         currBar->setAngle(1.5708);
-        currBar->setScale(1.5);
+        currBar->setScale(2);
         currBar->setVisible(false);
         _player_bars.push_back(currBar);
     }
+    _char_to_barIdx["Chameleon"] = 0;
+    _char_to_barIdx["Frog"] = 1;
+    _char_to_barIdx["Mushroom"] = 2;
+    _char_to_barIdx["Flower"] = 3;
     
     // Initialize dirt bucket
     setEmptyBucket(assets->get<Texture>("bucketempty"));
@@ -305,17 +304,20 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _loseBackground->render(batch);
     }
     
-    int barIdx = 0;
+    int offset_ct = 0;
     for (int id = 1; id <= 4; id++) {
         auto player = _gameController->getPlayer(id);
         if (player == nullptr) continue;
+        int barIdx = _char_to_barIdx[player->getChar()];
+        // CULog("character: %a", player->getChar().c_str());
+        _player_bars[barIdx]->setPositionX(getSize().width - _gameController->getPlayerWindow(_gameController->getId())->sideGap + (offset_ct + 2) * 50);
         _player_bars[barIdx]->setVisible(true);
         Affine2 profileTrans = Affine2();
         profileTrans.scale(0.2);
         profileTrans.translate((idk - getSize().operator Vec2() / 2) + _player_bars[barIdx]->getPosition());
         profileTrans.translate(0, _player_bars[barIdx]->getHeight() / -2);
         batch->draw(player->getProfileTexture(), player->getProfileTexture()->getSize().operator Vec2() / 2, profileTrans);
-        barIdx += 1;
+        offset_ct += 1;
     }
     
     batch->end();

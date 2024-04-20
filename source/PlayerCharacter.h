@@ -137,7 +137,7 @@ public:
     const std::string getChar() { return _character; }
 
     /** Sets the character of the player. */
-    void setChar(std::string c) { _character = c; }
+    void setChar(std::string c) { CULog("here: %a", c.c_str()); _character = c; }
 
     /** Sets the profile texture of the player */
     void setProfileTexture(std::shared_ptr<cugl::Texture> t) { _profileTexture = t; }
