@@ -36,11 +36,6 @@ using namespace std;
 bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps) {
     
     Size dimen = Application::get()->getDisplaySize();
-    
-    _player_progress=0;
-    _right_progress=0;
-    _across_progress=0;
-    _left_progress=0;
 
     dimen *= SCENE_HEIGHT/dimen.height;
     if (assets == nullptr) {
@@ -59,42 +54,20 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _background->setWrapS(GL_CLAMP_TO_EDGE);
     _background->setWrapT(GL_CLAMP_TO_EDGE);
     _constants = _assets->get<JsonValue>("constants");
-    
 
     // test progress bar for player
-    _player_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("player bar"));
-    
-    _player_bar->setAngle(1.5708);
-    
-    _player_bar->setScale(0.5);
-    
-    
-    
-    
-    
-    // test progress bar for player left
-    _left_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("left bar"));
-    
-    _left_bar->setAngle(1.5708);
-    
-    _left_bar->setScale(0.5);
-    
-    // test progress bar for player right
-    _right_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("right bar"));
-    
-    _right_bar->setAngle(1.5708);
-    
-    _right_bar->setScale(0.5);
-    
-    // test progress bar for player top
-    _accross_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("bottom bar"));
-    
-    _accross_bar->setAngle(1.5708);
-    
-    _accross_bar->setScale(0.5);
-    
-
-    
+    vector<string> barNames = { "greenbar", "bluebar", "redbar", "yellowbar" };
+    for (int i = 0; i < 4; i++) {
+        auto currBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_" + barNames[i]));
+        currBar->setAngle(1.5708);
+        currBar->setScale(2);
+        currBar->setVisible(false);
+        _player_bars.push_back(currBar);
+    }
+    _char_to_barIdx["Chameleon"] = 0;
+    _char_to_barIdx["Frog"] = 1;
+    _char_to_barIdx["Mushroom"] = 2;
+    _char_to_barIdx["Flower"] = 3;
     
     // Initialize dirt bucket
     setEmptyBucket(assets->get<Texture>("bucketempty"));
@@ -204,11 +177,11 @@ void GameScene::setActive(bool value) {
 #pragma mark -
 #pragma mark Gameplay Handling
 
-/** 
+/**
  * Converts game state into a JSON value for sending over the network.
  * Only called by the host, as only the host transmits board states over the network.
  * This method contains any gameplay code that is not an OpenGL call.
- * 
+ *
  * We need to update this method to constantly talk to the server.
  *
  * @param timestep  The amount of time (in seconds) since the last frame
@@ -221,25 +194,15 @@ void GameScene::update(float timestep) {
     
     _gameController->update(timestep, worldPos, _dirtThrowInput, _dirtThrowButton, _dirtThrowArc);
     
-    _player_progress = (_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow()));
-    
-    _player_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow())));
-    
-    
-    _left_progress = (_gameController->returnBoardMaxDirts(_gameController->getPlayerLeftWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerLeftWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerLeftWindow()));
-    
-    
-    
-    _left_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerLeftWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerLeftWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerLeftWindow())));
-    
-    _right_progress = (_gameController->returnBoardMaxDirts(_gameController->getPlayerRightWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerRightWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerRightWindow()));
-    
-    _right_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerRightWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerRightWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerRightWindow())));
-    
-    _across_progress = (_gameController->returnBoardMaxDirts(_gameController->getPlayerAccrossWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerAccrossWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerAccrossWindow()));
-    
-    _accross_bar->setProgress((_gameController->returnBoardMaxDirts(_gameController->getPlayerAccrossWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerAccrossWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerAccrossWindow())));
-
+    int currBarIdx = 0;
+    for(int id = 1; id <= 4; id++) {
+        auto player = _gameController->getPlayer(id);
+        if (player == nullptr) continue;
+        float numWindowPanes = _gameController->getPlayerWindow(id)->getNHorizontal() * _gameController->getPlayerWindow(id)->getNVertical();
+        auto progress = (numWindowPanes - _gameController->getPlayerWindow(id)->getTotalDirt()) / numWindowPanes;
+        _player_bars[currBarIdx]->setProgress(progress);
+        currBarIdx += 1;
+    }
 
     _timeText->setText(strtool::format("Time %d", _gameController->getTime()));
         
@@ -269,7 +232,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     // CULog("current board: %d", _curBoard);
     
     
-    Vec3 idk = Vec3(getCamera()->getPosition().x, _gameController->getPlayer()->getPosition().y, 1);
+    Vec3 idk = Vec3(getCamera()->getPosition().x, _gameController->getPlayer(_gameController->getId())->getPosition().y, 1);
     getCamera()->setPosition(idk);
     getCamera()->update();
     batch->begin(getCamera()->getCombined());
@@ -282,10 +245,6 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 
     _gameController->draw(batch);
     
-    
-    
-    
-
     batch->setColor(Color4::BLACK);
 //    batch->drawText(_timeText, Vec2(getSize().width - 10 - _timeText->getBounds().size.width, getSize().height - _timeText->getBounds().size.height));
 //    batch->drawText(_healthText, Vec2(10, getSize().height - _healthText->getBounds().size.height));
@@ -345,39 +304,21 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _loseBackground->render(batch);
     }
     
-//    Affine2 arcTrans = Affine2();
-//    arcTrans.scale(1);
-//    arcTrans.translate((idk-getSize().operator Vec2()/2)+_dirtThrowArc->getPosition());
-//    batch->fill(_dirtThrowArc, Vec2::ZERO, arcTrans);
-    
-    _player_progress = (_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow()) - _gameController->returnNumBoardDirts(_gameController->getPlayerWindow()))/(_gameController->returnBoardMaxDirts(_gameController->getPlayerWindow()));
-
-    Affine2 profileTrans = Affine2();
-    profileTrans.scale(0.2);
-    profileTrans.translate((idk-getSize().operator Vec2()/2)+_player_bar->getPosition()-Vec2(0,(_player_bar->getHeight()/2)-_player_progress*180));
-    batch->draw(_gameController->getPlayer()->getProfileTexture(), _gameController->getPlayer()->getProfileTexture()->getSize().operator Vec2()/2, profileTrans);
-    
-    
-    
-    Affine2 profileTransLeft = Affine2();
-    profileTransLeft.scale(0.2);
-    profileTransLeft.translate((idk-getSize().operator Vec2()/2)+_left_bar->getPosition()-Vec2(0,(_left_bar->getHeight()/2)-_left_progress*180));
-    batch->draw(_gameController->getPlayerLeft()->getProfileTexture(), _gameController->getPlayerLeft()->getProfileTexture()->getSize().operator Vec2()/2, profileTransLeft);
-    
-    // Transgender Rights so based !!!!!
-    Affine2 profileTransRights = Affine2();
-    profileTransRights.scale(0.2);
-    profileTransRights.translate((idk-getSize().operator Vec2()/2)+_right_bar->getPosition()-Vec2(0,(_right_bar->getHeight()/2)-_right_progress*180));
-    batch->draw(_gameController->getPlayerRight()->getProfileTexture(), _gameController->getPlayerRight()->getProfileTexture()->getSize().operator Vec2()/2, profileTransRights);
-    
-    Affine2 profileTransAcross = Affine2();
-    profileTransAcross.scale(0.2);
-    profileTransAcross.translate((idk-getSize().operator Vec2()/2)+_accross_bar->getPosition()-Vec2(0,(_accross_bar->getHeight()/2)-_across_progress*180));
-    batch->draw(_gameController->getPlayerAccross()->getProfileTexture(), _gameController->getPlayerAccross()->getProfileTexture()->getSize().operator Vec2()/2, profileTransAcross);
-
-    
-//    _player_bar->render(batch);
-//    _player_bar->setPosition(idk-getSize().operator Vec2()/2);
+    int offset_ct = 0;
+    for (int id = 1; id <= 4; id++) {
+        auto player = _gameController->getPlayer(id);
+        if (player == nullptr) continue;
+        int barIdx = _char_to_barIdx[player->getChar()];
+        // CULog("character: %a", player->getChar().c_str());
+        _player_bars[barIdx]->setPositionX(getSize().width - _gameController->getPlayerWindow(_gameController->getId())->sideGap + (offset_ct + 2) * 50);
+        _player_bars[barIdx]->setVisible(true);
+        Affine2 profileTrans = Affine2();
+        profileTrans.scale(0.2);
+        profileTrans.translate((idk - getSize().operator Vec2() / 2) + _player_bars[barIdx]->getPosition());
+        profileTrans.translate(0, _player_bars[barIdx]->getHeight() / -2);
+        batch->draw(player->getProfileTexture(), player->getProfileTexture()->getSize().operator Vec2() / 2, profileTrans);
+        offset_ct += 1;
+    }
     
     batch->end();
 }

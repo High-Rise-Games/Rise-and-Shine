@@ -46,19 +46,6 @@ protected:
     std::shared_ptr<cugl::scene2::SceneNode> _winBackground;
     /** The win screen scene */
     std::shared_ptr<cugl::scene2::SceneNode> _loseBackground;
-    
- 
-    /** The progress for this player displayed on the screen */
-    float _player_progress;
-    
-    /** The progress for this right player displayed on the screen */
-    float _right_progress;
-    
-    float _left_progress;
-    
-    float _across_progress;
-
-
 
     /** The game controller for this scene */
     std::shared_ptr<GameplayController> _gameController;
@@ -71,15 +58,10 @@ protected:
     
     cugl::scheduable t;
     
-    /** Progress bar for this player **/
-    std::shared_ptr<cugl::scene2::ProgressBar>  _player_bar;
-    /** Progress bar for player left **/
-    std::shared_ptr<cugl::scene2::ProgressBar>  _left_bar;
-    /** Progress bar for player right **/
-    std::shared_ptr<cugl::scene2::ProgressBar>  _right_bar;
-    /** Progress bar for player accross **/
-    std::shared_ptr<cugl::scene2::ProgressBar>  _accross_bar;
-    
+    /** Progress bars vector for players in the lobby **/
+    std::vector<std::shared_ptr<cugl::scene2::ProgressBar>>  _player_bars;
+    std::map<std::string, int> _char_to_barIdx;
+
     std::shared_ptr<cugl::scene2::SceneNode> _profilePlayer;
     std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerLeft;
     std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerRight;

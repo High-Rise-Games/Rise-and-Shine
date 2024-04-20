@@ -127,7 +127,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
 //    // Acquire the invalid texture to draw on the screen when player picks
 //    // an already selected player charatcer
 //    _invalid = _assets->get<scene2::SceneNode>("invalid");
-//    
+//
 //    scene->addChild(_invalid);
 //    _invalid->setVisible(false);
     

@@ -117,7 +117,7 @@ public:
      * @param windowWidth   The width of the window panes
      * @param windowHeight  The height of the window panes
      */
-    Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data, const float windowWidth, const float windowHeight);
+    Player(const int id, const cugl::Vec2& pos, const float windowWidth, const float windowHeight);
     
     /**
      * Disposes the ship, releasing all resources.
@@ -137,7 +137,7 @@ public:
     const std::string getChar() { return _character; }
 
     /** Sets the character of the player. */
-    void setChar(std::string c) { _character = c; }
+    void setChar(std::string c) { CULog("here: %a", c.c_str()); _character = c; }
 
     /** Sets the profile texture of the player */
     void setProfileTexture(std::shared_ptr<cugl::Texture> t) { _profileTexture = t; }
@@ -188,14 +188,14 @@ public:
      */
     const cugl::Vec2& getCoors() const { return _coors; }
 
-    /** 
+    /**
      * Sets the coordinates of the player in relation to the window grid.
      */
     void setCoors(cugl::Vec2 value) { _coors = value; }
 
-    /** 
+    /**
      * Calculates the coordinates of the player in relation to the window grid
-     * using the scene position of the player (_pos). 
+     * using the scene position of the player (_pos).
      */
     const cugl::Vec2& getCoorsFromPos(const float windowHeight, const float windowWidth, const float sideGap);
     
@@ -221,7 +221,7 @@ public:
     
     /**
      * Returns the current player's health.
-     * 
+     *
      * When the health of the player is 0, it is "dead"
      *
      * @return the current player health.
@@ -230,7 +230,7 @@ public:
 
     /**
      * Sets the current ship health.
-     * 
+     *
      * When the health of the ship is 0, it is "dead"
      *
      * @param value The current ship health.
@@ -386,8 +386,8 @@ public:
     /**
      * Sets the idle texture for the player.
      *
-     * The texture should be formated as a sprite sheet, and the size and 
-     * layout of the sprite sheet should already be specified in the 
+     * The texture should be formated as a sprite sheet, and the size and
+     * layout of the sprite sheet should already be specified in the
      * initializing JSON. If so, this method will construct a sprite sheet
      * from this texture. Otherwise, the texture will be ignored.
      *
@@ -442,7 +442,7 @@ public:
     *
     * The size and layout of the sprite sheet should already be specified
     * in the initializing step.
-    * 
+    *
     * @return the sprite sheet
     */
     const std::shared_ptr<cugl::SpriteSheet>& getThrowSprite() const { return _throwSprite; }
@@ -454,7 +454,7 @@ public:
      * layout of the sprite sheet should already be specified in the
      * initializing step. If so, this method will construct a sprite sheet
      * from this texture.
-     * 
+     *
      * @param texture   The texture for the sprite sheet
      */
     void setThrowTexture(const std::shared_ptr<cugl::Texture>& texture);
@@ -495,7 +495,7 @@ public:
      * @param size      The size of the window (for wrap around)
      * @return 0 if moved, -1 if moving off of left edge, 1 if moving off of right edge, 2 otherwise
      */
-    int move(cugl::Vec2 dir, cugl::Size size, WindowGrid* windows);
+    int move(cugl::Vec2 dir, cugl::Size size, std::shared_ptr<WindowGrid> windows);
 
     /** Continues a movement between two grid spots */
     bool move();

@@ -6,22 +6,22 @@
 using namespace cugl;
 
 WindowGrid::WindowGrid() {
-	// such constructor
-	// much wow
-	
-	// incredible work here -cathryn
+    // such constructor
+    // much wow
+    
+    // incredible work here -cathryn
 }
 
 bool WindowGrid::init(int nHorizontal, int nVertical, cugl::Size size) {
-	_nHorizontal = nHorizontal;
-	_nVertical = nVertical;
+    _nHorizontal = nHorizontal;
+    _nVertical = nVertical;
 
-	return true;
+    return true;
 }
 
 bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
-	 _nHorizontal = data->getInt("width", 2);
-	 _nVertical = data->getInt("height", 4);
+     _nHorizontal = data->getInt("width", 2);
+     _nVertical = data->getInt("height", 4);
  
 	 // compute mapping from Tiled ids to _textures index
 	 int i = 0;
@@ -79,8 +79,8 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 		 }
 	 }
 
-	 int tileHeight = data->getInt("tileheight", 2);
-	 int tileWidth = data->getInt("tilewidth", 2);
+     int tileHeight = data->getInt("tileheight", 2);
+     int tileWidth = data->getInt("tilewidth", 2);
 
 	 // calculate scale and size of window grid
 	 _scaleFactor = std::min(((float)size.getIWidth() / (float)tileWidth / (float)_nHorizontal), ((float)size.getIHeight() / (float)tileHeight / std::min((float)MAX_HEIGHT, (float)_nVertical)));
@@ -89,8 +89,8 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
 	 sideGap = ((float)size.getIWidth() - _windowWidth * _nHorizontal) / 2; // final gap width from side of screen to side of building
 	 _buildingTexturePosition.y = (_buildingTexturePosition.y - (tileHeight * _nVertical)) * -1;
 
-	// Initialize the dirt board
-	_boardFilth = std::vector<std::vector<std::shared_ptr<StaticFilth>>>(_nVertical, std::vector<std::shared_ptr<StaticFilth>>(_nHorizontal, nullptr));
+    // Initialize the dirt board
+    _boardFilth = std::vector<std::vector<std::shared_ptr<StaticFilth>>>(_nVertical, std::vector<std::shared_ptr<StaticFilth>>(_nHorizontal, nullptr));
     
     for (const std::shared_ptr<JsonValue>& property : data->get("properties")->children()) {
         if (property->getString("name") == "number dirts") {
@@ -107,15 +107,15 @@ bool WindowGrid::init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size) {
         }
     }
 
-	return true;
+    return true;
 }
 
 cugl::Vec2 WindowGrid::getGridIndices(cugl::Vec2 location, cugl::Size size) {
 
-	int x_coor = floor((location.x - sideGap) / _windowWidth);
-	int y_coor = floor(location.y / _windowHeight);
-	return Vec2(x_coor, y_coor);
-	//return Vec2(-1, -1);
+    int x_coor = floor((location.x - sideGap) / _windowWidth);
+    int y_coor = floor(location.y / _windowHeight);
+    return Vec2(x_coor, y_coor);
+    //return Vec2(-1, -1);
 }
 
 bool WindowGrid::getCanMoveBetween(int x_origin, int y_origin, int x_dest, int y_dest) {
@@ -168,28 +168,28 @@ void WindowGrid::generateInitialBoard(int dirtNumber) {
         }
         std::shared_ptr<StaticFilth> dirt = std::make_shared<StaticFilth>(Vec2(rand_row, rand_col));
         dirt->setStaticTexture(_dirt);
-		_boardFilth[rand_row][rand_col] = dirt;
+        _boardFilth[rand_row][rand_col] = dirt;
     }
 }
 
 void WindowGrid::clearBoard() {
     for (int x = 0; x < _nHorizontal; x++) {
         for (int y = 0; y < _nVertical; y++) {
-			_boardFilth[y][x].reset();
-			_boardFilth[y][x] = nullptr;
+            _boardFilth[y][x].reset();
+            _boardFilth[y][x] = nullptr;
         }
     }
 }
 
 bool WindowGrid::addDirt(const int row, const int col) {
-	bool dirtExisted = _boardFilth[row][col] != nullptr;
-	bool isTileDirtiable = getCanBeDirtied(col, row);
-	if (!dirtExisted && isTileDirtiable) {
-		std::shared_ptr<StaticFilth> filth = std::make_shared<StaticFilth>(cugl::Vec2(row, col));
-		filth->setStaticTexture(_dirt);
-		_boardFilth[row][col] = filth;
-	}
-	return !dirtExisted && isTileDirtiable;
+    bool dirtExisted = _boardFilth[row][col] != nullptr;
+    bool isTileDirtiable = getCanBeDirtied(col, row);
+    if (!dirtExisted && isTileDirtiable) {
+        std::shared_ptr<StaticFilth> filth = std::make_shared<StaticFilth>(cugl::Vec2(row, col));
+        filth->setStaticTexture(_dirt);
+        _boardFilth[row][col] = filth;
+    }
+    return !dirtExisted && isTileDirtiable;
 }
 
 /**
@@ -220,12 +220,12 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 	float dirtWidth = (float)_dirt->getWidth() * dirtScaleFactor;
 	float dirtHeight = (float)_dirt->getHeight() * dirtScaleFactor;
 
-	float dirt_horizontal_trans = (_windowWidth - dirtWidth) / 2;
-	float dirt_vertical_trans = (_windowHeight - dirtHeight) / 2;
+    float dirt_horizontal_trans = (_windowWidth - dirtWidth) / 2;
+    float dirt_vertical_trans = (_windowHeight - dirtHeight) / 2;
 
-	Affine2 dirt_trans = Affine2();
-	dirt_trans.scale(dirtScaleFactor);
-	dirt_trans.translate(sideGap + dirt_horizontal_trans, dirt_vertical_trans);
+    Affine2 dirt_trans = Affine2();
+    dirt_trans.scale(dirtScaleFactor);
+    dirt_trans.translate(sideGap + dirt_horizontal_trans, dirt_vertical_trans);
 
 	// loop over all grid points and draw window panes and dirt
 	for (int x = 0; x < _nHorizontal; x++) {
@@ -244,10 +244,10 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 			float pipeDownOffset = paneHeight * .2; // push pipes into gaps between windows
 			float pipeLeftOffset = paneWidth  * .2; // push pipes into gaps between windows
 
-			float pane_horizontal_trans = (_windowWidth - paneWidth) / 2;
-			float pane_vertical_trans = (_windowHeight - paneHeight) / 2;
-			trans.scale(paneScaleFactor);
-			trans.translate(sideGap + (_windowWidth * x) + pane_horizontal_trans, (_windowHeight * y) + pane_vertical_trans);
+            float pane_horizontal_trans = (_windowWidth - paneWidth) / 2;
+            float pane_vertical_trans = (_windowHeight - paneHeight) / 2;
+            trans.scale(paneScaleFactor);
+            trans.translate(sideGap + (_windowWidth * x) + pane_horizontal_trans, (_windowHeight * y) + pane_vertical_trans);
 
 			Affine2 leftTrans = Affine2(trans).translate(-pipeLeftOffset, 0);
 			Affine2 downTrans = Affine2(trans).translate(0, -pipeDownOffset);
@@ -262,29 +262,29 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 				_boardFilth[y][x]->drawStatic(batch, size, dirt_trans);
 			}
 
-			// update vertical translation for dirt
-			dirt_trans.translate(0, _windowHeight);
-		}
+            // update vertical translation for dirt
+            dirt_trans.translate(0, _windowHeight);
+        }
 
-		// update horizontal translation and reset vertical translation for dirt
-		dirt_trans.translate(_windowWidth, -_windowHeight * _nVertical);
-	}
+        // update horizontal translation and reset vertical translation for dirt
+        dirt_trans.translate(_windowWidth, -_windowHeight * _nVertical);
+    }
 }
 
 void WindowGrid::drawPotentialDirt(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, std::vector<cugl::Vec2> potentialFilth) {
-	float dirtScaleFactor = std::min(_windowWidth / _fadedDirtTexture->getWidth(), _windowHeight / _fadedDirtTexture->getHeight()) * 0.75;
-	float dirtWidth = (float)_fadedDirtTexture->getWidth() * dirtScaleFactor;
-	float dirtHeight = (float)_fadedDirtTexture->getHeight() * dirtScaleFactor;
+    float dirtScaleFactor = std::min(_windowWidth / _fadedDirtTexture->getWidth(), _windowHeight / _fadedDirtTexture->getHeight()) * 0.75;
+    float dirtWidth = (float)_fadedDirtTexture->getWidth() * dirtScaleFactor;
+    float dirtHeight = (float)_fadedDirtTexture->getHeight() * dirtScaleFactor;
 
-	float dirt_horizontal_trans = (_windowWidth - dirtWidth) / 2;
-	float dirt_vertical_trans = (_windowHeight - dirtHeight) / 2;
+    float dirt_horizontal_trans = (_windowWidth - dirtWidth) / 2;
+    float dirt_vertical_trans = (_windowHeight - dirtHeight) / 2;
 
-	for (auto coords : potentialFilth) {
-		Affine2 dirt_trans = Affine2();
-		dirt_trans.scale(dirtScaleFactor);
-		dirt_trans.translate(sideGap + (_windowWidth * coords.x) + dirt_horizontal_trans, (_windowHeight * coords.y) + dirt_vertical_trans);
-		batch->draw(_fadedDirtTexture, Vec2(), dirt_trans);
-	}
+    for (auto coords : potentialFilth) {
+        Affine2 dirt_trans = Affine2();
+        dirt_trans.scale(dirtScaleFactor);
+        dirt_trans.translate(sideGap + (_windowWidth * coords.x) + dirt_horizontal_trans, (_windowHeight * coords.y) + dirt_vertical_trans);
+        batch->draw(_fadedDirtTexture, Vec2(), dirt_trans);
+    }
 }
 
 #endif

@@ -63,6 +63,11 @@ protected:
     /** The number of frames that the win screen has been shown for */
     int _frameCountForWin;
 
+    /** Selected level number */
+    std::shared_ptr<cugl::JsonValue> _levelJson;
+    /** Initial dirt count for this level */
+    int _initDirtCount;
+
     /** Size of the scene */
     cugl::Size _size;
     /** native size of the scene */
@@ -84,14 +89,8 @@ protected:
     /** The JSON value with all of the constants */
     std::shared_ptr<cugl::JsonValue> _constants;
 
-    /** Location and animation information for the player */
-    std::shared_ptr<Player> _player;
-    /** Location and animation information for the player to the left */
-    std::shared_ptr<Player> _playerLeft;
-    /** Location and animation information for the player to the right */
-    std::shared_ptr<Player> _playerRight;
-    /** Location and animation information for the player across the building. Only non-null for host. */
-    std::shared_ptr<Player> _playerAcross;
+    /** Location and animation information for all players in the game */
+    std::vector<std::shared_ptr<Player>> _playerVec;
 
     /** True if a neighobr player's board is on display */
     bool _onAdjacentBoard;
@@ -101,10 +100,6 @@ protected:
 
     /** True if game scene is active and that gameplay is currently active */
     bool _isActive;
-    
-    /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
-
-    /** Which board is the player currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor */
 
     int _curBoard;
     /** Which board is the player currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor */
@@ -122,15 +117,11 @@ protected:
     /** The position of the dirt when it is selected*/
     cugl::Vec2 _prevInputPos;
     
-    /** Todo: probably need to change _windows to a vector, length 3 or 4*/
-    /** Grid of windows and dirt placement to be drawn */
-    WindowGrid _windows;
-    /** Grid of windows and dirt placement to be drawn for the left neighbor */
-    WindowGrid _windowsLeft;
-    /** Grid of windows and dirt placement to be drawn for the right neighbor */
-    WindowGrid _windowsRight;
-    /** Grid of windows and dirt placement to be drawn for neighbor across the building. Only non-null for host. */
-    WindowGrid _windowsAcross;
+    /** Window texture names and ids */
+    std::vector<std::string> _texture_strings_selected;
+    std::vector<int> _texture_ids_selected;
+    /** Vector of windows and dirt placements for all players */
+    std::vector<std::shared_ptr<WindowGrid>> _windowVec;
 
     /** Random number generator for dirt generation */
     std::mt19937 _rng;
@@ -152,15 +143,9 @@ protected:
     float _projectileGenChance;
     /** Projectile generation timer, on timer generate projectile based on chance, then reset timer*/
     float _projectileGenCountDown;
-    /** The projectile set of your board */
-    ProjectileSet _projectiles;
-    /** The projectile set of your left neighbor */
-    ProjectileSet _projectilesLeft;
-    /** The projectile set of your right neighbor */
-    ProjectileSet _projectilesRight;
-    /** The projectile set of the neighbor across the building. Only non-null if host */
-    ProjectileSet _projectilesAcross;
-    
+    /** The projectile set of all players */
+    std::vector<std::shared_ptr<ProjectileSet>> _projectileVec;
+        
     // for host only
     /** Number of players in the lobby */
     int _numPlayers;
@@ -237,8 +222,8 @@ public:
      */
     bool init(const std::shared_ptr<cugl::AssetManager>& assets, int fps, cugl::Rect bounds, cugl::Size size);
 
-    /** Initializes the player models for all players, whether host or client. */
-    bool initPlayers(const std::shared_ptr<cugl::AssetManager>& assets);
+    /** Initializes the player model for client. */
+    bool initClient(const std::shared_ptr<cugl::AssetManager>& assets);
     
     /** Returns true if gameplay is active, and false if not. Tells us if the game is running */
     bool isActive() {
@@ -266,39 +251,18 @@ public:
 #pragma mark -
 #pragma mark Gameplay Handling
     
-    WindowGrid getPlayerWindow() {
-            return _windows;
-    }
-        
-    WindowGrid getPlayerLeftWindow() {
-        return _windowsLeft;
-    }
-    
-    WindowGrid getPlayerRightWindow() {
-        return _windowsRight;
-    }
-    
-    WindowGrid getPlayerAccrossWindow() {
-        return _windowsAcross;
+    std::shared_ptr<WindowGrid> getPlayerWindow(int id) {
+            return _windowVec[id-1];
     }
 
     /** Returns number of dirts on the player's board **/
-        float returnNumBoardDirts(WindowGrid playerWindowGrid);
+    float returnNumBoardDirts(WindowGrid playerWindowGrid);
         
-        /** Returns number of max amount of dirt player's board could hold **/
-        float returnBoardMaxDirts(WindowGrid playerWindowGrid);
-    /** Returns the main player of who owns this controller**/
-    std::shared_ptr<Player> getPlayer() { return _player; }
-    
-    /** Returns player accross r**/
-    std::shared_ptr<Player> getPlayerAccross() { return _playerAcross; }
-    
-    /** Returns player on right r**/
-    std::shared_ptr<Player> getPlayerLeft() { return _playerLeft; }
-    
-    /** Returns player on right  r**/
-    std::shared_ptr<Player> getPlayerRight() { return _playerRight; }
-    
+    /** Returns number of max amount of dirt player's board could hold **/
+    float returnBoardMaxDirts(WindowGrid playerWindowGrid);
+
+    /** Returns the player given the id */
+    std::shared_ptr<Player> getPlayer(int id) { return _playerVec[id-1]; }
 
     /** Returns the id of this player. */
     const int getId() const { return _id; }
@@ -334,16 +298,13 @@ public:
     /** Returns the current dirt amount in the dirt bucket */
     int getCurDirtAmount() { return _currentDirtAmount; }
 
-    /** Returns the current player's health */
-    int getPlayerHealth() { return _player->getHealth(); }
-
     /** Returns the current game time */
     int getTime() { return _gameTimeLeft; }
 
     /** Returns the player's current board */
     int getCurBoard() { return _curBoard; }
 
-    /** 
+    /**
      * Given the world positions, convert it to the board position
      * based off of grid coordinates. Ex. [2, 3] or [2.3, 3] if the
      * player is in the process of moving in between x = 2 and x = 3.
@@ -393,8 +354,8 @@ public:
     /** Checks whether board is full */
     const bool checkBoardFull(); // TODO: Unimplemented
     
-    /** Checks whether board is empty */
-    const bool checkBoardEmpty(WindowGrid playerWindowGrid); 
+    /** Counts number of dirt on board */
+    const int countBoardDirt(WindowGrid playerWindowGrid);
     
     
     /** update when dirt is generated */
@@ -404,11 +365,11 @@ public:
     void generateDirt();
 
     /** generates poo before bird is ready */
-    void generatePoo(ProjectileSet* projectiles);
+    void generatePoo(std::shared_ptr<ProjectileSet> projectiles);
 
     /**
      * Called by host only. Converts game state into a JSON value for sending over the network
-     * 
+     *
      * @param id    the id of the player of the board state to get
      * @returns JSON value representing game board state
      */
@@ -416,7 +377,7 @@ public:
 
     /**
      * Called by client only. Converts a movement vector into a JSON value for sending over the network.
-     * 
+     *
      * @param move    the movement vector
      * @returns JSON value representing a movement
      */
@@ -439,14 +400,14 @@ public:
      * @param vel   The velocity vector of the dirt projectile
      * @param dest  The destination coordinates of the dirt projectile
      * @param amt   The amount of dirt to spawn when landing on windows
-     * 
+     *
      * @returns JSON value representing a dirt throw action
      */
     std::shared_ptr<cugl::JsonValue> getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest, const int amt);
 
     /**
      * Updates a neighboring or own board given the JSON value representing its game state
-     * 
+     *
      * @params data     The data to update
      */
     void updateBoard(std::shared_ptr<cugl::JsonValue> data);
@@ -459,17 +420,17 @@ public:
      */
     void processMovementRequest(std::shared_ptr<cugl::JsonValue> data);
 
-    /** 
+    /**
      * Called by host only to process switch scene requests. Updates a client player's
      * currently viewed board for the player at player_id based on the current board
      * value stored in the JSON value.
-     * 
+     *
      * @params data     The data to update
      */
     void processSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data);
 
     /**
-     * Called by host only. Updates the boards of both the dirt thrower and the player 
+     * Called by host only. Updates the boards of both the dirt thrower and the player
      * receiving the dirt projectile given the information stored in the JSON value.
      *
      * @params data     The data to update
@@ -493,7 +454,7 @@ public:
      * This method does all the heavy lifting work for update.
      * The host steps forward each player's game state, given references to the player, board, and projectile set.
      */
-    void stepForward(std::shared_ptr<Player>& player, WindowGrid& windows, ProjectileSet& projectiles);
+    void stepForward(std::shared_ptr<Player>& player, std::shared_ptr<WindowGrid>& windows, std::shared_ptr<ProjectileSet>& projectiles);
 
     /**
      * Draws all this scene to the given SpriteBatch.

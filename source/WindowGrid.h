@@ -12,13 +12,13 @@ with the desired number of rows and columns.
 
 class WindowGrid {
 private:
-	int _nHorizontal; // number of columns
-	int _nVertical;   // number of rows
+    int _nHorizontal; // number of columns
+    int _nVertical;   // number of rows
     /** initial dirt number */
     int _initDirtNum;
-	float _scaleFactor;
-	float _windowHeight;
-	float _windowWidth;
+    float _scaleFactor;
+    float _windowHeight;
+    float _windowWidth;
     float _buildingWidth;
     float _buildingHeight;
 	cugl::Vec2 _buildingTexturePosition;
@@ -62,40 +62,40 @@ private:
 
 
 public:
-	const int MAX_HEIGHT = 15; // TODO change to 4 once scrolling is complete
-	// accessors 
-//	void setWindowWidth(int width)        { _windowWidth = width;       };
-//	int  getWindowWidth()                 { return _windowWidth;        };
-//	void setWindowHeight(int height)      { _windowHeight = height;     };
-//	int  getWindowHeight()                { return _windowHeight;       };
-	void setNHorizontal(int n)            { _nHorizontal = n;           };
-	int  getNHorizontal()                 { return _nHorizontal;        };
-	void setNVertical(int n)              { _nVertical = n;             };
-	int  getNVertical()                   { return _nVertical;          };
+    const int MAX_HEIGHT = 15; // TODO change to 4 once scrolling is complete
+    // accessors
+//    void setWindowWidth(int width)        { _windowWidth = width;       };
+//    int  getWindowWidth()                 { return _windowWidth;        };
+//    void setWindowHeight(int height)      { _windowHeight = height;     };
+//    int  getWindowHeight()                { return _windowHeight;       };
+    void setNHorizontal(int n)            { _nHorizontal = n;           };
+    int  getNHorizontal()                 { return _nHorizontal;        };
+    void setNVertical(int n)              { _nVertical = n;             };
+    int  getNVertical()                   { return _nVertical;          };
     void  setInitDirtNum(int dirtN)       { _initDirtNum = dirtN;       };
     int  getInitDirtNum()                 { return _initDirtNum;        };
     float sideGap;
 
-	WindowGrid(); // constructor
+    WindowGrid(); // constructor
 
-	/** sets number of windows in grid */
-	bool init(int nHorizontal, int nVertical, cugl::Size size);
+    /** sets number of windows in grid */
+    bool init(int nHorizontal, int nVertical, cugl::Size size);
 
-	/** initializes window based on json data
-		includes number rows, columns, and dirts to be displayed */
-	bool init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size);
+    /** initializes window based on json data
+        includes number rows, columns, and dirts to be displayed */
+    bool init(std::shared_ptr<cugl::JsonValue> data, cugl::Size size);
 
-	/** appends a texture to the texture vector */
-	void addTexture(const std::shared_ptr<cugl::Texture>& value) { _textures.push_back(value); }
+    /** appends a texture to the texture vector */
+    void addTexture(const std::shared_ptr<cugl::Texture>& value) { _textures.push_back(value); }
 
-	/** sets window pane texture */
-	void setTexture(const std::shared_ptr<cugl::Texture>& value, int idx) { _textures[idx] = value; }
+    /** sets window pane texture */
+    void setTexture(const std::shared_ptr<cugl::Texture>& value, int idx) { _textures[idx] = value; }
 
-	/** sets dirt texture */
-	void setDirtTexture(const std::shared_ptr<cugl::Texture>& value) { _dirt = value; }
+    /** sets dirt texture */
+    void setDirtTexture(const std::shared_ptr<cugl::Texture>& value) { _dirt = value; }
 
-	/** sets the faded dirt texture */
-	void setFadedDirtTexture(const std::shared_ptr<cugl::Texture>& value) { _fadedDirtTexture = value; }
+    /** sets the faded dirt texture */
+    void setFadedDirtTexture(const std::shared_ptr<cugl::Texture>& value) { _fadedDirtTexture = value; }
 
 	/** sets building texture */
 	void setBuildingTexture(const std::shared_ptr<cugl::Texture>& value) { _buildingTexture = value; }
@@ -108,11 +108,11 @@ public:
 		return _textures[idx];
 	}
 
-	/** Returns the window height */
-	const float getPaneHeight() const { return _windowHeight; }
+    /** Returns the window height */
+    const float getPaneHeight() const { return _windowHeight; }
 
-	/** Returns the window width */
-	const float getPaneWidth() const { return _windowWidth; }
+    /** Returns the window width */
+    const float getPaneWidth() const { return _windowWidth; }
     
     /**
      * Get window state at row and col
@@ -137,15 +137,15 @@ public:
 	 */
 	cugl::Vec2 getGridIndices(cugl::Vec2 location, cugl::Size size);
 
-	/**
-	 * Returns whether it is possible to move from one window grid location to another
-	 */
-	bool getCanMoveBetween(int x_origin, int y_origin, int x_dest, int y_dest);
+    /**
+     * Returns whether it is possible to move from one window grid location to another
+     */
+    bool getCanMoveBetween(int x_origin, int y_origin, int x_dest, int y_dest);
 
-	/**
-	 * Returns whether it is possible to move from one window grid location to another
-	 */
-	bool getCanBeDirtied(int x_index, int y_index);
+    /**
+     * Returns whether it is possible to move from one window grid location to another
+     */
+    bool getCanBeDirtied(int x_index, int y_index);
     
     /**
      * Initializes the board by creating dirt
@@ -158,22 +158,22 @@ public:
      */
     void clearBoard();
     
-	/**
-	 * Add dirt to board at specified location.
-	 * Returns true if the dirt was successfully added, and false if there is already dirt at the location or the location is inaccessible.
-	 */
-	bool addDirt(const int row, const int col);
+    /**
+     * Add dirt to board at specified location.
+     * Returns true if the dirt was successfully added, and false if there is already dirt at the location or the location is inaccessible.
+     */
+    bool addDirt(const int row, const int col);
 
-	/** 
-	 * Remove dirt from board at specified location 
-	 * Returns true if the dirt was successfully removed, and false if there is no dirt to remove.
-	 */
-	bool removeDirt(const int row, const int col) { 
+    /**
+     * Remove dirt from board at specified location
+     * Returns true if the dirt was successfully removed, and false if there is no dirt to remove.
+     */
+    bool removeDirt(const int row, const int col) {
 //        CULog("size: %d, %d", _board.size(), board[0].size());
         bool dirtExisted = _boardFilth[row][col] != nullptr;
         if (dirtExisted) {
-			_boardFilth[row][col].reset();
-			_boardFilth[row][col] = nullptr;
+            _boardFilth[row][col].reset();
+            _boardFilth[row][col] = nullptr;
         }
 		return dirtExisted;
 	}
@@ -183,11 +183,11 @@ public:
 	 */
 	void clearWindowTextures();
 
-	/** draws entire grid of window panes to fit in "size" */
-	void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size);
+    /** draws entire grid of window panes to fit in "size" */
+    void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size);
 
-	/** draws potential dirts when aiming */
-	void drawPotentialDirt(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, std::vector<cugl::Vec2> potentialFilth);
+    /** draws potential dirts when aiming */
+    void drawPotentialDirt(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, std::vector<cugl::Vec2> potentialFilth);
 };
 
 #endif
