@@ -135,7 +135,7 @@ bool GameplayController::initLevel(int selected_level) {
     }
     
     // texture mappings for each level (update these from the python script)
-    _windows.clearWindowTextures();
+    
     std::vector<string> texture_strings_level_1 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level1Window1", "level1Window2", "level1Window3", "level1Window4" };
     std::vector<string> texture_strings_level_2 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level2Window1", "level2Window2" };
     std::vector<string> texture_strings_level_3 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level3Window1", "level3Window2", "level3Window3", "level3Window4" };
@@ -320,6 +320,7 @@ void GameplayController::reset() {
     for (auto window : _windowVec) {
         if (window == nullptr) continue;
         window->clearBoard();
+        window->clearWindowTextures();
         window->generateInitialBoard(window->getInitDirtNum());
     }
 
