@@ -192,6 +192,15 @@ bool WindowGrid::addDirt(const int row, const int col) {
 	return !dirtExisted && isTileDirtiable;
 }
 
+/**
+* Clears grid-related texture variables for a fresh start every time we reuse the window grid for a new level
+*/
+void WindowGrid::clearWindowTextures() {
+	_textures.clear();
+	_texture_ids.clear();
+	_texture_indices.clear();
+}
+
 // draws an entire grid of _nHorizontal x nVertical windows as large as possible with center (horizontal) alignment
 void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size) {
 	// draw building background

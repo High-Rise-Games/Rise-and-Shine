@@ -486,44 +486,11 @@
         "window": {
             "file": "textures/GenericWindow.png"
         },
-        "window_1": {
-            "file": "textures/window_1.png"
+        "level2Window1": {
+            "file": "textures/level2Window1.png"
         },
-        "window_2": {
-            "file": "textures/window_2.png"
-        },
-        "window_3": {
-            "file": "textures/window_3.png"
-        },
-        "window_4": {
-            "file": "textures/window_4.png"
-        },
-        "window_5": {
-            "file": "textures/window_5.png"
-        },
-        "window_6": {
-            "file": "textures/window_6.png"
-        },
-        "window_7": {
-            "file": "textures/window_7.png"
-        },
-        "window_8": {
-            "file": "textures/window_8.png"
-        },
-        "window_9": {
-            "file": "textures/window_9.png"
-        },
-        "window_10": {
-            "file": "textures/window_10.png"
-        },
-        "window_11": {
-            "file": "textures/window_11.png"
-        },
-        "window_12": {
-            "file": "textures/window_12.png"
-        },
-        "window_13": {
-            "file": "textures/window_13.png"
+        "level2Window2": {
+            "file": "textures/level2Window2.png"
         },
         "level1Window1": {
             "file": "textures/level1Window1.png"
@@ -531,20 +498,23 @@
         "level1Window2": {
             "file": "textures/level1Window2.png"
         },
-        "nightmare_window1": {
-            "file": "textures/window1nightmare.png"
+        "level1Window3": {
+            "file": "textures/level1Window3.png"
         },
-        "nightmare_window2": {
-            "file": "textures/window2nightmare.png"
+        "level1Window4": {
+            "file": "textures/level1Window4.png"
         },
-        "nightmare_window3": {
-            "file": "textures/window3nightmare.png"
+        "level3Window1": {
+            "file": "textures/level3Window1.png"
         },
-        "nightmare_window4": {
-            "file": "textures/window4nightmare.png"
+        "level3Window2": {
+            "file": "textures/level3Window2.png"
         },
-        "nightmare_window5": {
-            "file": "textures/window5nightmare.png"
+        "level3Window3": {
+            "file": "textures/level3Window3.png"
+        },
+        "level3Window4": {
+            "file": "textures/level3Window4.png"
         },
         "down_blocked_1": {
             "file": "textures/down_blocked_1.png"
@@ -554,6 +524,12 @@
         },
         "fully_blocked_1": {
             "file": "textures/fully_blocked_1.png"
+        },
+        "fully_blocked_2": {
+            "file": "textures/fully_blocked_2.png"
+        },
+        "fully_blocked_3": {
+            "file": "textures/fully_blocked_3.png"
         },
         "nightWindow1": {
             "file": "textures/nightWindow1.png"
@@ -572,6 +548,12 @@
         },
         "day1Building": {
             "file": "textures/day1Building.png"
+        },
+        "day2Building": {
+            "file": "textures/day2Building.png"
+        },
+        "day3Building": {
+            "file": "textures/day3Building.png"
         },
         "nightBuilding": {
             "file": "textures/nightBuilding.png"
@@ -668,6 +650,8 @@
         "templatelevel2": "json/templatelevel2.json",
         "templatelevel3": "json/templatelevel3.json",
         "level1": "json/level1.json",
+        "level2": "json/level2.json",
+        "level3": "json/level3.json",
         "nightlevel": "json/nightlevel.json"
     },
     "widgets": {
