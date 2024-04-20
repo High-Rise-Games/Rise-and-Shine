@@ -67,6 +67,8 @@ protected:
     std::shared_ptr<cugl::JsonValue> _levelJson;
     /** Initial dirt count for this level */
     int _initDirtCount;
+    /** Which dirt is being used for this level */
+    std::string _dirtTextureString;
 
     /** Size of the scene */
     cugl::Size _size;

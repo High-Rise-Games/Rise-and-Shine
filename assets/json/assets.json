@@ -561,6 +561,9 @@
         "dirt": {
             "file": "textures/GenericDirt.png"
         },
+        "dirt2": {
+            "file": "textures/dirt2.png"
+        },
         "faded-dirt": {
             "file": "textures/FadedDirt.png"
         },

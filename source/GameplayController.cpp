@@ -158,6 +158,7 @@ bool GameplayController::initLevel(int selected_level) {
     texture_ids_levels.push_back(texture_ids_level_3);
     texture_ids_levels.push_back(texture_ids_level_4);
     texture_ids_levels.push_back(texture_ids_level_5);
+    _dirtTextureString = (selected_level == 4 ? "dirt2" : "dirt");
     // select the correct mapping for this level
     _texture_strings_selected = texture_strings_levels.at(selected_level - 1);
     _texture_ids_selected = texture_ids_levels.at(selected_level - 1);
@@ -199,7 +200,7 @@ bool GameplayController::initClient(const std::shared_ptr<cugl::AssetManager>& a
     _windowVec[_id - 1]->setTextureIds(_texture_ids_selected);
     _windowVec[_id - 1]->init(_levelJson, _size); // init depends on texture
     _windowVec[_id - 1]->setInitDirtNum(_initDirtCount);
-    _windowVec[_id - 1]->setDirtTexture(assets->get<Texture>("dirt"));
+    _windowVec[_id - 1]->setDirtTexture(assets->get<Texture>(_dirtTextureString));
     _windowVec[_id - 1]->setFadedDirtTexture(assets->get<Texture>("faded-dirt"));
 
     // Initialize player character for self
@@ -225,7 +226,7 @@ bool GameplayController::initClient(const std::shared_ptr<cugl::AssetManager>& a
 
     // Initialize projectiles  for self
     _projectileVec[_id - 1] = make_shared<ProjectileSet>();
-    _projectileVec[_id - 1]->setDirtTexture(assets->get<Texture>("dirt"));
+    _projectileVec[_id - 1]->setDirtTexture(assets->get<Texture>(_dirtTextureString));
     _projectileVec[_id - 1]->setPoopTexture(assets->get<Texture>("poop"));
     _projectileVec[_id - 1]->setTextureScales(_windowVec[_id - 1]->getPaneHeight(), _windowVec[_id - 1]->getPaneWidth());
 
@@ -269,7 +270,7 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
             _windowVec[i - 1]->setTextureIds(_texture_ids_selected);
             _windowVec[i - 1]->init(_levelJson, _size); // init depends on texture
             _windowVec[i - 1]->setInitDirtNum(_initDirtCount);
-            _windowVec[i - 1]->setDirtTexture(assets->get<Texture>("dirt"));
+            _windowVec[i - 1]->setDirtTexture(assets->get<Texture>(_dirtTextureString));
             _windowVec[i - 1]->setFadedDirtTexture(assets->get<Texture>("faded-dirt"));
 
             // Initialize player characters
@@ -278,7 +279,7 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
             
             // Initialize projectiles
             _projectileVec[i - 1] = make_shared<ProjectileSet>();
-            _projectileVec[i-1]->setDirtTexture(assets->get<Texture>("dirt"));
+            _projectileVec[i-1]->setDirtTexture(assets->get<Texture>(_dirtTextureString));
             _projectileVec[i - 1]->setPoopTexture(assets->get<Texture>("poop"));
             _projectileVec[i - 1]->setTextureScales(_windowVec[i - 1]->getPaneHeight(), _windowVec[i - 1]->getPaneWidth());
             
@@ -626,7 +627,7 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
         _windowVec[playerId - 1]->setTextureIds(_texture_ids_selected);
         _windowVec[playerId - 1]->init(_levelJson, _size); // init depends on texture
         _windowVec[playerId - 1]->setInitDirtNum(_initDirtCount);
-        _windowVec[playerId - 1]->setDirtTexture(_assets->get<Texture>("dirt"));
+        _windowVec[playerId - 1]->setDirtTexture(_assets->get<Texture>(_dirtTextureString));
         _windowVec[playerId - 1]->setFadedDirtTexture(_assets->get<Texture>("faded-dirt"));
 
         // instantiate this player in this client's game instance
@@ -637,7 +638,7 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
 
         // instantiate this player's projectile set in this client's game instance
         _projectileVec[playerId - 1] = make_shared<ProjectileSet>();
-        _projectileVec[playerId - 1]->setDirtTexture(_assets->get<Texture>("dirt"));
+        _projectileVec[playerId - 1]->setDirtTexture(_assets->get<Texture>(_dirtTextureString));
         _projectileVec[playerId - 1]->setPoopTexture(_assets->get<Texture>("poop"));
         _projectileVec[playerId - 1]->setTextureScales(_windowVec[_id - 1]->getPaneHeight(), _windowVec[_id - 1]->getPaneWidth());
     }
