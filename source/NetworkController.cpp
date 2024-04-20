@@ -178,12 +178,14 @@ bool NetworkController::checkConnection() {
  * @param state     The message to be sent
  */
 void NetworkController::transmitMessage(const std::shared_ptr<cugl::JsonValue> msg) {
-    NetcodeSerializer netSerializer;
-    netSerializer.writeJson(msg);
-    const std::vector<std::byte>& byteState = netSerializer.serialize();
-    _network->broadcast(byteState);
-    netSerializer.reset();
-} 
+    if (_network->isOpen()) {
+        NetcodeSerializer netSerializer;
+        netSerializer.writeJson(msg);
+        const std::vector<std::byte>& byteState = netSerializer.serialize();
+        _network->broadcast(byteState);
+        netSerializer.reset();
+    }
+}
 
 /**
  *
@@ -206,7 +208,7 @@ bool NetworkController::connect(cugl::net::NetcodeConfig config) {
         return true;
     }
     
-    return true;
+    return false;
  
 }
 
