@@ -1062,6 +1062,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     _prevInputPos = worldPos;
                 }
             } else {
+                ifSwitch = false;
                 if (dirtCon.didRelease()) {
                     _dirtSelected = false;
                     Vec2 diff = worldPos - _prevInputPos;
