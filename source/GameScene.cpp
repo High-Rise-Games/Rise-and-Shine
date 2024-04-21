@@ -197,6 +197,10 @@ void GameScene::update(float timestep) {
     Vec2 worldPos = Vec2(convertedWorldPos.x, convertedWorldPos.y);
     
     _gameController->update(timestep, worldPos, _dirtThrowInput, _dirtThrowButton, _dirtThrowArc);
+
+    for (auto bar : _player_bars) {
+        bar->setVisible(false);
+    }
     
     for(int id = 1; id <= 4; id++) {
         auto player = _gameController->getPlayer(id);
@@ -204,6 +208,7 @@ void GameScene::update(float timestep) {
         float numWindowPanes = _gameController->getPlayerWindow(id)->getNHorizontal() * _gameController->getPlayerWindow(id)->getNVertical();
         auto progress = (numWindowPanes - _gameController->getPlayerWindow(id)->getTotalDirt()) / numWindowPanes;
         _player_bars[_char_to_barIdx[player->getChar()]]->setProgress(progress);
+        _player_bars[_char_to_barIdx[player->getChar()]]->setVisible(true);
     }
 
     _timeText->setText(strtool::format("Time %d", _gameController->getTime()));
