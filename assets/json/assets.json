@@ -561,6 +561,9 @@
         "dirt": {
             "file": "textures/GenericDirt.png"
         },
+        "dirt2": {
+            "file": "textures/dirt2.png"
+        },
         "faded-dirt": {
             "file": "textures/FadedDirt.png"
         },
@@ -2346,8 +2349,8 @@
                     "layout": {
                         "x_anchor": "left",
                         "y_anchor": "bottom",
-                        "y_offset": 10,
-                        "x_offset": 10,
+                        "y_offset": 625,
+                        "x_offset": 20,
                         "absolute": true
                     }
                 },

@@ -78,10 +78,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     
     _countdown1 =assets->get<Texture>("countdown1");
     
-//    // Initialize switch scene icon
-//    setSwitchSceneButton(assets->get<Texture>("switchSceneButton"));
-//    // Initialize return scene icon
-//    setReturnSceneButton(assets->get<Texture>("returnSceneButton"));
+
 
     // Create and layout the dirt amount
     std::string dirt_msg = "0";
@@ -94,9 +91,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     std::string time_msg = "Time";
     _timeText = TextLayout::allocWithText(time_msg, assets->get<Font>("pixel32"));
     _timeText->layout();
-//    _healthText = TextLayout::allocWithText(health_msg, assets->get<Font>("pixel32"));
-//    _healthText->layout();
-    
+
     reset();
     
     // Acquire the scene built by the asset loader and resize it the scene
@@ -252,17 +247,17 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 
     _gameController->draw(batch);
     
-    batch->setColor(Color4::BLACK);
-    
-    batch->drawText(_timeText, Vec2(getCamera()->getPosition().x - 250, getCamera()->getPosition().y + 300));
+    batch->setColor(Color4::WHITE);
+
+
+    batch->drawText(_timeText, Vec2(getCamera()->getPosition().x+ 450, getCamera()->getPosition().y+130));
     
     //set bucket texture location
     Affine2 bucketTrans = Affine2();
     Vec2 bOrigin(_fullBucket->getWidth()/2,_fullBucket->getHeight()/2);
-    float bucketScaleFactor = std::min(((float)getSize().getIWidth() / (float)_fullBucket->getWidth()) /3, ((float)getSize().getIHeight() / (float)_fullBucket->getHeight() /3));
-    bucketTrans.scale(bucketScaleFactor);
-    
-    Vec2 bucketLocation(getCamera()->getPosition().x - 100, getCamera()->getPosition().y + 100);
+    float bucketScaleFactor = std::min(((float)getSize().getIWidth() / (float)_fullBucket->getWidth()) /2, ((float)getSize().getIHeight() / (float)_fullBucket->getHeight() /2));
+    bucketTrans.scale(bucketScaleFactor*0.75);
+    Vec2 bucketLocation(getCamera()->getPosition().x - 560, getCamera()->getPosition().y - 300);
     bucketTrans.translate(bucketLocation);
     
     // draw different bucket based on dirt amount
@@ -291,8 +286,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _dirtThrowButton->deactivate();
     }
     _scene_UI->render(batch);
-//    std::cout<<"arc: "<<_dirtThrowArc->getPosition().x<<", "<<_dirtThrowArc->getPosition().y<<"\n";
-//    std::cout<<"button: "<<_dirtThrowButton->getPosition().x<<", "<<_dirtThrowButton->getPosition().y<<"\n";
+
     
     if (_gameController->isGameWin()) {
         _winBackground->setPosition(idk-getSize().operator Vec2()/2);
