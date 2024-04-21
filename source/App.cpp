@@ -356,7 +356,6 @@ void App::updateLobbyScene(float timestep) {
                 _scene = State::MENU;
                 break;
             case LobbyScene::Status::START:
-                _gameplay->initLevel(_lobby_host.getLevel());
                 AudioEngine::get()->play("click", _click_sound);
                 _lobby_host.setActive(false);
                 _gamescene.setActive(true);
@@ -365,6 +364,7 @@ void App::updateLobbyScene(float timestep) {
                 _gameplay->setConnection(_lobby_host.getNetworkController().getConnection());
                 _lobby_host.getNetworkController().disconnect();
                 _gameplay->setHost(true);
+                _gameplay->initLevel(_lobby_host.getLevel());
                 _gameplay->setActive(true);
                 _gameplay->setId(_lobby_host.getId());
                 _gameplay->initHost(_assets);
@@ -390,7 +390,6 @@ void App::updateLobbyScene(float timestep) {
                 _scene = State::CLIENT_JOIN;
                 break;
             case LobbyScene::Status::START:
-                _gameplay->initLevel(_lobby_client.getLevel());
                 AudioEngine::get()->play("click", _click_sound);
                 _lobby_client.setActive(false);
                 _gamescene.setActive(true);
@@ -399,6 +398,7 @@ void App::updateLobbyScene(float timestep) {
                 _gameplay->setConnection(_lobby_client.getNetworkController().getConnection());
                 _lobby_client.getNetworkController().disconnect();
                 _gameplay->setHost(false);
+                _gameplay->initLevel(_lobby_client.getLevel());
                 _gameplay->setActive(true);
                 _gameplay->setId(_lobby_client.getId());
                 _gameplay->initClient(_assets);

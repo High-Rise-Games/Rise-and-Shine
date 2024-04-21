@@ -96,6 +96,12 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
 }
 
 bool GameplayController::initLevel(int selected_level) {
+    if (_ishost) {
+        hostReset();
+    }
+    else {
+        reset();
+    }
     // TODO: update depending on level
     _birdActive = true;
 
@@ -203,8 +209,10 @@ bool GameplayController::initClient(const std::shared_ptr<cugl::AssetManager>& a
     _windowVec[_id - 1]->setFadedDirtTexture(assets->get<Texture>("faded-dirt"));
 
     // Initialize player character for self
-    Vec2 startingPos = Vec2(_windowVec[_id - 1]->sideGap + (_windowVec[_id - 1]->getPaneWidth() / 2), _windowVec[_id - 1]->getPaneHeight());
+    Vec2 startingPos = Vec2(_windowVec[_id - 1]->sideGap + (_windowVec[_id - 1]->getPaneWidth() / 2), _windowVec[_id - 1]->getPaneHeight() / 2);
     _playerVec[_id - 1] = make_shared<Player>(_id, startingPos, _windowVec[_id - 1]->getPaneHeight(), _windowVec[_id - 1]->getPaneWidth());
+    _playerVec[_id - 1]->setPosition(startingPos);
+    _playerVec[_id - 1]->setVelocity(Vec2::ZERO);
     // set temporary character until host sends message on character
     changeCharTexture(_playerVec[_id - 1], ""); // empty string defaults to Mushroom
     _playerVec[_id - 1]->setChar("");
@@ -228,9 +236,7 @@ bool GameplayController::initClient(const std::shared_ptr<cugl::AssetManager>& a
     _projectileVec[_id - 1]->setDirtTexture(assets->get<Texture>("dirt"));
     _projectileVec[_id - 1]->setPoopTexture(assets->get<Texture>("poop"));
     _projectileVec[_id - 1]->setTextureScales(_windowVec[_id - 1]->getPaneHeight(), _windowVec[_id - 1]->getPaneWidth());
-
-    reset();
-
+    _projectileVec[_id - 1]->init(_constants->get("projectiles"));
     return true;
 }
 
@@ -257,8 +263,8 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
         return false;
     }
 
-    _numPlayers = _network.getNumPlayers();
     if (_ishost) {
+        _numPlayers = _network.getNumPlayers();
 
         for (int i = 1; i <= _numPlayers; i++) {
             // Initialize window grids
@@ -271,11 +277,14 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
             _windowVec[i - 1]->setInitDirtNum(_initDirtCount);
             _windowVec[i - 1]->setDirtTexture(assets->get<Texture>("dirt"));
             _windowVec[i - 1]->setFadedDirtTexture(assets->get<Texture>("faded-dirt"));
+            _windowVec[i-1]->generateInitialBoard(_windowVec[i - 1]->getInitDirtNum());
 
             // Initialize player characters
-            Vec2 startingPos = Vec2(_windowVec[i - 1]->sideGap + (_windowVec[i - 1]->getPaneWidth() / 2), _windowVec[i - 1]->getPaneHeight());
+            Vec2 startingPos = Vec2(_windowVec[i - 1]->sideGap + (_windowVec[i - 1]->getPaneWidth() / 2), _windowVec[i - 1]->getPaneHeight() / 2);
             _playerVec[i - 1] = make_shared<Player>(i, startingPos, _windowVec[i - 1]->getPaneHeight(), _windowVec[i - 1]->getPaneWidth());
-            
+            _playerVec[i - 1]->setPosition(startingPos);
+            _playerVec[i - 1]->setVelocity(Vec2::ZERO);
+
             // Initialize projectiles
             _projectileVec[i - 1] = make_shared<ProjectileSet>();
             _projectileVec[i-1]->setDirtTexture(assets->get<Texture>("dirt"));
@@ -301,8 +310,6 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
         _boardWithBird = rand() % _numPlayers + 1;
     }
 
-    hostReset();
-
     return true;
 }
 
@@ -310,24 +317,9 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
 #pragma mark -
 #pragma mark Gameplay Handling
 void GameplayController::reset() {
-    Vec2 startingPos = Vec2(_windowVec[_id-1]->sideGap + (_windowVec[_id - 1]->getPaneWidth() / 2), _windowVec[_id - 1]->getPaneHeight() / 2);
-    for (auto player : _playerVec) {
-        if (player == nullptr) continue;
-        player->setPosition(startingPos);
-        player->setVelocity(Vec2::ZERO);
-    }
-
-    for (auto window : _windowVec) {
-        if (window == nullptr) continue;
-        window->clearBoard();
-        window->generateInitialBoard(window->getInitDirtNum());
-    }
-
-    for (auto projectiles : _projectileVec) {
-        if (projectiles == nullptr) continue;
-        projectiles->current.clear();
-        projectiles->init(_constants->get("projectiles"));
-    }
+    _playerVec = { nullptr, nullptr, nullptr, nullptr };
+    _windowVec = { nullptr, nullptr, nullptr, nullptr };
+    _projectileVec = { nullptr, nullptr, nullptr, nullptr };
 
     // Reset existence of enemies
     _birdLeaving = false;

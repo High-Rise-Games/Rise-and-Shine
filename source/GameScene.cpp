@@ -55,18 +55,21 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _background->setWrapT(GL_CLAMP_TO_EDGE);
     _constants = _assets->get<JsonValue>("constants");
 
-    // test progress bar for player
-    vector<string> barNames = { "greenbar", "bluebar", "redbar", "yellowbar" };
-    for (int i = 0; i < 4; i++) {
-        auto currBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_" + barNames[i]));
+    // progress bars for player
+    auto greenBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_greenbar"));
+    auto blueBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_bluebar"));
+    auto redBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_redbar"));
+    auto yellowBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_yellowbar"));
+
+    _player_bars = { redBar, greenBar, blueBar, yellowBar };
+    for (auto currBar : _player_bars) {
         currBar->setAngle(1.5708);
         currBar->setScale(2);
         currBar->setVisible(false);
-        _player_bars.push_back(currBar);
     }
-    _char_to_barIdx["Chameleon"] = 0;
-    _char_to_barIdx["Frog"] = 1;
-    _char_to_barIdx["Mushroom"] = 2;
+    _char_to_barIdx["Mushroom"] = 0;
+    _char_to_barIdx["Chameleon"] = 1;
+    _char_to_barIdx["Frog"] = 2;
     _char_to_barIdx["Flower"] = 3;
     
     // Initialize dirt bucket
@@ -161,6 +164,9 @@ void GameScene::setActive(bool value) {
             _quit = false;
             _backout->activate();
             _dirtThrowButton->activate();
+            for (auto bar : _player_bars) {
+                bar->setVisible(false);
+            }
         }
         else {
             _backout->deactivate();
@@ -168,6 +174,9 @@ void GameScene::setActive(bool value) {
             // If any were pressed, reset them
             _backout->setDown(false);
             _dirtThrowButton->setDown(false);
+            for (auto bar : _player_bars) {
+                bar->setVisible(false);
+            }
         }
     }
 }
@@ -194,14 +203,12 @@ void GameScene::update(float timestep) {
     
     _gameController->update(timestep, worldPos, _dirtThrowInput, _dirtThrowButton, _dirtThrowArc);
     
-    int currBarIdx = 0;
     for(int id = 1; id <= 4; id++) {
         auto player = _gameController->getPlayer(id);
         if (player == nullptr) continue;
         float numWindowPanes = _gameController->getPlayerWindow(id)->getNHorizontal() * _gameController->getPlayerWindow(id)->getNVertical();
         auto progress = (numWindowPanes - _gameController->getPlayerWindow(id)->getTotalDirt()) / numWindowPanes;
-        _player_bars[currBarIdx]->setProgress(progress);
-        currBarIdx += 1;
+        _player_bars[_char_to_barIdx[player->getChar()]]->setProgress(progress);
     }
 
     _timeText->setText(strtool::format("Time %d", _gameController->getTime()));
@@ -246,23 +253,16 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     _gameController->draw(batch);
     
     batch->setColor(Color4::BLACK);
-//    batch->drawText(_timeText, Vec2(getSize().width - 10 - _timeText->getBounds().size.width, getSize().height - _timeText->getBounds().size.height));
-//    batch->drawText(_healthText, Vec2(10, getSize().height - _healthText->getBounds().size.height));
     
-    batch->drawText(_timeText, Vec2(getCamera()->getPosition().x+ 412, getCamera()->getPosition().y + 300));
-    
-//    batch->drawText(_timeText, Vec2(getSize().width - 10 - _timeText->getBounds().size.width, getSize().height - _timeText->getBounds().size.height));
+    batch->drawText(_timeText, Vec2(getCamera()->getPosition().x - 250, getCamera()->getPosition().y + 300));
     
     //set bucket texture location
     Affine2 bucketTrans = Affine2();
     Vec2 bOrigin(_fullBucket->getWidth()/2,_fullBucket->getHeight()/2);
-    float bucketScaleFactor = std::min(((float)getSize().getIWidth() / (float)_fullBucket->getWidth()) /2, ((float)getSize().getIHeight() / (float)_fullBucket->getHeight() /2));
+    float bucketScaleFactor = std::min(((float)getSize().getIWidth() / (float)_fullBucket->getWidth()) /3, ((float)getSize().getIHeight() / (float)_fullBucket->getHeight() /3));
     bucketTrans.scale(bucketScaleFactor);
     
-//    Vec2 bucketLocation(getSize().width - ((float)_fullBucket->getWidth() * bucketScaleFactor/2 + getCamera()->getPosition().x),
-//                        getSize().height + (float)_fullBucket->getHeight() * bucketScaleFactor/2 + getCamera()->getPosition().y + 100);
-    
-    Vec2 bucketLocation(getCamera()->getPosition().x+ 500, getCamera()->getPosition().y + 120);
+    Vec2 bucketLocation(getCamera()->getPosition().x - 100, getCamera()->getPosition().y + 100);
     bucketTrans.translate(bucketLocation);
     
     // draw different bucket based on dirt amount
@@ -310,7 +310,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         if (player == nullptr) continue;
         int barIdx = _char_to_barIdx[player->getChar()];
         // CULog("character: %a", player->getChar().c_str());
-        _player_bars[barIdx]->setPositionX(getSize().width - _gameController->getPlayerWindow(_gameController->getId())->sideGap + (offset_ct + 2) * 50);
+        _player_bars[barIdx]->setPositionX(getSize().width - _gameController->getPlayerWindow(_gameController->getId())->sideGap + (offset_ct + 1) * 50);
         _player_bars[barIdx]->setVisible(true);
         Affine2 profileTrans = Affine2();
         profileTrans.scale(0.2);
