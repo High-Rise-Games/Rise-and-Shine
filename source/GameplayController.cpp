@@ -1024,7 +1024,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         _curBoard = _allCurBoards[0];
         _curBoardLeft = _allCurBoards[_numPlayers - 1];
         _curBoardRight = _allCurBoards[1];
-        _curBirdBoard = _boardWithBird == _numPlayers ? -1 : _boardWithBird - 1;
+        _curBirdBoard = _boardWithBird == 4 ? -1 : _boardWithBird - 1;
         _curBirdPos = getWorldPosition(_bird.birdPosition);
 
     }
@@ -1234,6 +1234,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
     if (windows->getTotalDirt() == 0 && !_gameOver) {
         _gameOver = true;
         _hasWon[player_id - 1] = true;
+        _boardWithBird = rand() % _numPlayers + 1;
     }
 
     std::vector<std::pair<cugl::Vec2, int>> landedDirts;
