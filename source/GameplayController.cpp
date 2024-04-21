@@ -348,8 +348,6 @@ void GameplayController::hostReset() {
     _allDirtAmounts = { 0, 0, 0, 0 };
     _allCurBoards = { 0, 0, 0, 0 };
     _hasWon = { false, false, false, false };
-    // randomly place bird on a player's board
-    _boardWithBird = rand() % _numPlayers + 1;
 }
 
 /**
@@ -1026,7 +1024,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         _curBoard = _allCurBoards[0];
         _curBoardLeft = _allCurBoards[_numPlayers - 1];
         _curBoardRight = _allCurBoards[1];
-        _curBirdBoard = _boardWithBird == 4 ? -1 : _boardWithBird - 1;
+        _curBirdBoard = _boardWithBird == _numPlayers ? -1 : _boardWithBird - 1;
         _curBirdPos = getWorldPosition(_bird.birdPosition);
 
     }
@@ -1072,7 +1070,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     snapped_dest.x = clamp(round(snapped_dest.x), 0.0f, (float)_windowVec[_id - 1]->getNHorizontal()) + 0.5;
                     snapped_dest.y = clamp(round(snapped_dest.y), 0.0f, (float)_windowVec[_id - 1]->getNVertical()) + 0.5;
                     snapped_dest = getWorldPosition(snapped_dest);
-                    Vec2 velocity = (snapped_dest - playerPos).getNormalization() * 5;
+                    Vec2 velocity = (snapped_dest - playerPos).getNormalization() * 8;
                     int targetId = calculateNeighborId(_id, _curBoard, _playerVec);
 
                     if (_ishost) {
