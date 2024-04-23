@@ -44,9 +44,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
 
     _frame=0;
     
-    // Initialize a game audio controller
-    _audioController.init(assets);
-    
+
     // we set game win and game over to false
     _gameWin = false;
     _gameOver = false;
@@ -932,10 +930,8 @@ void GameplayController::processDirtThrowRequest(std::shared_ptr<cugl::JsonValue
  */
 void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton, std::shared_ptr<cugl::scene2::SceneNode> dirtThrowArc) {
     
-    // update the audio controller
-    _audioController.update(isActive());
     _input.update();
-    
+
     // get or transmit board states over network
     if (_network.getConnection()) {
         _network.getConnection()->receive([this](const std::string source,
@@ -1511,7 +1507,6 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 void GameplayController::setActive(bool f) {
     // yes this code is bad and needs to be reworked
     if (!f) {
-        _audioController.update(false);
         _isActive=false;
         setRequestForMenu(false);
         setGameOver(false);

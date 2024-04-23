@@ -678,14 +678,14 @@
             "file": "sounds/clean.wav",
             "volume": 0.4
         },
-        "tower_of_dragons" : {
+        "high_rising" : {
             "type": "sample",
-            "file": "sounds/Swing_Men.mp3",
+            "file": "sounds/high_rising.wav",
             "volume": 0.2
         },
-        "click" : {
+        "button_press" : {
             "type": "sample",
-            "file": "sounds/mouse-click.mp3",
+            "file": "sounds/button_press.mp3",
             "volume": 0.1
         }
     },

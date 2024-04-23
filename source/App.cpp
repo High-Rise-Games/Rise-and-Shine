@@ -228,7 +228,6 @@ void App::updateLoadingScene(float timestep) {
     if (_loading.isActive()) {
         _loading.update(timestep);
     } else {
-        _click_sound= _assets->get<cugl::Sound>("click");
         _loading.dispose(); // Permanently disables the input listeners in this mode
         _mainmenu.init(_assets);
         _levelscene.init(_assets);
@@ -240,6 +239,9 @@ void App::updateLoadingScene(float timestep) {
         _gameplay->init(_assets, getFPS(), _gamescene.getBounds(), _gamescene.getSize());
         _gamescene.setController(_gameplay);
         _mainmenu.setActive(true);
+        _audioController = std::make_shared<AudioController>();
+        _audioController->init(_assets);
+        _gameplay->setAudioController(_audioController);
         _scene = State::MENU;
     }
 }
@@ -257,13 +259,11 @@ void App::updateMenuScene(float timestep) {
     switch (_mainmenu.getChoice()) {
         case MenuScene::Choice::HOST:
             // play the click soud
-            AudioEngine::get()->play("click", _click_sound);
             _mainmenu.setActive(false);
             _levelscene.setActive(true);
             _scene = State::LEVEL;
             break;
         case MenuScene::Choice::JOIN:
-            AudioEngine::get()->play("click", _click_sound);
             _mainmenu.setActive(false);
             _client_join_scene.setActive(true);
             _scene = State::CLIENT_JOIN;
@@ -286,7 +286,6 @@ void App::updateLevelScene(float timestep) {
     _levelscene.update(timestep);
     switch (_levelscene.getChoice()) {
         case LevelScene::Choice::NEXT:
-            AudioEngine::get()->play("click", _click_sound);
             _levelscene.setActive(false);
             _lobby_host.setActive(true);
             _lobby_host.setHost(true);
@@ -295,7 +294,6 @@ void App::updateLevelScene(float timestep) {
             _scene = State::LOBBY_HOST;
             break;
         case LevelScene::Choice::BACK:
-            AudioEngine::get()->play("click", _click_sound);
             _levelscene.setActive(false);
             _mainmenu.setActive(true);
             _scene = State::MENU;
@@ -317,7 +315,6 @@ void App::updateClientJoinScene(float timestep) {
     _client_join_scene.update(timestep);
     switch (_client_join_scene.getChoice()) {
         case ClientJoinScene::Choice::NEXT:
-            AudioEngine::get()->play("click", _click_sound);
             _client_join_scene.setActive(false);
             _lobby_client.setGameidClient(_client_join_scene.getClientID());
             _lobby_client.setActive(true);
@@ -326,7 +323,6 @@ void App::updateClientJoinScene(float timestep) {
             _scene = State::LOBBY_CLIENT;
             break;
         case ClientJoinScene::Choice::BACK:
-            AudioEngine::get()->play("click", _click_sound);
             _client_join_scene.setActive(false);
             _mainmenu.setActive(true);
             _scene = State::MENU;
@@ -350,13 +346,11 @@ void App::updateLobbyScene(float timestep) {
 
         switch (_lobby_host.getStatus()) {
             case LobbyScene::Status::ABORT:
-                AudioEngine::get()->play("click", _click_sound);
                 _lobby_host.setActive(false);
                 _mainmenu.setActive(true);
                 _scene = State::MENU;
                 break;
             case LobbyScene::Status::START:
-                AudioEngine::get()->play("click", _click_sound);
                 _lobby_host.setActive(false);
                 _gamescene.setActive(true);
                 _scene = State::GAME;
@@ -384,13 +378,11 @@ void App::updateLobbyScene(float timestep) {
 
         switch (_lobby_client.getStatus()) {
             case LobbyScene::Status::ABORT:
-                AudioEngine::get()->play("click", _click_sound);
                 _lobby_client.setActive(false);
                 _client_join_scene.setActive(true);
                 _scene = State::CLIENT_JOIN;
                 break;
             case LobbyScene::Status::START:
-                AudioEngine::get()->play("click", _click_sound);
                 _lobby_client.setActive(false);
                 _gamescene.setActive(true);
                 _scene = State::GAME;
@@ -425,7 +417,6 @@ void App::updateGameScene(float timestep) {
     _gamescene.update(timestep);
     if (_gamescene.didQuit() || _gameplay->isThereARequestForMenu()) {
         if (_gamescene.didQuit()) {
-            AudioEngine::get()->play("click", _click_sound);
         }
         _gamescene.setActive(false);
         _gameplay->setActive(false);

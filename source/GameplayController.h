@@ -20,7 +20,7 @@
 #include "DirtThrowInputController.h"
 #include "CollisionController.h"
 #include "NetworkController.h"
-#include "GameAudioController.h"
+#include "AudioController.h"
 
 
 
@@ -35,6 +35,9 @@ class GameplayController {
 protected:
     /** The asset manager for this game mode. */
     std::shared_ptr<cugl::AssetManager> _assets;
+    
+    /** The audio controller, set ny app */
+    std::shared_ptr<AudioController> _audioController;
         
     /** Whether this player is the host */
     bool _ishost;
@@ -196,8 +199,6 @@ protected:
     /** The sound of a ship-asteroid collision */
     std::shared_ptr<cugl::Sound> _clean;
     
-    /** Gameplay Audio Controller */
-    GameAudioController _audioController;
 
     
 public:
@@ -226,6 +227,9 @@ public:
 
     /** Initializes the player model for client. */
     bool initClient(const std::shared_ptr<cugl::AssetManager>& assets);
+    
+    /** Sets the pointer to the audio controller from app */
+    void setAudioController(std::shared_ptr<AudioController> audioController) {_audioController = audioController;};
     
     /** Returns true if gameplay is active, and false if not. Tells us if the game is running */
     bool isActive() {
