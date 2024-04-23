@@ -118,7 +118,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     
     _dirtThrowButton = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("game_throw"));
     
-    _dirtThrowArc = std::make_shared<scene2::SceneNode>();
+    _dirtThrowArc = _assets->get<scene2::SceneNode>("game_greenarc");
     
     _quit = false;
     addChild(_scene_UI);
@@ -138,6 +138,7 @@ void GameScene::dispose() {
         removeAllChildren();
         _active = false;
         _dirtThrowButton = nullptr;
+        _dirtThrowArc = nullptr;
         _winBackground = nullptr;
         _loseBackground = nullptr;
     }
@@ -285,10 +286,12 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _dirtThrowButton->setVisible(true);
         _dirtThrowButton->activate();
         _dirtThrowButton->setDown(false);
+        _dirtThrowArc->setVisible(true);
     }
     else {
         _dirtThrowButton->setVisible(false);
         _dirtThrowButton->deactivate();
+        _dirtThrowArc->setVisible(false);
     }
     _scene_UI->render(batch);
 
