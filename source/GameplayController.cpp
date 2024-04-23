@@ -1042,10 +1042,13 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     // When the player is on other's board and are able to throw dirt
     if (_curBoard != 0) {
         bool ifSwitch = false;
-        float button_x = _curBoard == -1 ? getSize().width - _windowVec[_id-1]->sideGap + 150 : _windowVec[_id - 1]->sideGap - 150;
+        float button_x = _curBoard == -1 ? getSize().width - _windowVec[_id-1]->sideGap + 50 : _windowVec[_id - 1]->sideGap - 50;
         float arc_start = _curBoard == -1 ? 270 : 90;
+        float arc_rotate_angle = _curBoard == -1 ? 0 : M_PI;
         cugl::Vec2 buttonPos(button_x, SCENE_HEIGHT / 2);
         dirtThrowButton->setPosition(buttonPos);
+        dirtThrowArc->setPosition(buttonPos);
+        dirtThrowArc->setAngle(arc_rotate_angle);
         if ((_curBoard == -1 && _input.getDir().x == 1) || (_curBoard == 1 && _input.getDir().x == -1)) {
             ifSwitch = true;
         }
@@ -1063,7 +1066,13 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 if (dirtCon.didRelease()) {
                     _dirtSelected = false;
                     Vec2 diff = worldPos - _prevInputPos;
-                    Vec2 destination = playerPos - diff * 5;
+                    if ((_curBoard == 1 && diff.x > 0) || (_curBoard == -1 && diff.x < 0)) {
+                        diff.x = 0;
+                    }
+                    if (diff.length() > dirtThrowArc->getWidth() / 2) {
+                        diff = diff.getNormalization() * dirtThrowArc->getWidth() / 2;
+                    }
+                    Vec2 destination = playerPos - diff * 7;
                     Vec2 snapped_dest = getBoardPosition(destination);
                     snapped_dest.x = clamp(round(snapped_dest.x), 0.0f, (float)_windowVec[_id - 1]->getNHorizontal()) + 0.5;
                     snapped_dest.y = clamp(round(snapped_dest.y), 0.0f, (float)_windowVec[_id - 1]->getNVertical()) + 0.5;
@@ -1082,7 +1091,13 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     // cugl::Vec2 buttonPos(button_x, dirtThrowButton->getPositionY());
                     std::vector<Vec2> vertices = { playerPos };
                     Vec2 diff = worldPos - _prevInputPos;
-                    Vec2 destination = playerPos - diff * 5;
+                    if ((_curBoard == 1 && diff.x > 0) || (_curBoard == -1 && diff.x < 0)) {
+                        diff.x = 0;
+                    }
+                    if (diff.length() > dirtThrowArc->getWidth() / 2) {
+                        diff = diff.getNormalization() * dirtThrowArc->getWidth() / 2;
+                    }
+                    Vec2 destination = playerPos - diff * 7;
                     dirtThrowButton->setPosition(buttonPos + diff);
                     Vec2 snapped_dest = getBoardPosition(destination);
                     snapped_dest.x = clamp(round(snapped_dest.x), 0.0f, (float)_windowVec[_id - 1]->getNHorizontal()) + 0.5;

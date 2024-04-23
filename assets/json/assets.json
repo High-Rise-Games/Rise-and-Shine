@@ -576,6 +576,18 @@
         "throwButton": {
             "file": "textures/ThrowButton.png"
         },
+        "throwArcGreen": {
+            "file": "textures/dirtThrowArcGreen.png"
+        },
+        "throwArcRed": {
+            "file": "textures/dirtThrowArcRed.png"
+        },
+        "throwArcBlue": {
+            "file": "textures/dirtThrowArcBlue.png"
+        },
+        "throwArcYellow": {
+            "file": "textures/dirtThrowArcYellow.png"
+        },
         "button": {
             "file": "textures/button.png"
         },
@@ -2364,13 +2376,109 @@
                     "data": {
                         "upnode": "up",
                         "anchor": [ 0.5, 0.5 ],
-                        "scale": 0.35
+                        "scale": 0.2
                     },
                     "children": {
                         "up": {
                             "type": "Image",
                             "data": {
                                 "texture": "throwButton"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "greenarc": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.5, 0.5 ],
+                        "scale": 1.0
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "throwArcGreen"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "redarc": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.5, 0.5 ],
+                        "scale": 1.0
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "throwArcRed"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "bluearc": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.5, 0.5 ],
+                        "scale": 1.0
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "throwArcBlue"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "yellowarc": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.5, 0.5 ],
+                        "scale": 1.0
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "throwArcYellow"
                             }
                         }
                     },
