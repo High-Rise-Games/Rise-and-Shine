@@ -163,8 +163,7 @@ protected:
     bool _birdActive;
     /** True if the is shooed and is leaving the current board */
     bool _birdLeaving;
-    /** The current board that the bird is on */
-    int _boardWithBird;
+
     
     cugl::scheduable t;
     
@@ -375,7 +374,7 @@ public:
      * @param id    the id of the player of the board state to get
      * @returns JSON value representing game board state
      */
-    std::shared_ptr<cugl::JsonValue> getJsonBoard(int id);
+    std::shared_ptr<cugl::JsonValue> getJsonBoard(int id, bool isPartial, bool includesBird);
 
     /**
      * Called by client only. Converts a movement vector into a JSON value for sending over the network.
