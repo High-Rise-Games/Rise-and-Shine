@@ -68,17 +68,21 @@ bool ClientJoinScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _backbutton->addListener([this](const std::string& name, bool down) {
         if (down) {
             _choice = BACK;
+            _audioController->playBackPress();
         }
     });
     _nextbutton->addListener([this](const std::string& name, bool down) {
         if (down) {
             _choice = NEXT;
+            _audioController->playGoPress();
+            
         }
     });
     
     for (int i = 0; i < _keypadbuttons.size(); ++i) {
         _keypadbuttons[i]->addListener([this, i](const std::string& name, bool down) {
             if (down) {
+                _audioController->playMovePress();
                 if (i < 10) {
                     if (_clientRoomTextfield->getText().length() < 5) {
                         _clientRoomTextfield->setText(_clientRoomTextfield->getText() + std::to_string(i).c_str());

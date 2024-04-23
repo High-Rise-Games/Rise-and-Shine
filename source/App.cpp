@@ -244,6 +244,8 @@ void App::updateLoadingScene(float timestep) {
         _mainmenu.setAudioController(_audioController);
         _lobby_host.setAudioController(_audioController);
         _lobby_client.setAudioController(_audioController);
+        _client_join_scene.setAudioController(_audioController);
+        _levelscene.setAudioController(_audioController);
         _mainmenu.setActive(true);
         _scene = State::MENU;
     }

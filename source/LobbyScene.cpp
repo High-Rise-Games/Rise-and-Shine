@@ -158,6 +158,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Program the buttons
     _backout->addListener([this](const std::string& name, bool down) {
         if (down) {
+            _audioController->playBackPress();
             _network.disconnect();
             _status = Status::ABORT;
             _quit = true;
@@ -166,6 +167,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
 
     _startgame->addListener([this](const std::string& name, bool down) {
         if (down) {
+            _audioController->playGoPress();
             startGame();
         }
     });
@@ -173,6 +175,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     _select_red->addListener([this](const std::string& name, bool down) {
         if (down) {
             // Mushroom = 0
+            _audioController->playMovePress();
             character = "Mushroom";
             _character_field_red->setVisible(true);
             _character_field_blue->setVisible(false);
@@ -187,6 +190,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     _select_blue->addListener([this](const std::string& name, bool down) {
         if (down) {
             // Frog = 1
+            _audioController->playMovePress();
             character = "Frog";
             _character_field_red->setVisible(false);
             _character_field_blue->setVisible(true);
@@ -202,6 +206,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     _select_green->addListener([this](const std::string& name, bool down) {
         if (down) {
             // Chameleon = 2
+            _audioController->playMovePress();
             character = "Chameleon";
             _character_field_red->setVisible(false);
             _character_field_blue->setVisible(false);
@@ -217,6 +222,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     _select_yellow->addListener([this](const std::string& name, bool down) {
         if (down) {
             // Flower = 3
+            _audioController->playMovePress();
             character = "Flower";
             _character_field_red->setVisible(false);
             _character_field_blue->setVisible(false);
@@ -287,6 +293,7 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
     
     _backout->addListener([this](const std::string& name, bool down) {
         if (down) {
+            _audioController->playBackPress();
             _network.disconnect();
             _status = Status::ABORT;
             _quit = true;
@@ -295,6 +302,7 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
 
     _select_red->addListener([this](const std::string& name, bool down) {
         if (down) {
+            _audioController->playMovePress();
             character = "Mushroom";
             _character_field_red->setVisible(true);
             _character_field_blue->setVisible(false);
@@ -308,6 +316,7 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
         });
     _select_blue->addListener([this](const std::string& name, bool down) {
         if (down) {
+            _audioController->playMovePress();
             character = "Frog";
             _character_field_red->setVisible(false);
             _character_field_blue->setVisible(true);
@@ -321,6 +330,7 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
         });
     _select_green->addListener([this](const std::string& name, bool down) {
         if (down) {
+            _audioController->playMovePress();
             character = "Chameleon";
             _character_field_red->setVisible(false);
             _character_field_blue->setVisible(false);
@@ -334,6 +344,7 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
         });
     _select_yellow->addListener([this](const std::string& name, bool down) {
         if (down) {
+            _audioController->playMovePress();
             character = "Flower";
             _character_field_red->setVisible(false);
             _character_field_blue->setVisible(false);

@@ -704,6 +704,21 @@
             "type": "sample",
             "file": "sounds/button_press.mp3",
             "volume": 0.1
+        },
+        "UI_go" : {
+            "type": "sample",
+            "file": "sounds/UI_go.wav",
+            "volume": 0.05
+        },
+        "UI_back" : {
+            "type": "sample",
+            "file": "sounds/UI_back.wav",
+            "volume": 0.1
+        },
+        "UI_move" : {
+            "type": "sample",
+            "file": "sounds/UI_move.wav",
+            "volume": 0.1
         }
     },
     "jsons" : {

@@ -49,6 +49,9 @@ private:
     /* Whether the gamplay controller is active */
     bool _gameplayIsActive;
     
+    /** The queue for sounds so we dont abrutly stop sounds */
+    std::shared_ptr<cugl::AudioQueue> _soundQueue;
+    
     
 public:
     
