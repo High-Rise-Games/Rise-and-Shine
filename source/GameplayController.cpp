@@ -932,6 +932,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     
     _input.update();
 
+
     // get or transmit board states over network
     if (_network.getConnection()) {
         _network.getConnection()->receive([this](const std::string source,
@@ -1513,6 +1514,7 @@ void GameplayController::setActive(bool f) {
         setWin(false);
     } else {
         _isActive = true;
+        _audioController->playGameplayMusic();
         setRequestForMenu(false);
         setGameOver(false);
         setWin(false);

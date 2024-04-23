@@ -238,10 +238,13 @@ void App::updateLoadingScene(float timestep) {
         _gameplay = std::make_shared<GameplayController>();
         _gameplay->init(_assets, getFPS(), _gamescene.getBounds(), _gamescene.getSize());
         _gamescene.setController(_gameplay);
-        _mainmenu.setActive(true);
         _audioController = std::make_shared<AudioController>();
         _audioController->init(_assets);
         _gameplay->setAudioController(_audioController);
+        _mainmenu.setAudioController(_audioController);
+        _lobby_host.setAudioController(_audioController);
+        _lobby_client.setAudioController(_audioController);
+        _mainmenu.setActive(true);
         _scene = State::MENU;
     }
 }
@@ -420,8 +423,8 @@ void App::updateGameScene(float timestep) {
         }
         _gamescene.setActive(false);
         _gameplay->setActive(false);
-        _mainmenu.setActive(true);
         _gameplay->disconnect();
+        _mainmenu.setActive(true);
         _scene = State::MENU;
     }
 }

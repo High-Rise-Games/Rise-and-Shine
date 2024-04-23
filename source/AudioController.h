@@ -26,23 +26,29 @@ private:
     std::shared_ptr<cugl::Sound> _menuMusic;
     
     /** The gameplay  music */
-    std::shared_ptr<cugl::Sound> _buttonPress;
+    std::shared_ptr<cugl::Sound> _goPress;
+    
+    /** The gameplay  music */
+    std::shared_ptr<cugl::Sound> _movePress;
+    
+    /** The gameplay  music */
+    std::shared_ptr<cugl::Sound> _backPress;
     
     /** The bird poop sound effect */
     std::shared_ptr<cugl::Sound> _birdPoop;
     
-//    /** Whether gameplay music is playing */
-//    bool _gameplayMusicIsActive;
-//    
-//    /** Whether menu music is playing */
-//    bool _menuMusicIsActive;
-//    
-//    /** Whether poop colllision sound effect is playing */
-//    bool _poopCollisionEffectIsActive;
-//    
-//    /* Whether the gamplay controller is active */
-//    bool _gameplayIsActive;
-//    
+    /** Whether gameplay music is playing */
+    bool _gameplayMusicIsActive;
+    
+    /** Whether menu music is playing */
+    bool _menuMusicIsActive;
+    
+    /** Whether poop colllision sound effect is playing */
+    bool _poopCollisionEffectIsActive;
+    
+    /* Whether the gamplay controller is active */
+    bool _gameplayIsActive;
+    
     
 public:
     
@@ -55,8 +61,12 @@ public:
     /** Plays the menu music */
     void playMenuMusic();
     
-    /** Plays the button press sound effect */
-    void playButtonPressSound();
+    void playGoPress();
+
+    void playBackPress();
+
+    void playMovePress();
+
     
     /** Plays the poop collision sound effect */
     void playPoopSound();

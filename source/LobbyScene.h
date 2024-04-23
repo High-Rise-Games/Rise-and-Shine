@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include "NetworkController.h"
+#include "AudioController.h"
 
 #include <cugl/cugl.h>
 #include <vector>
@@ -62,6 +63,9 @@ public:
     }
     
 protected:
+    
+    /** The audio controller pointer initialized by app */
+    std::shared_ptr<AudioController> _audioController;
     
     /** The counter for IDs, increment by one after assigning an ID to a client**/
     int _hostIDcounter;
@@ -186,6 +190,9 @@ public:
 
     
     bool init_client(const std::shared_ptr<cugl::AssetManager>& assets);
+    
+    /** Sets the pointer to the audio controller from app */
+    void setAudioController(std::shared_ptr<AudioController> audioController) {_audioController = audioController;};
     
     /**
      * Sets whether scene is active or not, and whether scene is drawn as host

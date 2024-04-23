@@ -683,6 +683,11 @@
             "file": "sounds/high_rising.wav",
             "volume": 0.2
         },
+        "riser_riser" : {
+            "type": "sample",
+            "file": "sounds/riser_riser.wav",
+            "volume": 0.2
+        },
         "button_press" : {
             "type": "sample",
             "file": "sounds/button_press.mp3",

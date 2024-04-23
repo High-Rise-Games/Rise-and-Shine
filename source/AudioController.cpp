@@ -12,9 +12,13 @@ using namespace cugl;
 bool AudioController::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     
     _assets = assets;
+    _gameplayMusicIsActive = false;
+    _menuMusicIsActive = false;
     _gameplayMusic = _assets->get<cugl::Sound>("high_rising");
     _menuMusic = _assets->get<cugl::Sound>("riser_riser");
-    _buttonPress = _assets->get<cugl::Sound>("button_press");
+    _goPress = _assets->get<cugl::Sound>("button_press");
+    _backPress = _assets->get<cugl::Sound>("button_press");;
+    _movePress = _assets->get<cugl::Sound>("button_press");;
     _birdPoop = _assets->get<cugl::Sound>("button_press");
     
     return true;
@@ -22,24 +26,39 @@ bool AudioController::init(const std::shared_ptr<cugl::AssetManager>& assets) {
 
 void AudioController::playGameplayMusic() {
     
-    if (!AudioEngine::get()->getMusicQueue()->isLoop()) {
+    if (!_gameplayMusicIsActive & _menuMusicIsActive || (!_menuMusicIsActive && !_gameplayIsActive) ) {
+        stopMusic();
         AudioEngine::get()->getMusicQueue()->play(_gameplayMusic);
         AudioEngine::get()->getMusicQueue()->setLoop(true);
+        _gameplayMusicIsActive = true;
     }
     
 };
 
 void AudioController::playMenuMusic() {
-    if (!AudioEngine::get()->getMusicQueue()->isLoop()) {
+    
+    if ((!_menuMusicIsActive && !_gameplayMusicIsActive) || (!_menuMusicIsActive && _gameplayMusicIsActive)) {
+        stopMusic();
         AudioEngine::get()->getMusicQueue()->play(_menuMusic);
         AudioEngine::get()->getMusicQueue()->setLoop(true);
+        _menuMusicIsActive = true;
     }
 };
 
 
-void AudioController::playButtonPressSound() {
-    AudioEngine::get()->play("button", _buttonPress);
+void AudioController::playGoPress() {
+    AudioEngine::get()->play("go", _goPress);
 };
+
+void AudioController::playBackPress() {
+    AudioEngine::get()->play("back", _backPress);
+};
+
+void AudioController::playMovePress() {
+    AudioEngine::get()->play("move", _movePress);
+};
+
+
 
 
 void AudioController::playPoopSound() {
@@ -48,7 +67,11 @@ void AudioController::playPoopSound() {
 
 void AudioController::stopMusic() {
     AudioEngine::get()->getMusicQueue()->clear();
+    _menuMusicIsActive = false;
+    _gameplayMusicIsActive = false;
 };
+
+
 
 
 
