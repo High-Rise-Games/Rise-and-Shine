@@ -576,6 +576,18 @@
         "throwButton": {
             "file": "textures/ThrowButton.png"
         },
+        "throwArcGreen": {
+            "file": "textures/dirtThrowArcGreen.png"
+        },
+        "throwArcRed": {
+            "file": "textures/dirtThrowArcRed.png"
+        },
+        "throwArcBlue": {
+            "file": "textures/dirtThrowArcBlue.png"
+        },
+        "throwArcYellow": {
+            "file": "textures/dirtThrowArcYellow.png"
+        },
         "button": {
             "file": "textures/button.png"
         },
@@ -678,14 +690,34 @@
             "file": "sounds/clean.wav",
             "volume": 0.4
         },
-        "tower_of_dragons" : {
+        "high_rising" : {
             "type": "sample",
-            "file": "sounds/Swing_Men.mp3",
+            "file": "sounds/high_rising.wav",
             "volume": 0.2
         },
-        "click" : {
+        "riser_riser" : {
             "type": "sample",
-            "file": "sounds/mouse-click.mp3",
+            "file": "sounds/riser_riser.wav",
+            "volume": 0.2
+        },
+        "button_press" : {
+            "type": "sample",
+            "file": "sounds/button_press.mp3",
+            "volume": 0.1
+        },
+        "UI_go" : {
+            "type": "sample",
+            "file": "sounds/UI_go.wav",
+            "volume": 0.05
+        },
+        "UI_back" : {
+            "type": "sample",
+            "file": "sounds/UI_back.wav",
+            "volume": 0.1
+        },
+        "UI_move" : {
+            "type": "sample",
+            "file": "sounds/UI_move.wav",
             "volume": 0.1
         }
     },
@@ -2359,13 +2391,109 @@
                     "data": {
                         "upnode": "up",
                         "anchor": [ 0.5, 0.5 ],
-                        "scale": 0.35
+                        "scale": 0.2
                     },
                     "children": {
                         "up": {
                             "type": "Image",
                             "data": {
                                 "texture": "throwButton"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "greenarc": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.5, 0.5 ],
+                        "scale": 1.0
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "throwArcGreen"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "redarc": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.5, 0.5 ],
+                        "scale": 1.0
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "throwArcRed"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "bluearc": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.5, 0.5 ],
+                        "scale": 1.0
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "throwArcBlue"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "yellowarc": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.5, 0.5 ],
+                        "scale": 1.0
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "throwArcYellow"
                             }
                         }
                     },

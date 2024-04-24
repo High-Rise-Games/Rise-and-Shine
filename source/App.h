@@ -14,6 +14,7 @@
 #include "LevelScene.h"
 #include "ClientJoinScene.h"
 #include "MenuScene.h"
+#include "AudioController.h"
 
 /**
  * This class represents the application root for the ship demo.
@@ -41,14 +42,12 @@ protected:
     };
     
 
-    
+    /** The audio controller initiated by the app */
+    std::shared_ptr<AudioController> _audioController;
     /** The global sprite batch for drawing (only want one of these) */
     std::shared_ptr<cugl::SpriteBatch> _batch;
     /** The global asset manager */
     std::shared_ptr<cugl::AssetManager> _assets;
-    
-    /** The button click sound  */
-    std::shared_ptr<cugl::Sound> _click_sound;
 
     // Player modes
     

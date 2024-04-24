@@ -44,9 +44,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
 
     _frame=0;
     
-    // Initialize a game audio controller
-    _audioController.init(assets);
-    
+
     // we set game win and game over to false
     _gameWin = false;
     _gameOver = false;
@@ -927,10 +925,9 @@ void GameplayController::processDirtThrowRequest(std::shared_ptr<cugl::JsonValue
  */
 void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton, std::shared_ptr<cugl::scene2::SceneNode> dirtThrowArc) {
     
-    // update the audio controller
-    _audioController.update(isActive());
     _input.update();
-    
+
+
     // get or transmit board states over network
     if (_network.getConnection()) {
         _network.getConnection()->receive([this](const std::string source,
@@ -1058,8 +1055,11 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         bool ifSwitch = false;
         float button_x = myCurBoard == -1 ? getSize().width - _windowVec[_id-1]->sideGap + 150 : _windowVec[_id - 1]->sideGap - 150;
         float arc_start = myCurBoard == -1 ? 270 : 90;
+        float arc_rotate_angle = myCurBoard == -1 ? 0 : M_PI;
         cugl::Vec2 buttonPos(button_x, SCENE_HEIGHT / 2);
         dirtThrowButton->setPosition(buttonPos);
+        dirtThrowArc->setPosition(buttonPos);
+        dirtThrowArc->setAngle(arc_rotate_angle);
         if ((myCurBoard == -1 && _input.getDir().x == 1) || (myCurBoard == 1 && _input.getDir().x == -1)) {
             ifSwitch = true;
         }
@@ -1077,7 +1077,13 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 if (dirtCon.didRelease()) {
                     _dirtSelected = false;
                     Vec2 diff = worldPos - _prevInputPos;
-                    Vec2 destination = playerPos - diff * 5;
+                    if ((_curBoard == 1 && diff.x > 0) || (_curBoard == -1 && diff.x < 0)) {
+                        diff.x = 0;
+                    }
+                    if (diff.length() > dirtThrowArc->getWidth() / 2) {
+                        diff = diff.getNormalization() * dirtThrowArc->getWidth() / 2;
+                    }
+                    Vec2 destination = playerPos - diff * 7;
                     Vec2 snapped_dest = getBoardPosition(destination);
                     snapped_dest.x = clamp(round(snapped_dest.x), 0.0f, (float)_windowVec[_id - 1]->getNHorizontal()) + 0.5;
                     snapped_dest.y = clamp(round(snapped_dest.y), 0.0f, (float)_windowVec[_id - 1]->getNVertical()) + 0.5;
@@ -1096,7 +1102,13 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     // cugl::Vec2 buttonPos(button_x, dirtThrowButton->getPositionY());
                     std::vector<Vec2> vertices = { playerPos };
                     Vec2 diff = worldPos - _prevInputPos;
-                    Vec2 destination = playerPos - diff * 5;
+                    if ((_curBoard == 1 && diff.x > 0) || (_curBoard == -1 && diff.x < 0)) {
+                        diff.x = 0;
+                    }
+                    if (diff.length() > dirtThrowArc->getWidth() / 2) {
+                        diff = diff.getNormalization() * dirtThrowArc->getWidth() / 2;
+                    }
+                    Vec2 destination = playerPos - diff * 7;
                     dirtThrowButton->setPosition(buttonPos + diff);
                     Vec2 snapped_dest = getBoardPosition(destination);
                     snapped_dest.x = clamp(round(snapped_dest.x), 0.0f, (float)_windowVec[_id - 1]->getNHorizontal()) + 0.5;
@@ -1245,6 +1257,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
     if (windows->getTotalDirt() == 0 && !_gameOver) {
         _gameOver = true;
         _hasWon[player_id - 1] = true;
+        _boardWithBird = rand() % _numPlayers + 1;
     }
 
     std::vector<std::pair<cugl::Vec2, int>> landedDirts;
@@ -1521,13 +1534,13 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 void GameplayController::setActive(bool f) {
     // yes this code is bad and needs to be reworked
     if (!f) {
-        _audioController.update(false);
         _isActive=false;
         setRequestForMenu(false);
         setGameOver(false);
         setWin(false);
     } else {
         _isActive = true;
+        _audioController->playGameplayMusic();
         setRequestForMenu(false);
         setGameOver(false);
         setWin(false);

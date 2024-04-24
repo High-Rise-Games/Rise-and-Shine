@@ -67,11 +67,13 @@ bool LevelScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Program the buttons
     _backbutton->addListener([this](const std::string& name, bool down) {
         if (down) {
+            _audioController->playBackPress();
             _choice = BACK;
         }
     });
     _nextbutton->addListener([this](const std::string& name, bool down) {
         if (down) {
+            _audioController->playGoPress();
             _choice = NEXT;
         }
     });
@@ -79,6 +81,7 @@ bool LevelScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     for (int i = 0; i < _levelbuttons.size(); ++i) {
         _levelbuttons[i]->addListener([this, i](const std::string& name, bool down) {
             if (down) {
+                _audioController->playMovePress();
                 this->_levelbuttons[i]->setVisible(false);
                 this->_highlightedlevels[i]->setVisible(true);
                 if (_selectedlevel != -1 && _selectedlevel != i) {
