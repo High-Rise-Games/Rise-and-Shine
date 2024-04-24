@@ -323,6 +323,8 @@ void GameplayController::reset() {
 
     // Reset all starting current boards
     _allCurBoards = { 0, 0, 0, 0 };
+    // Reset all progress trackers
+    _progressVec = { 0, 0, 0, 0 };
 
     _dirtThrowTimer = 0;
     _projectileGenChance = 0.1;
@@ -438,7 +440,7 @@ void GameplayController::switchScene() {
             _allCurBoards[_id - 1] = 0;
         }
         else {
-            _network.transmitMessage(getJsonSceneSwitch(true));
+            _network.sendToHost(getJsonSceneSwitch(true));
         }
     }
 }
@@ -464,6 +466,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id, bool i
     json->appendValue("has_won", win_str);
     json->appendValue("num_dirt", std::to_string(_allDirtAmounts[id - 1]));
     json->appendValue("curr_board", std::to_string(_allCurBoards[id - 1]));
+    json->appendValue("progress", std::to_string(_progressVec[id-1]));
 
     cugl::Vec2 playerBoardPos = getBoardPosition(player->getPosition());
     if(!isPartial) json->appendValue("player_x", std::to_string(playerBoardPos.x));
@@ -537,9 +540,6 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id, bool i
         }
         json->appendChild("projectiles", projArray);
     }
-    else {
-        // json->appendValue("progress", );
-    }
 
     return json;
 }
@@ -601,6 +601,7 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
         setWin(playerId == _id);
         return;
     }
+    _progressVec[playerId - 1] = std::stod(data->getString("progress", "0"));
 
     // get x, y positions of player
     Vec2 playerBoardPos(std::stod(data->getString("player_x", "0")), std::stod(data->getString("player_y", "0")));
@@ -641,7 +642,7 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     auto player = _playerVec[playerId - 1];
     player->setPosition(getWorldPosition(playerBoardPos));
 
-    player->setAnimationState(data->getString("anim_State"));
+    player->setAnimationState(data->getString("anim_state"));
     
     auto windows = _windowVec[playerId - 1];
     auto projectiles = _projectileVec[playerId-1];
@@ -1081,7 +1082,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                         processDirtThrowRequest(getJsonDirtThrow(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
                     }
                     else {
-                        _network.transmitMessage(getJsonDirtThrow(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
+                        _network.sendToHost(getJsonDirtThrow(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
                     }
                     dirtThrowButton->setPosition(buttonPos);
                 } else if (dirtCon.isDown()) {
@@ -1123,7 +1124,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     // CULog("transmitting movement message over network for player %d", _id);
                     std::shared_ptr<JsonValue> m = getJsonMove(_input.getDir());
                     std::string s = m->toString();
-                    _network.transmitMessage(m);
+                    _network.sendToHost(m);
                 }
                 // send over scene switch requests are handled by button listener
             }
@@ -1243,6 +1244,11 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
         _hasWon[player_id - 1] = true;
         _curBirdBoard = rand() % _numPlayers + 1;
     }
+
+    // calculate progress
+    float numWindowPanes = windows->getNHorizontal() * windows->getNVertical();
+    auto progress = (numWindowPanes - windows->getTotalDirt()) / numWindowPanes;
+    _progressVec[player_id - 1] = progress;
 
     std::vector<std::pair<cugl::Vec2, int>> landedDirts;
 

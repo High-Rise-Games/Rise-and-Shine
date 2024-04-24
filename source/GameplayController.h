@@ -124,6 +124,8 @@ protected:
     std::vector<int> _texture_ids_selected;
     /** Vector of windows and dirt placements for all players */
     std::vector<std::shared_ptr<WindowGrid>> _windowVec;
+    /** Vector of progress values for all players */
+    std::vector<float> _progressVec;
 
     /** Random number generator for dirt generation */
     std::mt19937 _rng;
@@ -257,14 +259,13 @@ public:
             return _windowVec[id-1];
     }
 
-    /** Returns number of dirts on the player's board **/
-    float returnNumBoardDirts(WindowGrid playerWindowGrid);
-        
-    /** Returns number of max amount of dirt player's board could hold **/
-    float returnBoardMaxDirts(WindowGrid playerWindowGrid);
-
     /** Returns the player given the id */
     std::shared_ptr<Player> getPlayer(int id) { return _playerVec[id-1]; }
+
+    /** Returns the current player's progress given player id */
+    float getPlayerProgress(int id) {
+        return _progressVec[id - 1];
+    }
 
     /** Returns the id of this player. */
     const int getId() const { return _id; }

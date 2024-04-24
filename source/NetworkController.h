@@ -171,6 +171,8 @@ public:
     void transmitMessage(const std::shared_ptr<cugl::JsonValue> state);
 
     void transmitMessage(const std::string uuid, const std::shared_ptr<cugl::JsonValue> state);
+
+    void sendToHost(const std::shared_ptr<cugl::JsonValue> msg);
 };
 
 #endif NetworkController_h

@@ -206,9 +206,9 @@ void GameScene::update(float timestep) {
     for(int id = 1; id <= 4; id++) {
         auto player = _gameController->getPlayer(id);
         if (player == nullptr) continue;
-        float numWindowPanes = _gameController->getPlayerWindow(id)->getNHorizontal() * _gameController->getPlayerWindow(id)->getNVertical();
-        auto progress = (numWindowPanes - _gameController->getPlayerWindow(id)->getTotalDirt()) / numWindowPanes;
-        _player_bars[_char_to_barIdx[player->getChar()]]->setProgress(progress);
+        // float numWindowPanes = _gameController->getPlayerWindow(id)->getNHorizontal() * _gameController->getPlayerWindow(id)->getNVertical();
+        // auto progress = (numWindowPanes - _gameController->getPlayerWindow(id)->getTotalDirt()) / numWindowPanes;
+        _player_bars[_char_to_barIdx[player->getChar()]]->setProgress(_gameController->getPlayerProgress(id));
         _player_bars[_char_to_barIdx[player->getChar()]]->setVisible(true);
     }
 
