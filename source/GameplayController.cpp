@@ -1077,7 +1077,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 if (dirtCon.didRelease()) {
                     _dirtSelected = false;
                     Vec2 diff = worldPos - _prevInputPos;
-                    if ((_curBoard == 1 && diff.x > 0) || (_curBoard == -1 && diff.x < 0)) {
+                    if ((myCurBoard == 1 && diff.x > 0) || (myCurBoard == -1 && diff.x < 0)) {
                         diff.x = 0;
                     }
                     if (diff.length() > dirtThrowArc->getWidth() / 2) {
@@ -1102,7 +1102,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     // cugl::Vec2 buttonPos(button_x, dirtThrowButton->getPositionY());
                     std::vector<Vec2> vertices = { playerPos };
                     Vec2 diff = worldPos - _prevInputPos;
-                    if ((_curBoard == 1 && diff.x > 0) || (_curBoard == -1 && diff.x < 0)) {
+                    if ((myCurBoard == 1 && diff.x > 0) || (myCurBoard == -1 && diff.x < 0)) {
                         diff.x = 0;
                     }
                     if (diff.length() > dirtThrowArc->getWidth() / 2) {
