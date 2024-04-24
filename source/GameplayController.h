@@ -103,12 +103,9 @@ protected:
     /** True if game scene is active and that gameplay is currently active */
     bool _isActive;
 
-    int _curBoard;
-    /** Which board is the player currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor */
-    int _curBoardRight;
-    /** Which board is the player currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor */
-    int _curBoardLeft;
-    /** Which board the bird enemy is currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor, 2 for none of these */
+    /** The current board being displayed for each player in the lobby */
+    std::vector<int> _allCurBoards;
+    /** The id of the board the bird enemy is currently on */
     int _curBirdBoard;
     /** The position of the bird enemy for drawing, if they are on your board */
     cugl::Vec2 _curBirdPos;
@@ -151,12 +148,12 @@ protected:
     // for host only
     /** Number of players in the lobby */
     int _numPlayers;
+    /** player id to UUID map */
+    std::map<std::string, int> _UUIDmap;
     /** Whether a player has won */
     std::vector<bool> _hasWon;
     /** The amount of dirt held by each player in the lobby */
     std::vector<int> _allDirtAmounts;
-    /** The current board being displayed for each player in the lobby */
-    std::vector<int> _allCurBoards;
     /** Bird enemy for entire game */
     Bird _bird;
     /** True if bird exists in this level */
@@ -287,6 +284,9 @@ public:
     */
     void setCharacters(std::vector<std::string>& chars);
 
+    /** HOST ONLY. Sets the player id to UUID map */
+    void setUUIDMap(std::map<std::string, int> m) { _UUIDmap = m; }
+
     /**
      * Sets the character texture of the given player.
      * Possible values: "Mushroom", "Frog", "Flower", "Chameleon"
@@ -303,7 +303,7 @@ public:
     int getTime() { return _gameTimeLeft; }
 
     /** Returns the player's current board */
-    int getCurBoard() { return _curBoard; }
+    int getCurBoard() { return _allCurBoards[_id-1]; }
 
     /**
      * Given the world positions, convert it to the board position
@@ -374,7 +374,7 @@ public:
      * @param id    the id of the player of the board state to get
      * @returns JSON value representing game board state
      */
-    std::shared_ptr<cugl::JsonValue> getJsonBoard(int id, bool isPartial, bool includesBird);
+    std::shared_ptr<cugl::JsonValue> getJsonBoard(int id, bool isPartial);
 
     /**
      * Called by client only. Converts a movement vector into a JSON value for sending over the network.

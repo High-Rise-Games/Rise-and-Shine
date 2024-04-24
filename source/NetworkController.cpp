@@ -187,6 +187,16 @@ void NetworkController::transmitMessage(const std::shared_ptr<cugl::JsonValue> m
     }
 }
 
+void NetworkController::transmitMessage(const std::string uuid, const std::shared_ptr<cugl::JsonValue> msg) {
+    if (_network->isOpen()) {
+        NetcodeSerializer netSerializer;
+        netSerializer.writeJson(msg);
+        const std::vector<std::byte>& byteState = netSerializer.serialize();
+        _network->sendTo(uuid, byteState);
+        netSerializer.reset();
+    }
+}
+
 /**
  *
  * FUNCTION FOR HOST ONLY

@@ -166,31 +166,11 @@ public:
      * Transmits the board state belonging to the user given by
      * their id to all other devices.
      *
-     * Example board state:
-     * {
-        "player_id":  1,
-        "num_dirt": 1,
-        "curr_board": 0,
-        "player_x": 3,
-        "player_y": 6,
-        "dirts": [ [0, 1], [2, 2], [0, 2] ],
-        "projectiles": [
-            {
-                "pos": [0.5, 1.676],
-                "vel": [2, 3],
-                "type: "DIRT"
-            },
-            {
-                "pos": [1.5, 3.281],
-                "vel": [0, -2],
-                "type": "POOP
-            }
-        ]
-     * }
-     *
      * @param state     The user's board state
      */
     void transmitMessage(const std::shared_ptr<cugl::JsonValue> state);
+
+    void transmitMessage(const std::string uuid, const std::shared_ptr<cugl::JsonValue> state);
 };
 
 #endif NetworkController_h

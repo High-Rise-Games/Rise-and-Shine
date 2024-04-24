@@ -69,9 +69,9 @@ protected:
     /** The backgrounnd image */
     std::shared_ptr<cugl::Texture> _id2;
     
-    /** UUID mapings to player us */
+    /** UUID mappings to player ids */
     std::map<std::string, int> _UUIDmap;
-    
+
     /** To let us know that player IDs have been sent out to all players **/
     bool _UUIDisProcessed;
     
@@ -215,6 +215,11 @@ public:
 
     /** Returns the id of this player based on when they joined */
     int getId() { return _id; }
+
+    /** Returns the UUID mapping to player id */
+    std::map<std::string, int> getUUIDMap() {
+        return _UUIDmap;
+    }
     
     /** set client room ID */
     void setGameidClient(std::string client_id) { _gameid_client = client_id; }

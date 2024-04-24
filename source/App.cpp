@@ -364,6 +364,7 @@ void App::updateLobbyScene(float timestep) {
                 _gameplay->setConnection(_lobby_host.getNetworkController().getConnection());
                 _lobby_host.getNetworkController().disconnect();
                 _gameplay->setHost(true);
+                _gameplay->setUUIDMap(_lobby_host.getUUIDMap());
                 _gameplay->initLevel(_lobby_host.getLevel());
                 _gameplay->setActive(true);
                 _gameplay->setId(_lobby_host.getId());
