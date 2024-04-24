@@ -36,6 +36,12 @@ public:
             {"STUNNED", STUNNED}
     };
     
+    const std::string animStatusNames[4] = {"IDLE", "WIPING", "SHOOING", "STUNNED"};
+
+    std::string animStatustoString(AnimStatus state) {
+        return animStatusNames[state];
+    }
+    
 private:
     /** The player's id */
     int _id;
@@ -226,7 +232,10 @@ public:
     void setAnimationState(std::string as) {
         auto it = stringToAnimStatusMap.find(as);
         if (it != stringToAnimStatusMap.end()) {
-            _animState = it->second;
+            if (it->second != _animState) {
+                resetAnimationFrames();
+                _animState = it->second;
+            }
             return;
         } else {
             _animState = IDLE;
@@ -290,7 +299,10 @@ public:
      *
      * @param value The time in frames to stun the player.
      */
-    void resetWipeFrames() { _wipeFrames = 0; }
+    void resetAnimationFrames() {
+        _wipeFrames = 0;
+        _shooFrames = 0;
+    }
     
     /**
      * Returns the current player's maximum wipe time in frames.

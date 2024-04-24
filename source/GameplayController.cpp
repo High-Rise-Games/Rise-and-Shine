@@ -472,7 +472,10 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id, bool i
     if(!isPartial) json->appendValue("player_x", std::to_string(playerBoardPos.x));
     json->appendValue("player_y", std::to_string(playerBoardPos.y));
 
-    json->appendValue("anim_state", std::to_string(player->getAnimationState()));
+    if (player->getAnimationState() == Player::WIPING) {
+        CULog("%s", player->animStatustoString(player->getAnimationState()).c_str());
+    }
+    json->appendValue("anim_state", player->animStatustoString(player->getAnimationState()));
 
     json->appendValue("timer", std::to_string(_gameTimeLeft));
     
@@ -643,6 +646,7 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     player->setPosition(getWorldPosition(playerBoardPos));
 
     player->setAnimationState(data->getString("anim_state"));
+    CULog("reseting %s", data->getString("anim_state").c_str());
     
     auto windows = _windowVec[playerId - 1];
     auto projectiles = _projectileVec[playerId-1];
@@ -1278,7 +1282,6 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
         if (dirtRemoved) {
             // filling up dirty bucket
             // set amount of frames plaer is frozen for for cleaning dirt
-            player->resetWipeFrames();
             player->setAnimationState("WIPING");
             if (player_id == _id) {
                 AudioEngine::get()->play("clean", _clean, false, _clean->getVolume(), true);
