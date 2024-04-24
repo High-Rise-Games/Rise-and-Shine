@@ -29,18 +29,9 @@ public:
         STUNNED,
     };
     
-    const std::map<std::string, AnimStatus> stringToAnimStatusMap = {
-            {"IDLE", IDLE},
-            {"WIPING", WIPING},
-            {"SHOOING", SHOOING},
-            {"STUNNED", STUNNED}
-    };
     
-    const std::string animStatusNames[4] = {"IDLE", "WIPING", "SHOOING", "STUNNED"};
-
-    std::string animStatustoString(AnimStatus state) {
-        return animStatusNames[state];
-    }
+    const std::vector<AnimStatus> animStatusNames = { IDLE, WIPING, SHOOING, STUNNED };
+    std::map<AnimStatus, int> statusToInt;
     
 private:
     /** The player's id */
@@ -229,17 +220,11 @@ public:
      */
     const cugl::Vec2& getCoorsFromPos(const float windowHeight, const float windowWidth, const float sideGap);
     
-    void setAnimationState(std::string as) {
-        auto it = stringToAnimStatusMap.find(as);
-        if (it != stringToAnimStatusMap.end()) {
-            if (it->second != _animState) {
-                resetAnimationFrames();
-                _animState = it->second;
-            }
-            return;
-        } else {
-            _animState = IDLE;
-        }
+    void setAnimationState(AnimStatus as) {
+        if (as != _animState) {
+            resetAnimationFrames();
+            _animState = as;
+        } 
     };
     
     AnimStatus getAnimationState() { return _animState; };
@@ -356,9 +341,8 @@ public:
             }
             _wipeFrames += 1;
         } else {
-            CULog("it is here");
             _wipeSprite->setFrame(0);
-            setAnimationState("IDLE");
+            setAnimationState(AnimStatus::IDLE);
         }
     };
     
@@ -376,7 +360,7 @@ public:
             _shooFrames += 1;
         } else {
             _shooSprite->setFrame(0);
-            setAnimationState("IDLE");
+            setAnimationState(AnimStatus::IDLE);
         }
     };
     

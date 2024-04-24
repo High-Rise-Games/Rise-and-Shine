@@ -29,7 +29,12 @@ Player::Player(const int id, const cugl::Vec2& pos, const float windowWidth, con
     _throwframesize = 7;
     _shooframecols = 4;
     _shooframesize = 16;
-    
+
+
+    statusToInt[AnimStatus::IDLE] = 0;
+    statusToInt[AnimStatus::WIPING] = 1;
+    statusToInt[AnimStatus::SHOOING] = 2;
+    statusToInt[AnimStatus::STUNNED] = 3;
     
     // height of a window pane of the game board
     _windowWidth = windowWidth;
@@ -179,7 +184,7 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
             break;
         case WIPING:
             player_trans.translate( -(int)(_wipeSprite->getFrameSize().width)/2 , -(int)(_wipeSprite->getFrameSize().height) / 2);
-           player_scale = _windowHeight / _wipeSprite->getFrameSize().height;
+            player_scale = _windowHeight / _wipeSprite->getFrameSize().height;
             player_trans.scale(player_scale);
             break;
         case STUNNED:
@@ -213,7 +218,6 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
             _idleSprite->draw(batch, player_trans);
             break;
         case WIPING:
-            CULog("drawing wiping");
             _wipeSprite->draw(batch, shadow, shadtrans);
             _wipeSprite->draw(batch, player_trans);
             break;

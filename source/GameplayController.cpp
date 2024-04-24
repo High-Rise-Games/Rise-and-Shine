@@ -216,6 +216,7 @@ bool GameplayController::initClient(const std::shared_ptr<cugl::AssetManager>& a
     changeCharTexture(_playerVec[_id - 1], ""); // empty string defaults to Mushroom
     _playerVec[_id - 1]->setChar("");
 
+
     // Initialize bird textures, but do not set a location yet. that is the host's job
     if (_birdActive) {
         int height = _windowVec[_id - 1]->getNVertical();
@@ -282,6 +283,7 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
             _playerVec[i - 1] = make_shared<Player>(i, startingPos, _windowVec[i - 1]->getPaneHeight(), _windowVec[i - 1]->getPaneWidth());
             _playerVec[i - 1]->setPosition(startingPos);
             _playerVec[i - 1]->setVelocity(Vec2::ZERO);
+            _playerVec[i - 1]->setAnimationState(Player::AnimStatus::IDLE);
 
             // Initialize projectiles
             _projectileVec[i - 1] = make_shared<ProjectileSet>();
@@ -472,10 +474,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id, bool i
     if(!isPartial) json->appendValue("player_x", std::to_string(playerBoardPos.x));
     json->appendValue("player_y", std::to_string(playerBoardPos.y));
 
-    if (player->getAnimationState() == Player::WIPING) {
-        CULog("%s", player->animStatustoString(player->getAnimationState()).c_str());
-    }
-    json->appendValue("anim_state", player->animStatustoString(player->getAnimationState()));
+    json->appendValue("anim_state", std::to_string(player->statusToInt[player->getAnimationState()]));
 
     json->appendValue("timer", std::to_string(_gameTimeLeft));
     
@@ -560,7 +559,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id, bool i
     "curr_board": "0",
     "player_x": "3.0",
     "player_y": "4.0",
-    "anim_state": "WIPING",
+    "anim_state": "1",
     "timer": "145",
     "bird_pos": ["2.4", "6.0"],
     "bird_facing_right": true,
@@ -574,7 +573,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id, bool i
             },
             {
                 "pos": ["5.0", "0.2"],
-                "vel": ["0", "-2"],
+                "vel": [],
                 "dest": ["12.23", "23.5"],
                 "type": "POOP"
             }
@@ -645,8 +644,7 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     auto player = _playerVec[playerId - 1];
     player->setPosition(getWorldPosition(playerBoardPos));
 
-    player->setAnimationState(data->getString("anim_state"));
-    CULog("reseting %s", data->getString("anim_state").c_str());
+    player->setAnimationState(player->animStatusNames[std::stod(data->getString("anim_state"))]);
     
     auto windows = _windowVec[playerId - 1];
     auto projectiles = _projectileVec[playerId-1];
@@ -1282,7 +1280,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
         if (dirtRemoved) {
             // filling up dirty bucket
             // set amount of frames plaer is frozen for for cleaning dirt
-            player->setAnimationState("WIPING");
+            player->setAnimationState(Player::AnimStatus::WIPING);
             if (player_id == _id) {
                 AudioEngine::get()->play("clean", _clean, false, _clean->getVolume(), true);
             };
@@ -1303,23 +1301,18 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
         if (!_birdLeaving && _curBirdBoard == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.5)) {
             // set amount of frames plaer is frozen for for shooing bird
             player->resetShooFrames();
-            player->setAnimationState("SHOOING");
+            player->setAnimationState(Player::AnimStatus::SHOOING);
+            _bird.resetBirdPathToExit(windows->getNHorizontal());
             _birdLeaving = true;
         }
         
-        if (_birdLeaving && player->getAnimationState() != Player::SHOOING) {
-            // send bird away after shooing
-            _bird.resetBirdPathToExit(windows->getNHorizontal());
-        }
+        //if (_birdLeaving && player->getAnimationState() != Player::SHOOING) {
+          //  // send bird away after shooing
+          //  _bird.resetBirdPathToExit(windows->getNHorizontal());
+       // }
         
         if (_birdLeaving && _bird.birdReachesExit()) {
-            _curBirdBoard = _bird.isFacingRight() ? _curBirdBoard + 1 : _curBirdBoard - 1;
-            if (_curBirdBoard == 0) {
-                _curBirdBoard = _numPlayers;
-            }
-            if (_curBirdBoard > _numPlayers) {
-                _curBirdBoard = 1;
-            }
+            _curBirdBoard = std::distance(_progressVec.begin(), std::max_element(_progressVec.begin(), _progressVec.end())) + 1;
             
             std::uniform_int_distribution<> distr(0, windows->getNVertical() - 1);
             int spawnRow = distr(_rng);
