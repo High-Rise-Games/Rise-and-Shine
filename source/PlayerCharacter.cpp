@@ -30,6 +30,7 @@ Player::Player(const int id, const cugl::Vec2& pos, const float windowWidth, con
     _shooframecols = 4;
     _shooframesize = 16;
     
+    
     // height of a window pane of the game board
     _windowWidth = windowWidth;
     
@@ -169,20 +170,30 @@ const cugl::Vec2& Player::getCoorsFromPos(const float windowHeight, const float 
 void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) {
     // Transform to place the ship, start with centered version
     Affine2 player_trans;
-    if (_idleSprite && _wipeFrames == _maxwipeFrame && _shooFrames == _maxshooFrame) {
-        player_trans.translate( -(int)(_idleSprite->getFrameSize().width)/2 , -(int)(_idleSprite->getFrameSize().height) / 2);
-        double player_scale = _windowHeight / _idleSprite->getFrameSize().height;
-        player_trans.scale(player_scale);
-    }
-    else if (_wipeSprite && _wipeFrames < _maxwipeFrame) {
-        player_trans.translate( -(int)(_wipeSprite->getFrameSize().width)/2 , -(int)(_wipeSprite->getFrameSize().height) / 2);
-        double player_scale = _windowHeight / _wipeSprite->getFrameSize().height;
-        player_trans.scale(player_scale);
-    }
-    else if (_shooSprite && _shooFrames < _maxshooFrame) {
-        player_trans.translate( -(int)(_shooSprite->getFrameSize().width)/2 , -(int)(_shooSprite->getFrameSize().height) / 2);
-        double player_scale = _windowHeight / _shooSprite->getFrameSize().height;
-        player_trans.scale(player_scale);
+    double player_scale;
+    switch (_animState) {
+        case IDLE:
+            player_trans.translate( -(int)(_idleSprite->getFrameSize().width)/2 , -(int)(_idleSprite->getFrameSize().height) / 2);
+            player_scale = _windowHeight / _idleSprite->getFrameSize().height;
+            player_trans.scale(player_scale);
+            break;
+        case WIPING:
+            player_trans.translate( -(int)(_wipeSprite->getFrameSize().width)/2 , -(int)(_wipeSprite->getFrameSize().height) / 2);
+           player_scale = _windowHeight / _wipeSprite->getFrameSize().height;
+            player_trans.scale(player_scale);
+            break;
+        case STUNNED:
+            break;
+        case SHOOING:
+            player_trans.translate( -(int)(_shooSprite->getFrameSize().width)/2 , -(int)(_shooSprite->getFrameSize().height) / 2);
+            player_scale = _windowHeight / _shooSprite->getFrameSize().height;
+            player_trans.scale(player_scale);
+            break;
+        default:
+            player_trans.translate( -(int)(_idleSprite->getFrameSize().width)/2 , -(int)(_idleSprite->getFrameSize().height) / 2);
+            player_scale = _windowHeight / _idleSprite->getFrameSize().height;
+            player_trans.scale(player_scale);
+            break;
     }
     // Don't draw if texture not set
     if (getStunFrames()>0) {
@@ -196,18 +207,26 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
     Affine2 shadtrans = player_trans;
     shadtrans.translate(_shadows,-_shadows);
     Color4f shadow(0,0,0,0.5f);
-    if (_idleSprite && _wipeFrames == _maxwipeFrame && _shooFrames == _maxshooFrame) {
-        // CULog("drawing player at (%f, %f)", _pos.x, _pos.y);
-        _idleSprite->draw(batch, shadow, shadtrans);
-        _idleSprite->draw(batch, player_trans);
-    }
-    else if (_wipeSprite && _wipeFrames < _maxwipeFrame) {
-        _wipeSprite->draw(batch, shadow, shadtrans);
-        _wipeSprite->draw(batch, player_trans);
-    }
-    else if (_shooSprite && _shooFrames < _maxshooFrame) {
-        _shooSprite->draw(batch, shadow, shadtrans);
-        _shooSprite->draw(batch, player_trans);
+    switch (_animState) {
+        case IDLE:
+            _idleSprite->draw(batch, shadow, shadtrans);
+            _idleSprite->draw(batch, player_trans);
+            break;
+        case WIPING:
+            CULog("drawing wiping");
+            _wipeSprite->draw(batch, shadow, shadtrans);
+            _wipeSprite->draw(batch, player_trans);
+            break;
+        case STUNNED:
+            break;
+        case SHOOING:
+            _shooSprite->draw(batch, shadow, shadtrans);
+            _shooSprite->draw(batch, player_trans);
+            break;
+        default:
+            _idleSprite->draw(batch, shadow, shadtrans);
+            _idleSprite->draw(batch, player_trans);
+            break;
     }
 }
 

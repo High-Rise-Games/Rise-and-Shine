@@ -15,6 +15,27 @@
  * Model class representing a player.
  */
 class Player {
+    
+public:
+    
+    enum AnimStatus {
+        /** Character in idle state */
+        IDLE,
+        /** Character in wiping state */
+        WIPING,
+        /** Character in shooing bird state */
+        SHOOING,
+        /** Character in stunned state */
+        STUNNED,
+    };
+    
+    const std::map<std::string, AnimStatus> stringToAnimStatusMap = {
+            {"IDLE", IDLE},
+            {"WIPING", WIPING},
+            {"SHOOING", SHOOING},
+            {"STUNNED", STUNNED}
+    };
+    
 private:
     /** The player's id */
     int _id;
@@ -30,6 +51,8 @@ private:
     cugl::Vec2 _vel;
     /** Coordinates in relation to window grid of the player */
     cugl::Vec2 _coors;
+    /** Character Animation State */
+    AnimStatus _animState;
     
     // TODO: do we still need window height and width?
     // height of a window pane of the game board
@@ -107,6 +130,7 @@ private:
     float _radius;
 
 public:
+    
 #pragma mark Constructors
     /**
      * Creates a player with the given fields.
@@ -198,6 +222,18 @@ public:
      * using the scene position of the player (_pos).
      */
     const cugl::Vec2& getCoorsFromPos(const float windowHeight, const float windowWidth, const float sideGap);
+    
+    void setAnimationState(std::string as) {
+        auto it = stringToAnimStatusMap.find(as);
+        if (it != stringToAnimStatusMap.end()) {
+            _animState = it->second;
+            return;
+        } else {
+            _animState = IDLE;
+        }
+    };
+    
+    AnimStatus getAnimationState() { return _animState; };
     
     /**
      * Returns the angle that this ship is facing.
@@ -308,7 +344,9 @@ public:
             }
             _wipeFrames += 1;
         } else {
+            CULog("it is here");
             _wipeSprite->setFrame(0);
+            setAnimationState("IDLE");
         }
     };
     
@@ -326,6 +364,7 @@ public:
             _shooFrames += 1;
         } else {
             _shooSprite->setFrame(0);
+            setAnimationState("IDLE");
         }
     };
     
@@ -342,6 +381,25 @@ public:
         }
         _idleFrames = _idleFrames+1;
     };
+    
+    void advanceAnimation() {
+        switch (_animState) {
+            case IDLE:
+                advanceIdleFrame();
+                break;
+            case WIPING:
+                advanceWipeFrame();
+                break;
+            case STUNNED:
+                break;
+            case SHOOING:
+                advanceShooFrame();
+                break;
+            default:
+                advanceIdleFrame();
+                break;
+        }
+    }
 
     /** Decreases the stun frames by one, unless it is already at 0 then does nothing. */
     void decreaseStunFrames();

@@ -469,9 +469,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id, bool i
     if(!isPartial) json->appendValue("player_x", std::to_string(playerBoardPos.x));
     json->appendValue("player_y", std::to_string(playerBoardPos.y));
 
-    json->appendValue("stun_frames", std::to_string(player->getStunFrames()));
-    json->appendValue("wipe_frames", std::to_string(player->getWipeFrames()));
-    json->appendValue("shoo_frames", std::to_string(player->getShooFrames()));
+    json->appendValue("anim_state", std::to_string(player->getAnimationState()));
 
     json->appendValue("timer", std::to_string(_gameTimeLeft));
     
@@ -559,9 +557,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id, bool i
     "curr_board": "0",
     "player_x": "3.0",
     "player_y": "4.0",
-    "stun_frames": "0",
-    "wipe_frames": "0",
-    "shoo_frames": "0",
+    "anim_state": "WIPING",
     "timer": "145",
     "bird_pos": ["2.4", "6.0"],
     "bird_facing_right": true,
@@ -645,9 +641,7 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
     auto player = _playerVec[playerId - 1];
     player->setPosition(getWorldPosition(playerBoardPos));
 
-    player->setStunFrames(std::stoi(data->getString("stun_frames")));
-    player->setWipeFrames(std::stoi(data->getString("wipe_frames")));
-    player->setShooFrames(std::stoi(data->getString("shoo_frames")));
+    player->setAnimationState(data->getString("anim_State"));
     
     auto windows = _windowVec[playerId - 1];
     auto projectiles = _projectileVec[playerId-1];
@@ -762,9 +756,7 @@ void GameplayController::processMovementRequest(std::shared_ptr<cugl::JsonValue>
 
     // Check if player is stunned for this frame
 
-    if (player->getStunFrames() == 0 && 
-        player->getWipeFrames() == player->getMaxWipeFrames() &&
-        player->getShooFrames() == player->getMaxShooFrames()) {
+    if (player->getAnimationState() == Player::IDLE) {
         // Move the player, ignoring collisions
         int moveResult = player->move(moveVec, getSize(), windows);
         if (moveResult == -1 || moveResult == 1) {
@@ -1036,16 +1028,10 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
 
     }
     else {
-        // not host - advance all players idle or wipe or shoo frames on local instance
+        // not host - advance all players' animations on local instance
         for (auto player : _playerVec) {
             if (player == nullptr) continue;
-            if (player->getWipeFrames() < player->getMaxWipeFrames()) {
-                player->advanceWipeFrame();
-            }
-            if (player->getShooFrames() < player->getMaxShooFrames()) {
-                player->advanceShooFrame();
-            }
-            player->advanceIdleFrame();
+            player->advanceAnimation();
         }
     }
 
@@ -1144,9 +1130,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         }
         if (_ishost) {
             // Check if player is stunned for this frame
-            if (_playerVec[_id-1]->getStunFrames() == 0 &&
-                _playerVec[_id - 1]->getWipeFrames() == _playerVec[_id - 1]->getMaxWipeFrames() &&
-                _playerVec[_id - 1]->getShooFrames() == _playerVec[_id - 1]->getMaxShooFrames()) {
+            if (_playerVec[_id-1]->getAnimationState() == Player::IDLE) {
                 // Move the player, ignoring collisions
                 int moveResult = _playerVec[_id - 1]->move(_input.getDir(), getSize(), _windowVec[_id - 1]);
                 if (_numPlayers > 1 && (moveResult == -1 || moveResult == 1)) {
@@ -1274,16 +1258,8 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
         else {
             player->move();
         }
-        if (player->getWipeFrames() < player->getMaxWipeFrames()) {
-            player->advanceWipeFrame();
-        }
-        if (player->getShooFrames() < player->getMaxShooFrames()) {
-            player->advanceShooFrame();
-        }
-        else {
-            player->move();
-        }
-        player->advanceIdleFrame();
+        player->advanceAnimation();
+        player->move();
         
         
         // remove any dirt the player collides with
@@ -1297,6 +1273,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
             // filling up dirty bucket
             // set amount of frames plaer is frozen for for cleaning dirt
             player->resetWipeFrames();
+            player->setAnimationState("WIPING");
             if (player_id == _id) {
                 AudioEngine::get()->play("clean", _clean, false, _clean->getVolume(), true);
             };
@@ -1317,10 +1294,11 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
         if (!_birdLeaving && _curBirdBoard == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.5)) {
             // set amount of frames plaer is frozen for for shooing bird
             player->resetShooFrames();
+            player->setAnimationState("SHOOING");
             _birdLeaving = true;
         }
         
-        if (_birdLeaving && player->getShooFrames() == player->getMaxShooFrames()) {
+        if (_birdLeaving && player->getAnimationState() != Player::SHOOING) {
             // send bird away after shooing
             _bird.resetBirdPathToExit(windows->getNHorizontal());
         }
