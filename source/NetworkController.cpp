@@ -207,6 +207,12 @@ void NetworkController::sendToHost(const std::shared_ptr<cugl::JsonValue> msg) {
     }
 }
 
+void NetworkController::sendToHost(const std::vector<std::byte>& byteState) {
+    if (_network->isOpen()) {
+        _network->sendToHost(byteState);
+    }
+}
+
 /**
  *
  * FUNCTION FOR HOST ONLY
