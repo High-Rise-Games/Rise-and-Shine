@@ -1257,7 +1257,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
     if (windows->getTotalDirt() == 0 && !_gameOver) {
         _gameOver = true;
         _hasWon[player_id - 1] = true;
-        _boardWithBird = rand() % _numPlayers + 1;
+        _curBirdBoard = rand() % _numPlayers + 1;
     }
 
     std::vector<std::pair<cugl::Vec2, int>> landedDirts;
