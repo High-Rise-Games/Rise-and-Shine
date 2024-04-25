@@ -848,53 +848,23 @@ void GameplayController::processSceneSwitchRequest(std::shared_ptr<cugl::JsonVal
 *
 * @returns JSON value representing a dirt throw action
 */
-const std::vector<std::byte>& GameplayController::getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest, const int amt) {
+const std::shared_ptr<std::vector<std::byte>> GameplayController::getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest, const int amt) {
     
     cugl::Vec2 boardPos = getBoardPosition(pos);
     cugl::Vec2 boardDest = getBoardPosition(dest);
-    DIRT_REQUEST dirtRequest;
-    dirtRequest.playerIdSource = _id;
-    dirtRequest.playerIdTarget = target;
-    dirtRequest.dirtPosX = boardPos.x;
-    dirtRequest.dirtPosY = boardPos.y;
-    dirtRequest.dirtDestY = boardDest.x;
-    dirtRequest.dirtDestX = boardDest.y;
-    dirtRequest.dirtAmount = amt;
-    dirtRequest.type = DirtRequestType;
-    const std::vector<std::byte>& message = serializeDirtRequest(dirtRequest);
-    return message;
-    
-    
-//    const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-//    json->init(JsonValue::Type::ObjectType);
-//    json->appendValue("player_id_source", std::to_string(_id));
-//    json->appendValue("player_id_target", std::to_string(target));
-//    
-//    cugl::Vec2 boardPos = getBoardPosition(pos);
-//    const std::shared_ptr<JsonValue> dirtPos = std::make_shared<JsonValue>();
-//    dirtPos->init(JsonValue::Type::ArrayType);
-//    dirtPos->appendValue(std::to_string(boardPos.x));
-//    dirtPos->appendValue(std::to_string(boardPos.y));
-//    json->appendChild("dirt_pos", dirtPos);
-//
-//    const std::shared_ptr<JsonValue> dirtVel = std::make_shared<JsonValue>();
-//    dirtVel->init(JsonValue::Type::ArrayType);
-//    dirtVel->appendValue(std::to_string(vel.x));
-//    dirtVel->appendValue(std::to_string(vel.y));
-//    json->appendChild("dirt_vel", dirtVel);
-//
-//    cugl::Vec2 boardDest = getBoardPosition(dest);
-//    const std::shared_ptr<JsonValue> dirtDest = std::make_shared<JsonValue>();
-//    dirtDest->init(JsonValue::Type::ArrayType);
-//    dirtDest->appendValue(std::to_string(boardDest.x));
-//    dirtDest->appendValue(std::to_string(boardDest.y));
-//    json->appendChild("dirt_dest", dirtDest);
-//
-//    json->appendValue("dirt_amount", std::to_string(amt));
+    std::shared_ptr<DIRT_REQUEST> dirtRequest = std::make_shared<DIRT_REQUEST>();
+    dirtRequest->playerIdSource = _id;
+    dirtRequest->playerIdTarget = target;
+    dirtRequest->dirtPosX = boardPos.x;
+    dirtRequest->dirtPosY = boardPos.y;
+    dirtRequest->dirtDestY = boardDest.x;
+    dirtRequest->dirtDestX = boardDest.y;
+    dirtRequest->dirtVelX = vel.x;
+    dirtRequest->dirtVelY = vel.y;
+    dirtRequest->dirtAmount = amt;
+    dirtRequest->type = DirtRequestType;
+    return serializeDirtRequest(dirtRequest);
 
-    // CULog("dirt throw from player %d to %d", _id, target);
-//
-//    return json;
 }
 
 /**
@@ -903,16 +873,16 @@ const std::vector<std::byte>& GameplayController::getJsonDirtThrow(const int tar
 *
 * @params data     The data to update
 */
-void GameplayController::processDirtThrowRequest(const std::vector<std::byte>& msg) {
+void GameplayController::processDirtThrowRequest(std::vector<std::byte> msg) {
     
-    DIRT_REQUEST dirtRequest = deserializeDirtRequest(msg);
-    int source_id = dirtRequest.playerIdSource;
-    int target_id = dirtRequest.playerIdSource;
-    Vec2 dirt_pos(dirtRequest.dirtPosX, dirtRequest.dirtPosX);
-    Vec2 dirt_vel(dirtRequest.dirtVelX, dirtRequest.dirtVelY);
-    Vec2 dirt_dest(dirtRequest.dirtDestX, dirtRequest.dirtDestY);
+    std::shared_ptr<DIRT_REQUEST> dirtRequest = deserializeDirtRequest(msg);
+    int source_id = dirtRequest->playerIdSource;
+    int target_id = dirtRequest->playerIdTarget;
+    Vec2 dirt_pos(dirtRequest->dirtPosX, dirtRequest->dirtPosY);
+    Vec2 dirt_vel(dirtRequest->dirtVelX, dirtRequest->dirtVelY);
+    Vec2 dirt_dest(dirtRequest->dirtDestX, dirtRequest->dirtDestY);
 
-    const int amount = dirtRequest.dirtAmount;
+    const int amount = dirtRequest->dirtAmount;
 
     _allDirtAmounts[source_id - 1] = max(0, _allDirtAmounts[source_id - 1] - amount);
     _currentDirtAmount = _allDirtAmounts[0];
@@ -978,7 +948,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                         // CULog("got switch scene request message");
                         processSceneSwitchRequest(incomingMsg);
                     }
-                    else if (deserializeDirtRequest(data).type == DirtRequestType && sizeof deserializeDirtRequest(data) == sizeof (DIRT_REQUEST)) {
+                    else if (deserializeDirtRequest(data)->type == DirtRequestType && sizeof deserializeDirtRequest(data) == sizeof (DIRT_REQUEST)) {
                         // CULog("got dirt throw message");
                         processDirtThrowRequest(data);
                     }
@@ -1115,10 +1085,10 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     int targetId = calculateNeighborId(_id, myCurBoard, _playerVec);
 
                     if (_ishost) {
-                        processDirtThrowRequest(getJsonDirtThrow(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
+                        processDirtThrowRequest(*getJsonDirtThrow(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
                     }
                     else {
-                        _network.sendToHost(getJsonDirtThrow(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
+                        _network.sendToHost(*getJsonDirtThrow(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
                     }
                     dirtThrowButton->setPosition(buttonPos);
                 } else if (dirtCon.isDown()) {

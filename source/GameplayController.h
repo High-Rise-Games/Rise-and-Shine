@@ -409,7 +409,7 @@ public:
      *
      * @returns JSON value representing a dirt throw action
      */
-    const std::vector<std::byte>& getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest, const int amt);
+    const std::shared_ptr<std::vector<std::byte>> getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest, const int amt);
 
     /**
      * Updates a neighboring or own board given the JSON value representing its game state
@@ -441,7 +441,7 @@ public:
      *
      * @params data     The data to update
      */
-    void processDirtThrowRequest(const std::vector<std::byte>& msg);
+    void processDirtThrowRequest(std::vector<std::byte> msg);
     
     /**
      * The method called to update the game mode.
