@@ -27,10 +27,12 @@ public:
         SHOOING,
         /** Character in stunned state */
         STUNNED,
+        /** Character in throwing state */
+        THROWING,
     };
     
     
-    const std::vector<AnimStatus> animStatusNames = { IDLE, WIPING, SHOOING, STUNNED };
+    const std::vector<AnimStatus> animStatusNames = { IDLE, WIPING, SHOOING, STUNNED, THROWING };
     std::map<AnimStatus, int> statusToInt;
     
 private:
@@ -112,6 +114,12 @@ private:
     int _throwframecols;
     /** The number of frames in the throw sprite sheet */
     int _throwframesize;
+    /** total number of frames */
+    int _maxthrowFrame;
+    // number of frames that the player is throwing
+    int _throwFrames;
+    /** sets to true when player is throwing*/
+    bool _throwing;
 
     /** player profile texture */
     std::shared_ptr<cugl::Texture> _profileTexture;
@@ -223,31 +231,12 @@ public:
     void setAnimationState(AnimStatus as) {
         if (as != _animState) {
             resetAnimationFrames();
+            _throwing = true;
             _animState = as;
         } 
     };
     
     AnimStatus getAnimationState() { return _animState; };
-    
-    /**
-     * Returns the angle that this ship is facing.
-     *
-     * The angle is specified in degrees. The angle is counter clockwise
-     * from the line facing north.
-     *
-     * @return the angle of the ship
-     */
-    //float getAngle() const { return _ang; }
-    
-    /**
-     * Sets the angle that this ship is facing.
-     *
-     * The angle is specified in degrees. The angle is counter clockwise
-     * from the line facing north.
-     *
-     * @param value the angle of the ship
-     */
-    //void setAngle(float value) { _ang = value; }
     
     /**
      * Returns the current player's health.
@@ -287,46 +276,8 @@ public:
     void resetAnimationFrames() {
         _wipeFrames = 0;
         _shooFrames = 0;
+        _throwFrames = 0;
     }
-    
-    /**
-     * Returns the current player's maximum wipe time in frames.
-     */
-    int getMaxWipeFrames() const { return _maxwipeFrame; }
-    
-    /**
-     * Gets the amount of frames that the player is wiping dirt for
-     * @returns _wipeFrames
-     */
-    int getWipeFrames() {
-        return _wipeFrames;
-    }
-    
-    /** Sets the wipe frames */
-    void setWipeFrames(int n) { _wipeFrames = n; }
-    
-    /**
-     * Sets the player's shoo time to the inital frames to play and freeze the player.
-     *
-     * @param value The time in frames to stun the player.
-     */
-    void resetShooFrames() { _shooFrames = 0; }
-    
-    /**
-     * Returns the current player's maximum shoo time in frames.
-     */
-    int getMaxShooFrames() const { return _maxshooFrame; }
-    
-    /**
-     * Gets the amount of frames that the player is shooing bird for
-     * @returns _shooFrames
-     */
-    int getShooFrames() {
-        return _shooFrames;
-    }
-    
-    /** Sets the shoo frames */
-    void setShooFrames(int n) { _shooFrames = n; }
     
     /**
      * Sets the player's movement freeze time to the given time in frames
@@ -365,6 +316,29 @@ public:
     };
     
     /**
+     * Sets the player's movement freeze time to the given time in frames
+     * .Used when player throws projectile
+     */
+    void advanceThrowFrame() {
+        if (_throwing) {
+            CULog("advancing throw");
+            int step = _maxthrowFrame / _throwframesize;
+            if (_throwFrames < _maxthrowFrame) {
+                if (_throwFrames % step == 0) {
+                    _throwSprite->setFrame((int) _throwFrames / step);
+                    // CULog("drawing frame %d", (int) (_wipeFrames / step) % _framesize);
+                }
+                _throwFrames += 1;
+            } else {
+                CULog("done throwing");
+                _throwing = false;
+                _throwSprite->setFrame(0);
+                setAnimationState(AnimStatus::IDLE);
+            }
+        }
+    };
+    
+    /**
      * Advance animation for player idle
      */
     void advanceIdleFrame() {
@@ -390,6 +364,9 @@ public:
                 break;
             case SHOOING:
                 advanceShooFrame();
+                break;
+            case THROWING:
+                advanceThrowFrame();
                 break;
             default:
                 advanceIdleFrame();

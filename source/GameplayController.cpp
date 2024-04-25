@@ -48,7 +48,10 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     // we set game win and game over to false
     _gameWin = false;
     _gameOver = false;
+    _gameStart = false;
     _transitionToMenu = false;
+    _maxCountDownFrames = 0;
+    _countDownFrames = 0;
     
     // set this to zero, will be updated when game is over
     _frameCountForWin=0;
@@ -334,6 +337,7 @@ void GameplayController::reset() {
     _currentDirtAmount = 0;
 
     _gameOver = false;
+    _gameStart = false;
     _gameWin = false;
 }
 
@@ -432,6 +436,14 @@ cugl::Vec2 GameplayController::getWorldPosition(cugl::Vec2 boardPos) {
     return Vec2(x_coor, y_coor);
 }
 
+void GameplayController::advanceCountDownAnim() {
+    if (_countDownFrames < _maxCountDownFrames) {
+        _countDownFrames += 1;
+    } else {
+        _gameStart = true;
+    }
+}
+
 /**
  * Method for the return to board button listener used in GameScene
  */
@@ -464,6 +476,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id, bool i
     json->init(JsonValue::Type::ObjectType);
     json->appendValue("player_id", std::to_string(id));
     json->appendValue("player_char", player->getChar());
+    json->appendValue("countdown_frame", std::to_string(_countDownFrames));
     std::string win_str = _hasWon[id-1] ? "true" : "false";
     json->appendValue("has_won", win_str);
     json->appendValue("num_dirt", std::to_string(_allDirtAmounts[id - 1]));
@@ -583,6 +596,7 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id, bool i
  * Example board state (partial message):
  * {
     "player_id":  "1",
+    "countdown_frame": "20",
     "player_char": "Frog",
     "has_won": "false",
     "num_dirt": "1",
@@ -604,7 +618,12 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
         return;
     }
     _progressVec[playerId - 1] = std::stod(data->getString("progress", "0"));
-
+    // set to some random default high value indicating count down is over
+    _countDownFrames = std::stod(data->getString("countdown_frame", "5000"));
+    if (_countDownFrames >= _maxCountDownFrames) {
+        _gameStart = true;
+    }
+    
     // get x, y positions of player
     Vec2 playerBoardPos(std::stod(data->getString("player_x", "0")), std::stod(data->getString("player_y", "0")));
 
@@ -958,7 +977,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     // host steps all boards forward
     if (_ishost) {
         // update time
-        if ((_gameTimeLeft >= 1)) {
+        if (_gameTimeLeft >= 1 && _gameStart) {
             _frame = _frame + 1;
         } if (_frame == _fps) {
             _gameTimeLeft = max(0, _gameTimeLeft - 1);
@@ -979,7 +998,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         }
 
         // update bird if active
-        if (_birdActive) {
+        if (_birdActive && _gameStart) {
             _bird.move();
             std::shared_ptr<WindowGrid> windows = _windowVec[_curBirdBoard - 1];
             std::shared_ptr<ProjectileSet> projectiles = _projectileVec[_curBirdBoard - 1];
@@ -1064,6 +1083,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             } else {
                 ifSwitch = false;
                 if (dirtCon.didRelease()) {
+                    _playerVec[_id-1]->setAnimationState(Player::THROWING);
                     _dirtSelected = false;
                     Vec2 diff = worldPos - _prevInputPos;
                     if ((myCurBoard == 1 && diff.x > 0) || (myCurBoard == -1 && diff.x < 0)) {
@@ -1115,7 +1135,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         }
     }
     // When a player is on their own board
-    else if (myCurBoard == 0) {
+    else if (myCurBoard == 0 && _gameStart) {
         if (!_ishost) {
             // Read the keyboard for each controller.
 //            _input.update();
@@ -1241,6 +1261,11 @@ std::vector<cugl::Vec2> calculateLandedDirtPositions(const int width, const int 
 void GameplayController::stepForward(std::shared_ptr<Player>& player, std::shared_ptr<WindowGrid>& windows, std::shared_ptr<ProjectileSet>& projectiles) {
     int player_id = player->getId();
     
+    if (!_gameStart) {
+        advanceCountDownAnim();
+        return ;
+    }
+    
     if (windows->getTotalDirt() == 0 && !_gameOver) {
         _gameOver = true;
         _hasWon[player_id - 1] = true;
@@ -1300,10 +1325,11 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
         
         if (!_birdLeaving && _curBirdBoard == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.5)) {
             // set amount of frames plaer is frozen for for shooing bird
-            player->resetShooFrames();
-            player->setAnimationState(Player::AnimStatus::SHOOING);
-            _bird.resetBirdPathToExit(windows->getNHorizontal());
-            _birdLeaving = true;
+            if (player->getAnimationState() == Player::AnimStatus::IDLE) {
+                player->setAnimationState(Player::AnimStatus::SHOOING);
+                _bird.resetBirdPathToExit(windows->getNHorizontal());
+                _birdLeaving = true;
+            }
         }
         
         //if (_birdLeaving && player->getAnimationState() != Player::SHOOING) {
@@ -1517,14 +1543,17 @@ void GameplayController::setActive(bool f) {
         _isActive=false;
         setRequestForMenu(false);
         setGameOver(false);
+        setGameStart(false);
         setWin(false);
     } else {
         _isActive = true;
         _audioController->playGameplayMusic();
         setRequestForMenu(false);
         setGameOver(false);
+        setGameStart(false);
         setWin(false);
         _frameCountForWin = 0;
+        _countDownFrames = 0;
     };
     _gameTimeLeft = _gameTime;
 }

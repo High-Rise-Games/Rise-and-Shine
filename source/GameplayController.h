@@ -45,6 +45,9 @@ protected:
     /** Whether this player won the game */
     bool _gameWin;
     
+    /** game starts after countdown timer completes */
+    bool _gameStart;
+    
     /** Whether the game has ended */
     bool _gameOver;
     
@@ -141,6 +144,10 @@ protected:
     int _maxDirtAmount;
     /** The amount of dirt player is currently holdinfg in the bucket **/
     int _currentDirtAmount;
+    /** number of animation frames for countdown timer */
+    int _maxCountDownFrames;
+    /** number of animation frames for current countdown timer */
+    int _countDownFrames;
     
 
     /** Projectile generation chance, increases over time */
@@ -332,6 +339,11 @@ public:
         _gameWin = f;
     };
     
+    /** Method to set whether the game countdown is over or not **/
+    void setGameStart(bool f) {
+        _gameStart = f;
+    }
+    
     /** Method to set whether the game is over or not **/
     void setGameOver(bool f) {
         _gameOver = f;
@@ -346,6 +358,9 @@ public:
     bool isGameWin() {
         return _gameWin;
     }
+    
+    /** advances countdown animation for all players */
+    void advanceCountDownAnim();
     
     /** If we set this to true, this lets App know that we want to switch to main menu  **/
     void setRequestForMenu(bool f) {

@@ -29,12 +29,14 @@ Player::Player(const int id, const cugl::Vec2& pos, const float windowWidth, con
     _throwframesize = 7;
     _shooframecols = 4;
     _shooframesize = 16;
+    _throwing = false;
 
 
     statusToInt[AnimStatus::IDLE] = 0;
     statusToInt[AnimStatus::WIPING] = 1;
     statusToInt[AnimStatus::SHOOING] = 2;
     statusToInt[AnimStatus::STUNNED] = 3;
+    statusToInt[AnimStatus::THROWING] = 4;
     
     // height of a window pane of the game board
     _windowWidth = windowWidth;
@@ -56,6 +58,12 @@ Player::Player(const int id, const cugl::Vec2& pos, const float windowWidth, con
     // number of total frames the player will play shoo animation
     _maxshooFrame = _shooFrames * _shooframesize;
     _shooFrames = _maxshooFrame;
+    
+    // number of frames the player is frozen for because throwing projectile
+    _throwFrames = 2;
+    // number of total frames the player will play shoo animation
+    _maxthrowFrame = _throwFrames * _throwframesize;
+    _throwFrames = _maxthrowFrame;
     
     _idleFrames = 5;
     _maxidleFrame = _idleFrames * _idleframesize;
@@ -194,6 +202,12 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
             player_scale = _windowHeight / _shooSprite->getFrameSize().height;
             player_trans.scale(player_scale);
             break;
+        case THROWING:
+            CULog("drawing throwing");
+            player_trans.translate( -(int)(_throwSprite->getFrameSize().width)/2 , -(int)(_throwSprite->getFrameSize().height) / 2);
+            player_scale = _windowHeight / _throwSprite->getFrameSize().height;
+            player_trans.scale(player_scale);
+            break;
         default:
             player_trans.translate( -(int)(_idleSprite->getFrameSize().width)/2 , -(int)(_idleSprite->getFrameSize().height) / 2);
             player_scale = _windowHeight / _idleSprite->getFrameSize().height;
@@ -227,6 +241,10 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
             _shooSprite->draw(batch, shadow, shadtrans);
             _shooSprite->draw(batch, player_trans);
             break;
+        case THROWING:
+            _throwSprite->draw(batch, shadow, shadtrans);
+            _throwSprite->draw(batch, player_trans);
+            break;
         default:
             _idleSprite->draw(batch, shadow, shadtrans);
             _idleSprite->draw(batch, player_trans);
@@ -258,7 +276,6 @@ void Player::drawPeeking(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::
             player_trans.scale(player_scale);
             player_trans.translate(sideGap, _pos.y);
         }
-
         _throwSprite->draw(batch, player_trans);
 
     }
