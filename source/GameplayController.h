@@ -172,7 +172,6 @@ protected:
     bool _birdActive;
     /** True if the is shooed and is leaving the current board */
     bool _birdLeaving;
-
     
     cugl::scheduable t;
     
@@ -192,6 +191,16 @@ protected:
     std::shared_ptr<cugl::TextLayout> _dirtText;
     /** Arrow texture for showing opponent player locations */
     std::shared_ptr<cugl::Texture> _arrowTexture;
+    /** Count down sprite sheet for 1 */
+    std::shared_ptr<cugl::SpriteSheet> _countdown1Sprite;
+    /** Count down sprite sheet for 2 */
+    std::shared_ptr<cugl::SpriteSheet> _countdown2Sprite;
+    /** Count down sprite sheet for 3 */
+    std::shared_ptr<cugl::SpriteSheet> _countdown3Sprite;
+    /** Count down sprite sheet for go */
+    std::shared_ptr<cugl::SpriteSheet> _countdownGoSprite;
+    /** Count down sprite sheet for sparkle */
+    std::shared_ptr<cugl::SpriteSheet> _countdownSparkleSprite;
 
     /** The scene node for the UI elements (buttons, labels) */
     std::shared_ptr<cugl::scene2::SceneNode> _scene_UI;
@@ -259,7 +268,32 @@ public:
     bool initHost(const std::shared_ptr<cugl::AssetManager>& assets);
 
     
-#pragma mark -
+#pragma mark Graphics
+    /**
+     * Sets the texture for countdown 3.
+     */
+    void setCountdown3Texture(const std::shared_ptr<cugl::Texture>& texture);
+    /**
+     * Sets the texture for countdown 2.
+     */
+    void setCountdown2Texture(const std::shared_ptr<cugl::Texture>& texture);
+    /**
+     * Sets the texture for countdown 1.
+     */
+    void setCountdown1Texture(const std::shared_ptr<cugl::Texture>& texture);
+    /**
+     * Sets the texture for countdown Go.
+     */
+    void setCountdownGoTexture(const std::shared_ptr<cugl::Texture>& texture);
+    /**
+     * Sets the texture for countdown sparkles.
+     */
+    void setCountdownSparkleTexture(const std::shared_ptr<cugl::Texture>& texture);
+    
+    std::shared_ptr<cugl::SpriteSheet> getCurrentCountdownSprite();
+    
+    void drawCountdown(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Vec3 campos, cugl::Size s);
+    
 #pragma mark Gameplay Handling
     
     std::shared_ptr<WindowGrid> getPlayerWindow(int id) {
@@ -360,7 +394,7 @@ public:
     }
     
     /** advances countdown animation for all players */
-    void advanceCountDownAnim();
+    void advanceCountDownAnim(bool ishost=true);
     
     /** If we set this to true, this lets App know that we want to switch to main menu  **/
     void setRequestForMenu(bool f) {
