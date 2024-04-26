@@ -453,98 +453,113 @@ void GameplayController::switchScene() {
  * @returns JSON value representing game board state
  */
 std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id, bool isPartial) {
+    
+
+    
     std::shared_ptr<Player> player = _playerVec[id-1];
     std::shared_ptr<WindowGrid> windows = _windowVec[id - 1];
     std::shared_ptr<ProjectileSet> projectiles = _projectileVec[id-1];
 
 
-    const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-    json->init(JsonValue::Type::ObjectType);
-    json->appendValue("player_id", std::to_string(id));
-    json->appendValue("player_char", player->getChar());
-    std::string win_str = _hasWon[id-1] ? "true" : "false";
-    json->appendValue("has_won", win_str);
-    json->appendValue("num_dirt", std::to_string(_allDirtAmounts[id - 1]));
-    json->appendValue("curr_board", std::to_string(_allCurBoards[id - 1]));
-    json->appendValue("progress", std::to_string(_progressVec[id-1]));
-
-    cugl::Vec2 playerBoardPos = getBoardPosition(player->getPosition());
-    if(!isPartial) json->appendValue("player_x", std::to_string(playerBoardPos.x));
-    json->appendValue("player_y", std::to_string(playerBoardPos.y));
-
-    if (player->getAnimationState() == Player::WIPING) {
-        CULog("%s", player->animStatustoString(player->getAnimationState()).c_str());
-    }
-    json->appendValue("anim_state", player->animStatustoString(player->getAnimationState()));
-
-    json->appendValue("timer", std::to_string(_gameTimeLeft));
-    
-    if (!isPartial) {
+    BOARD_STATE boardState;
+    boardState.optional = isPartial;
+    boardState.playerChar = player->getChar();
+    boardState.hasWon = _hasWon[id-1] ? "true" : "false";
+    boardState.numDirt = _allDirtAmounts[id - 1];
+    boardState.currBoard = _allCurBoards[id - 1];
+    boardState.progress = _progressVec[id-1];
+    if (isPartial) {
         
-        if (_curBirdBoard == id) {
-            const std::shared_ptr<JsonValue> birdPos = std::make_shared<JsonValue>();
-            birdPos->init(JsonValue::Type::ArrayType);
-            birdPos->appendValue(std::to_string(_bird.birdPosition.x));
-            birdPos->appendValue(std::to_string(_bird.birdPosition.y));
-            json->appendChild("bird_pos", birdPos);
-            json->appendValue("bird_facing_right", (_bird.isFacingRight()));
-        }
-
-        const std::shared_ptr<JsonValue> dirtArray = std::make_shared<JsonValue>();
-        dirtArray->init(JsonValue::Type::ArrayType);
-        for (int col = 0; col < windows->getNHorizontal(); ++col) {
-            for (int row = 0; row < windows->getNVertical(); ++row) {
-                bool hasDirt = windows->getWindowState(row, col);
-                if (hasDirt) {
-                    const std::shared_ptr<JsonValue> dirtPos = std::make_shared<JsonValue>();
-                    dirtPos->init(JsonValue::Type::ArrayType);
-                    dirtPos->appendValue(std::to_string(row));
-                    dirtPos->appendValue(std::to_string(col));
-                    dirtArray->appendChild(dirtPos);
-                }
-            }
-        }
-        json->appendChild("dirts", dirtArray);
-
-        const std::shared_ptr<JsonValue> projArray = std::make_shared<JsonValue>();
-        projArray->init(JsonValue::Type::ArrayType);
-
-        for (shared_ptr<ProjectileSet::Projectile> proj : projectiles->current) {
-            const std::shared_ptr<JsonValue> projJson = std::make_shared<JsonValue>();
-            projJson->init(JsonValue::Type::ObjectType);
-
-            cugl::Vec2 projBoardPos = getBoardPosition(proj->position);
-            const std::shared_ptr<JsonValue> projPos = std::make_shared<JsonValue>();
-            projPos->init(JsonValue::Type::ArrayType);
-            projPos->appendValue(std::to_string(projBoardPos.x));
-            projPos->appendValue(std::to_string(projBoardPos.y));
-            projJson->appendChild("pos", projPos);
-
-            const std::shared_ptr<JsonValue> projVel = std::make_shared<JsonValue>();
-            projVel->init(JsonValue::Type::ArrayType);
-            projVel->appendValue(std::to_string(proj->velocity.x));
-            projVel->appendValue(std::to_string(proj->velocity.y));
-            projJson->appendChild("vel", projVel);
-
-            cugl::Vec2 projDestBoardPos = getBoardPosition(proj->destination);
-            const std::shared_ptr<JsonValue> projDest = std::make_shared<JsonValue>();
-            projDest->init(JsonValue::Type::ArrayType);
-            projDest->appendValue(std::to_string(projDestBoardPos.x));
-            projDest->appendValue(std::to_string(projDestBoardPos.y));
-            projJson->appendChild("dest", projDest);
-
-            std::string projTypeStr = "POOP";
-            if (proj->type == ProjectileSet::Projectile::ProjectileType::DIRT) {
-                projTypeStr = "DIRT";
-            }
-            projJson->appendValue("type", projTypeStr);
-
-            projArray->appendChild(projJson);
-        }
-        json->appendChild("projectiles", projArray);
-    }
-
-    return json;
+    };
+    
+    
+//    const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+//    json->init(JsonValue::Type::ObjectType);
+//    json->appendValue("player_id", std::to_string(id));
+//    json->appendValue("player_char", player->getChar());
+//    std::string win_str = _hasWon[id-1] ? "true" : "false";
+//    json->appendValue("has_won", win_str);
+//    json->appendValue("num_dirt", std::to_string(_allDirtAmounts[id - 1]));
+//    json->appendValue("curr_board", std::to_string(_allCurBoards[id - 1]));
+//    json->appendValue("progress", std::to_string(_progressVec[id-1]));
+//
+//    cugl::Vec2 playerBoardPos = getBoardPosition(player->getPosition());
+//    if(!isPartial) json->appendValue("player_x", std::to_string(playerBoardPos.x));
+//    json->appendValue("player_y", std::to_string(playerBoardPos.y));
+//
+//    if (player->getAnimationState() == Player::WIPING) {
+//        CULog("%s", player->animStatustoString(player->getAnimationState()).c_str());
+//    }
+//    json->appendValue("anim_state", player->animStatustoString(player->getAnimationState()));
+//
+//    json->appendValue("timer", std::to_string(_gameTimeLeft));
+//    
+//    if (!isPartial) {
+//        
+//        if (_curBirdBoard == id) {
+//            const std::shared_ptr<JsonValue> birdPos = std::make_shared<JsonValue>();
+//            birdPos->init(JsonValue::Type::ArrayType);
+//            birdPos->appendValue(std::to_string(_bird.birdPosition.x));
+//            birdPos->appendValue(std::to_string(_bird.birdPosition.y));
+//            json->appendChild("bird_pos", birdPos);
+//            json->appendValue("bird_facing_right", (_bird.isFacingRight()));
+//        }
+//
+//        const std::shared_ptr<JsonValue> dirtArray = std::make_shared<JsonValue>();
+//        dirtArray->init(JsonValue::Type::ArrayType);
+//        for (int col = 0; col < windows->getNHorizontal(); ++col) {
+//            for (int row = 0; row < windows->getNVertical(); ++row) {
+//                bool hasDirt = windows->getWindowState(row, col);
+//                if (hasDirt) {
+//                    const std::shared_ptr<JsonValue> dirtPos = std::make_shared<JsonValue>();
+//                    dirtPos->init(JsonValue::Type::ArrayType);
+//                    dirtPos->appendValue(std::to_string(row));
+//                    dirtPos->appendValue(std::to_string(col));
+//                    dirtArray->appendChild(dirtPos);
+//                }
+//            }
+//        }
+//        json->appendChild("dirts", dirtArray);
+//
+//        const std::shared_ptr<JsonValue> projArray = std::make_shared<JsonValue>();
+//        projArray->init(JsonValue::Type::ArrayType);
+//
+//        for (shared_ptr<ProjectileSet::Projectile> proj : projectiles->current) {
+//            const std::shared_ptr<JsonValue> projJson = std::make_shared<JsonValue>();
+//            projJson->init(JsonValue::Type::ObjectType);
+//
+//            cugl::Vec2 projBoardPos = getBoardPosition(proj->position);
+//            const std::shared_ptr<JsonValue> projPos = std::make_shared<JsonValue>();
+//            projPos->init(JsonValue::Type::ArrayType);
+//            projPos->appendValue(std::to_string(projBoardPos.x));
+//            projPos->appendValue(std::to_string(projBoardPos.y));
+//            projJson->appendChild("pos", projPos);
+//
+//            const std::shared_ptr<JsonValue> projVel = std::make_shared<JsonValue>();
+//            projVel->init(JsonValue::Type::ArrayType);
+//            projVel->appendValue(std::to_string(proj->velocity.x));
+//            projVel->appendValue(std::to_string(proj->velocity.y));
+//            projJson->appendChild("vel", projVel);
+//
+//            cugl::Vec2 projDestBoardPos = getBoardPosition(proj->destination);
+//            const std::shared_ptr<JsonValue> projDest = std::make_shared<JsonValue>();
+//            projDest->init(JsonValue::Type::ArrayType);
+//            projDest->appendValue(std::to_string(projDestBoardPos.x));
+//            projDest->appendValue(std::to_string(projDestBoardPos.y));
+//            projJson->appendChild("dest", projDest);
+//
+//            std::string projTypeStr = "POOP";
+//            if (proj->type == ProjectileSet::Projectile::ProjectileType::DIRT) {
+//                projTypeStr = "DIRT";
+//            }
+//            projJson->appendValue("type", projTypeStr);
+//
+//            projArray->appendChild(projJson);
+//        }
+//        json->appendChild("projectiles", projArray);
+//    }
+//
+//    return json;
 }
 
 /**
@@ -596,6 +611,8 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id, bool i
 * @params data     The data to update
 */
 void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
+    
+    
     int playerId = std::stod(data->getString("player_id", "0"));
     std::string playerChar = data->getString("player_char");
     std::string playerHasWon = data->getString("has_won", "false");
