@@ -888,26 +888,7 @@ void GameplayController::processDirtThrowRequest(std::vector<std::byte> msg) {
     _currentDirtAmount = _allDirtAmounts[0];
 
     _projectileVec[target_id-1]->spawnProjectile(getWorldPosition(dirt_pos), dirt_vel, getWorldPosition(dirt_dest), ProjectileSet::Projectile::ProjectileType::DIRT, amount);
-    
-    
-//    int source_id = std::stod(data->getString("player_id_source", "0"));
-//    int target_id = std::stod(data->getString("player_id_target", "0"));
-//
-//    const std::vector<std::shared_ptr<JsonValue>>& pos = data->get("dirt_pos")->children();
-//    Vec2 dirt_pos(std::stod(pos[0]->asString()), std::stod(pos[1]->asString()));
-//
-//    const std::vector<std::shared_ptr<JsonValue>>& vel = data->get("dirt_vel")->children();
-//    Vec2 dirt_vel(std::stod(vel[0]->asString()), std::stod(vel[1]->asString()));
-//
-//    const std::vector<std::shared_ptr<JsonValue>>& dest = data->get("dirt_dest")->children();
-//    Vec2 dirt_dest(std::stod(dest[0]->asString()), std::stod(dest[1]->asString()));
-//
-//    const int amount = std::stoi(data->getString("dirt_amount", "1"));
-//
-//    _allDirtAmounts[source_id - 1] = max(0, _allDirtAmounts[source_id - 1] - amount);
-//    _currentDirtAmount = _allDirtAmounts[0];
-//
-//    _projectileVec[target_id-1]->spawnProjectile(getWorldPosition(dirt_pos), dirt_vel, getWorldPosition(dirt_dest), ProjectileSet::Projectile::ProjectileType::DIRT, amount);
+
 }
 
 /**
