@@ -7,10 +7,30 @@
             "minfilter": "linear",
             "magfilter": "linear",
             "atlas": {
-                "background": [ 0, 0, 320, 45 ],
-                "foreground": [ 24, 45, 296, 90 ],
-                "leftcap": [ 0, 45, 24, 90 ],
-                "rightcap": [ 296, 45, 320, 90 ]
+                "background": [
+                    0,
+                    0,
+                    320,
+                    45
+                ],
+                "foreground": [
+                    24,
+                    45,
+                    296,
+                    90
+                ],
+                "leftcap": [
+                    0,
+                    45,
+                    24,
+                    90
+                ],
+                "rightcap": [
+                    296,
+                    45,
+                    320,
+                    90
+                ]
             }
         },
         "invalid": {
@@ -639,99 +659,139 @@
         "progress_fg_blue": {
             "file": "textures/ProgressBars/FgBlue.png",
             "atlas": {
-                "leftcap": [ 0, 0, 2, 18 ],
-                "rightcap": [ 81, 0, 83, 18 ]
+                "leftcap": [
+                    0,
+                    0,
+                    2,
+                    18
+                ],
+                "rightcap": [
+                    81,
+                    0,
+                    83,
+                    18
+                ]
             }
         },
         "progress_fg_green": {
             "file": "textures/ProgressBars/FgGreen.png",
             "atlas": {
-                "leftcap": [ 0, 0, 2, 18 ],
-                "rightcap": [ 81, 0, 83, 18 ]
+                "leftcap": [
+                    0,
+                    0,
+                    2,
+                    18
+                ],
+                "rightcap": [
+                    81,
+                    0,
+                    83,
+                    18
+                ]
             }
         },
         "progress_fg_red": {
             "file": "textures/ProgressBars/FgRed.png",
             "atlas": {
-                "leftcap": [ 0, 0, 2, 18 ],
-                "rightcap": [ 81, 0, 83, 18 ]
+                "leftcap": [
+                    0,
+                    0,
+                    2,
+                    18
+                ],
+                "rightcap": [
+                    81,
+                    0,
+                    83,
+                    18
+                ]
             }
         },
         "progress_fg_yellow": {
             "file": "textures/ProgressBars/FgYellow.png",
             "atlas": {
-                "leftcap": [ 0, 0, 2, 18 ],
-                "rightcap": [ 81, 0, 83, 18 ]
+                "leftcap": [
+                    0,
+                    0,
+                    2,
+                    18
+                ],
+                "rightcap": [
+                    81,
+                    0,
+                    83,
+                    18
+                ]
             }
         }
     },
     "fonts": {
         "gyparody": {
-            "file":     "fonts/gyparody-hv.ttf",
-            "size":     48
+            "file": "fonts/gyparody-hv.ttf",
+            "size": 48
         },
         "pixel32": {
-            "file":     "fonts/LightPixel7.ttf",
-            "size":     32
+            "file": "fonts/LightPixel7.ttf",
+            "size": 32
         }
     },
-    "sounds" : {
-        "fusion" : {
+    "sounds": {
+        "fusion": {
             "type": "sample",
             "file": "sounds/fusion.ogg"
         },
-        "laser" : {
+        "laser": {
             "type": "sample",
             "file": "sounds/laser.ogg",
             "volume": 0.5
         },
-        "blast" : {
+        "blast": {
             "type": "sample",
             "file": "sounds/explode.ogg"
         },
-        "bang" : {
+        "bang": {
             "type": "sample",
             "file": "sounds/bang.wav",
             "volume": 0.8
         },
-        "clean" : {
+        "clean": {
             "type": "sample",
             "file": "sounds/clean.wav",
             "volume": 0.4
         },
-        "high_rising" : {
+        "high_rising": {
             "type": "sample",
             "file": "sounds/high_rising.wav",
             "volume": 0.2
         },
-        "riser_riser" : {
+        "riser_riser": {
             "type": "sample",
             "file": "sounds/riser_riser.wav",
             "volume": 0.2
         },
-        "button_press" : {
+        "button_press": {
             "type": "sample",
             "file": "sounds/button_press.mp3",
             "volume": 0.1
         },
-        "UI_go" : {
+        "UI_go": {
             "type": "sample",
             "file": "sounds/UI_go.wav",
             "volume": 0.05
         },
-        "UI_back" : {
+        "UI_back": {
             "type": "sample",
             "file": "sounds/UI_back.wav",
             "volume": 0.1
         },
-        "UI_move" : {
+        "UI_move": {
             "type": "sample",
             "file": "sounds/UI_move.wav",
             "volume": 0.1
         }
     },
-    "jsons" : {
-        "constants" : "json/constants.json",
+    "jsons": {
+        "constants": "json/constants.json",
         "server": "json/server.json",
         "templatelevel": "json/templatelevel.json",
         "templatelevel2": "json/templatelevel2.json",
@@ -742,10 +802,10 @@
         "nightlevel": "json/nightlevel.json"
     },
     "widgets": {
-        "colorbutton" : "widgets/colorbutton.json",
-        "textbutton" : "widgets/textbutton.json",
-        "textfield" : "widgets/textfield.json",
-        "labelbox" : "widgets/labelbox.json"
+        "colorbutton": "widgets/colorbutton.json",
+        "textbutton": "widgets/textbutton.json",
+        "textfield": "widgets/textfield.json",
+        "labelbox": "widgets/labelbox.json"
     },
     "scene2s": {
         "win": {
@@ -782,7 +842,10 @@
                     },
                     "data": {
                         "texture": "menu_title",
-                        "anchor": [ 0.5, 0.5 ]
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ]
                     },
                     "layout": {
                         "x_anchor": "center",
@@ -795,11 +858,36 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "downnode": [ 0, 0, 0, 0 ],
-                        "pushable": [ 160, 280, 190, 370, 280, 400, 370, 370, 400, 280, 370, 190, 280, 160, 190, 190 ],
+                        "downnode": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        "pushable": [
+                            160,
+                            280,
+                            190,
+                            370,
+                            280,
+                            400,
+                            370,
+                            370,
+                            400,
+                            280,
+                            370,
+                            190,
+                            280,
+                            160,
+                            190,
+                            190
+                        ],
                         "visible": true,
                         "pushsize": true,
-                        "anchor": [ 0.5, 0.5 ]
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ]
                     },
                     "children": {
                         "up": {
@@ -820,10 +908,30 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "pushable": [ 160, 280, 190, 370, 280, 400, 370, 370, 400, 280, 370, 190, 280, 160, 190, 190 ],
+                        "pushable": [
+                            160,
+                            280,
+                            190,
+                            370,
+                            280,
+                            400,
+                            370,
+                            370,
+                            400,
+                            280,
+                            370,
+                            190,
+                            280,
+                            160,
+                            190,
+                            190
+                        ],
                         "visible": true,
                         "pushsize": true,
-                        "anchor": [ 0.5, 0.5 ]
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ]
                     },
                     "children": {
                         "up": {
@@ -858,7 +966,10 @@
                     },
                     "data": {
                         "texture": "level_title",
-                        "anchor": [ 0.5, 0.5 ]
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ]
                     },
                     "layout": {
                         "x_anchor": "center",
@@ -871,7 +982,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 0.5 ]
+                        "anchor": [
+                            0.0,
+                            0.5
+                        ]
                     },
                     "children": {
                         "up": {
@@ -893,7 +1007,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 0.0 ],
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ],
                         "scale": 0.75
                     },
                     "children": {
@@ -916,7 +1033,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 0.0 ],
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ],
                         "scale": 0.75
                     },
                     "children": {
@@ -940,7 +1060,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 0.0 ],
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ],
                         "scale": 0.75
                     },
                     "children": {
@@ -964,7 +1087,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 0.0 ],
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ],
                         "scale": 0.75
                     },
                     "children": {
@@ -988,7 +1114,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 0.0 ],
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ],
                         "scale": 0.75
                     },
                     "children": {
@@ -1012,7 +1141,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 0.0 ],
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ],
                         "scale": 0.75
                     },
                     "children": {
@@ -1036,7 +1168,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 0.0 ],
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ],
                         "scale": 0.75
                     },
                     "children": {
@@ -1060,7 +1195,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 0.0 ],
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ],
                         "scale": 0.75
                     },
                     "children": {
@@ -1084,7 +1222,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 0.0 ],
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ],
                         "scale": 0.75
                     },
                     "children": {
@@ -1122,7 +1263,10 @@
                     },
                     "data": {
                         "texture": "keypad_title",
-                        "anchor": [ 0, 0 ],
+                        "anchor": [
+                            0,
+                            0
+                        ],
                         "scale": 0.75
                     },
                     "layout": {
@@ -1140,7 +1284,10 @@
                     },
                     "data": {
                         "texture": "keypad_subtitle",
-                        "anchor": [ 0, 0 ],
+                        "anchor": [
+                            0,
+                            0
+                        ],
                         "scale": 0.75
                     },
                     "layout": {
@@ -1158,7 +1305,10 @@
                     },
                     "data": {
                         "texture": "keypad_inputfield",
-                        "anchor": [ 0, 0 ],
+                        "anchor": [
+                            0,
+                            0
+                        ],
                         "scale": 0.72
                     },
                     "layout": {
@@ -1175,11 +1325,14 @@
                         "type": "Anchored"
                     },
                     "data": {
-                        "anchor": [ 0, 0 ],
+                        "anchor": [
+                            0,
+                            0
+                        ],
                         "text": "123456",
                         "font": "gyparody",
-                        "halign"   : "left",
-                        "valign"   : "middle",
+                        "halign": "left",
+                        "valign": "middle",
                         "cursor": false
                     },
                     "layout": {
@@ -1197,7 +1350,10 @@
                     },
                     "data": {
                         "texture": "keypad_placeholderText",
-                        "anchor": [ 0, 0 ],
+                        "anchor": [
+                            0,
+                            0
+                        ],
                         "scale": 0.75
                     },
                     "layout": {
@@ -1212,7 +1368,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "scale": 0.75
                     },
                     "children": {
@@ -1235,7 +1394,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "scale": 0.75
                     },
                     "children": {
@@ -1258,7 +1420,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 1 ],
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
                         "scale": 0.85
                     },
                     "children": {
@@ -1282,7 +1447,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 1 ],
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
                         "scale": 0.85
                     },
                     "children": {
@@ -1306,7 +1474,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 1 ],
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
                         "scale": 0.85
                     },
                     "children": {
@@ -1330,7 +1501,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 1 ],
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
                         "scale": 0.85
                     },
                     "children": {
@@ -1354,7 +1528,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 1 ],
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
                         "scale": 0.85
                     },
                     "children": {
@@ -1378,7 +1555,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 1 ],
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
                         "scale": 0.85
                     },
                     "children": {
@@ -1402,7 +1582,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 1 ],
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
                         "scale": 0.85
                     },
                     "children": {
@@ -1426,7 +1609,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 1 ],
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
                         "scale": 0.85
                     },
                     "children": {
@@ -1450,7 +1636,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 1 ],
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
                         "scale": 0.85
                     },
                     "children": {
@@ -1474,7 +1663,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 1 ],
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
                         "scale": 0.85
                     },
                     "children": {
@@ -1498,7 +1690,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 1 ],
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
                         "scale": 0.85
                     },
                     "children": {
@@ -1522,7 +1717,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 1 ],
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
                         "scale": 0.85
                     },
                     "children": {
@@ -1560,7 +1758,10 @@
                     },
                     "data": {
                         "texture": "char_title",
-                        "anchor": [ 0.5, 0.5 ]
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ]
                     },
                     "layout": {
                         "x_anchor": "center",
@@ -1573,7 +1774,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 0.5 ]
+                        "anchor": [
+                            0.0,
+                            0.5
+                        ]
                     },
                     "children": {
                         "up": {
@@ -1598,7 +1802,10 @@
                     },
                     "data": {
                         "texture": "char_box",
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "scale": 0.7
                     },
                     "layout": {
@@ -1614,7 +1821,10 @@
                         "downnode": "down",
                         "visible": true,
                         "pushsize": true,
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "scale": 0.7
                     },
                     "children": {
@@ -1636,7 +1846,12 @@
                         "y_anchor": "middle",
                         "x_offset": -370,
                         "y_offset": 90,
-                        "padding": [ 10, 10, 10, 10 ],
+                        "padding": [
+                            10,
+                            10,
+                            10,
+                            10
+                        ],
                         "absolute": true
                     }
                 },
@@ -1647,7 +1862,10 @@
                         "downnode": "down",
                         "visible": true,
                         "pushsize": true,
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "scale": 0.7
                     },
                     "children": {
@@ -1669,7 +1887,12 @@
                         "y_anchor": "middle",
                         "x_offset": -370,
                         "y_offset": -90,
-                        "padding": [ 10, 10, 10, 10 ],
+                        "padding": [
+                            10,
+                            10,
+                            10,
+                            10
+                        ],
                         "absolute": true
                     }
                 },
@@ -1680,7 +1903,10 @@
                         "downnode": "down",
                         "visible": true,
                         "pushsize": true,
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "scale": 0.7
                     },
                     "children": {
@@ -1702,7 +1928,12 @@
                         "y_anchor": "middle",
                         "x_offset": 80,
                         "y_offset": 90,
-                        "padding": [ 10, 10, 10, 10 ],
+                        "padding": [
+                            10,
+                            10,
+                            10,
+                            10
+                        ],
                         "absolute": true
                     }
                 },
@@ -1713,7 +1944,10 @@
                         "downnode": "down",
                         "visible": true,
                         "pushsize": true,
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "scale": 0.7
                     },
                     "children": {
@@ -1735,7 +1969,12 @@
                         "y_anchor": "middle",
                         "x_offset": 80,
                         "y_offset": -90,
-                        "padding": [ 10, 10, 10, 10 ],
+                        "padding": [
+                            10,
+                            10,
+                            10,
+                            10
+                        ],
                         "absolute": true
                     }
                 },
@@ -1746,7 +1985,10 @@
                     },
                     "data": {
                         "texture": "char_mushroom",
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "visible": true,
                         "scale": 0.7
                     },
@@ -1754,7 +1996,12 @@
                         "x_anchor": "center",
                         "y_anchor": "middle",
                         "x_offset": 450,
-                        "padding": [ 10, 10, 10, 10 ],
+                        "padding": [
+                            10,
+                            10,
+                            10,
+                            10
+                        ],
                         "absolute": true
                     }
                 },
@@ -1765,7 +2012,10 @@
                     },
                     "data": {
                         "texture": "char_frog",
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "visible": false,
                         "scale": 0.7
                     },
@@ -1773,7 +2023,12 @@
                         "x_anchor": "center",
                         "y_anchor": "middle",
                         "x_offset": 450,
-                        "padding": [ 10, 10, 10, 10 ],
+                        "padding": [
+                            10,
+                            10,
+                            10,
+                            10
+                        ],
                         "absolute": true
                     }
                 },
@@ -1784,7 +2039,10 @@
                     },
                     "data": {
                         "texture": "char_chameleon",
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "visible": false,
                         "scale": 0.7
                     },
@@ -1792,7 +2050,12 @@
                         "x_anchor": "center",
                         "y_anchor": "middle",
                         "x_offset": 450,
-                        "padding": [ 10, 10, 10, 10 ],
+                        "padding": [
+                            10,
+                            10,
+                            10,
+                            10
+                        ],
                         "absolute": true
                     }
                 },
@@ -1803,7 +2066,10 @@
                     },
                     "data": {
                         "texture": "char_flower",
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "visible": false,
                         "scale": 0.7
                     },
@@ -1811,7 +2077,12 @@
                         "x_anchor": "center",
                         "y_anchor": "middle",
                         "x_offset": 450,
-                        "padding": [ 10, 10, 10, 10 ],
+                        "padding": [
+                            10,
+                            10,
+                            10,
+                            10
+                        ],
                         "absolute": true
                     }
                 },
@@ -1824,17 +2095,31 @@
                         "y_alignment": "bottom"
                     },
                     "data": {
-                        "anchor": [ 0.0, 0.0 ],
-                        "size": [ 1800, 100 ]
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ],
+                        "size": [
+                            1800,
+                            100
+                        ]
                     },
                     "children": {
                         "game_label": {
                             "type": "Label",
                             "data": {
-                                "anchor": [ 0.5, 0.5 ],
+                                "anchor": [
+                                    0.5,
+                                    0.5
+                                ],
                                 "font": "gyparody",
                                 "text": "Game ID:",
-                                "padding": [ 20, 20, 40, 20 ],
+                                "padding": [
+                                    20,
+                                    20,
+                                    40,
+                                    20
+                                ],
                                 "halign": "left",
                                 "valign": "middle"
                             },
@@ -1847,7 +2132,10 @@
                             "data": {
                                 "key": "labelbox",
                                 "variables": {
-                                    "size": [ 200, 100 ],
+                                    "size": [
+                                        200,
+                                        100
+                                    ],
                                     "text": "",
                                     "halign": "center",
                                     "framecolor": "#000088"
@@ -1860,10 +2148,18 @@
                         "players_label": {
                             "type": "Label",
                             "data": {
-                                "anchor": [ 0.5, 0.5 ],
+                                "anchor": [
+                                    0.5,
+                                    0.5
+                                ],
                                 "font": "gyparody",
                                 "text": "Players:",
-                                "padding": [ 20, 20, 20, 20 ],
+                                "padding": [
+                                    20,
+                                    20,
+                                    20,
+                                    20
+                                ],
                                 "halign": "left",
                                 "valign": "middle"
                             },
@@ -1876,7 +2172,10 @@
                             "data": {
                                 "key": "textfield",
                                 "variables": {
-                                    "size": [ 200, 100 ],
+                                    "size": [
+                                        200,
+                                        100
+                                    ],
                                     "text": "1",
                                     "halign": "center",
                                     "framecolor": "#000088"
@@ -1891,7 +2190,10 @@
                             "data": {
                                 "key": "textfield",
                                 "variables": {
-                                    "size": [ 200, 100 ],
+                                    "size": [
+                                        200,
+                                        100
+                                    ],
                                     "text": "1",
                                     "halign": "center",
                                     "framecolor": "#000088"
@@ -1906,14 +2208,22 @@
                             "data": {
                                 "key": "textbutton",
                                 "variables": {
-                                    "size": [ 400, 100 ],
+                                    "size": [
+                                        400,
+                                        100
+                                    ],
                                     "text": "Waiting",
                                     "color": "#000088"
                                 }
                             },
                             "layout": {
                                 "priority": 6,
-                                "padding": [ 20, 0, 20, 20 ]
+                                "padding": [
+                                    20,
+                                    0,
+                                    20,
+                                    20
+                                ]
                             }
                         }
                     }
@@ -1940,7 +2250,10 @@
                     },
                     "data": {
                         "texture": "char_title",
-                        "anchor": [ 0.5, 0.5 ]
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ]
                     },
                     "layout": {
                         "x_anchor": "center",
@@ -1953,7 +2266,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 0.5 ]
+                        "anchor": [
+                            0.0,
+                            0.5
+                        ]
                     },
                     "children": {
                         "up": {
@@ -1978,7 +2294,10 @@
                     },
                     "data": {
                         "texture": "char_box",
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "scale": 0.7
                     },
                     "layout": {
@@ -1994,7 +2313,10 @@
                         "downnode": "down",
                         "visible": true,
                         "pushsize": true,
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "scale": 0.7
                     },
                     "children": {
@@ -2016,7 +2338,12 @@
                         "y_anchor": "middle",
                         "x_offset": -370,
                         "y_offset": 90,
-                        "padding": [ 10, 10, 10, 10 ],
+                        "padding": [
+                            10,
+                            10,
+                            10,
+                            10
+                        ],
                         "absolute": true
                     }
                 },
@@ -2027,7 +2354,10 @@
                         "downnode": "down",
                         "visible": true,
                         "pushsize": true,
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "scale": 0.7
                     },
                     "children": {
@@ -2049,7 +2379,12 @@
                         "y_anchor": "middle",
                         "x_offset": -370,
                         "y_offset": -90,
-                        "padding": [ 10, 10, 10, 10 ],
+                        "padding": [
+                            10,
+                            10,
+                            10,
+                            10
+                        ],
                         "absolute": true
                     }
                 },
@@ -2060,7 +2395,10 @@
                         "downnode": "down",
                         "visible": true,
                         "pushsize": true,
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "scale": 0.7
                     },
                     "children": {
@@ -2082,7 +2420,12 @@
                         "y_anchor": "middle",
                         "x_offset": 80,
                         "y_offset": 90,
-                        "padding": [ 10, 10, 10, 10 ],
+                        "padding": [
+                            10,
+                            10,
+                            10,
+                            10
+                        ],
                         "absolute": true
                     }
                 },
@@ -2093,7 +2436,10 @@
                         "downnode": "down",
                         "visible": true,
                         "pushsize": true,
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "scale": 0.7
                     },
                     "children": {
@@ -2115,7 +2461,12 @@
                         "y_anchor": "middle",
                         "x_offset": 80,
                         "y_offset": -90,
-                        "padding": [ 10, 10, 10, 10 ],
+                        "padding": [
+                            10,
+                            10,
+                            10,
+                            10
+                        ],
                         "absolute": true
                     }
                 },
@@ -2126,7 +2477,10 @@
                     },
                     "data": {
                         "texture": "char_mushroom",
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "visible": true,
                         "scale": 0.7
                     },
@@ -2134,7 +2488,12 @@
                         "x_anchor": "center",
                         "y_anchor": "middle",
                         "x_offset": 450,
-                        "padding": [ 10, 10, 10, 10 ],
+                        "padding": [
+                            10,
+                            10,
+                            10,
+                            10
+                        ],
                         "absolute": true
                     }
                 },
@@ -2145,7 +2504,10 @@
                     },
                     "data": {
                         "texture": "char_frog",
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "visible": false,
                         "scale": 0.7
                     },
@@ -2153,7 +2515,12 @@
                         "x_anchor": "center",
                         "y_anchor": "middle",
                         "x_offset": 450,
-                        "padding": [ 10, 10, 10, 10 ],
+                        "padding": [
+                            10,
+                            10,
+                            10,
+                            10
+                        ],
                         "absolute": true
                     }
                 },
@@ -2164,7 +2531,10 @@
                     },
                     "data": {
                         "texture": "char_chameleon",
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "visible": false,
                         "scale": 0.7
                     },
@@ -2172,7 +2542,12 @@
                         "x_anchor": "center",
                         "y_anchor": "middle",
                         "x_offset": 450,
-                        "padding": [ 10, 10, 10, 10 ],
+                        "padding": [
+                            10,
+                            10,
+                            10,
+                            10
+                        ],
                         "absolute": true
                     }
                 },
@@ -2183,7 +2558,10 @@
                     },
                     "data": {
                         "texture": "char_flower",
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "visible": false,
                         "scale": 0.7
                     },
@@ -2191,7 +2569,12 @@
                         "x_anchor": "center",
                         "y_anchor": "middle",
                         "x_offset": 450,
-                        "padding": [ 10, 10, 10, 10 ],
+                        "padding": [
+                            10,
+                            10,
+                            10,
+                            10
+                        ],
                         "absolute": true
                     }
                 },
@@ -2204,17 +2587,31 @@
                         "y_alignment": "bottom"
                     },
                     "data": {
-                        "anchor": [ 0.0, 0.0 ],
-                        "size": [ 1800, 100 ]
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ],
+                        "size": [
+                            1800,
+                            100
+                        ]
                     },
                     "children": {
                         "game_label": {
                             "type": "Label",
                             "data": {
-                                "anchor": [ 0.5, 0.5 ],
+                                "anchor": [
+                                    0.5,
+                                    0.5
+                                ],
                                 "font": "gyparody",
                                 "text": "Game ID:",
-                                "padding": [ 20, 20, 40, 20 ],
+                                "padding": [
+                                    20,
+                                    20,
+                                    40,
+                                    20
+                                ],
                                 "halign": "left",
                                 "valign": "middle"
                             },
@@ -2227,7 +2624,10 @@
                             "data": {
                                 "key": "textfield",
                                 "variables": {
-                                    "size": [ 200, 100 ],
+                                    "size": [
+                                        200,
+                                        100
+                                    ],
                                     "text": "",
                                     "halign": "center",
                                     "framecolor": "#000088"
@@ -2240,10 +2640,18 @@
                         "players_label": {
                             "type": "Label",
                             "data": {
-                                "anchor": [ 0.5, 0.5 ],
+                                "anchor": [
+                                    0.5,
+                                    0.5
+                                ],
                                 "font": "gyparody",
                                 "text": "Players:",
-                                "padding": [ 20, 20, 20, 20 ],
+                                "padding": [
+                                    20,
+                                    20,
+                                    20,
+                                    20
+                                ],
                                 "halign": "left",
                                 "valign": "middle"
                             },
@@ -2256,7 +2664,10 @@
                             "data": {
                                 "key": "textfield",
                                 "variables": {
-                                    "size": [ 200, 100 ],
+                                    "size": [
+                                        200,
+                                        100
+                                    ],
                                     "text": "1",
                                     "halign": "center",
                                     "framecolor": "#000088"
@@ -2271,7 +2682,10 @@
                             "data": {
                                 "key": "textfield",
                                 "variables": {
-                                    "size": [ 200, 100 ],
+                                    "size": [
+                                        200,
+                                        100
+                                    ],
                                     "text": "1",
                                     "halign": "center",
                                     "framecolor": "#000088"
@@ -2286,14 +2700,22 @@
                             "data": {
                                 "key": "textbutton",
                                 "variables": {
-                                    "size": [ 400, 100 ],
+                                    "size": [
+                                        400,
+                                        100
+                                    ],
                                     "text": "Waiting",
                                     "color": "#000088"
                                 }
                             },
                             "layout": {
                                 "priority": 5,
-                                "padding": [ 20, 0, 20, 20 ]
+                                "padding": [
+                                    20,
+                                    0,
+                                    20,
+                                    20
+                                ]
                             }
                         }
                     }
@@ -2310,13 +2732,19 @@
                 "type": "anchored"
             },
             "data": {
-                "anchor": [ 0.5, 0.5 ]
+                "anchor": [
+                    0.5,
+                    0.5
+                ]
             },
             "children": {
-                "bluebar"  : {
-                    "type"   : "Progress",
+                "bluebar": {
+                    "type": "Progress",
                     "data": {
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "background": "progress_bg",
                         "foreground": "progress_fg_blue",
                         "left_cap": "progress_fg_blue_leftcap",
@@ -2328,10 +2756,13 @@
                         "absolute": true
                     }
                 },
-                "greenbar"  : {
-                    "type"   : "Progress",
+                "greenbar": {
+                    "type": "Progress",
                     "data": {
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "background": "progress_bg",
                         "foreground": "progress_fg_green",
                         "left_cap": "progress_fg_green_leftcap",
@@ -2343,10 +2774,13 @@
                         "absolute": true
                     }
                 },
-                "redbar"  : {
-                    "type"   : "Progress",
+                "redbar": {
+                    "type": "Progress",
                     "data": {
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "background": "progress_bg",
                         "foreground": "progress_fg_red",
                         "left_cap": "progress_fg_red_leftcap",
@@ -2354,14 +2788,17 @@
                         "visible": false
                     },
                     "layout": {
-                        "y_offset" : 265,
+                        "y_offset": 265,
                         "absolute": true
                     }
                 },
-                "yellowbar"  : {
-                    "type"   : "Progress",
+                "yellowbar": {
+                    "type": "Progress",
                     "data": {
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "background": "progress_bg",
                         "foreground": "progress_fg_yellow",
                         "left_cap": "progress_fg_yellow_leftcap",
@@ -2369,7 +2806,7 @@
                         "visible": false
                     },
                     "layout": {
-                        "y_offset" : 265,
+                        "y_offset": 265,
                         "absolute": true
                     }
                 },
@@ -2377,7 +2814,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 0.0 ]
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ]
                     },
                     "children": {
                         "up": {
@@ -2399,8 +2839,11 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.5, 0.5 ],
-                        "scale": 0.2
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
+                        "scale": 0.4
                     },
                     "children": {
                         "up": {
@@ -2423,8 +2866,11 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.5, 0.5 ],
-                        "scale": 1.0
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
+                        "scale": 1.5
                     },
                     "children": {
                         "up": {
@@ -2447,7 +2893,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "scale": 1.0
                     },
                     "children": {
@@ -2471,7 +2920,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "scale": 1.0
                     },
                     "children": {
@@ -2495,7 +2947,10 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.5, 0.5 ],
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
                         "scale": 1.0
                     },
                     "children": {
@@ -2519,4 +2974,3 @@
         }
     }
 }
-
