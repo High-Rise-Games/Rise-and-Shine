@@ -139,13 +139,13 @@ bool GameplayController::initLevel(int selected_level) {
     
     // texture mappings for each level (update these from the python script)
     
-    std::vector<string> texture_strings_level_1 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level1Window1", "level1Window2", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4" };
+    std::vector<string> texture_strings_level_1 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level1Window1", "level1Window2", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4", "left_blocked_1", "down_blocked_1", "planter-brown1" };
     std::vector<string> texture_strings_level_2 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level2Window1", "level2Window2" };
     std::vector<string> texture_strings_level_3 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level3Window1", "level3Window2", "level3Window3", "level3Window4" };
     std::vector<string> texture_strings_level_4 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4", "left_blocked_1", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
     std::vector<string> texture_strings_level_5 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
     std::vector<std::vector<string>> texture_strings_levels;
-    std::vector<int> texture_ids_level_1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+    std::vector<int> texture_ids_level_1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
     std::vector<int> texture_ids_level_2 = { 1, 2, 3, 4, 5, 6, 7 };
     std::vector<int> texture_ids_level_3 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     std::vector<int> texture_ids_level_4 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
