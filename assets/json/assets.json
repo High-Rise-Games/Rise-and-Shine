@@ -486,23 +486,17 @@
         "window": {
             "file": "textures/GenericWindow.png"
         },
-        "level2Window1": {
-            "file": "textures/level2Window1.png"
-        },
-        "level2Window2": {
-            "file": "textures/level2Window2.png"
-        },
         "level1Window1": {
             "file": "textures/level1Window1.png"
         },
         "level1Window2": {
             "file": "textures/level1Window2.png"
         },
-        "level1Window3": {
-            "file": "textures/level1Window3.png"
+        "level2Window1": {
+            "file": "textures/level2Window1.png"
         },
-        "level1Window4": {
-            "file": "textures/level1Window4.png"
+        "level2Window2": {
+            "file": "textures/level2Window2.png"
         },
         "level3Window1": {
             "file": "textures/level3Window1.png"
