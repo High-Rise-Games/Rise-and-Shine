@@ -49,7 +49,6 @@ std::pair<bool, std::optional<std::pair<cugl::Vec2, int>>> CollisionController::
         if (distance < impactDistance) {
 
             // Damage and/or stun the player
-            player->setHealth(player->getHealth() - proj->getDamage());
             if (player->getStunFrames() == 0) {
                 player->setStunFrames(proj->getStunTime());
             }

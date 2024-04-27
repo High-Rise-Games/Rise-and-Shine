@@ -750,8 +750,9 @@ void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
         _bird.setFacingRight(data->getBool("bird_facing_right"));
         if (playerId == _id) _birdLeaving = false;
     }
-    else if (playerId == _id) {
+    else if (playerId == _id && _curBirdBoard == _id) {
         _birdLeaving = true;
+        _curBirdBoard = 0; // set to arbitrary value to represent bird not on board
     }
 
 
@@ -971,6 +972,8 @@ void GameplayController::processDirtThrowRequest(std::shared_ptr<cugl::JsonValue
     int source_id = std::stod(data->getString("player_id_source", "0"));
     int target_id = std::stod(data->getString("player_id_target", "0"));
 
+    _playerVec[source_id - 1]->setAnimationState(Player::THROWING);
+
     const std::vector<std::shared_ptr<JsonValue>>& pos = data->get("dirt_pos")->children();
     Vec2 dirt_pos(std::stod(pos[0]->asString()), std::stod(pos[1]->asString()));
 
@@ -1033,8 +1036,6 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 }
             });
         _network.checkConnection();
-
-
     }
     
     // host steps all boards forward
@@ -1150,7 +1151,6 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             } else {
                 ifSwitch = false;
                 if (dirtCon.didRelease()) {
-                    _playerVec[_id-1]->setAnimationState(Player::THROWING);
                     _dirtSelected = false;
                     Vec2 diff = worldPos - _prevInputPos;
                     if ((myCurBoard == 1 && diff.x > 0) || (myCurBoard == -1 && diff.x < 0)) {
@@ -1347,15 +1347,14 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
 
         // note: the frame updates only update to the host's local state.
         // the host only sends over movement/positioning updates
-        if (player->getStunFrames() > 0) {
-            player->decreaseStunFrames();
-        } 
-        else {
-            player->move();
-        }
-        player->advanceAnimation();
-        player->move();
+        // if (player->getStunFrames() > 0) {
+        //     player->decreaseStunFrames();
+        // } 
+        // else {
+        //     player->move();
+        // }
         
+        player->move();
         
         // remove any dirt the player collides with
         Vec2 grid_coors = player->getCoorsFromPos(windows->getPaneHeight(), windows->getPaneWidth(), windows->sideGap);
@@ -1380,10 +1379,12 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
             if (player_id == _id) {
                 AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
             };
+            player->setAnimationState(Player::STUNNED);
             if (collision_result.second.has_value()) {
                 landedDirts.push_back(collision_result.second.value());
             }
         }
+        player->advanceAnimation();
         
         if (!_birdLeaving && _curBirdBoard == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.5)) {
             // set amount of frames plaer is frozen for for shooing bird

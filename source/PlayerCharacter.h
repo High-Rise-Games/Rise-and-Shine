@@ -62,26 +62,11 @@ private:
     // used to discretize movement
     float _windowWidth;
     
-       
-    // TODO: remove unnecessary fields from here and constants json file
-    // The following are protected, because they have no accessors
-    /** The amount of health this ship has */
-    int _health;
     /** The amount of time in frames for the player to be stunned */
     int _stunFrames;
     
     /** A property to adjust the rotation of the player when player colides. Resets to zero when stun frames is zero. */
     float _stunRotate;
-
-    // JSON DEFINED ATTRIBUTES
-    /** Mass/weight of the ship. Used in collisions. */
-    float _mass;
-    /** The shadow offset in pixels */
-    //float _shadows;
-    /** Amount to adjust forward movement from input */
-    float _thrust;
-    /** The maximum allowable velocity */
-    float _maxvel;
     
     /** The shadow offset in pixels */
     float _shadows;
@@ -118,8 +103,6 @@ private:
     int _maxthrowFrame;
     // number of frames that the player is throwing
     int _throwFrames;
-    /** sets to true when player is throwing*/
-    bool _throwing;
 
     /** player profile texture */
     std::shared_ptr<cugl::Texture> _profileTexture;
@@ -231,30 +214,12 @@ public:
     void setAnimationState(AnimStatus as) {
         if (as != _animState) {
             resetAnimationFrames();
-            _throwing = true;
+            // _throwing = true;
             _animState = as;
         } 
     };
     
     AnimStatus getAnimationState() { return _animState; };
-    
-    /**
-     * Returns the current player's health.
-     *
-     * When the health of the player is 0, it is "dead"
-     *
-     * @return the current player health.
-     */
-    int getHealth() const { return _health; }
-
-    /**
-     * Sets the current ship health.
-     *
-     * When the health of the ship is 0, it is "dead"
-     *
-     * @param value The current ship health.
-     */
-    void setHealth(int value);
 
     /**
      * Returns the current player's stunned time in frames.
@@ -276,6 +241,7 @@ public:
     void resetAnimationFrames() {
         _wipeFrames = 0;
         _shooFrames = 0;
+        _stunFrames = 60;
         _throwFrames = 0;
     }
     
@@ -283,111 +249,29 @@ public:
      * Sets the player's movement freeze time to the given time in frames
      * .Used when player wipes dirt
      */
-    void advanceWipeFrame() {
-        int step = _maxwipeFrame / _framesize;
-        if (_wipeFrames < _maxwipeFrame) {
-            if (_wipeFrames % step == 0) {
-                _wipeSprite->setFrame((int) _wipeFrames / step);
-                // CULog("drawing frame %d", (int) (_wipeFrames / step) % _framesize);
-            }
-            _wipeFrames += 1;
-        } else {
-            _wipeSprite->setFrame(0);
-            setAnimationState(AnimStatus::IDLE);
-        }
-    };
+    void advanceWipeFrame();
     
     /**
      * Sets the player's movement freeze time to the given time in frames
      * .Used when player shoos bird
      */
-    void advanceShooFrame() {
-        int step = _maxshooFrame / _shooframesize;
-        if (_shooFrames < _maxshooFrame) {
-            if (_shooFrames % step == 0) {
-                _shooSprite->setFrame((int) _shooFrames / step);
-                // CULog("drawing frame %d", (int) (_wipeFrames / step) % _framesize);
-            }
-            _shooFrames += 1;
-        } else {
-            _shooSprite->setFrame(0);
-            setAnimationState(AnimStatus::IDLE);
-        }
-    };
+    void advanceShooFrame();
     
     /**
      * Sets the player's movement freeze time to the given time in frames
      * .Used when player throws projectile
      */
-    void advanceThrowFrame() {
-        if (_throwing) {
-            CULog("advancing throw");
-            int step = _maxthrowFrame / _throwframesize;
-            if (_throwFrames < _maxthrowFrame) {
-                if (_throwFrames % step == 0) {
-                    _throwSprite->setFrame((int) _throwFrames / step);
-                    // CULog("drawing frame %d", (int) (_wipeFrames / step) % _framesize);
-                }
-                _throwFrames += 1;
-            } else {
-                CULog("done throwing");
-                _throwing = false;
-                _throwSprite->setFrame(0);
-                setAnimationState(AnimStatus::IDLE);
-            }
-        }
-    };
+    void advanceThrowFrame();
     
     /**
      * Advance animation for player idle
      */
-    void advanceIdleFrame() {
-        int step = _maxidleFrame / _idleframesize;
-         if (_idleFrames == _maxidleFrame) {
-             _idleFrames = 0;
-        }
-        if (_idleFrames % step == 0) {
-            _idleSprite->setFrame((int) (_idleFrames / step));
-        }
-        _idleFrames = _idleFrames+1;
-    };
+    void advanceIdleFrame();
     
-    void advanceAnimation() {
-        switch (_animState) {
-            case IDLE:
-                advanceIdleFrame();
-                break;
-            case WIPING:
-                advanceWipeFrame();
-                break;
-            case STUNNED:
-                break;
-            case SHOOING:
-                advanceShooFrame();
-                break;
-            case THROWING:
-                advanceThrowFrame();
-                break;
-            default:
-                advanceIdleFrame();
-                break;
-        }
-    }
+    void advanceAnimation();
 
     /** Decreases the stun frames by one, unless it is already at 0 then does nothing. */
     void decreaseStunFrames();
-
-    /**
-     * Returns the mass of the ship.
-     *
-     * This value is necessary to resolve collisions. It is set by the
-     * initial JSON file.
-     *
-     * @return the ship mass
-     */
-    float getMass() const {
-        return _mass;
-    }
 
     /**
      * Returns the radius of the ship.
@@ -395,7 +279,7 @@ public:
      * This value is necessary to resolve collisions. It is computed from
      * the sprite sheet.
      *
-     * @return the ship radius
+     * @return the player character radius
      */
     float getRadius() {
         return _radius;
