@@ -76,7 +76,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     setEmptyBucket(assets->get<Texture>("bucketempty"));
     setFullBucket(assets->get<Texture>("bucketfull"));
     
-    _countdown1 =assets->get<Texture>("countdown1");
+//    _countdown1 =assets->get<Texture>("countdown1");
     
 
 
@@ -252,6 +252,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     
 
     _gameController->draw(batch);
+    _gameController->drawCountdown(batch, getCamera()->getPosition(), getSize());
     
     batch->setColor(Color4::WHITE);
 
@@ -325,16 +326,16 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->end();
 }
 
-void GameScene::renderCountdown(std::shared_ptr<cugl::SpriteBatch> batch) {
-    Affine2 countdown1Trans = Affine2();
-    Vec2 countdown1Origin(_countdown1->getWidth()/2,_countdown1->getHeight()/2);
-    float countdown1ScaleFactor = std::min(((float)getSize().getIWidth() / (float)_countdown1->getWidth()) /2, ((float)getSize().getIHeight() / (float)_countdown1->getHeight() /2));
-    countdown1Trans.scale(countdown1ScaleFactor);
-    
-    Vec2 countdown1Location(getSize().width/2,
-                        getSize().height - 10*_countdownFrame);
-    countdown1Trans.translate(countdown1Location);
-    
-    batch->draw(_countdown1, countdown1Origin, countdown1Trans);
-}
+//void GameScene::renderCountdown(std::shared_ptr<cugl::SpriteBatch> batch) {
+//    Affine2 countdown1Trans = Affine2();
+//    Vec2 countdown1Origin(_countdown1->getWidth()/2,_countdown1->getHeight()/2);
+//    float countdown1ScaleFactor = std::min(((float)getSize().getIWidth() / (float)_countdown1->getWidth()) /2, ((float)getSize().getIHeight() / (float)_countdown1->getHeight() /2));
+//    countdown1Trans.scale(countdown1ScaleFactor);
+//    
+//    Vec2 countdown1Location(getSize().width/2,
+//                        getSize().height - 10*_countdownFrame);
+//    countdown1Trans.translate(countdown1Location);
+//    
+//    batch->draw(_countdown1, countdown1Origin, countdown1Trans);
+//}
 

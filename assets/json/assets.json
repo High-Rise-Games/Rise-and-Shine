@@ -363,9 +363,6 @@
             "minfilter": "linear",
             "magfilter": "linear"
         },
-        "number2": {
-            "file": "textures/number2.png"
-        },
         "wipe_flower": {
             "file": "textures/wipe-fl-4096.png"
         },
@@ -426,6 +423,21 @@
         "profile_mushroom": {
             "file": "textures/profile_m.png"
         },
+        "C1": {
+            "file": "textures/CountDown/C1.png"
+        },
+        "C2": {
+            "file": "textures/CountDown/C2.png"
+        },
+        "C3": {
+            "file": "textures/CountDown/C3.png"
+        },
+        "Go": {
+            "file": "textures/CountDown/Go.png"
+        },
+        "Sparkle": {
+            "file": "textures/CountDown/Sparkle.png"
+        },
         "start_game": {
             "file": "textures/StartButton.png",
             "wrapS": "clamp",
@@ -479,9 +491,6 @@
             "file": "textures/lose-screen.png",
             "wrapS": "repeat",
             "wrapT": "repeat"
-        },
-        "ship": {
-            "file": "textures/ships.png"
         },
         "window": {
             "file": "textures/GenericWindow.png"

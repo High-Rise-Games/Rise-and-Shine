@@ -42,11 +42,10 @@ void Bird::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size
     if (_sprite) {
         Affine2 birdTrans;
         double bird_scale = _radius * 2 / _sprite->getFrameSize().height;
+        _sprite->setOrigin(Vec2(_sprite->getFrameSize().width/2, _sprite->getFrameSize().height/2));
         if (!_toRight) {
-            _sprite->setOrigin(Vec2(_sprite->getFrameSize().width/2, _sprite->getFrameSize().height/2));
             birdTrans.scale(Vec2(-bird_scale, bird_scale));
         } else {
-            _sprite->setOrigin(Vec2(_sprite->getFrameSize().width/2, _sprite->getFrameSize().height/2));
             birdTrans.scale(bird_scale);
         }
         birdTrans.translate(birdWorldPos);

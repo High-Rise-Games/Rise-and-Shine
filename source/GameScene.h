@@ -83,10 +83,6 @@ protected:
     std::shared_ptr<cugl::Texture> _fullBucket;
     /** The text with the current dirt */
     std::shared_ptr<cugl::TextLayout> _dirtText;
-    
-    
-    /** texture for number 1 */
-    std::shared_ptr<cugl::Texture> _countdown1;
 
     /** The scene node for the UI elements (buttons, labels) */
     std::shared_ptr<cugl::scene2::SceneNode> _scene_UI;
