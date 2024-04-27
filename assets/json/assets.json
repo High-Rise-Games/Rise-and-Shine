@@ -525,6 +525,9 @@
         "fully_blocked_3": {
             "file": "textures/fully_blocked_3.png"
         },
+        "fully_blocked_4": {
+            "file": "textures/fully_blocked_4.png"
+        },
         "nightWindow1": {
             "file": "textures/nightWindow1.png"
         },
@@ -557,6 +560,9 @@
         },
         "dirt2": {
             "file": "textures/dirt2.png"
+        },
+        "level1dirt": {
+            "file": "textures/level1dirt.png"
         },
         "faded-dirt": {
             "file": "textures/FadedDirt.png"

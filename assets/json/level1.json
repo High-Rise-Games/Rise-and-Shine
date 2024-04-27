@@ -80,13 +80,13 @@
     
         {
          "data":[0, 0, 0, 0,
+            0, 0, 11, 0,
+            11, 0, 0, 0,
             0, 0, 0, 0,
             0, 0, 0, 0,
             0, 0, 0, 0,
-            0, 0, 0, 0,
-            0, 0, 0, 0,
-            0, 0, 0, 0,
-            0, 0, 0, 0,
+            0, 11, 0, 0,
+            0, 0, 0, 11,
             0, 0, 0, 0,
             0, 0, 0, 0],
          "height":10,
@@ -94,7 +94,7 @@
          "name":"Blocked Tiles",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":4,
          "x":0,
          "y":0
@@ -140,6 +140,10 @@
         {
          "firstgid":6,
          "source":"Tilesets\/level1.tsx"
+        }, 
+        {
+         "firstgid":8,
+         "source":"Tilesets\/Blockers Full Tile.tsx"
         }],
  "tilewidth":250,
  "type":"map",
