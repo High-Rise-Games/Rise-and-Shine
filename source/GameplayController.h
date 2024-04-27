@@ -21,6 +21,7 @@
 #include "CollisionController.h"
 #include "NetworkController.h"
 #include "AudioController.h"
+#include "NetStructs.h"
 
 
 
@@ -38,6 +39,9 @@ protected:
     
     /** The audio controller, set ny app */
     std::shared_ptr<AudioController> _audioController;
+    
+    /** For serializing */
+    NetStructs netStructs;
         
     /** Whether this player is the host */
     bool _ishost;
@@ -379,7 +383,7 @@ public:
      * @param id    the id of the player of the board state to get
      * @returns JSON value representing game board state
      */
-    std::shared_ptr<cugl::JsonValue> getJsonBoard(int id, bool isPartial);
+    std::shared_ptr<NetStructs::BOARD_STATE> getJsonBoard(int id, bool isPartial);
 
     /**
      * Called by client only. Converts a movement vector into a JSON value for sending over the network.
@@ -416,7 +420,7 @@ public:
      *
      * @params data     The data to update
      */
-    void updateBoard(std::shared_ptr<cugl::JsonValue> data);
+    void updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> data);
 
     /**
      * Called by the host only. Updates a client player's board for player at player_id

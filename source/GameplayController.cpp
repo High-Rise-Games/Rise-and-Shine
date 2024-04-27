@@ -452,7 +452,7 @@ void GameplayController::switchScene() {
  * @param id    the id of the player of the board state to get
  * @returns JSON value representing game board state
  */
-std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id, bool isPartial) {
+std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getJsonBoard(int id, bool isPartial) {
     
 
     
@@ -461,105 +461,71 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id, bool i
     std::shared_ptr<ProjectileSet> projectiles = _projectileVec[id-1];
 
 
-    BOARD_STATE boardState;
-    boardState.optional = isPartial;
-    boardState.playerChar = player->getChar();
-    boardState.hasWon = _hasWon[id-1] ? "true" : "false";
-    boardState.numDirt = _allDirtAmounts[id - 1];
-    boardState.currBoard = _allCurBoards[id - 1];
-    boardState.progress = _progressVec[id-1];
-    if (isPartial) {
-        
+    std::shared_ptr<NetStructs::BOARD_STATE> boardState = std::make_shared<NetStructs::BOARD_STATE>();
+    boardState->optional = isPartial;
+//    boardState->playerChar = player->getChar();
+    boardState->hasWon = _hasWon[id-1] ? true : false;
+    boardState->numDirt = _allDirtAmounts[id - 1];
+    boardState->currBoard = _allCurBoards[id - 1];
+    boardState->progress = _progressVec[id-1];
+    
+    cugl::Vec2 playerBoardPos = getBoardPosition(player->getPosition());
+    if (!isPartial) {
+        boardState->playerX = playerBoardPos.x;
     };
+    boardState->playerY = playerBoardPos.y;
+//    boardState->animState = player->animStatustoString(player->getAnimationState());
+    boardState->timer = _gameTimeLeft;
     
+    if (!isPartial) {
+        
+        if (_curBirdBoard == id) {
+            boardState->birdPosX = _bird.birdPosition.x;
+            boardState->birdPosY = _bird.birdPosition.y;
+        };
+        
+        const std::shared_ptr<std::vector<NetStructs::WINDOW_DIRT>> dirtArray = std::make_shared<std::vector<NetStructs::WINDOW_DIRT>>();
+        
+        for (int col = 0; col < windows->getNHorizontal(); ++col) {
+            for (int row = 0; row < windows->getNVertical(); ++row) {
+                bool hasDirt = windows->getWindowState(row, col);
+                if (hasDirt) {
+                    std::shared_ptr<NetStructs::WINDOW_DIRT> dirt = std::make_shared<NetStructs::WINDOW_DIRT>();
+                    dirt->posX = row;
+                    dirt->posY = col;
+                    dirtArray->push_back(*dirt);
+                }
+            }
+        }
+        
+        const std::shared_ptr<std::vector<NetStructs::PROJECTILE>> projArray = std::make_shared<std::vector<NetStructs::PROJECTILE>>();
+        
+        for (shared_ptr<ProjectileSet::Projectile> projectile : projectiles->current) {
+            const std::shared_ptr<NetStructs::PROJECTILE> proj = std::make_shared<NetStructs::PROJECTILE>();
+
+            cugl::Vec2 projBoardPos = getBoardPosition(projectile->position);
+            cugl::Vec2 projDestBoardPos = getBoardPosition(projectile->destination);
+            proj->PosX = projBoardPos.x;
+            proj->PosY = projBoardPos.y;
+            proj->velX = projectile->velocity.x;
+            proj->velY = projectile->velocity.y;
+            proj->destX = projDestBoardPos.x;
+            proj->destY = projDestBoardPos.y;
+            
+            
+            if (projectile->type == ProjectileSet::Projectile::ProjectileType::DIRT) {
+                proj->type = NetStructs::Dirt;
+            } else {
+                proj->type = NetStructs::Poop;
+            }
+            
+            projArray->push_back(*proj);
+
+        }
+        
+    }
     
-//    const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-//    json->init(JsonValue::Type::ObjectType);
-//    json->appendValue("player_id", std::to_string(id));
-//    json->appendValue("player_char", player->getChar());
-//    std::string win_str = _hasWon[id-1] ? "true" : "false";
-//    json->appendValue("has_won", win_str);
-//    json->appendValue("num_dirt", std::to_string(_allDirtAmounts[id - 1]));
-//    json->appendValue("curr_board", std::to_string(_allCurBoards[id - 1]));
-//    json->appendValue("progress", std::to_string(_progressVec[id-1]));
-//
-//    cugl::Vec2 playerBoardPos = getBoardPosition(player->getPosition());
-//    if(!isPartial) json->appendValue("player_x", std::to_string(playerBoardPos.x));
-//    json->appendValue("player_y", std::to_string(playerBoardPos.y));
-//
-//    if (player->getAnimationState() == Player::WIPING) {
-//        CULog("%s", player->animStatustoString(player->getAnimationState()).c_str());
-//    }
-//    json->appendValue("anim_state", player->animStatustoString(player->getAnimationState()));
-//
-//    json->appendValue("timer", std::to_string(_gameTimeLeft));
-//    
-//    if (!isPartial) {
-//        
-//        if (_curBirdBoard == id) {
-//            const std::shared_ptr<JsonValue> birdPos = std::make_shared<JsonValue>();
-//            birdPos->init(JsonValue::Type::ArrayType);
-//            birdPos->appendValue(std::to_string(_bird.birdPosition.x));
-//            birdPos->appendValue(std::to_string(_bird.birdPosition.y));
-//            json->appendChild("bird_pos", birdPos);
-//            json->appendValue("bird_facing_right", (_bird.isFacingRight()));
-//        }
-//
-//        const std::shared_ptr<JsonValue> dirtArray = std::make_shared<JsonValue>();
-//        dirtArray->init(JsonValue::Type::ArrayType);
-//        for (int col = 0; col < windows->getNHorizontal(); ++col) {
-//            for (int row = 0; row < windows->getNVertical(); ++row) {
-//                bool hasDirt = windows->getWindowState(row, col);
-//                if (hasDirt) {
-//                    const std::shared_ptr<JsonValue> dirtPos = std::make_shared<JsonValue>();
-//                    dirtPos->init(JsonValue::Type::ArrayType);
-//                    dirtPos->appendValue(std::to_string(row));
-//                    dirtPos->appendValue(std::to_string(col));
-//                    dirtArray->appendChild(dirtPos);
-//                }
-//            }
-//        }
-//        json->appendChild("dirts", dirtArray);
-//
-//        const std::shared_ptr<JsonValue> projArray = std::make_shared<JsonValue>();
-//        projArray->init(JsonValue::Type::ArrayType);
-//
-//        for (shared_ptr<ProjectileSet::Projectile> proj : projectiles->current) {
-//            const std::shared_ptr<JsonValue> projJson = std::make_shared<JsonValue>();
-//            projJson->init(JsonValue::Type::ObjectType);
-//
-//            cugl::Vec2 projBoardPos = getBoardPosition(proj->position);
-//            const std::shared_ptr<JsonValue> projPos = std::make_shared<JsonValue>();
-//            projPos->init(JsonValue::Type::ArrayType);
-//            projPos->appendValue(std::to_string(projBoardPos.x));
-//            projPos->appendValue(std::to_string(projBoardPos.y));
-//            projJson->appendChild("pos", projPos);
-//
-//            const std::shared_ptr<JsonValue> projVel = std::make_shared<JsonValue>();
-//            projVel->init(JsonValue::Type::ArrayType);
-//            projVel->appendValue(std::to_string(proj->velocity.x));
-//            projVel->appendValue(std::to_string(proj->velocity.y));
-//            projJson->appendChild("vel", projVel);
-//
-//            cugl::Vec2 projDestBoardPos = getBoardPosition(proj->destination);
-//            const std::shared_ptr<JsonValue> projDest = std::make_shared<JsonValue>();
-//            projDest->init(JsonValue::Type::ArrayType);
-//            projDest->appendValue(std::to_string(projDestBoardPos.x));
-//            projDest->appendValue(std::to_string(projDestBoardPos.y));
-//            projJson->appendChild("dest", projDest);
-//
-//            std::string projTypeStr = "POOP";
-//            if (proj->type == ProjectileSet::Projectile::ProjectileType::DIRT) {
-//                projTypeStr = "DIRT";
-//            }
-//            projJson->appendValue("type", projTypeStr);
-//
-//            projArray->appendChild(projJson);
-//        }
-//        json->appendChild("projectiles", projArray);
-//    }
-//
-//    return json;
+    return boardState;
 }
 
 /**
@@ -610,122 +576,97 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonBoard(int id, bool i
 *
 * @params data     The data to update
 */
-void GameplayController::updateBoard(std::shared_ptr<JsonValue> data) {
+void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> data) {
     
     
-    int playerId = std::stod(data->getString("player_id", "0"));
-    std::string playerChar = data->getString("player_char");
-    std::string playerHasWon = data->getString("has_won", "false");
-    if (playerHasWon == "true" && !_gameOver) {
-        _gameOver = true;
-        setWin(playerId == _id);
-        return;
+    int playerId = data->playerId;
+    bool playerHasWon = data->hasWon;
+    if (playerHasWon == true && !_gameOver) {
+            _gameOver = true;
+            setWin(playerId == _id);
+            return;
     }
-    _progressVec[playerId - 1] = std::stod(data->getString("progress", "0"));
-
-    // get x, y positions of player
-    Vec2 playerBoardPos(std::stod(data->getString("player_x", "0")), std::stod(data->getString("player_y", "0")));
-
-    if (playerId == _id && playerChar != _playerVec[_id - 1]->getChar()) {
-        // first time this client is receiving message about their chosen character
-        _playerVec[_id - 1]->setChar(playerChar);
-        changeCharTexture(_playerVec[_id - 1], playerChar);
-    }
-
+    _progressVec[playerId - 1] = data->progress;
+    Vec2 playerBoardPos(data->playerX, data->playerY);
+//    if (playerId == _id && playerChar != _playerVec[_id - 1]->getChar()) {
+//            // first time this client is receiving message about their chosen character
+////        _playerVec[_id - 1]->setChar(playerChar);
+////        changeCharTexture(_playerVec[_id - 1], playerChar);
+//    }
+//    
     if (_playerVec[playerId - 1] == nullptr) {
-        // first time this client is receiving message on another player
-
-        // instantiate this player's window grid in this client's game instance
-        _windowVec[playerId - 1] = make_shared<WindowGrid>();
-        for (string thisWindow : _texture_strings_selected) {
-            _windowVec[playerId - 1]->addTexture(_assets->get<Texture>(thisWindow));
-        }
-        _windowVec[playerId - 1]->setTextureIds(_texture_ids_selected);
-        _windowVec[playerId - 1]->init(_levelJson, _size); // init depends on texture
-        _windowVec[playerId - 1]->setInitDirtNum(_initDirtCount);
-        _windowVec[playerId - 1]->setDirtTexture(_assets->get<Texture>(_dirtTextureString));
-        _windowVec[playerId - 1]->setFadedDirtTexture(_assets->get<Texture>("faded-dirt"));
-
-        // instantiate this player in this client's game instance
-        _playerVec[playerId - 1] = std::make_shared<Player>(playerId, getWorldPosition(playerBoardPos), _windowVec[_id - 1]->getPaneWidth(), _windowVec[_id - 1]->getPaneHeight());
-        // set the player's character textures
-        _playerVec[playerId - 1]->setChar(playerChar);
-        changeCharTexture(_playerVec[playerId - 1], playerChar);
-
-        // instantiate this player's projectile set in this client's game instance
-        _projectileVec[playerId - 1] = make_shared<ProjectileSet>();
-        _projectileVec[playerId - 1]->setDirtTexture(_assets->get<Texture>(_dirtTextureString));
-        _projectileVec[playerId - 1]->setPoopTexture(_assets->get<Texture>("poop"));
-        _projectileVec[playerId - 1]->setTextureScales(_windowVec[_id - 1]->getPaneHeight(), _windowVec[_id - 1]->getPaneWidth());
-    }
-
-    auto player = _playerVec[playerId - 1];
-    player->setPosition(getWorldPosition(playerBoardPos));
-
-    player->setAnimationState(data->getString("anim_state"));
-    CULog("reseting %s", data->getString("anim_state").c_str());
+            // first time this client is receiving message on another player
     
-    auto windows = _windowVec[playerId - 1];
-    auto projectiles = _projectileVec[playerId-1];
-    // CULog("playerId: %d", playerId);
-
-    if (playerId == _id) {
-        // update own board info
-        _gameTimeLeft = std::stoi(data->getString("timer"));
-        _currentDirtAmount = std::stod(data->getString("num_dirt", "0"));
+            // instantiate this player's window grid in this client's game instance
+            _windowVec[playerId - 1] = make_shared<WindowGrid>();
+            for (string thisWindow : _texture_strings_selected) {
+                _windowVec[playerId - 1]->addTexture(_assets->get<Texture>(thisWindow));
+            }
+            _windowVec[playerId - 1]->setTextureIds(_texture_ids_selected);
+            _windowVec[playerId - 1]->init(_levelJson, _size); // init depends on texture
+            _windowVec[playerId - 1]->setInitDirtNum(_initDirtCount);
+            _windowVec[playerId - 1]->setDirtTexture(_assets->get<Texture>(_dirtTextureString));
+            _windowVec[playerId - 1]->setFadedDirtTexture(_assets->get<Texture>("faded-dirt"));
+    
+            // instantiate this player in this client's game instance
+            _playerVec[playerId - 1] = std::make_shared<Player>(playerId, getWorldPosition(playerBoardPos), _windowVec[_id - 1]->getPaneWidth(), _windowVec[_id - 1]->getPaneHeight());
+            // set the player's character textures
+//            _playerVec[playerId - 1]->setChar(playerChar);
+//            changeCharTexture(_playerVec[playerId - 1], playerChar);
+    
+            // instantiate this player's projectile set in this client's game instance
+            _projectileVec[playerId - 1] = make_shared<ProjectileSet>();
+            _projectileVec[playerId - 1]->setDirtTexture(_assets->get<Texture>(_dirtTextureString));
+            _projectileVec[playerId - 1]->setPoopTexture(_assets->get<Texture>("poop"));
+            _projectileVec[playerId - 1]->setTextureScales(_windowVec[_id - 1]->getPaneHeight(), _windowVec[_id - 1]->getPaneWidth());
     }
-    _allCurBoards[playerId - 1] = std::stod(data->getString("curr_board", "0"));
-
-
-    if (data->has("bird_pos")) {
-        _curBirdBoard = playerId;
-        // update bird position, no matter which board the bird is on
-        const std::vector<std::shared_ptr<JsonValue>>& birdPos = data->get("bird_pos")->children();
-        Vec2 birdBoardPos(std::stod(birdPos[0]->asString()), std::stod(birdPos[1]->asString()));
-        _curBirdPos = getWorldPosition(birdBoardPos);
-
-        _bird.setFacingRight(data->getBool("bird_facing_right"));
-        if (playerId == _id) _birdLeaving = false;
-    }
-    else if (playerId == _id) {
-        _birdLeaving = true;
-    }
-
-
-    if (data->has("dirts") && data->has("projectiles")) {
-        // populate player's board with dirt
-        windows->clearBoard();
-        for (const std::shared_ptr< JsonValue>& jsonDirt : data->get("dirts")->children()) {
-            std::vector<std::string> dirtPos = jsonDirt->asStringArray();
-            windows->addDirt(std::stod(dirtPos[0]), std::stod(dirtPos[1]));
+    
+        auto player = _playerVec[playerId - 1];
+        player->setPosition(getWorldPosition(playerBoardPos));
+    
+//        player->setAnimationState(data->getString("anim_state"));
+    
+        auto windows = _windowVec[playerId - 1];
+        auto projectiles = _projectileVec[playerId-1];
+    
+        if (playerId == _id) {
+            // update own board info
+            _gameTimeLeft = data->timer;
+            _currentDirtAmount = data->numDirt;
         }
+    
+    if (data->dirtVector.size() > 0 && data->projectileVector.size()>0) {
+        
+        windows->clearBoard();
+        for (NetStructs::WINDOW_DIRT windowDirt : data->dirtVector) {
+            windows->addDirt(windowDirt.posX, windowDirt.posY);
+        }
+        
 
-        // populate player's projectile setZ
+        //     populate player's projectile setZ
         projectiles->clearCurrentSet(); // clear current set to rewrite
-        for (const std::shared_ptr<JsonValue>& projNode : data->get("projectiles")->children()) {
+        for (NetStructs::PROJECTILE projNode : data->projectileVector) {
             // get projectile position
-            const std::vector<std::shared_ptr<JsonValue>>& projPos = projNode->get("pos")->children();
-            Vec2 pos(std::stod(projPos[0]->asString()), std::stod(projPos[1]->asString()));
+
+            Vec2 pos(projNode.PosX, projNode.PosY);
 
             // get projectile velocity
-            const std::vector<std::shared_ptr<JsonValue>>& projVel = projNode->get("vel")->children();
-            Vec2 vel(std::stod(projVel[0]->asString()), std::stod(projVel[1]->asString()));
+            Vec2 vel(projNode.velX, projNode.velY);
 
             // get projectile destination
-            const std::vector<std::shared_ptr<JsonValue>>& projDest = projNode->get("dest")->children();
-            Vec2 dest(std::stod(projDest[0]->asString()), std::stod(projDest[1]->asString()));
+            Vec2 dest(projNode.destX, projNode.destY);
 
-            // get projectile type
-            string typeStr = projNode->get("type")->asString();
             auto type = ProjectileSet::Projectile::ProjectileType::POOP;
-            if (typeStr == "DIRT") {
+            if (projNode.type == NetStructs::Dirt) {
                 type = ProjectileSet::Projectile::ProjectileType::DIRT;
             }
 
             // add the projectile to neighbor's projectile set
             projectiles->spawnProjectileClient(getWorldPosition(pos), vel, getWorldPosition(dest), type);
         }
+        
     }
+
 }
 
 /**
@@ -869,7 +810,7 @@ const std::shared_ptr<std::vector<std::byte>> GameplayController::getJsonDirtThr
     
     cugl::Vec2 boardPos = getBoardPosition(pos);
     cugl::Vec2 boardDest = getBoardPosition(dest);
-    std::shared_ptr<DIRT_REQUEST> dirtRequest = std::make_shared<DIRT_REQUEST>();
+    std::shared_ptr<NetStructs::DIRT_REQUEST> dirtRequest = std::make_shared<NetStructs::DIRT_REQUEST>();
     dirtRequest->playerIdSource = _id;
     dirtRequest->playerIdTarget = target;
     dirtRequest->dirtPosX = boardPos.x;
@@ -879,8 +820,8 @@ const std::shared_ptr<std::vector<std::byte>> GameplayController::getJsonDirtThr
     dirtRequest->dirtVelX = vel.x;
     dirtRequest->dirtVelY = vel.y;
     dirtRequest->dirtAmount = amt;
-    dirtRequest->type = DirtRequestType;
-    return serializeDirtRequest(dirtRequest);
+    dirtRequest->type = NetStructs::DirtRequestType;
+    return netStructs.serializeDirtRequest(dirtRequest);
 
 }
 
@@ -892,7 +833,7 @@ const std::shared_ptr<std::vector<std::byte>> GameplayController::getJsonDirtThr
 */
 void GameplayController::processDirtThrowRequest(std::vector<std::byte> msg) {
     
-    std::shared_ptr<DIRT_REQUEST> dirtRequest = deserializeDirtRequest(msg);
+    std::shared_ptr<NetStructs::DIRT_REQUEST> dirtRequest = netStructs.deserializeDirtRequest(msg);
     int source_id = dirtRequest->playerIdSource;
     int target_id = dirtRequest->playerIdTarget;
     Vec2 dirt_pos(dirtRequest->dirtPosX, dirtRequest->dirtPosY);
@@ -931,10 +872,10 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             const std::vector<std::byte>& data) {
                 if (!_ishost) {
                     std::shared_ptr<JsonValue> incomingMsg = _network.processMessage(source, data);
-                    if (incomingMsg->has("curr_board")) {
+                    if (netStructs.deserializeBoardState(data)->type == NetStructs::BoardStateType) {
                         // CULog("got board state message");
-                        updateBoard(incomingMsg);
-                    } 
+                        updateBoard(netStructs.deserializeBoardState(data));
+                    }
                 }
                 else { // is host
                     // process action data - movement or dirt throw
@@ -946,7 +887,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                         // CULog("got switch scene request message");
                         processSceneSwitchRequest(incomingMsg);
                     }
-                    else if (deserializeDirtRequest(data)->type == DirtRequestType && sizeof deserializeDirtRequest(data) == sizeof (DIRT_REQUEST)) {
+                    else if (netStructs.deserializeDirtRequest(data)->type == netStructs.DirtRequestType && sizeof netStructs.deserializeDirtRequest(data) == sizeof (NetStructs::DIRT_REQUEST)) {
                         // CULog("got dirt throw message");
                         processDirtThrowRequest(data);
                     }

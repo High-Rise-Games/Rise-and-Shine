@@ -12,6 +12,7 @@
 #define NetworkController_h
 #include <cugl/cugl.h>
 #include <vector>
+#include "NetStructs.h"
 class NetworkController {
 
 protected:
@@ -171,6 +172,7 @@ public:
     void transmitMessage(const std::shared_ptr<cugl::JsonValue> state);
 
     void transmitMessage(const std::string uuid, const std::shared_ptr<cugl::JsonValue> state);
+    void transmitMessage(const std::string uuid, const std::shared_ptr<NetStructs::BOARD_STATE> state);
 
     void sendToHost(const std::shared_ptr<cugl::JsonValue> msg);
     void sendToHost(const std::vector<std::byte>& byteState);
