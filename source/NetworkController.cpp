@@ -188,9 +188,9 @@ void NetworkController::transmitMessage(const std::shared_ptr<cugl::JsonValue> m
     }
 }
 
-void NetworkController::transmitMessage(const std::string uuid, const std::shared_ptr<NetStructs::BOARD_STATE> msg) {
+void NetworkController::transmitMessage(const std::string uuid, const std::vector<std::byte> msg) {
     if (_network->isOpen()) {
-        _network->sendTo(uuid, *(ne);
+        _network->sendTo(uuid, msg);
     }
 }
 

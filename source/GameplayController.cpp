@@ -953,11 +953,11 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             for (int boardToTransmit = 1; boardToTransmit <= _numPlayers; boardToTransmit++) {
                 if (curBoardId == boardToTransmit) {
                     // transmit full board state
-                    _network.transmitMessage(peer_uuid, getJsonBoard(boardToTransmit, false));
+                    _network.transmitMessage(peer_uuid, *netStructs.serializeBoardState(getJsonBoard(boardToTransmit, false)));
                 }
                 else {
                     // transmit partial board state
-                    _network.transmitMessage(peer_uuid, getJsonBoard(boardToTransmit, true));
+                    _network.transmitMessage(peer_uuid, *netStructs.serializeBoardState(getJsonBoard(boardToTransmit, true)));
                 }
             }
         }
