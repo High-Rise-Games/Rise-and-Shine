@@ -546,6 +546,21 @@
         "nightWindow5": {
             "file": "textures/nightWindow5.png"
         },
+        "dreamywin1": {
+            "file": "textures/dreamywin1.png"
+        },
+        "dreamywin2": {
+            "file": "textures/dreamywin2.png"
+        },
+        "dreamywin3": {
+            "file": "textures/dreamywin3.png"
+        },
+        "dreamywin4": {
+            "file": "textures/dreamywin4.png"
+        },
+        "dreamywin5": {
+            "file": "textures/dreamywin5.png"
+        },
         "day1Building": {
             "file": "textures/day1Building.png"
         },
@@ -557,6 +572,9 @@
         },
         "nightBuilding": {
             "file": "textures/nightBuilding.png"
+        },
+        "dreamyBuilding": {
+            "file": "textures/dreamyBuilding.png"
         },
         "dirt": {
             "file": "textures/GenericDirt.png"
@@ -733,7 +751,8 @@
         "level1": "json/level1.json",
         "level2": "json/level2.json",
         "level3": "json/level3.json",
-        "nightlevel": "json/nightlevel.json"
+        "nightlevel": "json/nightlevel.json",
+        "dreamylevel": "json/dreamylevel.json"
     },
     "widgets": {
         "colorbutton" : "widgets/colorbutton.json",
