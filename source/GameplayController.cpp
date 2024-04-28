@@ -128,7 +128,7 @@ bool GameplayController::initLevel(int selected_level) {
         case 4:
             _levelJson = _assets->get<JsonValue>("nightlevel");
             _size = _nativeSize;
-            _size.height *= 2;
+            _size.height *= 3.5;
             break;
         default:
             _levelJson = _assets->get<JsonValue>("nightlevel");
@@ -162,7 +162,7 @@ bool GameplayController::initLevel(int selected_level) {
     texture_ids_levels.push_back(texture_ids_level_4);
     texture_ids_levels.push_back(texture_ids_level_5);
 
-    std::vector<int>     dirt_counts = { 22, 50, 50, 20, 70 };
+    std::vector<int>     dirt_counts = { 22, 50, 50, 60, 60 };
     std::vector<string>  dirt_texture_strings = { "level1dirt", "dirt", "dirt", "dirt2" };
     _dirtTextureString = dirt_texture_strings.at(selected_level - 1);
     // select the correct mapping for this level
