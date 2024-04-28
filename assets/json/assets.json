@@ -513,12 +513,6 @@
         "level3Window2": {
             "file": "textures/level3Window2.png"
         },
-        "level3Window3": {
-            "file": "textures/level3Window3.png"
-        },
-        "level3Window4": {
-            "file": "textures/level3Window4.png"
-        },
         "down_blocked_1": {
             "file": "textures/down_blocked_1.png"
         },
