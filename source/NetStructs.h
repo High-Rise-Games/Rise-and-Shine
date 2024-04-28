@@ -82,6 +82,7 @@ public:
         char animState;
         Sint32 timer;
         float birdPosX;
+        Sint32 numWindowDirt;
         float birdPosY;
         std::vector<WINDOW_DIRT> dirtVector;
         std::vector<PROJECTILE> projectileVector;

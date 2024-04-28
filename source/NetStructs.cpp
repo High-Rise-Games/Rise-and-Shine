@@ -48,8 +48,11 @@ const std::shared_ptr<NetStructs::DIRT_REQUEST> NetStructs::deserializeDirtReque
 const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeBoardState(std::shared_ptr<NetStructs::BOARD_STATE> message) {
     _serializer.reset();
     _serializer.writeSint32(message->type);
+    _serializer.writeSint32(message->numWindowDirt);
     _serializer.writeSint32(message->numProjectile);
     _serializer.writeBool(message->optional);
+    _serializer.writeSint32(message->playerChar);
+    _serializer.writeSint32(message->animState);
     _serializer.writeSint32(message->playerId);
     _serializer.writeBool(message->hasWon);
     _serializer.writeFloat(message->currBoard);
@@ -87,8 +90,11 @@ const std::shared_ptr<NetStructs::BOARD_STATE> NetStructs::deserializeBoardState
     
     
     recievedMessage->type = static_cast<STRUCT_TYPE>(_deserializer.readSint32());
+    recievedMessage->numWindowDirt = _deserializer.readSint32();
     recievedMessage->numProjectile = _deserializer.readSint32();
     recievedMessage->optional = _deserializer.readBool();
+    recievedMessage->playerChar = _deserializer.readSint32();
+    recievedMessage->animState = _deserializer.readSint32();
     recievedMessage->playerId = _deserializer.readSint32();
     recievedMessage->hasWon = _deserializer.readBool();
     recievedMessage->currBoard = _deserializer.readFloat();
@@ -115,7 +121,7 @@ const std::shared_ptr<NetStructs::BOARD_STATE> NetStructs::deserializeBoardState
         }
         recievedMessage->projectileVector = projectileVector;
         std::vector<WINDOW_DIRT> dirtVector;
-        for (int i=0; i<recievedMessage->numDirt; i++) {
+        for (int i=0; i<recievedMessage->numWindowDirt; i++) {
             WINDOW_DIRT windowDirt;
             windowDirt.posX = _deserializer.readSint32();
             windowDirt.posY = _deserializer.readSint32();

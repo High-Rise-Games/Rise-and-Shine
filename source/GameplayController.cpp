@@ -281,6 +281,7 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
             Vec2 startingPos = Vec2(_windowVec[i - 1]->sideGap + (_windowVec[i - 1]->getPaneWidth() / 2), _windowVec[i - 1]->getPaneHeight() / 2);
             _playerVec[i - 1] = make_shared<Player>(i, startingPos, _windowVec[i - 1]->getPaneHeight(), _windowVec[i - 1]->getPaneWidth());
             _playerVec[i - 1]->setPosition(startingPos);
+            
             _playerVec[i - 1]->setVelocity(Vec2::ZERO);
 
             // Initialize projectiles
@@ -459,15 +460,36 @@ std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getJsonBoard(int id
     std::shared_ptr<Player> player = _playerVec[id-1];
     std::shared_ptr<WindowGrid> windows = _windowVec[id - 1];
     std::shared_ptr<ProjectileSet> projectiles = _projectileVec[id-1];
+    
 
 
     std::shared_ptr<NetStructs::BOARD_STATE> boardState = std::make_shared<NetStructs::BOARD_STATE>();
+    boardState->playerId = id;
     boardState->optional = isPartial;
-//    boardState->playerChar = player->getChar();
+    if (player->getChar() == "Frog") {
+        boardState->playerChar = 1;
+    } else if (player->getChar() == "Flower") {
+        boardState->playerChar = 2;
+    } else if (player->getChar() == "Chameleon") {
+        boardState->playerChar = 3;
+    } else if (player->getChar() == "Mushroom") {
+        boardState->playerChar = 4;
+    }
     boardState->hasWon = _hasWon[id-1] ? true : false;
     boardState->numDirt = _allDirtAmounts[id - 1];
+    boardState->numWindowDirt = _windowVec[id-1]->getTotalDirt();
     boardState->currBoard = _allCurBoards[id - 1];
     boardState->progress = _progressVec[id-1];
+    
+    if (player->getAnimationState() == Player::IDLE) {
+        boardState->animState = 1;
+    } else if (player->getAnimationState() == Player::WIPING) {
+        boardState->animState = 2;
+    } else if (player->getAnimationState() == Player::SHOOING) {
+        boardState->animState = 3;
+    } else if (player->getAnimationState() == Player::STUNNED) {
+        boardState->animState = 4;
+    }
     
     cugl::Vec2 playerBoardPos = getBoardPosition(player->getPosition());
     if (!isPartial) {
@@ -523,7 +545,12 @@ std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getJsonBoard(int id
 
         }
         
+        boardState->projectileVector = *projArray;
+        boardState->dirtVector = *dirtArray;
+        
     }
+    
+    boardState->numWindowDirt = _windowVec[id-1]->getTotalDirt();
     
     return boardState;
 }
@@ -580,20 +607,41 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
     
     
     int playerId = data->playerId;
+    
+    
+    std::string playerChar;
+    if (data->playerChar == 1) {
+        playerChar = "Frog";
+    } else if (data->playerChar == 2) {
+        playerChar = "Flower";
+    } else if (data->playerChar == 3) {
+        playerChar = "Chameleon";
+    } else if (data->playerChar == 4 || data->playerChar == 0) {
+        playerChar = "Mushroom";
+    }
+    
     bool playerHasWon = data->hasWon;
     if (playerHasWon == true && !_gameOver) {
             _gameOver = true;
             setWin(playerId == _id);
             return;
     }
-    _progressVec[playerId - 1] = data->progress;
     Vec2 playerBoardPos(data->playerX, data->playerY);
-//    if (playerId == _id && playerChar != _playerVec[_id - 1]->getChar()) {
-//            // first time this client is receiving message about their chosen character
-////        _playerVec[_id - 1]->setChar(playerChar);
-////        changeCharTexture(_playerVec[_id - 1], playerChar);
-//    }
 //    
+//    _playerVec[_id - 1]->setChar(playerChar);
+//    changeCharTexture(_playerVec[_id - 1], playerChar);
+//    
+    _progressVec[playerId - 1] = data->progress;
+    
+    if (playerId == _id && playerChar != _playerVec[_id - 1]->getChar()) {
+            // first time this client is receiving message about their chosen character
+        _playerVec[_id - 1]->setChar(playerChar);
+        changeCharTexture(_playerVec[_id - 1], playerChar);
+        
+    }
+    
+    
+//
     if (_playerVec[playerId - 1] == nullptr) {
             // first time this client is receiving message on another player
     
@@ -611,8 +659,8 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
             // instantiate this player in this client's game instance
             _playerVec[playerId - 1] = std::make_shared<Player>(playerId, getWorldPosition(playerBoardPos), _windowVec[_id - 1]->getPaneWidth(), _windowVec[_id - 1]->getPaneHeight());
             // set the player's character textures
-//            _playerVec[playerId - 1]->setChar(playerChar);
-//            changeCharTexture(_playerVec[playerId - 1], playerChar);
+            _playerVec[playerId - 1]->setChar(playerChar);
+            changeCharTexture(_playerVec[playerId - 1], playerChar);
     
             // instantiate this player's projectile set in this client's game instance
             _projectileVec[playerId - 1] = make_shared<ProjectileSet>();
@@ -621,25 +669,36 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
             _projectileVec[playerId - 1]->setTextureScales(_windowVec[_id - 1]->getPaneHeight(), _windowVec[_id - 1]->getPaneWidth());
     }
     
-        auto player = _playerVec[playerId - 1];
-        player->setPosition(getWorldPosition(playerBoardPos));
+    auto player = _playerVec[playerId - 1];
+    player->setPosition(getWorldPosition(playerBoardPos));
+
+    if (data->animState == 1) {
+        player->setAnimationState("IDLE");
+    } else if (data->animState == 2) {
+        player->setAnimationState("WIPING");
+    } else if (data->animState == 3) {
+        player->setAnimationState("SHOOING");
+    } else if (data->animState == 4) {
+        player->setAnimationState("STUNNED");
+    }
     
-//        player->setAnimationState(data->getString("anim_state"));
-    
-        auto windows = _windowVec[playerId - 1];
-        auto projectiles = _projectileVec[playerId-1];
-    
-        if (playerId == _id) {
-            // update own board info
-            _gameTimeLeft = data->timer;
-            _currentDirtAmount = data->numDirt;
-        }
-    
-    if (data->dirtVector.size() > 0 && data->projectileVector.size()>0) {
+
+    auto windows = _windowVec[playerId - 1];
+    auto projectiles = _projectileVec[playerId-1];
+
+    if (playerId == _id) {
+        // update own board info
+        _gameTimeLeft = data->timer;
+        _currentDirtAmount = data->numDirt;
+    }
+
+    if (data->dirtVector.size() > 0 || data->projectileVector.size()>0) {
         
         windows->clearBoard();
         for (NetStructs::WINDOW_DIRT windowDirt : data->dirtVector) {
+            
             windows->addDirt(windowDirt.posX, windowDirt.posY);
+            
         }
         
 
