@@ -162,16 +162,17 @@ bool GameplayController::initLevel(int selected_level) {
     texture_ids_levels.push_back(texture_ids_level_4);
     texture_ids_levels.push_back(texture_ids_level_5);
 
-    std::vector<string> dirt_texture_strings = { "level1dirt", "dirt", "dirt", "dirt2" };
+    std::vector<int>     dirt_counts = { 22, 50, 50, 20, 70 };
+    std::vector<string>  dirt_texture_strings = { "level1dirt", "dirt", "dirt", "dirt2" };
     _dirtTextureString = dirt_texture_strings.at(selected_level - 1);
     // select the correct mapping for this level
     _texture_strings_selected = texture_strings_levels.at(selected_level - 1);
     _texture_ids_selected = texture_ids_levels.at(selected_level - 1);
     
-    _initDirtCount = selected_level * 5;
+    _initDirtCount = dirt_counts.at(selected_level - 1);
     
     // get the win background when game is win
-    _winBackground = _assets->get<Texture>("win-background");
+    _winBackground =  _assets->get<Texture>("win-background" );
     
     // get the lose background when game is lose
     _loseBackground = _assets->get<Texture>("lose-background");
