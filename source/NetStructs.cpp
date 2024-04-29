@@ -15,7 +15,11 @@ using namespace std;
 
 
 const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeDirtRequest(std::shared_ptr<DIRT_REQUEST> message) {
+    
+    // Resets the serializer in order for it to be used again
     _serializer.reset();
+    
+    // Writes the data in a specific order
     _serializer.writeSint32(message->type);
     _serializer.writeSint32(message->playerIdSource);
     _serializer.writeSint32(message->playerIdTarget);
@@ -26,14 +30,24 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeDirtRequest(s
     _serializer.writeSint32(message->dirtDestX);
     _serializer.writeSint32(message->dirtDestY);
     _serializer.writeSint32(message->dirtAmount);
+    
+    // Call the serialize() method of _serializer to store the serialized data in buffer
     std::shared_ptr<std::vector<std::byte>> buffer = std::make_shared<std::vector<std::byte>>(_serializer.serialize());
     return buffer;
 };
 
 const std::shared_ptr<NetStructs::DIRT_REQUEST> NetStructs::deserializeDirtRequest(const std::vector<std::byte>& data) {
+    
+    // Resets the deserializer in order for it to be used again
     _deserializer.reset();
+    
+    // The data gets inserted into the deserializer
     _deserializer.receive(data);
+    
+    // Create a new DIRT_REQUEST object to insert the deserialized data into
     std::shared_ptr<DIRT_REQUEST> recievedMessage = std::make_shared<DIRT_REQUEST>();
+    
+    // Deserialize the data in the order it was serialized
     recievedMessage->type = static_cast<STRUCT_TYPE>(_deserializer.readSint32());
     recievedMessage->playerIdSource = _deserializer.readSint32();
     recievedMessage->playerIdTarget = _deserializer.readSint32();
@@ -46,7 +60,11 @@ const std::shared_ptr<NetStructs::DIRT_REQUEST> NetStructs::deserializeDirtReque
 };
 
 const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeBoardState(std::shared_ptr<NetStructs::BOARD_STATE> message) {
+    
+    // Resets the serializer in order for it to be used again
     _serializer.reset();
+    
+    // Writes the data in a specific order
     _serializer.writeSint32(message->type);
     _serializer.writeSint32(message->numWindowDirt);
     _serializer.writeSint32(message->numProjectile);
@@ -61,10 +79,15 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeBoardState(st
     _serializer.writeSint32(message->numDirt);
     _serializer.writeFloat(message->playerY);
     _serializer.writeFloat(message->progress);
+    
+    // check if message is optional. If not, write more data
     if (!message->optional) {
         _serializer.writeFloat(message->playerX);
         _serializer.writeFloat(message->birdPosX);
         _serializer.writeFloat(message->birdPosY);
+        
+        // loop through every projectile in the projectile vector
+        // to write the data into the serializer
         for (PROJECTILE projectile : message->projectileVector) {
             _serializer.writeFloat(projectile.PosX);
             _serializer.writeFloat(projectile.PosY);
@@ -73,6 +96,9 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeBoardState(st
             _serializer.writeSint32(projectile.destX);
             _serializer.writeSint32(projectile.destY);
             _serializer.writeSint32(projectile.type);
+            
+            // loop through every window in the window vector
+            // to write the data into the serializer
         } for (WINDOW_DIRT dirt : message->dirtVector) {
             _serializer.writeSint32(dirt.posX);
             _serializer.writeSint32(dirt.posY);
@@ -84,11 +110,17 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeBoardState(st
 };
 
 const std::shared_ptr<NetStructs::BOARD_STATE> NetStructs::deserializeBoardState(const std::vector<std::byte>& data) {
+    
+    // Resets the deserializer in order for it to be used again
     _deserializer.reset();
+    
+    // The data gets inserted into the deserializer
     _deserializer.receive(data);
+    
+    // Creates a new BOARD_STATE object to write the deserialized data into
     std::shared_ptr<BOARD_STATE> recievedMessage = std::make_shared<BOARD_STATE>();
     
-    
+    // Deserialize the data in the order it was serialized
     recievedMessage->type = static_cast<STRUCT_TYPE>(_deserializer.readSint32());
     recievedMessage->numWindowDirt = _deserializer.readSint32();
     recievedMessage->numProjectile = _deserializer.readSint32();
