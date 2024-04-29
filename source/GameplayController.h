@@ -172,6 +172,8 @@ protected:
     bool _birdActive;
     /** True if the is shooed and is leaving the current board */
     bool _birdLeaving;
+    /** True if the player is wiping, only remove dirt after player finishes wiping */
+    bool _cleanInProgress;
     
     cugl::scheduable t;
     
@@ -552,6 +554,7 @@ public:
      * Disconnects this scene from the network controller.
      */
     void disconnect() { _network.disconnect(); }
+    
 };
 
 #endif __GAME_CONTROLLER_H__

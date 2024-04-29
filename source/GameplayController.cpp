@@ -69,6 +69,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _nativeSize = size;
     
     _dirtSelected = false;
+    _cleanInProgress = false;
     _dirtPath = Path2();
     dimen *= SCENE_HEIGHT/dimen.height;
     if (assets == nullptr) {
@@ -353,7 +354,7 @@ void GameplayController::setCountdownGoTexture(const std::shared_ptr<cugl::Textu
  * Sets the texture for countdown sparkles.
  */
 void GameplayController::setCountdownSparkleTexture(const std::shared_ptr<cugl::Texture>& texture) {
-    _countdownSparkleSprite = SpriteSheet::alloc(texture, 5, 5, 25);
+    _countdownSparkleSprite = SpriteSheet::alloc(texture, 7, 5, 35);
     _countdownSparkleSprite->setFrame(0);
 }
 
@@ -481,7 +482,7 @@ void GameplayController::advanceCountDownAnim(bool ishost) {
         // frame timer for next frame
         if (_countDownFrames % 2 == 0) {
             getCurrentCountdownSprite()->setFrame((int) _countDownFrames / 2 % 25);
-            _countdownSparkleSprite->setFrame((int) _countDownFrames / 2 % 25);
+            _countdownSparkleSprite->setFrame((int) _countDownFrames / 2 % 35);
         }
         //only host steps forward animation and it sends frame number to clients
         if (ishost) {
@@ -1362,15 +1363,22 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
 
         int clamped_y = std::clamp(static_cast<int>(grid_coors.y), 0, windows->getNVertical() - 1);
         int clamped_x = std::clamp(static_cast<int>(grid_coors.x), 0, windows->getNHorizontal() - 1);
-        bool dirtRemoved = windows->removeDirt(clamped_y, clamped_x);
-        if (dirtRemoved) {
+        bool dirtExists = windows->hasDirt(clamped_y, clamped_x);
+        if (dirtExists) {
             // filling up dirty bucket
             // set amount of frames plaer is frozen for for cleaning dirt
-            player->setAnimationState(Player::AnimStatus::WIPING);
-            if (player_id == _id) {
-                AudioEngine::get()->play("clean", _clean, false, _clean->getVolume(), true);
-            };
-            _allDirtAmounts[player_id - 1] = min(_maxDirtAmount, _allDirtAmounts[player_id - 1] + 1);
+            if (_cleanInProgress && player->getAnimationState() == Player::IDLE) {
+                windows->removeDirt(clamped_y, clamped_x);
+                _allDirtAmounts[player_id - 1] = min(_maxDirtAmount, _allDirtAmounts[player_id - 1] + 1);
+                _cleanInProgress = false;
+            }
+            else if (player->getAnimationState() == Player::IDLE) {
+                if (player_id == _id) {
+                    AudioEngine::get()->play("clean", _clean, false, _clean->getVolume(), true);
+                };
+                player->setAnimationState(Player::AnimStatus::WIPING);
+                _cleanInProgress = true;
+            }
         }
 
         // Check for collisions and play sound
