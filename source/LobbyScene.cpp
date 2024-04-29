@@ -17,6 +17,7 @@
 #include <sstream>
 /** Regardless of logo, lock the height to this */
 #define SCENE_HEIGHT  720
+#define SCENE_WIDTH  1280
 
 using namespace cugl;
 using namespace cugl::net;
@@ -104,8 +105,18 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
 //    // part 1 of initializing list to keep track of invalid character selections
 //    _all_characters_select = std::vector<int>(4);
     
-    Size dimen = Application::get()->getDisplaySize();
-    dimen *= SCENE_HEIGHT/dimen.height;
+
+    // Get the current display size of the device
+    Size displaySize = Application::get()->getDisplaySize();
+
+    // Calculate the device's aspect ratio
+    float aspectRatio = displaySize.width / displaySize.height;
+
+
+    // Create the new dimensions for the scene
+    Size dimen = Size(SCENE_WIDTH, SCENE_WIDTH / aspectRatio);
+
+
     if (assets == nullptr) {
         return false;
     } else if (!Scene2::init(dimen)) {
