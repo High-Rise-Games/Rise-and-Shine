@@ -42,6 +42,12 @@ protected:
 
     int _countdownFrame;
     
+    int _sceneWidth;
+    
+    int _sceneHeight;
+    
+    float _aspectRatio;
+    
     /** The win screen scene */
     std::shared_ptr<cugl::scene2::SceneNode> _winBackground;
     /** The win screen scene */

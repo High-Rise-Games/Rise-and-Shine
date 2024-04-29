@@ -19,6 +19,7 @@ using namespace std;
 
 // Lock the screen size to fixed height regardless of aspect ratio
 #define SCENE_HEIGHT 720
+#define SCENE_WIDTH 1280
 
 #pragma mark -
 #pragma mark Constructors
@@ -35,9 +36,19 @@ using namespace std;
  */
 bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps) {
     
-    Size dimen = Application::get()->getDisplaySize();
+    // Get the current display size of the device
+    Size displaySize = Application::get()->getDisplaySize();
 
-    dimen *= SCENE_HEIGHT/dimen.height;
+    // Calculate the device's aspect ratio
+    _aspectRatio = displaySize.width / displaySize.height;
+
+    _sceneWidth = SCENE_WIDTH;
+    _sceneHeight =  SCENE_WIDTH / _aspectRatio;
+
+    // Create the new dimensions for the scene
+    Size dimen = Size(SCENE_WIDTH, SCENE_WIDTH / _aspectRatio);
+
+
     if (assets == nullptr) {
         return false;
     } else if (!Scene2::init(dimen)) {
@@ -109,6 +120,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     
 
     _backout = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("game_back"));
+    
     _backout->addListener([=](const std::string& name, bool down) {
         if (down) {
             CULog("quitting game");
@@ -197,6 +209,7 @@ void GameScene::update(float timestep) {
     Vec3 convertedWorldPos = screenToWorldCoords(screenPos);
     Vec2 worldPos = Vec2(convertedWorldPos.x, convertedWorldPos.y);
     
+    
     _gameController->update(timestep, worldPos, _dirtThrowInput, _dirtThrowButton, _dirtThrowArc);
 
     for (auto bar : _player_bars) {
@@ -240,7 +253,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     // CULog("current board: %d", _curBoard);
     
     
-    Vec3 idk = Vec3(getCamera()->getPosition().x, _gameController->getPlayer(_gameController->getId())->getPosition().y, 1);
+    Vec3 idk = Vec3(getCamera()->getPosition().x, _gameController->getPlayer(_gameController->getId())->getPosition().y, 1*_aspectRatio);
     getCamera()->setPosition(idk);
     getCamera()->update();
     batch->begin(getCamera()->getCombined());
@@ -257,14 +270,14 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->setColor(Color4::WHITE);
 
 
-    batch->drawText(_timeText, Vec2(getCamera()->getPosition().x+ 450, getCamera()->getPosition().y+130));
+    batch->drawText(_timeText, Vec2(getCamera()->getPosition().x + _sceneWidth/3, getCamera()->getPosition().y+_sceneHeight/15));
     
     //set bucket texture location
     Affine2 bucketTrans = Affine2();
     Vec2 bOrigin(_fullBucket->getWidth()/2,_fullBucket->getHeight()/2);
     float bucketScaleFactor = std::min(((float)getSize().getIWidth() / (float)_fullBucket->getWidth()) /2, ((float)getSize().getIHeight() / (float)_fullBucket->getHeight() /2));
     bucketTrans.scale(bucketScaleFactor*0.75);
-    Vec2 bucketLocation(getCamera()->getPosition().x - 560, getCamera()->getPosition().y - 300);
+    Vec2 bucketLocation(getCamera()->getPosition().x - _sceneWidth / 2.34, getCamera()->getPosition().y - _sceneHeight/3);
     bucketTrans.translate(bucketLocation);
     
     // draw different bucket based on dirt amount
@@ -314,6 +327,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         int barIdx = _char_to_barIdx[player->getChar()];
         // CULog("character: %a", player->getChar().c_str());
         _player_bars[barIdx]->setPositionX(getSize().width - _gameController->getPlayerWindow(_gameController->getId())->sideGap + (offset_ct + 1) * 50);
+        _player_bars[barIdx]->setPositionY(_sceneHeight/1.25);
         _player_bars[barIdx]->setVisible(true);
         Affine2 profileTrans = Affine2();
         profileTrans.scale(0.2);
