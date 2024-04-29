@@ -75,13 +75,13 @@ public:
     struct WINDOW_DIRT {
         
         /* The x-coordinate of the window dirt */
-        float posX;
+        float posX=0;
         
         /* The y-coordinate of the window dirt */
-        float posY;
+        float posY=0;
     };
     
-#pragma pack(push, 1)
+
     struct DIRT_REQUEST {
         
         /* We set the default type of this message as a dirt request message */
@@ -115,8 +115,7 @@ public:
         Sint32 dirtAmount;
         
     };
-#pragma pack(pop)
-    
+
     struct BOARD_STATE {
         
         /* Sets the default of ths struct as a board state type */
@@ -153,19 +152,19 @@ public:
         float playerY;
         
         /* The animation state of the player of this board state message */
-        char animState;
+        Sint32 animState;
         
         /* The time left in the game for this board state message */
         Sint32 timer;
         
         /* The x-position of the bird in the board state message */
-        float birdPosX;
+        float birdPosX=0;
         
         /* The number of window dirt in this board state message */
         Sint32 numWindowDirt;
         
         /* The y-position of the bird in the board state message */
-        float birdPosY;
+        float birdPosY=0;
         
         /* The vector of WINDOW_DIRT objects */
         std::vector<WINDOW_DIRT> dirtVector;
@@ -177,6 +176,7 @@ public:
         float progress;
     };
     
+
     /* To serialize a DIRT_REQUEST message to send over the network */
     const std::shared_ptr<std::vector<std::byte>> serializeDirtRequest(std::shared_ptr<DIRT_REQUEST> message);
     

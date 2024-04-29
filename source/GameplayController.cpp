@@ -507,7 +507,7 @@ std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getJsonBoard(int id
         };
         
         const std::shared_ptr<std::vector<NetStructs::WINDOW_DIRT>> dirtArray = std::make_shared<std::vector<NetStructs::WINDOW_DIRT>>();
-        
+        boardState->numWindowDirt = _windowVec[id-1]->getTotalDirt();
         for (int col = 0; col < windows->getNHorizontal(); ++col) {
             for (int row = 0; row < windows->getNVertical(); ++row) {
                 bool hasDirt = windows->getWindowState(row, col);
@@ -692,10 +692,11 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
         _currentDirtAmount = data->numDirt;
     }
 
-    if (data->dirtVector.size() > 0 || data->projectileVector.size()>0) {
+    if (data->numWindowDirt> 0 || data->projectileVector.size()>0) {
         
         windows->clearBoard();
         for (NetStructs::WINDOW_DIRT windowDirt : data->dirtVector) {
+            
             
             windows->addDirt(windowDirt.posX, windowDirt.posY);
             
