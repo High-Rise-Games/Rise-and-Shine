@@ -81,6 +81,8 @@ protected:
     /** native size of the scene */
     cugl::Size _nativeSize;
     
+    float _aspectRatio;
+    
     
     // CONTROLLERS are attached directly to the scene (no pointers)
     /** The input controller to manage the character movement */

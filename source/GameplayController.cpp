@@ -20,6 +20,7 @@ using namespace std;
 
 // Lock the screen size to fixed height regardless of aspect ratio
 #define SCENE_HEIGHT 720
+#define SCENE_WIDTH 1280
 
 #pragma mark -
 #pragma mark Constructors
@@ -60,20 +61,35 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     // fps as established per App
     _fps = fps;
     
-    Size dimen = Application::get()->getDisplaySize();
+
     _rng.seed(std::time(nullptr));
     _dirtGenSpeed = 2;
     _fixedDirtUpdateThreshold = 5 * 60;
     _maxDirtAmount = 10;
-    _size = size;
-    _nativeSize = size;
+    
+    
     
     _dirtSelected = false;
     _dirtPath = Path2();
-    dimen *= SCENE_HEIGHT/dimen.height;
+    
+    // Get the current display size of the device
+    Size displaySize = Application::get()->getDisplaySize();
+
+    // Calculate the device's aspect ratio
+    _aspectRatio = displaySize.width / displaySize.height;
+
+
+    // Create the new dimensions for the scene
+    Size dimen = Size(SCENE_WIDTH, SCENE_WIDTH / _aspectRatio);
+    _size = dimen;
+
+
     if (assets == nullptr) {
         return false;
     }
+    
+    _nativeSize = size;
+    
         
     // Start up the input handler
     _assets = assets;
@@ -113,27 +129,27 @@ bool GameplayController::initLevel(int selected_level) {
         case 1:
             _levelJson = _assets->get<JsonValue>("level1");
             _size = _nativeSize;
-            _size.height *= 1.5;
+            _size.height *= _aspectRatio*1.3;
             break;
         case 2:
             _levelJson = _assets->get<JsonValue>("level2");
             _size = _nativeSize;
-            _size.height *= 1.5;
+            _size.height *= _aspectRatio*0.7;
             break;
         case 3:
             _levelJson = _assets->get<JsonValue>("level3");
             _size = _nativeSize;
-            _size.height *= 1.5;
+            _size.height *= _aspectRatio*0.84;
             break;
         case 4:
             _levelJson = _assets->get<JsonValue>("nightlevel");
             _size = _nativeSize;
-            _size.height *= 2;
+            _size.height *= _aspectRatio;
             break;
         default:
             _levelJson = _assets->get<JsonValue>("nightlevel");
             _size = _nativeSize;
-            _size.height *= 2;
+            _size.height *= _aspectRatio*1.3;
             break;
     }
     
