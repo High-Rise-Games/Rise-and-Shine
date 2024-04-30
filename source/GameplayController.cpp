@@ -413,6 +413,7 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
         player->setShooTexture(_assets->get<Texture>("shoo_frog"));
         player->setThrowTexture(_assets->get<Texture>("throw_frog"));
         player->setProfileTexture(_assets->get<Texture>("profile_frog"));
+        player->setWarnTexture(_assets->get<Texture>("warn_frog"));
     }
     else if (charChoice == "Flower") {
         player->setIdleTexture(_assets->get<Texture>("idle_flower"));
@@ -420,6 +421,8 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
         player->setShooTexture(_assets->get<Texture>("shoo_flower"));
         player->setThrowTexture(_assets->get<Texture>("throw_flower"));
         player->setProfileTexture(_assets->get<Texture>("profile_flower"));
+        player->setWarnTexture(_assets->get<Texture>("warn_flower"));
+
     }
     else if (charChoice == "Chameleon") {
         player->setIdleTexture(_assets->get<Texture>("idle_chameleon"));
@@ -427,6 +430,8 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
         player->setShooTexture(_assets->get<Texture>("shoo_chameleon"));
         player->setThrowTexture(_assets->get<Texture>("throw_chameleon"));
         player->setProfileTexture(_assets->get<Texture>("profile_chameleon"));
+        player->setWarnTexture(_assets->get<Texture>("warn_chameleon"));
+
     }
     else {
         player->setIdleTexture(_assets->get<Texture>("idle_mushroom"));
@@ -434,6 +439,8 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
         player->setShooTexture(_assets->get<Texture>("shoo_mushroom"));
         player->setThrowTexture(_assets->get<Texture>("throw_mushroom"));
         player->setProfileTexture(_assets->get<Texture>("profile_mushroom"));
+        player->setWarnTexture(_assets->get<Texture>("warn_mushroom"));
+
     }
 }
 
@@ -1509,38 +1516,85 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _windowVec[_id-1]->draw(batch, getSize());
         player->draw(batch, getSize());
 
-        if (leftId != _id && rightId != _id) {
-            Affine2 leftTrans = Affine2();
-            leftTrans.translate(playerLeft->getProfileTexture()->getSize() * -0.5);
-            leftTrans.scale(0.4);
-            leftTrans.translate(_windowVec[_id - 1]->sideGap - 50, player->getPosition().y);
-            batch->draw(playerLeft->getProfileTexture(), Vec2(), leftTrans);
-            Affine2 leftTransArrow = Affine2();
-            leftTransArrow.scale(0.75);
-            leftTransArrow.translate(_windowVec[_id - 1]->sideGap - 130, player->getPosition().y - (_arrowTexture->getHeight() / 2));
-            batch->draw(_arrowTexture, Vec2(), leftTransArrow);
+        // character indicators drawing start
+        auto yTransLeft = playerLeft->getPosition().y;
+        auto yTransRight = playerRight->getPosition().y;
+        auto screenMinY = player->getPosition().y - SCENE_HEIGHT / 2.0 + 90;
+        auto screenMaxY = player->getPosition().y + SCENE_HEIGHT / 2.0 - 90;
 
-            Affine2 rightTrans = Affine2();
-            rightTrans.translate(playerRight->getProfileTexture()->getSize() * -0.5);
-            rightTrans.scale(0.4);
-            rightTrans.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, player->getPosition().y);
-            batch->draw(playerRight->getProfileTexture(), Vec2(), rightTrans);
-            Affine2 rightTransArrow = Affine2();
-            rightTransArrow.scale(Vec2(-0.75, 0.75));
-            rightTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 130, player->getPosition().y - (_arrowTexture->getHeight() / 2));
-            batch->draw(_arrowTexture, Vec2(), rightTransArrow);
-        }
+        auto leftPlayerTexture = playerLeft->getProfileTexture();
+        auto rightPlayerTexture = playerRight->getProfileTexture();
+        bool isAttackingOnScreen = false; // when true, ignore indicator drawing
 
-        if (_allCurBoards[leftId-1] == 1) {
+        if (_allCurBoards[leftId - 1] == 1) {
             // left neighbor is on this player's board
-            playerLeft->drawPeeking(batch, getSize(), _allCurBoards[leftId - 1], _windowVec[_id-1]->sideGap);
-            // TODO: draw danger/warning
+            playerLeft->drawPeeking(batch, getSize(), _allCurBoards[leftId - 1], _windowVec[_id - 1]->sideGap);
+            leftPlayerTexture = playerLeft->getWarnTexture();
+            isAttackingOnScreen = yTransLeft < screenMaxY && yTransLeft > screenMinY;
         }
-        if (_allCurBoards[rightId-1] == -1) {
+        if (_allCurBoards[rightId - 1] == -1) {
             // right neighbor is on this player's board
             playerRight->drawPeeking(batch, getSize(), _allCurBoards[rightId - 1], _windowVec[_id - 1]->sideGap);
-            // TODO: draw danger/warning
+            rightPlayerTexture = playerRight->getWarnTexture();
+            isAttackingOnScreen = yTransRight < screenMaxY && yTransRight > screenMinY;
         }
+
+        if (leftId != _id && rightId != _id && !isAttackingOnScreen) {
+            
+            Affine2 leftTrans = Affine2();
+            leftTrans.translate(leftPlayerTexture->getSize() * -0.5);
+            leftTrans.scale(0.35);
+
+            Affine2 rightTrans = Affine2();
+            rightTrans.translate(rightPlayerTexture->getSize() * -0.5);
+            rightTrans.scale(0.35);
+
+            Affine2 leftTransArrow = Affine2();
+            leftTransArrow.translate(_arrowTexture->getSize() * -0.5);
+            leftTransArrow.scale(0.75);
+            Affine2 rightTransArrow = Affine2();
+            rightTransArrow.translate(_arrowTexture->getSize() * -0.5);
+            rightTransArrow.scale(Vec2(-0.75, 0.75));
+
+            if (yTransLeft > screenMaxY) {
+                yTransLeft = screenMaxY;
+                leftTransArrow.rotate(3.0 * M_PI / 2.0);
+                leftTransArrow.translate(_windowVec[_id - 1]->sideGap - 50, yTransLeft + 60);
+            }
+            else if (yTransLeft < screenMinY) {
+                yTransLeft = screenMinY;
+                leftTransArrow.rotate(M_PI / 2.0);
+                leftTransArrow.translate(_windowVec[_id - 1]->sideGap - 50, yTransLeft - 60);
+            }
+            else {
+                leftTransArrow.translate(_windowVec[_id - 1]->sideGap - 100, yTransLeft);
+            }
+
+            if (yTransRight > screenMaxY) {
+                yTransRight = screenMaxY;
+                rightTransArrow.rotate(M_PI / 2.0);
+                rightTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransRight + 60);
+            }
+            else if (yTransRight < screenMinY) {
+                yTransRight = screenMinY;
+                rightTransArrow.rotate(3.0 * M_PI / 2.0);
+                rightTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransRight - 60);
+            }
+            else {
+                rightTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 100, yTransRight);
+            }
+            
+            batch->draw(_arrowTexture, Vec2(), leftTransArrow);
+            batch->draw(_arrowTexture, Vec2(), rightTransArrow);
+
+            leftTrans.translate(_windowVec[_id - 1]->sideGap - 50, yTransLeft);
+            batch->draw(leftPlayerTexture, Vec2(), leftTrans);
+            
+            rightTrans.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransRight);
+            batch->draw(rightPlayerTexture, Vec2(), rightTrans);
+        }
+        // character indicators drawing end
+
         _projectileVec[_id-1]->draw(batch, getSize(), _windowVec[_id - 1]->getPaneWidth(), _windowVec[_id - 1]->getPaneHeight());
         if (_curBirdBoard == _id) {
             _bird.draw(batch, getSize(), _curBirdPos);

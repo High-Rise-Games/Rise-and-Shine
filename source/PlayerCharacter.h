@@ -106,6 +106,8 @@ private:
 
     /** player profile texture */
     std::shared_ptr<cugl::Texture> _profileTexture;
+    /** player warning sign texture */
+    std::shared_ptr<cugl::Texture> _warnTexture;
     /** player idle sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _idleSprite;
     /** Reference to the player wiping animation sprite sheet */
@@ -156,6 +158,12 @@ public:
     
     /** Gets the profile texture of the player */
     std::shared_ptr<cugl::Texture> getProfileTexture() { return _profileTexture; }
+
+    /** Sets the warning sign texture of the player when they are peeking */
+    void setWarnTexture(std::shared_ptr<cugl::Texture> t) { _warnTexture = t; }
+
+    /** Gets the warning sign texture of the player */
+    std::shared_ptr<cugl::Texture> getWarnTexture() { return _warnTexture; }
 
     /**
      * Returns the position of this ship.

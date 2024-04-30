@@ -443,6 +443,18 @@
         "profile_mushroom": {
             "file": "textures/profile_m.png"
         },
+        "warn_flower": {
+            "file": "textures/warn_fl.png"
+        },
+        "warn_chameleon": {
+            "file": "textures/warn_c.png"
+        },
+        "warn_frog": {
+            "file": "textures/warn_fr.png"
+        },
+        "warn_mushroom": {
+            "file": "textures/warn_m.png"
+        },
         "C1": {
             "file": "textures/CountDown/C1.png"
         },
