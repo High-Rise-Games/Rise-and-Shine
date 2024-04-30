@@ -265,7 +265,7 @@ public:
      *
      * @return true if the controller is initialized properly, false otherwise.
      */
-    bool initHost(const std::shared_ptr<cugl::AssetManager>& assets);
+    virtual bool initHost(const std::shared_ptr<cugl::AssetManager>& assets);
 
     
 #pragma mark Graphics
@@ -323,12 +323,12 @@ public:
     * @param level     the leve of this game
     * Returns true if level set up is successful
     */
-    bool initLevel(int level);
+    virtual bool initLevel(int level);
     
     /**
     * HOST ONLY. Sets the character of all players.
     */
-    void setCharacters(std::vector<std::string>& chars);
+    virtual void setCharacters(std::vector<std::string>& chars);
 
     /** HOST ONLY. Sets the player id to UUID map */
     void setUUIDMap(std::map<std::string, int> m) { _UUIDmap = m; }
@@ -503,7 +503,18 @@ public:
      * @param dirtThrowButton   The dirt throw button from the game scene
      * @param dirtThrowArc   The dirt throw arc from the game scene
      */
-    void update(float timestep, cugl::Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton, std::shared_ptr<cugl::scene2::SceneNode> dirtThrowArc);
+    virtual void update(float timestep, cugl::Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton, std::shared_ptr<cugl::scene2::SceneNode> dirtThrowArc);
+
+    /**
+     * This helper method calculates all the grid coordinates in which dirt should land in
+     * given a center (where the player has aimed) and the total amount of dirt to spawn.
+     *
+     * This takes into account the size of the window grid and attempts to spawn the dirt close
+     * to a circle. It does not spawn any dirt out of bounds. For example, if the center is
+     * close to the edge of the grid, all the extra dirt that would have landed out of bounds
+     * is pushed inside.
+     */
+    std::vector<cugl::Vec2> calculateLandedDirtPositions(const int width, const int height, cugl::Vec2 centerCoords, int amount);
 
     /**
      * This method does all the heavy lifting work for update.
@@ -520,7 +531,7 @@ public:
      *
      * @param batch     The SpriteBatch to draw with.
      */
-    void draw(const std::shared_ptr<cugl::SpriteBatch>& batch);
+    virtual void draw(const std::shared_ptr<cugl::SpriteBatch>& batch);
     
     /**
      * Sets whether the player is host.
@@ -539,7 +550,7 @@ public:
     /**
      * Resets the status of the game so that we can play again.
      */
-    void hostReset();
+    virtual void hostReset();
 
     /**
      * Sets the network connection for this scene's network controller.

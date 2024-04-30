@@ -513,7 +513,6 @@ std::shared_ptr<cugl::SpriteSheet> GameplayController::getCurrentCountdownSprite
 void GameplayController::switchScene() {
     if (_allCurBoards[_id-1] != 0) {
         if (_ishost) {
-            _allCurBoards[0] = 0;
             _allCurBoards[_id - 1] = 0;
         }
         else {
@@ -1258,7 +1257,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
  * close to the edge of the grid, all the extra dirt that would have landed out of bounds
  * is pushed inside.
  */
-std::vector<cugl::Vec2> calculateLandedDirtPositions(const int width, const int height, Vec2 centerCoords, int amount) {
+std::vector<cugl::Vec2> GameplayController::calculateLandedDirtPositions(const int width, const int height, Vec2 centerCoords, int amount) {
     // CULog("center: %f, %f", centerCoords.x, centerCoords.y);
     std::vector<cugl::Vec2> dirtPositions;
 

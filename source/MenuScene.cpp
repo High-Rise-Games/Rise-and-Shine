@@ -60,6 +60,7 @@ bool MenuScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _choice = Choice::NONE;
     _hostbutton = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("menu_host"));
     _joinbutton = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("menu_join"));
+    _tutorialbutton = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("menu_tutorial"));
     
     // Program the buttons
     _hostbutton->addListener([this](const std::string& name, bool down) {
@@ -74,6 +75,12 @@ bool MenuScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
             _audioController->playMovePress();
         }
     });
+    _tutorialbutton->addListener([this](const std::string& name, bool down) {
+        if (down) {
+            _choice = Choice::TUTORIAL;
+            _audioController->playMovePress();
+        }
+        });
 
     addChild(scene);
     setActive(false);
@@ -107,13 +114,16 @@ void MenuScene::setActive(bool value) {
             _choice = NONE;
             _hostbutton->activate();
             _joinbutton->activate();
+            _tutorialbutton->activate();
             _audioController->playMenuMusic();
         } else {
             _hostbutton->deactivate();
             _joinbutton->deactivate();
+            _tutorialbutton->deactivate();
             // If any were pressed, reset them
             _hostbutton->setDown(false);
             _joinbutton->setDown(false);
+            _tutorialbutton->setDown(false);
         }
     }
 }
