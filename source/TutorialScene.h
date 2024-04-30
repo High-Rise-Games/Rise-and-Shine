@@ -69,6 +69,13 @@ protected:
     
     // VIEW items are going to be individual variables
     // In the future, we will replace this with the scene graph
+    
+    /** The text bubble image */
+    std::shared_ptr<cugl::Texture> _textBubble;
+    /** The mushroom pointing image */
+    std::shared_ptr<cugl::Texture> _mushroomPoint;
+    /** The text layout for text bubble */
+    std::shared_ptr<cugl::TextLayout> _textOnBubble;
     /** The backgrounnd image */
     std::shared_ptr<cugl::Texture> _background;
     /** The parallax image */
@@ -191,6 +198,16 @@ public:
      * @param batch     The SpriteBatch to draw with.
      */
     void render(const std::shared_ptr<cugl::SpriteBatch>& batch) override;
+    
+    /**
+     * Draws a text prompt.
+
+     *
+     * @param text     The text to draw the  prompt with
+     * @param batch     The sprite batch to draw on
+     *
+     */
+    void drawPrompt(std::string text, const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Vec2 location);
     
     
     /**

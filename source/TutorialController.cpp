@@ -451,3 +451,4 @@ void TutorialController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         }
     }
 }
+

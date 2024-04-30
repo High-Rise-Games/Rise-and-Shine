@@ -40,6 +40,20 @@
             "minfilter": "linear",
             "magfilter": "linear"
         },
+        "mushroom_point": {
+            "file": "textures/mushroomPoint.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "text_bubble": {
+            "file": "textures/textBubble.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
         "menu_background": {
             "file": "textures/HomeBG.jpg",
             "wrapS": "clamp",

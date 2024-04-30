@@ -54,6 +54,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _background->setWrapS(GL_CLAMP_TO_EDGE);
     _background->setWrapT(GL_CLAMP_TO_EDGE);
     _constants = _assets->get<JsonValue>("constants");
+    _textBubble = _assets->get<Texture>("text_bubble");
+    _mushroomPoint = _assets->get<Texture>("mushroom_point");
 
     // progress bars for player
     auto greenBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_greenbar"));
@@ -78,12 +80,14 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     
 //    _countdown1 =assets->get<Texture>("countdown1");
     
+    
 
 
     // Create and layout the dirt amount
     std::string dirt_msg = "0";
     _dirtText = TextLayout::allocWithText(dirt_msg, assets->get<Font>("pixel32"));
     _dirtText->layout();
+    
 
 
     // Create and layout the health meter
@@ -322,20 +326,39 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         batch->draw(player->getProfileTexture(), player->getProfileTexture()->getSize().operator Vec2() / 2, profileTrans);
         offset_ct += 1;
     }
+    drawPrompt("hello", batch, idk);
     
     batch->end();
 }
 
-//void GameScene::renderCountdown(std::shared_ptr<cugl::SpriteBatch> batch) {
-//    Affine2 countdown1Trans = Affine2();
-//    Vec2 countdown1Origin(_countdown1->getWidth()/2,_countdown1->getHeight()/2);
-//    float countdown1ScaleFactor = std::min(((float)getSize().getIWidth() / (float)_countdown1->getWidth()) /2, ((float)getSize().getIHeight() / (float)_countdown1->getHeight() /2));
-//    countdown1Trans.scale(countdown1ScaleFactor);
-//    
-//    Vec2 countdown1Location(getSize().width/2,
-//                        getSize().height - 10*_countdownFrame);
-//    countdown1Trans.translate(countdown1Location);
-//    
-//    batch->draw(_countdown1, countdown1Origin, countdown1Trans);
-//}
+
+
+void GameScene::drawPrompt(std::string text, const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Vec2 location) {
+    
+    Affine2 bubbleTrans = Affine2();
+    Vec2 bOrigin(_textBubble->getWidth()/2,_textBubble->getHeight()/2);
+    Vec2 bubbleLocation(location);
+    bubbleTrans.translate(bubbleLocation);
+    bubbleTrans.translate(Vec2(370,-450));
+    bubbleTrans.scale(0.2);
+    
+    _textOnBubble = TextLayout::allocWithTextWidth("efhoiewhfioewhfiowehfioiwehfeiwofheowifhewifhewifihhiewfihhieowihfeihfewhiowefhiihfewhiofwehiofweihfewhioefwhiofewihhiefwhiofewhiofeihfewhifewhiohifhiefwhiofeiwhohioefwihoefwihoefwiohfew", _assets->get<Font>("pixel32"), _textBubble->getWidth()/2);
+    _textOnBubble->setSpacing(1.5);
+    _textOnBubble->layout();
+    
+    Affine2 mushroomPointTrans = Affine2();
+    Vec2 mOrigin(_mushroomPoint->getWidth()/2,_mushroomPoint->getHeight()/2);
+    Vec2 mushroomLocation(location);
+    mushroomPointTrans.translate(mushroomLocation);
+    mushroomPointTrans.translate(Vec2(370,-450));
+    mushroomPointTrans.scale(0.2);
+    
+
+    batch->draw(_textBubble,bOrigin, bubbleTrans);
+    batch->draw(_mushroomPoint, mOrigin, bubbleTrans);
+    batch->setColor(Color4::BLACK);
+    batch->drawText(_textOnBubble, Vec2(bubbleTrans.getTranslation().x - _textBubble->getWidth()/2, bubbleTrans.getTranslation().y + _textBubble->getHeight()/6));
+    
+}
+
 

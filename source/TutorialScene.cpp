@@ -54,6 +54,7 @@ bool TutorialScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int 
     _background->setWrapS(GL_CLAMP_TO_EDGE);
     _background->setWrapT(GL_CLAMP_TO_EDGE);
     _constants = _assets->get<JsonValue>("constants");
+    _textBubble = _assets->get<Texture>("text_bubble");
 
     // progress bars for player
     auto greenBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_greenbar"));
@@ -84,6 +85,9 @@ bool TutorialScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int 
     std::string dirt_msg = "0";
     _dirtText = TextLayout::allocWithText(dirt_msg, assets->get<Font>("pixel32"));
     _dirtText->layout();
+    
+    _textOnBubble = TextLayout::allocWithText(dirt_msg, assets->get<Font>("pixel32"));
+    _textOnBubble->layout();
 
 
     // Create and layout the health meter
@@ -251,6 +255,8 @@ void TutorialScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->draw(_parallax, (idk-getSize().operator Vec2()/2)-Vec2(0,idk.y));
     
 
+    
+
     _gameController->draw(batch);
     _gameController->drawCountdown(batch, getCamera()->getPosition(), getSize());
     
@@ -323,5 +329,19 @@ void TutorialScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         offset_ct += 1;
     }
     
+    drawPrompt("hello", batch, idk);
+    
     batch->end();
+}
+
+void TutorialScene::drawPrompt(std::string text, const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Vec2 location) {
+    
+    Affine2 bubbleTrans = Affine2();
+    Vec2 bOrigin(_textBubble->getWidth()/2,_textBubble->getHeight()/2);
+    Vec2 bubbleLocation(location);
+    bubbleTrans.translate(bubbleLocation);
+    
+
+    batch->drawText(_textOnBubble, location);
+    batch->draw(_textBubble,bOrigin, bubbleTrans);
 }
