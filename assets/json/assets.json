@@ -596,6 +596,9 @@
         "nightBuilding": {
             "file": "textures/nightBuilding.png"
         },
+        "tutorialBuilding": {
+            "file": "textures/tutorialBuilding.png"
+        },
         "dirt": {
             "file": "textures/GenericDirt.png"
         },
@@ -811,7 +814,8 @@
         "level1": "json/level1.json",
         "level2": "json/level2.json",
         "level3": "json/level3.json",
-        "nightlevel": "json/nightlevel.json"
+        "nightlevel": "json/nightlevel.json",
+        "tutoriallevel": "json/tutoriallevel.json"
     },
     "widgets": {
         "colorbutton": "widgets/colorbutton.json",
@@ -957,6 +961,50 @@
                         "x_anchor": "center",
                         "y_anchor": "middle",
                         "y_offset": -115,
+                        "absolute": true
+                    }
+                },
+                "tutorial": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "pushable": [
+                            160,
+                            280,
+                            190,
+                            370,
+                            280,
+                            400,
+                            370,
+                            370,
+                            400,
+                            280,
+                            370,
+                            190,
+                            280,
+                            160,
+                            190,
+                            190
+                        ],
+                        "visible": true,
+                        "pushsize": true,
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ]
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "menu_join"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "middle",
+                        "y_offset": -215,
                         "absolute": true
                     }
                 }

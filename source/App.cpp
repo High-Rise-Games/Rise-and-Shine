@@ -165,6 +165,10 @@ void App::update(float timestep) {
         case GAME:
             updateGameScene(timestep);
             break;
+        case TUTORIAL:
+            CULog("in update for tutorial");
+            updateTutorialScene(timestep);
+            break;
     }
 
 }
@@ -212,6 +216,9 @@ void App::draw() {
         case GAME:
             _gamescene.render(_batch);
             break;
+        case TUTORIAL:
+            _gamescene.render(_batch);
+            break;
     }
     
 }
@@ -230,16 +237,26 @@ void App::updateLoadingScene(float timestep) {
     } else {
         _loading.dispose(); // Permanently disables the input listeners in this mode
         _mainmenu.init(_assets);
+
+        // game scene, gameplay and tutorial controller
+        _gamescene.init(_assets, getFPS());
+        _gameplay = std::make_shared<GameplayController>();
+        _gameplay->init(_assets, getFPS(), _gamescene.getBounds(), _gamescene.getSize());
+        _tutorialController = std::make_shared<TutorialController>();
+        _tutorialController->init(_assets, getFPS(), _gamescene.getBounds(), _gamescene.getSize());
+        
+        // level select and lobby scenes
         _levelscene.init(_assets);
         _client_join_scene.init(_assets);
         _lobby_host.init_host(_assets);
-        _gamescene.init(_assets, getFPS());
         _lobby_client.init_client(_assets);
-        _gameplay = std::make_shared<GameplayController>();
-        _gameplay->init(_assets, getFPS(), _gamescene.getBounds(), _gamescene.getSize());
-        _gamescene.setController(_gameplay);
+
+        // gamescene and gameplay controller
+
+        // audio controller
         _audioController = std::make_shared<AudioController>();
         _audioController->init(_assets);
+        _tutorialController->setAudioController(_audioController);
         _gameplay->setAudioController(_audioController);
         _mainmenu.setAudioController(_audioController);
         _lobby_host.setAudioController(_audioController);
@@ -262,20 +279,39 @@ void App::updateLoadingScene(float timestep) {
 void App::updateMenuScene(float timestep) {
     _mainmenu.update(timestep);
     switch (_mainmenu.getChoice()) {
-        case MenuScene::Choice::HOST:
+        case MenuScene::Choice::HOST: {
             // play the click soud
             _mainmenu.setActive(false);
             _levelscene.setActive(true);
+            _gamescene.setController(_gameplay);
             _scene = State::LEVEL;
             break;
-        case MenuScene::Choice::JOIN:
+        }
+        case MenuScene::Choice::JOIN: {
             _mainmenu.setActive(false);
             _client_join_scene.setActive(true);
+            _gamescene.setController(_gameplay);
             _scene = State::CLIENT_JOIN;
             break;
-        case MenuScene::Choice::NONE:
+        }
+        case MenuScene::Choice::TUTORIAL: {
+            CULog("update menu scene to tutorial");
+            _mainmenu.setActive(false);
+            _gamescene.setActive(true);
+            _gamescene.setController(_tutorialController);
+            _tutorialController->initLevel(1);
+            _tutorialController->setActive(true);
+            _tutorialController->setId(1);
+            _tutorialController->initHost(_assets);
+            std::vector<std::string> h;
+            _tutorialController->setCharacters(h);
+            _scene = State::TUTORIAL;
+            break;
+        }
+        case MenuScene::Choice::NONE: {
             // DO NOTHING
             break;
+        }
     }
 }
 
@@ -422,11 +458,27 @@ void App::updateLobbyScene(float timestep) {
 void App::updateGameScene(float timestep) {
     _gamescene.update(timestep);
     if (_gamescene.didQuit() || _gameplay->isThereARequestForMenu()) {
-        if (_gamescene.didQuit()) {
-        }
         _gamescene.setActive(false);
         _gameplay->setActive(false);
         _gameplay->disconnect();
+        _mainmenu.setActive(true);
+        _scene = State::MENU;
+    }
+}
+
+/**
+ * Inidividualized update method for the tutorial scene.
+ *
+ * This method keeps the primary {@link #update} from being a mess of switch
+ * statements. It also handles the transition logic from the tutorial scene.
+ *
+ * @param timestep  The amount of time (in seconds) since the last frame
+ */
+void App::updateTutorialScene(float timestep) {
+    _gamescene.update(timestep);
+    if (_gamescene.didQuit() || _tutorialController->isThereARequestForMenu()) {
+        _gamescene.setActive(false);
+        _tutorialController->setActive(false);
         _mainmenu.setActive(true);
         _scene = State::MENU;
     }

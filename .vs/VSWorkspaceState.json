@@ -3,9 +3,8 @@
     "",
     "\\assets",
     "\\assets\\json",
-    "\\build",
-    "\\build\\windows"
+    "\\source"
   ],
-  "SelectedNode": "\\build\\windows\\Shine.sln",
+  "SelectedNode": "\\source\\TutorialScene.cpp",
   "PreviewInSolutionExplorer": false
 }
