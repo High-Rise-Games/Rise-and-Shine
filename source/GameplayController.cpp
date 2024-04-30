@@ -168,7 +168,7 @@ bool GameplayController::initLevel(int selected_level) {
     texture_ids_levels.push_back(texture_ids_level_5);
 
     std::vector<int>     dirt_counts = { 22, 50, 50, 60, 60 };
-    std::vector<string>  dirt_texture_strings = { "level1dirt", "dirt", "dirt", "dirt2", "dirt"};
+    std::vector<string>  dirt_texture_strings = { "level1dirt", "level1dirt", "level1dirt", "dirt2", "level1dirt"};
     _dirtTextureString = dirt_texture_strings.at(selected_level - 1);
     // select the correct mapping for this level
     _texture_strings_selected = texture_strings_levels.at(selected_level - 1);
