@@ -118,6 +118,8 @@ private:
     std::shared_ptr<cugl::SpriteSheet> _throwSprite;
     /** Radius of the ship in pixels (derived from sprite sheet) */
     float _radius;
+    /** Color of this character to tint their board */
+    cugl::Color4 _color;
 
 public:
     
@@ -152,6 +154,25 @@ public:
 
     /** Sets the character of the player. */
     void setChar(std::string c) { CULog("here: %a", c.c_str()); _character = c; }
+
+    /** Returns the tint color */
+    const cugl::Color4 getColor() { return _color; }
+
+    /** Sets the tint color */
+    void setColor() {
+        if (_character == "Flower") {
+            _color = cugl::Color4(255, 255, 100, 255);
+        }
+        else if (_character == "Frog") {
+            _color = cugl::Color4(150, 255, 255, 255);
+        }
+        else if (_character == "Chameleon") {
+            _color = cugl::Color4(150, 255, 150, 255);
+        }
+        else {
+            _color = cugl::Color4(255, 100, 100, 255);
+        }
+    }
 
     /** Sets the profile texture of the player */
     void setProfileTexture(std::shared_ptr<cugl::Texture> t) { _profileTexture = t; }
@@ -221,6 +242,7 @@ public:
     
     void setAnimationState(AnimStatus as) {
         if (as != _animState) {
+            if (_animState == STUNNED && as != IDLE) return;
             resetAnimationFrames();
             // _throwing = true;
             _animState = as;

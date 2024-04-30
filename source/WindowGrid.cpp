@@ -202,7 +202,7 @@ void WindowGrid::clearWindowTextures() {
 }
 
 // draws an entire grid of _nHorizontal x nVertical windows as large as possible with center (horizontal) alignment
-void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size) {
+void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, Color4 tint) {
 	// draw building background
 	Affine2 building_trans = Affine2();
     //building_trans.scale(getPaneWidth() * _nHorizontal / _buildingTexture->getWidth(), getPaneHeight() * _nVertical / _buildingTexture->getHeight());
@@ -210,7 +210,8 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 	building_trans.scale(_scaleFactor);
 	building_trans.translate(sideGap, 0);
 	
-	batch->draw(_buildingTexture, Vec2(), building_trans);
+	// batch->setColor(tint);
+	batch->draw(_buildingTexture, tint, Vec2(), building_trans);
 	
 	// calculate scale and size of dirt drawing in reference to a window pane so that it is centered
 	// scale applied to each dirt tile

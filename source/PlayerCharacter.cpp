@@ -333,11 +333,7 @@ void Player::drawPeeking(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::
     
     if (_throwSprite) {
         if (_animState == THROWING) {
-            CULog("throwing");
             advanceThrowFrame();
-        }
-        else {
-            CULog("not throwing");
         }
         player_trans.translate(0, -(int)(_throwSprite->getFrameSize().height) / 2);
         player_scale = _windowHeight / _throwSprite->getFrameSize().height;

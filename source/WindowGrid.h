@@ -184,7 +184,7 @@ public:
 	void clearWindowTextures();
 
     /** draws entire grid of window panes to fit in "size" */
-    void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size);
+    void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, cugl::Color4 tint);
 
     /** draws potential dirts when aiming */
     void drawPotentialDirt(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, std::vector<cugl::Vec2> potentialFilth);

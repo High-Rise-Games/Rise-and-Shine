@@ -401,12 +401,13 @@ void GameplayController::setCharacters(std::vector<std::string>& chars) {
     for (int i = 0; i < _numPlayers; i++) {
         auto player = _playerVec[i];
         changeCharTexture(player, chars[i]);
-        player->setChar(chars[i]);
         CULog("character: %a", chars[i].c_str());
     }
 }
 
 void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std::string charChoice) {
+    player->setChar(charChoice);
+    player->setColor();
     if (charChoice == "Frog") {
         player->setIdleTexture(_assets->get<Texture>("idle_frog"));
         player->setWipeTexture(_assets->get<Texture>("wipe_frog"));
@@ -1513,7 +1514,7 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     auto playerLeft = _playerVec[leftId - 1];
     auto playerRight = _playerVec[rightId - 1];
     if (_allCurBoards[_id-1] == 0) {
-        _windowVec[_id-1]->draw(batch, getSize());
+        _windowVec[_id-1]->draw(batch, getSize(), Color4(255, 255, 255, 255));
         player->draw(batch, getSize());
 
         // character indicators drawing start
@@ -1601,7 +1602,7 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         }
     }
     else if (_allCurBoards[_id-1] == -1 && leftId != _id) {
-        _windowVec[leftId - 1]->draw(batch, getSize());
+        _windowVec[leftId - 1]->draw(batch, getSize(), playerLeft->getColor());
         if (_allCurBoards[leftId - 1] == 0) {
             playerLeft->draw(batch, getSize());
         }
@@ -1627,7 +1628,7 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         }
     }
     else if (_allCurBoards[_id - 1] == 1 && rightId != _id) {
-        _windowVec[rightId - 1]->draw(batch, getSize());
+        _windowVec[rightId - 1]->draw(batch, getSize(), playerRight->getColor());
         if (_allCurBoards[rightId - 1] == 0) {
             playerRight->draw(batch, getSize());
         }
