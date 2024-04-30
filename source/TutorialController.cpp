@@ -31,13 +31,13 @@ bool TutorialController::initLevel(int selected_level) {
     _birdActive = true;
 
     // Initialize the window grids
-    _levelJson = _assets->get<JsonValue>("level1");
+    _levelJson = _assets->get<JsonValue>("tutoriallevel");
     _size = _nativeSize;
     _size.height *= 1.5;
 
     // texture mappings for level (update these from the python script)
-    _texture_strings_selected = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level1Window1", "level1Window2", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4" };
-    _texture_ids_selected = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+    _texture_strings_selected = { "level1Window1", "level1Window2", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4", "left_blocked_1", "down_blocked_1", "planter-brown1", "tutorialBuilding" };
+    _texture_ids_selected = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
     _dirtTextureString = "level1dirt";
     

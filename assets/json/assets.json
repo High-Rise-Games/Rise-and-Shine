@@ -584,6 +584,9 @@
         "nightBuilding": {
             "file": "textures/nightBuilding.png"
         },
+        "tutorialBuilding": {
+            "file": "textures/tutorialBuilding.png"
+        },
         "dirt": {
             "file": "textures/GenericDirt.png"
         },
@@ -799,7 +802,8 @@
         "level1": "json/level1.json",
         "level2": "json/level2.json",
         "level3": "json/level3.json",
-        "nightlevel": "json/nightlevel.json"
+        "nightlevel": "json/nightlevel.json",
+        "tutoriallevel": "json/tutoriallevel.json"
     },
     "widgets": {
         "colorbutton": "widgets/colorbutton.json",
