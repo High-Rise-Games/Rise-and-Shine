@@ -279,20 +279,22 @@ void App::updateLoadingScene(float timestep) {
 void App::updateMenuScene(float timestep) {
     _mainmenu.update(timestep);
     switch (_mainmenu.getChoice()) {
-        case MenuScene::Choice::HOST:
+        case MenuScene::Choice::HOST: {
             // play the click soud
             _mainmenu.setActive(false);
             _levelscene.setActive(true);
             _gamescene.setController(_gameplay);
             _scene = State::LEVEL;
             break;
-        case MenuScene::Choice::JOIN:
+        }
+        case MenuScene::Choice::JOIN: {
             _mainmenu.setActive(false);
             _client_join_scene.setActive(true);
             _gamescene.setController(_gameplay);
             _scene = State::CLIENT_JOIN;
             break;
-        case MenuScene::Choice::TUTORIAL:
+        }
+        case MenuScene::Choice::TUTORIAL: {
             CULog("update menu scene to tutorial");
             _mainmenu.setActive(false);
             _gamescene.setActive(true);
@@ -301,12 +303,15 @@ void App::updateMenuScene(float timestep) {
             _tutorialController->setActive(true);
             _tutorialController->setId(1);
             _tutorialController->initHost(_assets);
-            _tutorialController->setCharacters(std::vector<std::string>());
+            std::vector<std::string> h;
+            _tutorialController->setCharacters(h);
             _scene = State::TUTORIAL;
             break;
-        case MenuScene::Choice::NONE:
+        }
+        case MenuScene::Choice::NONE: {
             // DO NOTHING
             break;
+        }
     }
 }
 
