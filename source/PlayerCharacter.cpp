@@ -255,7 +255,6 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
     // Transform to place the ship, start with centered version
     Affine2 player_trans;
     double player_scale;
-    int step_size;
     std::shared_ptr<cugl::Texture> curSubTexture;
     std::shared_ptr<cugl::Texture> nextSubTexture;
     std::pair<int,float> animProgress;
@@ -270,7 +269,7 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
             player_trans.scale(player_scale);
             break;
         case WIPING:
-            animProgress = getTextureIdxWithEase(cugl::EasingFunction::Type::QUART_IN_OUT, _maxwipeFrame, _wipeFrames, _wipeframesize);
+            animProgress = getTextureIdxWithEase(cugl::EasingFunction::Type::SINE_IN_OUT, _maxwipeFrame, _wipeFrames, _wipeframesize);
             curSubTexture = Player::getSubTexture(_wipeSprite, 7, 7, animProgress.first);
             nextSubTexture = Player::getSubTexture(_wipeSprite, 7, 7, (animProgress.first + 1) % _wipeframesize);
             player_trans.translate( -(int)(curSubTexture->getWidth())/2 , -(int)(curSubTexture->getWidth()) / 2);
@@ -313,7 +312,6 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
     Color4f bg(1.f,1.f,1.f,1.f);
     batch->setTexture(curSubTexture);
     Color4f transition = bg;
-    float alphaValue;
 //    batch->setSrcBlendFunc(GL_ONE);
 //    batch->setDstBlendFunc(GL_ONE_MINUS_SRC_ALPHA);
     switch (_animState) {
@@ -411,9 +409,6 @@ void Player::drawPeeking(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::
  * @return 0 if moved, -1 if moving off of left edge, 1 if moving off of right edge, 2 otherwise
  */
 int Player::move(Vec2 dir, Size size, std::shared_ptr<WindowGrid> windows) {
-
-    float sideGap = windows->sideGap;
-
     // Process moving direction
     if (!_targetDist.isZero()) {
         if (abs(_targetDist.x - _vel.x) > abs(_vel.x) || abs(_targetDist.y - _vel.y) > abs(_vel.y)) {
@@ -516,11 +511,11 @@ std::pair <int,float> Player::getTextureIdxWithEase(cugl::EasingFunction::Type e
         case cugl::EasingFunction::Type::SINE_IN_OUT:
             eased_t = cugl::EasingFunction::sineInOut(t);
             break;
-        case cugl::EasingFunction::Type::QUART_IN_OUT :
+        case cugl::EasingFunction::Type::CIRC_IN_OUT :
             eased_t = cugl::EasingFunction::circInOut(t);
             break;
         default:
-            eased_t = cugl::EasingFunction::sineInOut(t);
+            eased_t = t;
             break;
     }
     int curSpriteIdx = int(eased_t * (spriteSize - 1));
