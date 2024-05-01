@@ -617,7 +617,7 @@
         "nightBuilding": {
             "file": "textures/nightBuilding.png"
         },
-        "dirt": {
+        "dirt1": {
             "file": "textures/GenericDirt.png"
         },
         "dirt2": {
@@ -771,9 +771,9 @@
             "file": "fonts/sairastenciloneRegular20.ttf",
             "size": 20
         },
-        "saira stencil oneRegular24": {
+        "saira stencil oneRegular32": {
             "file": "fonts/sairastenciloneRegular20.ttf",
-            "size": 20
+            "size": 32
         }
     },
     "sounds": {
@@ -861,18 +861,18 @@
                         0
                     ],
                     "size": [
-                        932,
-                        430
+                        1280,
+                        720
                     ],
-                    "angle": -1.5308806722812968e-22,
+                    "angle": 0,
                     "position": [
-                        6998,
-                        189
+                        -9567,
+                        -1526
                     ],
                     "visible": true
                 },
                 "children": {
-                    "leftgroup": {
+                    "Leftgroup": {
                         "type": "Node",
                         "format": {
                             "type": "Float",
@@ -882,17 +882,17 @@
                         },
                         "data": {
                             "anchor": [
-                                0,
-                                1
+                                0.5,
+                                0.5
                             ],
                             "size": [
-                                196.84,
-                                104
+                                305,
+                                140
                             ],
-                            "angle": 0,
+                            "angle": -1.5308806722812968e-22,
                             "position": [
                                 0,
-                                326
+                                580
                             ],
                             "visible": true
                         },
@@ -911,13 +911,13 @@
                                         0.5
                                     ],
                                     "size": [
-                                        134,
-                                        104
+                                        201,
+                                        140
                                     ],
                                     "angle": 0,
                                     "position": [
-                                        67,
-                                        52
+                                        100.5,
+                                        70
                                     ],
                                     "visible": true
                                 },
@@ -933,13 +933,13 @@
                                                 0.5
                                             ],
                                             "size": [
-                                                134,
-                                                72
+                                                201,
+                                                108
                                             ],
                                             "angle": 0,
                                             "position": [
-                                                67,
-                                                52
+                                                100.5,
+                                                70
                                             ],
                                             "visible": true
                                         },
@@ -953,13 +953,13 @@
                                                         0.5
                                                     ],
                                                     "size": [
-                                                        134,
-                                                        72
+                                                        209,
+                                                        113
                                                     ],
                                                     "angle": 1.5308806722812968e-22,
                                                     "position": [
                                                         0,
-                                                        0
+                                                        -5
                                                     ],
                                                     "visible": true
                                                 },
@@ -967,8 +967,8 @@
                                                     "x_anchor": "left",
                                                     "y_anchor": "top",
                                                     "absolute": false,
-                                                    "x_offset": 0.5,
-                                                    "y_offset": -0.5
+                                                    "x_offset": 0.52,
+                                                    "y_offset": -0.52
                                                 }
                                             },
                                             "time": {
@@ -985,13 +985,13 @@
                                                         1
                                                     ],
                                                     "size": [
-                                                        85,
-                                                        48
+                                                        130,
+                                                        72
                                                     ],
                                                     "angle": 0,
                                                     "position": [
-                                                        24,
-                                                        14
+                                                        39,
+                                                        18
                                                     ],
                                                     "visible": true
                                                 },
@@ -1005,13 +1005,13 @@
                                                                 0.5
                                                             ],
                                                             "size": [
-                                                                32,
-                                                                32
+                                                                56,
+                                                                56
                                                             ],
                                                             "angle": 1.5308806722812968e-22,
                                                             "position": [
-                                                                24,
-                                                                24
+                                                                36,
+                                                                36
                                                             ],
                                                             "visible": true
                                                         },
@@ -1033,16 +1033,16 @@
                                                                 0.5
                                                             ],
                                                             "size": [
-                                                                35,
-                                                                31
+                                                                56,
+                                                                50
                                                             ],
                                                             "position": [
-                                                                59.5,
-                                                                24
+                                                                94,
+                                                                36
                                                             ],
                                                             "angle": 1.5308806722812968e-22,
                                                             "visible": true,
-                                                            "font": "saira stencil oneRegular20",
+                                                            "font": "saira stencil oneRegular32",
                                                             "text": "109",
                                                             "foreground": "#000000ff",
                                                             "background": "#00000000",
@@ -1071,8 +1071,8 @@
                                                     "x_anchor": "left",
                                                     "y_anchor": "top",
                                                     "absolute": false,
-                                                    "x_offset": 0.18,
-                                                    "y_offset": -0.14
+                                                    "x_offset": 0.19,
+                                                    "y_offset": -0.17
                                                 }
                                             }
                                         },
@@ -1092,7 +1092,7 @@
                                     "padding": [
                                         0,
                                         0,
-                                        0,
+                                        16,
                                         0
                                     ]
                                 }
@@ -1111,13 +1111,13 @@
                                         0.5
                                     ],
                                     "size": [
-                                        62.84,
-                                        100
+                                        88,
+                                        127
                                     ],
                                     "angle": 0,
                                     "position": [
-                                        165.41772079467773,
-                                        50
+                                        261,
+                                        63.5
                                     ],
                                     "visible": true
                                 },
@@ -1133,13 +1133,13 @@
                                                 0.5
                                             ],
                                             "size": [
-                                                62.84,
-                                                68
+                                                88,
+                                                95
                                             ],
                                             "angle": 0,
                                             "position": [
-                                                31.417720794677734,
-                                                50
+                                                44,
+                                                63.5
                                             ],
                                             "visible": true
                                         },
@@ -1153,13 +1153,13 @@
                                                         0.5
                                                     ],
                                                     "size": [
-                                                        62.84,
-                                                        62.84
+                                                        88,
+                                                        88
                                                     ],
                                                     "angle": 1.5308806722812968e-22,
                                                     "position": [
                                                         0,
-                                                        5.16
+                                                        7
                                                     ],
                                                     "visible": true
                                                 },
@@ -1180,12 +1180,12 @@
                                                         0.5
                                                     ],
                                                     "size": [
-                                                        34.43,
-                                                        39.59
+                                                        48,
+                                                        55
                                                     ],
                                                     "angle": 1.5308806722812968e-22,
                                                     "position": [
-                                                        12.05,
+                                                        17,
                                                         0
                                                     ],
                                                     "visible": true
@@ -1206,16 +1206,16 @@
                                                         0.5
                                                     ],
                                                     "size": [
-                                                        26,
+                                                        35,
                                                         27
                                                     ],
                                                     "position": [
-                                                        16,
-                                                        33
+                                                        24,
+                                                        55
                                                     ],
                                                     "angle": 1.5308806722812968e-22,
                                                     "visible": true,
-                                                    "font": "saira stencil oneRegular24",
+                                                    "font": "saira stencil oneRegular32",
                                                     "text": "10",
                                                     "foreground": "#ffffffff",
                                                     "background": "#00000000",
@@ -1233,8 +1233,8 @@
                                                     "x_anchor": "left",
                                                     "y_anchor": "bottom",
                                                     "absolute": false,
-                                                    "x_offset": 0.46,
-                                                    "y_offset": 0.68
+                                                    "x_offset": 0.47,
+                                                    "y_offset": 0.72
                                                 }
                                             }
                                         },
@@ -1264,8 +1264,8 @@
                             "x_anchor": "left",
                             "y_anchor": "top",
                             "absolute": false,
-                            "x_offset": 0,
-                            "y_offset": 0
+                            "x_offset": 0.12,
+                            "y_offset": -0.1
                         }
                     },
                     "SettingUI": {
@@ -1278,17 +1278,17 @@
                         },
                         "data": {
                             "anchor": [
-                                0,
-                                1
+                                0.5,
+                                0.5
                             ],
                             "size": [
-                                32,
-                                65.42
+                                56,
+                                90.49
                             ],
-                            "angle": 0,
+                            "angle": -1.5308806722812968e-22,
                             "position": [
-                                884,
-                                364.58
+                                1208,
+                                629.51
                             ],
                             "visible": true
                         },
@@ -1302,13 +1302,13 @@
                                         0.5
                                     ],
                                     "size": [
-                                        32,
-                                        33.42
+                                        56,
+                                        58.49
                                     ],
                                     "angle": 1.5308806722812968e-22,
                                     "position": [
-                                        16,
-                                        32.711111068725586
+                                        28,
+                                        45.24444389343262
                                     ],
                                     "visible": true
                                 },
@@ -1327,8 +1327,8 @@
                             "x_anchor": "left",
                             "y_anchor": "top",
                             "absolute": false,
-                            "x_offset": 0.95,
-                            "y_offset": 0
+                            "x_offset": 0.97,
+                            "y_offset": -0.06
                         }
                     },
                     "tutorial": {
@@ -1338,17 +1338,17 @@
                         },
                         "data": {
                             "anchor": [
-                                0,
-                                1
+                                0.5,
+                                0.5
                             ],
                             "size": [
-                                300,
-                                197
+                                356,
+                                250
                             ],
-                            "angle": 0,
+                            "angle": -1.5308806722812968e-22,
                             "position": [
-                                -4,
-                                -66
+                                -8,
+                                -68
                             ],
                             "visible": true
                         },
@@ -1367,13 +1367,13 @@
                                         0.5
                                     ],
                                     "size": [
-                                        246,
-                                        131
+                                        293,
+                                        156
                                     ],
                                     "angle": 1.5308806722812968e-22,
                                     "position": [
-                                        54,
-                                        66
+                                        63,
+                                        94
                                     ],
                                     "visible": true
                                 },
@@ -1387,13 +1387,13 @@
                                                 0.5
                                             ],
                                             "size": [
-                                                246,
-                                                131
+                                                293,
+                                                156
                                             ],
                                             "angle": 0,
                                             "position": [
-                                                123,
-                                                65.5
+                                                146.5,
+                                                78
                                             ],
                                             "visible": true
                                         },
@@ -1413,7 +1413,7 @@
                                     "y_anchor": "top",
                                     "absolute": false,
                                     "x_offset": 0.59,
-                                    "y_offset": -0.33
+                                    "y_offset": -0.31
                                 }
                             },
                             "mushroomtalk": {
@@ -1425,8 +1425,8 @@
                                         0.5
                                     ],
                                     "size": [
-                                        87,
-                                        176
+                                        105,
+                                        212
                                     ],
                                     "angle": 1.5308806722812968e-22,
                                     "position": [
@@ -1439,8 +1439,8 @@
                                     "x_anchor": "left",
                                     "y_anchor": "top",
                                     "absolute": false,
-                                    "x_offset": 0.14,
-                                    "y_offset": -0.55
+                                    "x_offset": 0.15,
+                                    "y_offset": -0.58
                                 }
                             }
                         },
@@ -1448,8 +1448,8 @@
                             "x_anchor": "left",
                             "y_anchor": "top",
                             "absolute": false,
-                            "x_offset": 0,
-                            "y_offset": -0.7
+                            "x_offset": 0.13,
+                            "y_offset": -0.92
                         }
                     }
                 }
