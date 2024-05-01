@@ -35,6 +35,7 @@ using namespace std;
  */
 bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps) {
     
+    
     Size dimen = Application::get()->getDisplaySize();
 
     dimen *= SCENE_HEIGHT/dimen.height;
@@ -47,6 +48,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     // Start up the input handler
     _assets = assets;
     _dirtThrowInput.init();
+    
+    
 
     // Get the background image and constant values
     _background = _assets->get<Texture>("night level background");
@@ -95,7 +98,9 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     reset();
     
     // Acquire the scene built by the asset loader and resize it the scene
-    _scene_UI = _assets->get<scene2::SceneNode>("game");
+    
+    _scene_UI = _assets->get<scene2::SceneNode>("gamescene");
+//    _scene_UI = _assets->get<scene2::SceneNode>("game");
     
 //    _scene_UI->addChild(_dirtThrowArc);
     _scene_UI->setContentSize(dimen);
