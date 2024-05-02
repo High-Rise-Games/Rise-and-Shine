@@ -66,7 +66,6 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeBoardState(st
     
     // Writes the data in a specific order
     _serializer.writeFloat(message->type);
-    _serializer.writeFloat(message->numWindowDirt);
     _serializer.writeFloat(message->numProjectile);
     _serializer.writeFloat(message->playerChar);
     _serializer.writeFloat(message->animState);
@@ -76,12 +75,17 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeBoardState(st
     _serializer.writeFloat(message->timer);
     _serializer.writeFloat(message->numDirt);
     _serializer.writeFloat(message->progress);
+    _serializer.writeBool(message->currBoardBird);
     
     // check if message is optional. If not, write more data
     if (!message->optional) {
+        
         _serializer.writeFloat(message->playerX);
-        _serializer.writeFloat(message->birdPosX);
-        _serializer.writeFloat(message->birdPosY);
+        if (message->currBoardBird) {
+            _serializer.writeFloat(message->birdPosX);
+            _serializer.writeFloat(message->birdPosY);
+        }
+        
         
         // loop through every projectile in the projectile vector
         // to write the data into the serializer
@@ -96,9 +100,6 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeBoardState(st
             
             // loop through every window in the window vector
             // to write the data into the serializer
-        } for (WINDOW_DIRT dirt : message->dirtVector) {
-            _serializer.writeFloat(dirt.posX);
-            _serializer.writeFloat(dirt.posY);
         }
     }
     
@@ -122,7 +123,6 @@ const std::shared_ptr<NetStructs::BOARD_STATE> NetStructs::deserializeBoardState
     
     // Deserialize the data in the order it was serialized
     recievedMessage->type = static_cast<STRUCT_TYPE>(_deserializer.readFloat());
-    recievedMessage->numWindowDirt = _deserializer.readFloat();
     recievedMessage->numProjectile = _deserializer.readFloat();
     recievedMessage->playerChar = _deserializer.readFloat();
     recievedMessage->animState = _deserializer.readFloat();
@@ -132,10 +132,13 @@ const std::shared_ptr<NetStructs::BOARD_STATE> NetStructs::deserializeBoardState
     recievedMessage->timer = _deserializer.readFloat();
     recievedMessage->numDirt = _deserializer.readFloat();
     recievedMessage->progress = _deserializer.readFloat();
+    recievedMessage->currBoardBird = _deserializer.readBool();
     if (!recievedMessage->optional) {
         recievedMessage->playerX = _deserializer.readFloat();
-        recievedMessage->birdPosX = _deserializer.readFloat();
-        recievedMessage->birdPosY = _deserializer.readFloat();
+        if (recievedMessage->currBoardBird) {
+            recievedMessage->birdPosX = _deserializer.readFloat();
+            recievedMessage->birdPosY = _deserializer.readFloat();
+        };
         std::vector<PROJECTILE> projectileVector;
         for (int i=0; i<recievedMessage->numProjectile; i++) {
             PROJECTILE projectile;
@@ -149,18 +152,94 @@ const std::shared_ptr<NetStructs::BOARD_STATE> NetStructs::deserializeBoardState
             projectileVector.push_back(projectile);
         }
         recievedMessage->projectileVector = projectileVector;
-        std::vector<WINDOW_DIRT> dirtVector;
-        for (int i=0; i<recievedMessage->numWindowDirt; i++) {
-            WINDOW_DIRT windowDirt;
-            windowDirt.posX = _deserializer.readFloat();
-            windowDirt.posY = _deserializer.readFloat();
-            dirtVector.push_back(windowDirt);
-        }
-        recievedMessage->dirtVector = dirtVector;
     }
     
     recievedMessage->optional = _deserializer.readBool();
     recievedMessage->hasWon = _deserializer.readBool();
+    
+    return recievedMessage;
+    
+};
+
+const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeDirtStateMessage(std::shared_ptr<NetStructs::DIRT_STATE> message) {
+    
+    // Resets the serializer in order for it to be used again
+    _serializer.reset();
+    
+    _serializer.writeFloat(message->type);
+    _serializer.writeFloat(message->numWindowDirt);
+    _serializer.writeFloat(message->playerId);
+    
+    for (WINDOW_DIRT dirt : message->dirtVector) {
+        _serializer.writeFloat(dirt.posX);
+        _serializer.writeFloat(dirt.posY);
+    }
+    
+
+    std::shared_ptr<std::vector<std::byte>> buffer = std::make_shared<std::vector<std::byte>>(_serializer.serialize());
+    return buffer;
+};
+
+const std::shared_ptr<NetStructs::DIRT_STATE> NetStructs::deserializeDirtStateMessage(const std::vector<std::byte> &data) {
+    
+    // Resets the deserializer in order for it to be used again
+    _deserializer.reset();
+    
+    // The data gets inserted into the deserializer
+    _deserializer.receive(data);
+    
+    // Creates a new BOARD_STATE object to write the deserialized data into
+    std::shared_ptr<DIRT_STATE> recievedMessage = std::make_shared<DIRT_STATE>();
+    
+    recievedMessage->type = static_cast<STRUCT_TYPE>( _deserializer.readFloat());
+    recievedMessage->numWindowDirt =  _deserializer.readFloat();
+    recievedMessage->playerId = _deserializer.readFloat();
+    
+    std::vector<WINDOW_DIRT> dirtVector;
+    for (int i=0; i<recievedMessage->numWindowDirt; i++) {
+        WINDOW_DIRT dirt;
+        dirt.posX = _deserializer.readFloat();
+        dirt.posY = _deserializer.readFloat();
+        dirtVector.push_back(dirt);
+    }
+    
+    recievedMessage->dirtVector = dirtVector;
+    
+    return recievedMessage;
+    
+};
+
+const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeMoveState(std::shared_ptr<NetStructs::MOVE_STATE> message) {
+    
+    // Resets the serializer in order for it to be used again
+    _serializer.reset();
+    
+    _serializer.writeFloat(message->type);
+    _serializer.writeFloat(message->playerId);
+    _serializer.writeFloat(message->moveX);
+    _serializer.writeFloat(message->moveY);
+    
+
+    std::shared_ptr<std::vector<std::byte>> buffer = std::make_shared<std::vector<std::byte>>(_serializer.serialize());
+    return buffer;
+};
+
+const std::shared_ptr<NetStructs::MOVE_STATE> NetStructs::deserializeMoveState(const std::vector<std::byte> &data) {
+    
+    // Resets the deserializer in order for it to be used again
+    _deserializer.reset();
+    
+    // The data gets inserted into the deserializer
+    _deserializer.receive(data);
+    
+    // Creates a new BOARD_STATE object to write the deserialized data into
+    std::shared_ptr<MOVE_STATE> recievedMessage = std::make_shared<MOVE_STATE>();
+    
+    recievedMessage->type = static_cast<STRUCT_TYPE>( _deserializer.readFloat());
+    recievedMessage->playerId = _deserializer.readFloat();
+    recievedMessage->moveX = _deserializer.readFloat();
+    recievedMessage->moveY = _deserializer.readFloat();
+    
     
     return recievedMessage;
     

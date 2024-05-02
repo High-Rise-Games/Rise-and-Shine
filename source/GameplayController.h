@@ -384,6 +384,14 @@ public:
      * @returns JSON value representing game board state
      */
     std::shared_ptr<NetStructs::BOARD_STATE> getJsonBoard(int id, bool isPartial);
+    
+    /**
+     * Called by host only. Converts game state into a JSON value for sending over the network
+     *
+     * @param id    the id of the player of the board state to get
+     * @returns JSON value representing game board state
+     */
+    std::shared_ptr<NetStructs::DIRT_STATE> getDirtState(int id);
 
     /**
      * Called by client only. Converts a movement vector into a JSON value for sending over the network.
@@ -392,6 +400,8 @@ public:
      * @returns JSON value representing a movement
      */
     std::shared_ptr<cugl::JsonValue> getJsonMove(const cugl::Vec2 move);
+    
+    std::shared_ptr<NetStructs::MOVE_STATE> getMoveState(const cugl::Vec2 move);
 
     /**
     * Called by the client only. Returns a JSON value representing a scene switch request
@@ -421,6 +431,13 @@ public:
      * @params data     The data to update
      */
     void updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> data);
+    
+    /**
+     * Updates a neighboring board about the window dirt they have
+     *
+     * @params data     The data to update
+     */
+    void updateWindowDirt(std::shared_ptr<NetStructs::DIRT_STATE> data);
 
     /**
      * Called by the host only. Updates a client player's board for player at player_id
@@ -429,6 +446,8 @@ public:
      * @params data     The data to update
      */
     void processMovementRequest(std::shared_ptr<cugl::JsonValue> data);
+    
+    void processMovementRequest(std::shared_ptr<NetStructs::MOVE_STATE> data);
 
     /**
      * Called by host only to process switch scene requests. Updates a client player's

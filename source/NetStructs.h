@@ -18,10 +18,10 @@ class NetStructs {
 public:
     
     /* The serializer */
-    cugl::physics2::net::LWSerializer _serializer;
+    cugl::net::NetcodeSerializer _serializer;
     
     /* The deserializer */
-    cugl::physics2::net::LWDeserializer _deserializer;
+    cugl::net::NetcodeDeserializer _deserializer;
     
     
     enum STRUCT_TYPE {
@@ -35,7 +35,11 @@ public:
         ProjectileType = 3,
         
         /* Designates the type of the struct as a window dirt type message */
-        WindowDirtType = 4
+        WindowDirtType = 4,
+        
+        DirtStateType = 7,
+        
+        MoveStateType = 8
     };
     
     enum PROJECTILE_TYPE {
@@ -63,13 +67,13 @@ public:
         float velY;
         
         /* The x-coordinate of the destination of the projectile */
-        Sint32 destX;
+        float destX;
         
         /* The y-coordinate of the destination of the projectile */
-        Sint32 destY;
+        float destY;
         
         /* The tye of the projectile */
-        Sint32 type;
+        float type;
     };
     
     struct WINDOW_DIRT {
@@ -80,6 +84,8 @@ public:
         /* The y-coordinate of the window dirt */
         float posY=0;
     };
+    
+    
     
 
     struct DIRT_REQUEST {
@@ -125,25 +131,25 @@ public:
         bool optional;
         
         /* The number of projectiles in the board state */
-        Sint32 numProjectile;
+        float numProjectile;
         
-        /* The number of window dirts in the board state */
-        Sint32 windowDirtAmount;
         
         /* The player ID that owns this board state */
-        Sint32 playerId;
+        float playerId;
         
         /* The player character of the player that owns this board state */
-        Sint32 playerChar;
+        float playerChar;
         
         /* Whether the board state as achieved a win */
-        Sint32 hasWon;
+        bool hasWon;
+        
+        bool currBoardBird;
         
         /* The number of dirt that the player has collected in thier bucket*/
-        Sint32 numDirt;
+        float numDirt;
         
         /* The current board of the player of this board state message */
-        Sint32 currBoard;
+        float currBoard;
         
         /* The x-coordinate of the player of the board state message */
         float playerX;
@@ -152,22 +158,16 @@ public:
         float playerY;
         
         /* The animation state of the player of this board state message */
-        Sint32 animState;
+        float animState;
         
         /* The time left in the game for this board state message */
-        Sint32 timer;
+        float timer;
         
         /* The x-position of the bird in the board state message */
         float birdPosX=0;
         
-        /* The number of window dirt in this board state message */
-        Sint32 numWindowDirt;
-        
         /* The y-position of the bird in the board state message */
         float birdPosY=0;
-        
-        /* The vector of WINDOW_DIRT objects */
-        std::vector<WINDOW_DIRT> dirtVector;
         
         /* The vector of PROJECTILE objects */
         std::vector<PROJECTILE> projectileVector;
@@ -176,15 +176,60 @@ public:
         float progress;
     };
     
+    
+    struct DIRT_STATE {
+        
+        /* Sets the default of ths struct as a board state type */
+        STRUCT_TYPE type = DirtStateType;
+        
+        /* The player ID that owns this board state */
+        float playerId;
+        
+        /* The number of window dirt in this board state message */
+        float numWindowDirt;
+        
+        /* The vector of WINDOW_DIRT objects */
+        std::vector<WINDOW_DIRT> dirtVector;
+        
+
+    };
+    
+    struct MOVE_STATE {
+        
+        /* Sets the default of ths struct as a board state type */
+        STRUCT_TYPE type = MoveStateType;
+        
+        /* The player ID that owns this board state */
+        float playerId;
+        
+        float moveX;
+        
+        float moveY;
+        
+
+    };
+    
 
     /* To serialize a DIRT_REQUEST message to send over the network */
     const std::shared_ptr<std::vector<std::byte>> serializeDirtRequest(std::shared_ptr<DIRT_REQUEST> message);
     
+    /* To serialize a DIRT_REQUEST message to send over the network */
+    const std::shared_ptr<std::vector<std::byte>> serializeDirtStateMessage(std::shared_ptr<DIRT_STATE> message);
+    
     /* To serialize a BOARD_STATE message to send over te network */
     const std::shared_ptr<std::vector<std::byte>> serializeBoardState(std::shared_ptr<NetStructs::BOARD_STATE> message);
     
+    /* To serialize a BOARD_STATE message to send over te network */
+    const std::shared_ptr<std::vector<std::byte>> serializeMoveState(std::shared_ptr<NetStructs::MOVE_STATE> message);
+    
+    /* The deserialize a DIRT_REQUEST message sent over the network */
+    const std::shared_ptr<MOVE_STATE> deserializeMoveState(const std::vector<std::byte>& data);
+    
     /* The deserialize a DIRT_REQUEST message sent over the network */
     const std::shared_ptr<DIRT_REQUEST> deserializeDirtRequest(const std::vector<std::byte>& data);
+    
+    /* The deserialize a DIRT_REQUEST message sent over the network */
+    const std::shared_ptr<DIRT_STATE> deserializeDirtStateMessage(const std::vector<std::byte>& data);
     
     /* The deserialize a BOARD_STATE message sent over the network */
     const std::shared_ptr<BOARD_STATE> deserializeBoardState(const std::vector<std::byte>& data);
