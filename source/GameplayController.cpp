@@ -441,7 +441,7 @@ void GameplayController::switchScene() {
             _allCurBoards[_id - 1] = 0;
         }
         else {
-            _network.sendToHost(getJsonSceneSwitch(true));
+            _network.sendToHost(*netStructs.serializeSwitchState(getSwitchState(true)));
         }
     }
 }
@@ -893,6 +893,25 @@ std::shared_ptr<cugl::JsonValue> GameplayController::getJsonSceneSwitch(bool ret
     return json;
 }
 
+std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> GameplayController::getSwitchState(bool returning) {
+    const std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> switchState = std::make_shared<NetStructs::SCENE_SWITCH_STATE>();
+    
+    switchState->playerId = _id;
+    switchState->type = NetStructs::SceneSwitchType;
+
+    if (returning) {
+        switchState->switchDestination = 0;
+    }
+    else {
+        // pre-condition: if not returning, guarantee that the player is on an edge
+        int edge = _playerVec[_id-1]->getEdge(_windowVec[_id - 1]->sideGap, getSize());
+        switchState->switchDestination = edge;
+    }
+    return switchState;
+}
+
+
+
 /**
 * Called by host only to process return to board requests. Updates a client player's
 * currently viewed board for the player at player_id based on the current board
@@ -904,6 +923,19 @@ void GameplayController::processSceneSwitchRequest(std::shared_ptr<cugl::JsonVal
 
     int playerId = std::stod(data->getString("player_id", "0"));
     int switchDestination = std::stod(data->getString("switch_destination", "0"));
+
+    // update the board of the player to their switch destination
+    if (switchDestination == 0) {
+        _allCurBoards[playerId - 1] = switchDestination;
+    }
+}
+
+void GameplayController::processSceneSwitchRequest(std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> data) {
+    
+    int playerId = data->playerId;
+    
+    int switchDestination = data->switchDestination;
+    
 
     // update the board of the player to their switch destination
     if (switchDestination == 0) {
@@ -999,7 +1031,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     if (netStructs.deserializeBoardState(data)->type == NetStructs::BoardStateType) {
                         // CULog("got board state message");
                         updateBoard(netStructs.deserializeBoardState(data));
-                    } else if (netStructs.deserializeBoardState(data)->type == NetStructs::DirtStateType) {
+                    } if (netStructs.deserializeBoardState(data)->type == NetStructs::DirtStateType) {
                         // CULog("got board state message");
                         updateWindowDirt(netStructs.deserializeDirtStateMessage(data));
                     }
@@ -1010,9 +1042,12 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     if (netStructs.deserializeDirtRequest(data)->type == netStructs.DirtRequestType && sizeof netStructs.deserializeDirtRequest(data) == sizeof (NetStructs::DIRT_REQUEST)) {
                         // CULog("got dirt throw message");
                         processDirtThrowRequest(data);
-                    } else if (netStructs.deserializeMoveState(data)->type == netStructs.MoveStateType && sizeof netStructs.deserializeMoveState(data) == sizeof (NetStructs::MOVE_STATE)) {
+                    } if (netStructs.deserializeMoveState(data)->type == netStructs.MoveStateType && sizeof netStructs.deserializeMoveState(data) == sizeof (NetStructs::MOVE_STATE)) {
                         // CULog("got movement message");
                         processMovementRequest(netStructs.deserializeMoveState(data));
+                    } if (netStructs.deserializeSwitchState(data)->type == netStructs.SceneSwitchType) {
+                        // CULog("got switch scene request message");
+                        processSceneSwitchRequest(netStructs.deserializeSwitchState(data));
                     }
                 }
             });

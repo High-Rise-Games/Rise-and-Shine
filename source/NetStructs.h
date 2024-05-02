@@ -39,7 +39,9 @@ public:
         
         DirtStateType = 7,
         
-        MoveStateType = 8
+        MoveStateType = 8,
+        
+        SceneSwitchType = 27
     };
     
     enum PROJECTILE_TYPE {
@@ -209,6 +211,19 @@ public:
 
     };
     
+    struct SCENE_SWITCH_STATE {
+        
+        /* Sets the default of ths struct as a board state type */
+        STRUCT_TYPE type = SceneSwitchType;
+        
+        /* The player ID that owns this board state */
+        float playerId;
+        
+        float switchDestination;
+        
+
+    };
+    
 
     /* To serialize a DIRT_REQUEST message to send over the network */
     const std::shared_ptr<std::vector<std::byte>> serializeDirtRequest(std::shared_ptr<DIRT_REQUEST> message);
@@ -221,6 +236,12 @@ public:
     
     /* To serialize a BOARD_STATE message to send over te network */
     const std::shared_ptr<std::vector<std::byte>> serializeMoveState(std::shared_ptr<NetStructs::MOVE_STATE> message);
+    
+    /* To serialize a BOARD_STATE message to send over te network */
+    const std::shared_ptr<std::vector<std::byte>> serializeSwitchState(std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> message);
+    
+    /* The deserialize a DIRT_REQUEST message sent over the network */
+    const std::shared_ptr<SCENE_SWITCH_STATE> deserializeSwitchState(const std::vector<std::byte>& data);
     
     /* The deserialize a DIRT_REQUEST message sent over the network */
     const std::shared_ptr<MOVE_STATE> deserializeMoveState(const std::vector<std::byte>& data);

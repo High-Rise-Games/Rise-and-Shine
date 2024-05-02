@@ -244,3 +244,37 @@ const std::shared_ptr<NetStructs::MOVE_STATE> NetStructs::deserializeMoveState(c
     return recievedMessage;
     
 };
+
+const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeSwitchState(std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> message) {
+    
+    // Resets the serializer in order for it to be used again
+    _serializer.reset();
+    
+    _serializer.writeFloat(message->type);
+    _serializer.writeFloat(message->playerId);
+    _serializer.writeFloat(message->switchDestination);
+    
+
+    std::shared_ptr<std::vector<std::byte>> buffer = std::make_shared<std::vector<std::byte>>(_serializer.serialize());
+    return buffer;
+};
+
+const std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> NetStructs::deserializeSwitchState(const std::vector<std::byte> &data) {
+    
+    // Resets the deserializer in order for it to be used again
+    _deserializer.reset();
+    
+    // The data gets inserted into the deserializer
+    _deserializer.receive(data);
+    
+    // Creates a new BOARD_STATE object to write the deserialized data into
+    std::shared_ptr<SCENE_SWITCH_STATE> recievedMessage = std::make_shared<SCENE_SWITCH_STATE>();
+    
+    recievedMessage->type = static_cast<STRUCT_TYPE>( _deserializer.readFloat());
+    recievedMessage->playerId = _deserializer.readFloat();
+    recievedMessage->switchDestination = _deserializer.readFloat();
+    
+    
+    return recievedMessage;
+    
+};

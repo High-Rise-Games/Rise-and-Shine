@@ -411,6 +411,8 @@ public:
     * @returns JSON value representing a scene switch
     */
     std::shared_ptr<cugl::JsonValue> getJsonSceneSwitch(bool returning);
+    
+    std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> getSwitchState(bool returning);
 
     /**
      * Called by client only. Represents a dirt throw action as a JSON value for sending over the network.
@@ -457,6 +459,8 @@ public:
      * @params data     The data to update
      */
     void processSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data);
+    
+    void processSceneSwitchRequest(std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> data);
 
     /**
      * Called by host only. Updates the boards of both the dirt thrower and the player
