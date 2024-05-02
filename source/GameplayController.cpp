@@ -48,7 +48,11 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     // we set game win and game over to false
     _gameWin = false;
     _gameOver = false;
+    _gameStart = false;
     _transitionToMenu = false;
+    // each image lasts for 2 frames, 25 frames per number and 4 numbers in total
+    _maxCountDownFrames = 2 * 4 * 25;
+    _countDownFrames = 0;
     
     // set this to zero, will be updated when game is over
     _frameCountForWin=0;
@@ -65,6 +69,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _nativeSize = size;
     
     _dirtSelected = false;
+    _cleanInProgress = false;
     _dirtPath = Path2();
     dimen *= SCENE_HEIGHT/dimen.height;
     if (assets == nullptr) {
@@ -107,31 +112,26 @@ bool GameplayController::initLevel(int selected_level) {
 //    std::shared_ptr<cugl::JsonValue> level = _constants->get("easy board"); // TODO: make field passed in from level select through App
     switch (selected_level) {
         case 1:
-            // CULog("garage selecting 1");
             _levelJson = _assets->get<JsonValue>("level1");
             _size = _nativeSize;
             _size.height *= 1.5;
             break;
         case 2:
-            // CULog("garage selecting 2");
             _levelJson = _assets->get<JsonValue>("level2");
             _size = _nativeSize;
             _size.height *= 1.5;
             break;
         case 3:
-            // CULog("garage selecting 3");
             _levelJson = _assets->get<JsonValue>("level3");
             _size = _nativeSize;
             _size.height *= 1.5;
             break;
         case 4:
-            // CULog("garage selecting 4");
             _levelJson = _assets->get<JsonValue>("nightlevel");
             _size = _nativeSize;
             _size.height *= 2;
             break;
         default:
-            // CULog("garage selecting default");
             _levelJson = _assets->get<JsonValue>("nightlevel");
             _size = _nativeSize;
             _size.height *= 2;
@@ -140,16 +140,16 @@ bool GameplayController::initLevel(int selected_level) {
     
     // texture mappings for each level (update these from the python script)
     
-    std::vector<string> texture_strings_level_1 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level1Window1", "level1Window2", "level1Window3", "level1Window4" };
+    std::vector<string> texture_strings_level_1 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level1Window1", "level1Window2", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4" };
     std::vector<string> texture_strings_level_2 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level2Window1", "level2Window2" };
     std::vector<string> texture_strings_level_3 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level3Window1", "level3Window2", "level3Window3", "level3Window4" };
-    std::vector<string> texture_strings_level_4 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "left_blocked_1" };
+    std::vector<string> texture_strings_level_4 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4", "left_blocked_1", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
     std::vector<string> texture_strings_level_5 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
     std::vector<std::vector<string>> texture_strings_levels;
-    std::vector<int> texture_ids_level_1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    std::vector<int> texture_ids_level_1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
     std::vector<int> texture_ids_level_2 = { 1, 2, 3, 4, 5, 6, 7 };
     std::vector<int> texture_ids_level_3 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    std::vector<int> texture_ids_level_4 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+    std::vector<int> texture_ids_level_4 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
     std::vector<int> texture_ids_level_5 = { 1, 2, 3, 4, 5, 15, 16, 17, 18, 19 };
     std::vector<std::vector<int>> texture_ids_levels;
     texture_strings_levels.push_back(texture_strings_level_1);
@@ -162,7 +162,9 @@ bool GameplayController::initLevel(int selected_level) {
     texture_ids_levels.push_back(texture_ids_level_3);
     texture_ids_levels.push_back(texture_ids_level_4);
     texture_ids_levels.push_back(texture_ids_level_5);
-    _dirtTextureString = (selected_level == 4 ? "dirt2" : "dirt");
+
+    std::vector<string> dirt_texture_strings = { "level1dirt", "dirt", "dirt", "dirt2" };
+    _dirtTextureString = dirt_texture_strings.at(selected_level - 1);
     // select the correct mapping for this level
     _texture_strings_selected = texture_strings_levels.at(selected_level - 1);
     _texture_ids_selected = texture_ids_levels.at(selected_level - 1);
@@ -174,6 +176,13 @@ bool GameplayController::initLevel(int selected_level) {
     
     // get the lose background when game is lose
     _loseBackground = _assets->get<Texture>("lose-background");
+    
+    // get the asseets for countdown
+    setCountdown1Texture(_assets->get<Texture>("C1"));
+    setCountdown2Texture(_assets->get<Texture>("C2"));
+    setCountdown3Texture(_assets->get<Texture>("C3"));
+    setCountdownGoTexture(_assets->get<Texture>("Go"));
+    setCountdownSparkleTexture(_assets->get<Texture>("Sparkle"));
     
     // Initialize random dirt generation
     // TODO: decide if we still need?
@@ -215,6 +224,7 @@ bool GameplayController::initClient(const std::shared_ptr<cugl::AssetManager>& a
     // set temporary character until host sends message on character
     changeCharTexture(_playerVec[_id - 1], ""); // empty string defaults to Mushroom
     _playerVec[_id - 1]->setChar("");
+
 
     // Initialize bird textures, but do not set a location yet. that is the host's job
     if (_birdActive) {
@@ -283,6 +293,7 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
             _playerVec[i - 1]->setPosition(startingPos);
             
             _playerVec[i - 1]->setVelocity(Vec2::ZERO);
+            _playerVec[i - 1]->setAnimationState(Player::AnimStatus::IDLE);
 
             // Initialize projectiles
             _projectileVec[i - 1] = make_shared<ProjectileSet>();
@@ -312,7 +323,44 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
 }
 
 
-#pragma mark -
+#pragma mark Graphics
+
+/**
+ * Sets the texture for countdown 3.
+ */
+void GameplayController::setCountdown3Texture(const std::shared_ptr<cugl::Texture>& texture) {
+    _countdown3Sprite = SpriteSheet::alloc(texture, 5, 5, 25);
+    _countdown3Sprite->setFrame(0);
+}
+/**
+ * Sets the texture for countdown 2.
+ */
+void GameplayController::setCountdown2Texture(const std::shared_ptr<cugl::Texture>& texture) {
+    _countdown2Sprite = SpriteSheet::alloc(texture, 5, 5, 25);
+    _countdown2Sprite->setFrame(0);
+}
+/**
+ * Sets the texture for countdown 1.
+ */
+void GameplayController::setCountdown1Texture(const std::shared_ptr<cugl::Texture>& texture) {
+    _countdown1Sprite = SpriteSheet::alloc(texture, 5, 5, 25);
+    _countdown1Sprite->setFrame(0);
+}
+/**
+ * Sets the texture for countdown Go.
+ */
+void GameplayController::setCountdownGoTexture(const std::shared_ptr<cugl::Texture>& texture) {
+    _countdownGoSprite = SpriteSheet::alloc(texture, 5, 5, 25);
+    _countdownGoSprite->setFrame(0);
+}
+/**
+ * Sets the texture for countdown sparkles.
+ */
+void GameplayController::setCountdownSparkleTexture(const std::shared_ptr<cugl::Texture>& texture) {
+    _countdownSparkleSprite = SpriteSheet::alloc(texture, 7, 5, 35);
+    _countdownSparkleSprite->setFrame(0);
+}
+
 #pragma mark Gameplay Handling
 void GameplayController::reset() {
     _playerVec = { nullptr, nullptr, nullptr, nullptr };
@@ -333,6 +381,7 @@ void GameplayController::reset() {
     _currentDirtAmount = 0;
 
     _gameOver = false;
+    _gameStart = false;
     _gameWin = false;
 }
 
@@ -354,18 +403,20 @@ void GameplayController::setCharacters(std::vector<std::string>& chars) {
     for (int i = 0; i < _numPlayers; i++) {
         auto player = _playerVec[i];
         changeCharTexture(player, chars[i]);
-        player->setChar(chars[i]);
         CULog("character: %a", chars[i].c_str());
     }
 }
 
 void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std::string charChoice) {
+    player->setChar(charChoice);
+    player->setColor();
     if (charChoice == "Frog") {
         player->setIdleTexture(_assets->get<Texture>("idle_frog"));
         player->setWipeTexture(_assets->get<Texture>("wipe_frog"));
         player->setShooTexture(_assets->get<Texture>("shoo_frog"));
         player->setThrowTexture(_assets->get<Texture>("throw_frog"));
         player->setProfileTexture(_assets->get<Texture>("profile_frog"));
+        player->setWarnTexture(_assets->get<Texture>("warn_frog"));
     }
     else if (charChoice == "Flower") {
         player->setIdleTexture(_assets->get<Texture>("idle_flower"));
@@ -373,6 +424,8 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
         player->setShooTexture(_assets->get<Texture>("shoo_flower"));
         player->setThrowTexture(_assets->get<Texture>("throw_flower"));
         player->setProfileTexture(_assets->get<Texture>("profile_flower"));
+        player->setWarnTexture(_assets->get<Texture>("warn_flower"));
+
     }
     else if (charChoice == "Chameleon") {
         player->setIdleTexture(_assets->get<Texture>("idle_chameleon"));
@@ -380,6 +433,8 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
         player->setShooTexture(_assets->get<Texture>("shoo_chameleon"));
         player->setThrowTexture(_assets->get<Texture>("throw_chameleon"));
         player->setProfileTexture(_assets->get<Texture>("profile_chameleon"));
+        player->setWarnTexture(_assets->get<Texture>("warn_chameleon"));
+
     }
     else {
         player->setIdleTexture(_assets->get<Texture>("idle_mushroom"));
@@ -387,6 +442,8 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
         player->setShooTexture(_assets->get<Texture>("shoo_mushroom"));
         player->setThrowTexture(_assets->get<Texture>("throw_mushroom"));
         player->setProfileTexture(_assets->get<Texture>("profile_mushroom"));
+        player->setWarnTexture(_assets->get<Texture>("warn_mushroom"));
+
     }
 }
 
@@ -429,6 +486,35 @@ cugl::Vec2 GameplayController::getWorldPosition(cugl::Vec2 boardPos) {
     float x_coor = boardPos.x * _windowVec[_id - 1]->getPaneWidth() + _windowVec[_id - 1]->sideGap;
     float y_coor = boardPos.y * _windowVec[_id - 1]->getPaneHeight();
     return Vec2(x_coor, y_coor);
+}
+
+void GameplayController::advanceCountDownAnim(bool ishost) {
+    if (_countDownFrames < _maxCountDownFrames) {
+        // frame timer for next frame
+        if (_countDownFrames % 2 == 0) {
+            getCurrentCountdownSprite()->setFrame((int) _countDownFrames / 2 % 25);
+            _countdownSparkleSprite->setFrame((int) _countDownFrames / 2 % 35);
+        }
+        //only host steps forward animation and it sends frame number to clients
+        if (ishost) {
+            _countDownFrames += 1;
+        }
+    } else {
+        _gameStart = true;
+    }
+}
+
+std::shared_ptr<cugl::SpriteSheet> GameplayController::getCurrentCountdownSprite() {
+    int curFrame = _countDownFrames / (25 * 2);
+    if (curFrame == 0) {
+        return _countdown3Sprite;
+    } else if (curFrame == 1) {
+        return _countdown2Sprite;
+    } else if (curFrame == 2) {
+        return _countdown1Sprite;
+    } else {
+        return _countdownGoSprite;
+    }
 }
 
 /**
@@ -486,6 +572,10 @@ std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getBoardState(int i
         boardState->animState = float(4);
     }
     
+    // TODO: add countdown frames to struct
+    // if (!_gameStart) {
+    //     json->appendValue("countdown_frame", std::to_string(_countDownFrames));
+    // }
     cugl::Vec2 playerBoardPos = getBoardPosition(player->getPosition());
     if (!isPartial) {
         boardState->playerX = float(playerBoardPos.x);
@@ -572,7 +662,7 @@ std::shared_ptr<NetStructs::DIRT_STATE> GameplayController::getDirtState(int id)
     "curr_board": "0",
     "player_x": "3.0",
     "player_y": "4.0",
-    "anim_state": "WIPING",
+    "anim_state": "1",
     "timer": "145",
     "bird_pos": ["2.4", "6.0"],
     "bird_facing_right": true,
@@ -586,7 +676,7 @@ std::shared_ptr<NetStructs::DIRT_STATE> GameplayController::getDirtState(int id)
             },
             {
                 "pos": ["5.0", "0.2"],
-                "vel": ["0", "-2"],
+                "vel": [],
                 "dest": ["12.23", "23.5"],
                 "type": "POOP"
             }
@@ -596,6 +686,7 @@ std::shared_ptr<NetStructs::DIRT_STATE> GameplayController::getDirtState(int id)
  * Example board state (partial message):
  * {
     "player_id":  "1",
+    "countdown_frame": "20",
     "player_char": "Frog",
     "has_won": "false",
     "num_dirt": "1",
@@ -628,6 +719,13 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
             setWin(playerId == _id);
             return;
     }
+    /** TODO: add into structs 
+    _progressVec[playerId - 1] = std::stod(data->getString("progress", "0"));
+    // set to some random default high value indicating count down is over
+    if (!_gameStart) {
+        _countDownFrames = std::stod(data->getString("countdown_frame", "5000"));
+        advanceCountDownAnim(false);
+    } */
     Vec2 playerBoardPos(data->playerX, data->playerY);
 
     _progressVec[playerId - 1] = data->progress;
@@ -907,6 +1005,7 @@ void GameplayController::processDirtThrowRequest(std::vector<std::byte> msg) {
     std::shared_ptr<NetStructs::DIRT_REQUEST> dirtRequest = netStructs.deserializeDirtRequest(msg);
     int source_id = dirtRequest->playerIdSource;
     int target_id = dirtRequest->playerIdTarget;
+    _playerVec[source_id - 1]->setAnimationState(Player::THROWING);
     Vec2 dirt_pos(dirtRequest->dirtPosX, dirtRequest->dirtPosY);
     Vec2 dirt_vel(dirtRequest->dirtVelX, dirtRequest->dirtVelY);
     Vec2 dirt_dest(dirtRequest->dirtDestX, dirtRequest->dirtDestY);
@@ -971,7 +1070,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     // host steps all boards forward
     if (_ishost) {
         // update time
-        if ((_gameTimeLeft >= 1)) {
+        if (_gameTimeLeft >= 1 && _gameStart) {
             _frame = _frame + 1;
         } if (_frame == _fps) {
             _gameTimeLeft = max(0, _gameTimeLeft - 1);
@@ -992,7 +1091,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         }
 
         // update bird if active
-        if (_birdActive) {
+        if (_birdActive && _gameStart) {
             _bird.move();
             std::shared_ptr<WindowGrid> windows = _windowVec[_curBirdBoard - 1];
             std::shared_ptr<ProjectileSet> projectiles = _projectileVec[_curBirdBoard - 1];
@@ -1005,9 +1104,13 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 }
             }
         }
-
-        for (int i = 0; i < _numPlayers; i++) {
-            stepForward(_playerVec[i], _windowVec[i], _projectileVec[i]);
+        
+        if (!_gameStart) {
+            advanceCountDownAnim();
+        } else {
+            for (int i = 0; i < _numPlayers; i++) {
+                stepForward(_playerVec[i], _windowVec[i], _projectileVec[i]);
+            }
         }
         
         std::string host_uuid = _network.getConnection()->getUUID();
@@ -1057,19 +1160,19 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     int myCurBoard = _allCurBoards[_id - 1];
     if (myCurBoard != 0) {
         bool ifSwitch = false;
-        float button_x = myCurBoard == -1 ? getSize().width - _windowVec[_id-1]->sideGap + 150 : _windowVec[_id - 1]->sideGap - 150;
-        float arc_start = myCurBoard == -1 ? 270 : 90;
-        float arc_rotate_angle = myCurBoard == -1 ? 0 : M_PI;
+        float button_x = myCurBoard == 1 ? getSize().width - _windowVec[_id-1]->sideGap + 150 : _windowVec[_id - 1]->sideGap - 150;
+        float arc_start = myCurBoard == 1 ? 270 : 90;
+        float arc_rotate_angle = myCurBoard == 1 ? 0 : M_PI;
         cugl::Vec2 buttonPos(button_x, SCENE_HEIGHT / 2);
         dirtThrowButton->setPosition(buttonPos);
         dirtThrowArc->setPosition(buttonPos);
         dirtThrowArc->setAngle(arc_rotate_angle);
-        if ((myCurBoard == -1 && _input.getDir().x == 1) || (myCurBoard == 1 && _input.getDir().x == -1)) {
+        if ((myCurBoard == 1 && _input.getDir().x == 1) || (myCurBoard == -1 && _input.getDir().x == -1)) {
             ifSwitch = true;
         }
         if (_currentDirtAmount > 0) {
             // _dirtThrowInput.update();
-            float player_x = myCurBoard == -1 ? getSize().width - _windowVec[_id - 1]->sideGap : _windowVec[_id - 1]->sideGap;
+            float player_x = myCurBoard == 1 ? getSize().width - _windowVec[_id - 1]->sideGap : _windowVec[_id - 1]->sideGap;
             cugl::Vec2 playerPos(player_x, _playerVec[_id-1]->getPosition().y);
             if (!_dirtSelected) {
                 if (dirtCon.didPress() && dirtThrowButton->isDown()) {
@@ -1081,7 +1184,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 if (dirtCon.didRelease()) {
                     _dirtSelected = false;
                     Vec2 diff = worldPos - _prevInputPos;
-                    if ((myCurBoard == 1 && diff.x > 0) || (myCurBoard == -1 && diff.x < 0)) {
+                    if ((myCurBoard == -1 && diff.x > 0) || (myCurBoard == 1 && diff.x < 0)) {
                         diff.x = 0;
                     }
                     if (diff.length() > dirtThrowArc->getWidth() / 2) {
@@ -1106,7 +1209,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     // cugl::Vec2 buttonPos(button_x, dirtThrowButton->getPositionY());
                     std::vector<Vec2> vertices = { playerPos };
                     Vec2 diff = worldPos - _prevInputPos;
-                    if ((myCurBoard == 1 && diff.x > 0) || (myCurBoard == -1 && diff.x < 0)) {
+                    if ((myCurBoard == -1 && diff.x > 0) || (myCurBoard == 1 && diff.x < 0)) {
                         diff.x = 0;
                     }
                     if (diff.length() > dirtThrowArc->getWidth() / 2) {
@@ -1130,7 +1233,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         }
     }
     // When a player is on their own board
-    else if (myCurBoard == 0) {
+    else if (myCurBoard == 0 && _gameStart) {
         if (!_ishost) {
             // Read the keyboard for each controller.
 //            _input.update();
@@ -1274,15 +1377,14 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
 
         // note: the frame updates only update to the host's local state.
         // the host only sends over movement/positioning updates
-        if (player->getStunFrames() > 0) {
-            player->decreaseStunFrames();
-        } 
-        else {
-            player->move();
-        }
-        player->advanceAnimation();
-        player->move();
+        // if (player->getStunFrames() > 0) {
+        //     player->decreaseStunFrames();
+        // } 
+        // else {
+        //     player->move();
+        // }
         
+        player->move();
         
         // remove any dirt the player collides with
         Vec2 grid_coors = player->getCoorsFromPos(windows->getPaneHeight(), windows->getPaneWidth(), windows->sideGap);
@@ -1290,15 +1392,22 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
 
         int clamped_y = std::clamp(static_cast<int>(grid_coors.y), 0, windows->getNVertical() - 1);
         int clamped_x = std::clamp(static_cast<int>(grid_coors.x), 0, windows->getNHorizontal() - 1);
-        bool dirtRemoved = windows->removeDirt(clamped_y, clamped_x);
-        if (dirtRemoved) {
+        bool dirtExists = windows->hasDirt(clamped_y, clamped_x);
+        if (dirtExists) {
             // filling up dirty bucket
             // set amount of frames plaer is frozen for for cleaning dirt
-            player->setAnimationState("WIPING");
-            if (player_id == _id) {
-                AudioEngine::get()->play("clean", _clean, false, _clean->getVolume(), true);
-            };
-            _allDirtAmounts[player_id - 1] = min(_maxDirtAmount, _allDirtAmounts[player_id - 1] + 1);
+            if (_cleanInProgress && player->getAnimationState() == Player::IDLE) {
+                windows->removeDirt(clamped_y, clamped_x);
+                _allDirtAmounts[player_id - 1] = min(_maxDirtAmount, _allDirtAmounts[player_id - 1] + 1);
+                _cleanInProgress = false;
+            }
+            else if (player->getAnimationState() == Player::IDLE) {
+                if (player_id == _id) {
+                    AudioEngine::get()->play("clean", _clean, false, _clean->getVolume(), true);
+                };
+                player->setAnimationState(Player::AnimStatus::WIPING);
+                _cleanInProgress = true;
+            }
         }
 
         // Check for collisions and play sound
@@ -1307,31 +1416,29 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
             if (player_id == _id) {
                 AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
             };
+            player->setAnimationState(Player::STUNNED);
             if (collision_result.second.has_value()) {
                 landedDirts.push_back(collision_result.second.value());
             }
         }
+        player->advanceAnimation();
         
         if (!_birdLeaving && _curBirdBoard == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.5)) {
             // set amount of frames plaer is frozen for for shooing bird
-            player->resetShooFrames();
-            player->setAnimationState("SHOOING");
-            _birdLeaving = true;
+            if (player->getAnimationState() == Player::AnimStatus::IDLE) {
+                player->setAnimationState(Player::AnimStatus::SHOOING);
+                _bird.resetBirdPathToExit(windows->getNHorizontal());
+                _birdLeaving = true;
+            }
         }
         
-        if (_birdLeaving && player->getAnimationState() != Player::SHOOING) {
-            // send bird away after shooing
-            _bird.resetBirdPathToExit(windows->getNHorizontal());
-        }
+        //if (_birdLeaving && player->getAnimationState() != Player::SHOOING) {
+          //  // send bird away after shooing
+          //  _bird.resetBirdPathToExit(windows->getNHorizontal());
+       // }
         
         if (_birdLeaving && _bird.birdReachesExit()) {
-            _curBirdBoard = _bird.isFacingRight() ? _curBirdBoard + 1 : _curBirdBoard - 1;
-            if (_curBirdBoard == 0) {
-                _curBirdBoard = _numPlayers;
-            }
-            if (_curBirdBoard > _numPlayers) {
-                _curBirdBoard = 1;
-            }
+            _curBirdBoard = std::distance(_progressVec.begin(), std::max_element(_progressVec.begin(), _progressVec.end())) + 1;
             
             std::uniform_int_distribution<> distr(0, windows->getNVertical() - 1);
             int spawnRow = distr(_rng);
@@ -1434,48 +1541,95 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     auto playerLeft = _playerVec[leftId - 1];
     auto playerRight = _playerVec[rightId - 1];
     if (_allCurBoards[_id-1] == 0) {
-        _windowVec[_id-1]->draw(batch, getSize());
+        _windowVec[_id-1]->draw(batch, getSize(), Color4(255, 255, 255, 255));
         player->draw(batch, getSize());
 
-        if (leftId != _id && rightId != _id) {
-            Affine2 leftTrans = Affine2();
-            leftTrans.translate(playerLeft->getProfileTexture()->getSize() * -0.5);
-            leftTrans.scale(0.4);
-            leftTrans.translate(_windowVec[_id - 1]->sideGap - 50, player->getPosition().y);
-            batch->draw(playerLeft->getProfileTexture(), Vec2(), leftTrans);
-            Affine2 leftTransArrow = Affine2();
-            leftTransArrow.scale(0.75);
-            leftTransArrow.translate(_windowVec[_id - 1]->sideGap - 130, player->getPosition().y - (_arrowTexture->getHeight() / 2));
-            batch->draw(_arrowTexture, Vec2(), leftTransArrow);
+        // character indicators drawing start
+        auto yTransLeft = playerLeft->getPosition().y;
+        auto yTransRight = playerRight->getPosition().y;
+        auto screenMinY = player->getPosition().y - SCENE_HEIGHT / 2.0 + 90;
+        auto screenMaxY = player->getPosition().y + SCENE_HEIGHT / 2.0 - 90;
 
-            Affine2 rightTrans = Affine2();
-            rightTrans.translate(playerRight->getProfileTexture()->getSize() * -0.5);
-            rightTrans.scale(0.4);
-            rightTrans.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, player->getPosition().y);
-            batch->draw(playerRight->getProfileTexture(), Vec2(), rightTrans);
-            Affine2 rightTransArrow = Affine2();
-            rightTransArrow.scale(Vec2(-0.75, 0.75));
-            rightTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 130, player->getPosition().y - (_arrowTexture->getHeight() / 2));
-            batch->draw(_arrowTexture, Vec2(), rightTransArrow);
-        }
+        auto leftPlayerTexture = playerLeft->getProfileTexture();
+        auto rightPlayerTexture = playerRight->getProfileTexture();
+        bool isAttackingOnScreen = false; // when true, ignore indicator drawing
 
-        if (_allCurBoards[leftId-1] == 1) {
+        if (_allCurBoards[leftId - 1] == 1) {
             // left neighbor is on this player's board
-            playerLeft->drawPeeking(batch, getSize(), _allCurBoards[leftId - 1], _windowVec[_id-1]->sideGap);
-            // TODO: draw danger/warning
+            playerLeft->drawPeeking(batch, getSize(), _allCurBoards[leftId - 1], _windowVec[_id - 1]->sideGap);
+            leftPlayerTexture = playerLeft->getWarnTexture();
+            isAttackingOnScreen = yTransLeft < screenMaxY && yTransLeft > screenMinY;
         }
-        if (_allCurBoards[rightId-1] == -1) {
+        if (_allCurBoards[rightId - 1] == -1) {
             // right neighbor is on this player's board
             playerRight->drawPeeking(batch, getSize(), _allCurBoards[rightId - 1], _windowVec[_id - 1]->sideGap);
-            // TODO: draw danger/warning
+            rightPlayerTexture = playerRight->getWarnTexture();
+            isAttackingOnScreen = yTransRight < screenMaxY && yTransRight > screenMinY;
         }
+
+        if (leftId != _id && rightId != _id && !isAttackingOnScreen) {
+            
+            Affine2 leftTrans = Affine2();
+            leftTrans.translate(leftPlayerTexture->getSize() * -0.5);
+            leftTrans.scale(0.35);
+
+            Affine2 rightTrans = Affine2();
+            rightTrans.translate(rightPlayerTexture->getSize() * -0.5);
+            rightTrans.scale(0.35);
+
+            Affine2 leftTransArrow = Affine2();
+            leftTransArrow.translate(_arrowTexture->getSize() * -0.5);
+            leftTransArrow.scale(0.75);
+            Affine2 rightTransArrow = Affine2();
+            rightTransArrow.translate(_arrowTexture->getSize() * -0.5);
+            rightTransArrow.scale(Vec2(-0.75, 0.75));
+
+            if (yTransLeft > screenMaxY) {
+                yTransLeft = screenMaxY;
+                leftTransArrow.rotate(3.0 * M_PI / 2.0);
+                leftTransArrow.translate(_windowVec[_id - 1]->sideGap - 50, yTransLeft + 60);
+            }
+            else if (yTransLeft < screenMinY) {
+                yTransLeft = screenMinY;
+                leftTransArrow.rotate(M_PI / 2.0);
+                leftTransArrow.translate(_windowVec[_id - 1]->sideGap - 50, yTransLeft - 60);
+            }
+            else {
+                leftTransArrow.translate(_windowVec[_id - 1]->sideGap - 100, yTransLeft);
+            }
+
+            if (yTransRight > screenMaxY) {
+                yTransRight = screenMaxY;
+                rightTransArrow.rotate(M_PI / 2.0);
+                rightTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransRight + 60);
+            }
+            else if (yTransRight < screenMinY) {
+                yTransRight = screenMinY;
+                rightTransArrow.rotate(3.0 * M_PI / 2.0);
+                rightTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransRight - 60);
+            }
+            else {
+                rightTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 100, yTransRight);
+            }
+            
+            batch->draw(_arrowTexture, Vec2(), leftTransArrow);
+            batch->draw(_arrowTexture, Vec2(), rightTransArrow);
+
+            leftTrans.translate(_windowVec[_id - 1]->sideGap - 50, yTransLeft);
+            batch->draw(leftPlayerTexture, Vec2(), leftTrans);
+            
+            rightTrans.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransRight);
+            batch->draw(rightPlayerTexture, Vec2(), rightTrans);
+        }
+        // character indicators drawing end
+
         _projectileVec[_id-1]->draw(batch, getSize(), _windowVec[_id - 1]->getPaneWidth(), _windowVec[_id - 1]->getPaneHeight());
         if (_curBirdBoard == _id) {
             _bird.draw(batch, getSize(), _curBirdPos);
         }
     }
     else if (_allCurBoards[_id-1] == -1 && leftId != _id) {
-        _windowVec[leftId - 1]->draw(batch, getSize());
+        _windowVec[leftId - 1]->draw(batch, getSize(), playerLeft->getColor());
         if (_allCurBoards[leftId - 1] == 0) {
             playerLeft->draw(batch, getSize());
         }
@@ -1501,7 +1655,7 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         }
     }
     else if (_allCurBoards[_id - 1] == 1 && rightId != _id) {
-        _windowVec[rightId - 1]->draw(batch, getSize());
+        _windowVec[rightId - 1]->draw(batch, getSize(), playerRight->getColor());
         if (_allCurBoards[rightId - 1] == 0) {
             playerRight->draw(batch, getSize());
         }
@@ -1525,8 +1679,6 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
             _bird.draw(batch, getSize(), _curBirdPos);
         }
     }
-    
-
 }
 
 
@@ -1536,14 +1688,39 @@ void GameplayController::setActive(bool f) {
         _isActive=false;
         setRequestForMenu(false);
         setGameOver(false);
+        setGameStart(false);
         setWin(false);
     } else {
         _isActive = true;
         _audioController->playGameplayMusic();
         setRequestForMenu(false);
         setGameOver(false);
+        setGameStart(false);
         setWin(false);
         _frameCountForWin = 0;
+        _countDownFrames = 0;
     };
     _gameTimeLeft = _gameTime;
+}
+
+void GameplayController::drawCountdown(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Vec3 campos, cugl::Size s) {
+    if (!_gameStart) {
+        Affine2 countdownTrans;
+        Affine2 sparkleTrans;
+        double countdownScale;
+        double sparkleHScale;
+        double sparkleWScale;
+        std::shared_ptr<cugl::SpriteSheet> currentCountdownSprite = getCurrentCountdownSprite();
+        currentCountdownSprite->setOrigin(Vec2(currentCountdownSprite->getFrameSize().width/2, currentCountdownSprite->getFrameSize().height/2));
+        _countdownSparkleSprite->setOrigin(Vec2(_countdownSparkleSprite->getFrameSize().width/2, _countdownSparkleSprite->getFrameSize().height/2));
+        countdownScale = (float)getSize().getIHeight() / currentCountdownSprite->getFrameSize().height / 2;
+        sparkleHScale = (float)getSize().getIHeight() / _countdownSparkleSprite->getFrameSize().height / 2;
+        sparkleWScale = (float)getSize().getIWidth() / _countdownSparkleSprite->getFrameSize().width * 1.4 / 2;
+        countdownTrans.scale(countdownScale);
+        sparkleTrans.scale(Vec2(sparkleWScale, sparkleHScale));
+        countdownTrans.translate(campos);
+        sparkleTrans.translate(campos);
+        _countdownSparkleSprite->draw(batch, sparkleTrans);
+        currentCountdownSprite->draw(batch, countdownTrans);
+    }
 }

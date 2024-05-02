@@ -27,20 +27,13 @@ public:
         SHOOING,
         /** Character in stunned state */
         STUNNED,
+        /** Character in throwing state */
+        THROWING,
     };
     
-    const std::map<std::string, AnimStatus> stringToAnimStatusMap = {
-            {"IDLE", IDLE},
-            {"WIPING", WIPING},
-            {"SHOOING", SHOOING},
-            {"STUNNED", STUNNED}
-    };
     
-    const std::string animStatusNames[4] = {"IDLE", "WIPING", "SHOOING", "STUNNED"};
-
-    std::string animStatustoString(AnimStatus state) {
-        return animStatusNames[state];
-    }
+    const std::vector<AnimStatus> animStatusNames = { IDLE, WIPING, SHOOING, STUNNED, THROWING };
+    std::map<AnimStatus, int> statusToInt;
     
 private:
     /** The player's id */
@@ -69,34 +62,19 @@ private:
     // used to discretize movement
     float _windowWidth;
     
-       
-    // TODO: remove unnecessary fields from here and constants json file
-    // The following are protected, because they have no accessors
-    /** The amount of health this ship has */
-    int _health;
     /** The amount of time in frames for the player to be stunned */
     int _stunFrames;
     
     /** A property to adjust the rotation of the player when player colides. Resets to zero when stun frames is zero. */
     float _stunRotate;
-
-    // JSON DEFINED ATTRIBUTES
-    /** Mass/weight of the ship. Used in collisions. */
-    float _mass;
-    /** The shadow offset in pixels */
-    //float _shadows;
-    /** Amount to adjust forward movement from input */
-    float _thrust;
-    /** The maximum allowable velocity */
-    float _maxvel;
     
     /** The shadow offset in pixels */
     float _shadows;
     // Asset references. These should be set by GameScene
     /** The number of columns in the sprite sheet */
-    int _framecols;
+    int _wipeframecols;
     /** The number of frames in the sprite sheet */
-    int _framesize;
+    int _wipeframesize;
     /** total number of frames*/
     int _maxwipeFrame;
     // number of frames that the player is wiping for
@@ -121,19 +99,27 @@ private:
     int _throwframecols;
     /** The number of frames in the throw sprite sheet */
     int _throwframesize;
+    /** total number of frames */
+    int _maxthrowFrame;
+    // number of frames that the player is throwing
+    int _throwFrames;
 
     /** player profile texture */
     std::shared_ptr<cugl::Texture> _profileTexture;
+    /** player warning sign texture */
+    std::shared_ptr<cugl::Texture> _warnTexture;
     /** player idle sprite sheet */
-    std::shared_ptr<cugl::SpriteSheet> _idleSprite;
+    std::shared_ptr<cugl::Texture> _idleSprite;
     /** Reference to the player wiping animation sprite sheet */
-    std::shared_ptr<cugl::SpriteSheet> _wipeSprite;
+    std::shared_ptr<cugl::Texture> _wipeSprite;
     /** Reference to the player shooing animation sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _shooSprite;
     /** Reference to the player throwing animation sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _throwSprite;
     /** Radius of the ship in pixels (derived from sprite sheet) */
     float _radius;
+    /** Color of this character to tint their board */
+    cugl::Color4 _color;
 
 public:
     
@@ -169,11 +155,36 @@ public:
     /** Sets the character of the player. */
     void setChar(std::string c) { CULog("here: %a", c.c_str()); _character = c; }
 
+    /** Returns the tint color */
+    const cugl::Color4 getColor() { return _color; }
+
+    /** Sets the tint color */
+    void setColor() {
+        if (_character == "Flower") {
+            _color = cugl::Color4(255, 255, 100, 255);
+        }
+        else if (_character == "Frog") {
+            _color = cugl::Color4(150, 255, 255, 255);
+        }
+        else if (_character == "Chameleon") {
+            _color = cugl::Color4(150, 255, 150, 255);
+        }
+        else {
+            _color = cugl::Color4(255, 100, 100, 255);
+        }
+    }
+
     /** Sets the profile texture of the player */
     void setProfileTexture(std::shared_ptr<cugl::Texture> t) { _profileTexture = t; }
     
     /** Gets the profile texture of the player */
     std::shared_ptr<cugl::Texture> getProfileTexture() { return _profileTexture; }
+
+    /** Sets the warning sign texture of the player when they are peeking */
+    void setWarnTexture(std::shared_ptr<cugl::Texture> t) { _warnTexture = t; }
+
+    /** Gets the warning sign texture of the player */
+    std::shared_ptr<cugl::Texture> getWarnTexture() { return _warnTexture; }
 
     /**
      * Returns the position of this ship.
@@ -229,58 +240,16 @@ public:
      */
     const cugl::Vec2& getCoorsFromPos(const float windowHeight, const float windowWidth, const float sideGap);
     
-    void setAnimationState(std::string as) {
-        auto it = stringToAnimStatusMap.find(as);
-        if (it != stringToAnimStatusMap.end()) {
-            if (it->second != _animState) {
-                resetAnimationFrames();
-                _animState = it->second;
-            }
-            return;
-        } else {
-            _animState = IDLE;
-        }
+    void setAnimationState(AnimStatus as) {
+        if (as != _animState) {
+            if (_animState == STUNNED && as != IDLE) return;
+            resetAnimationFrames();
+            // _throwing = true;
+            _animState = as;
+        } 
     };
     
     AnimStatus getAnimationState() { return _animState; };
-    
-    /**
-     * Returns the angle that this ship is facing.
-     *
-     * The angle is specified in degrees. The angle is counter clockwise
-     * from the line facing north.
-     *
-     * @return the angle of the ship
-     */
-    //float getAngle() const { return _ang; }
-    
-    /**
-     * Sets the angle that this ship is facing.
-     *
-     * The angle is specified in degrees. The angle is counter clockwise
-     * from the line facing north.
-     *
-     * @param value the angle of the ship
-     */
-    //void setAngle(float value) { _ang = value; }
-    
-    /**
-     * Returns the current player's health.
-     *
-     * When the health of the player is 0, it is "dead"
-     *
-     * @return the current player health.
-     */
-    int getHealth() const { return _health; }
-
-    /**
-     * Sets the current ship health.
-     *
-     * When the health of the ship is 0, it is "dead"
-     *
-     * @param value The current ship health.
-     */
-    void setHealth(int value);
 
     /**
      * Returns the current player's stunned time in frames.
@@ -302,131 +271,37 @@ public:
     void resetAnimationFrames() {
         _wipeFrames = 0;
         _shooFrames = 0;
+        _stunFrames = 60;
+        _throwFrames = 0;
     }
-    
-    /**
-     * Returns the current player's maximum wipe time in frames.
-     */
-    int getMaxWipeFrames() const { return _maxwipeFrame; }
-    
-    /**
-     * Gets the amount of frames that the player is wiping dirt for
-     * @returns _wipeFrames
-     */
-    int getWipeFrames() {
-        return _wipeFrames;
-    }
-    
-    /** Sets the wipe frames */
-    void setWipeFrames(int n) { _wipeFrames = n; }
-    
-    /**
-     * Sets the player's shoo time to the inital frames to play and freeze the player.
-     *
-     * @param value The time in frames to stun the player.
-     */
-    void resetShooFrames() { _shooFrames = 0; }
-    
-    /**
-     * Returns the current player's maximum shoo time in frames.
-     */
-    int getMaxShooFrames() const { return _maxshooFrame; }
-    
-    /**
-     * Gets the amount of frames that the player is shooing bird for
-     * @returns _shooFrames
-     */
-    int getShooFrames() {
-        return _shooFrames;
-    }
-    
-    /** Sets the shoo frames */
-    void setShooFrames(int n) { _shooFrames = n; }
     
     /**
      * Sets the player's movement freeze time to the given time in frames
      * .Used when player wipes dirt
      */
-    void advanceWipeFrame() {
-        int step = _maxwipeFrame / _framesize;
-        if (_wipeFrames < _maxwipeFrame) {
-            if (_wipeFrames % step == 0) {
-                _wipeSprite->setFrame((int) _wipeFrames / step);
-                // CULog("drawing frame %d", (int) (_wipeFrames / step) % _framesize);
-            }
-            _wipeFrames += 1;
-        } else {
-            CULog("it is here");
-            _wipeSprite->setFrame(0);
-            setAnimationState("IDLE");
-        }
-    };
+    void advanceWipeFrame();
     
     /**
      * Sets the player's movement freeze time to the given time in frames
      * .Used when player shoos bird
      */
-    void advanceShooFrame() {
-        int step = _maxshooFrame / _shooframesize;
-        if (_shooFrames < _maxshooFrame) {
-            if (_shooFrames % step == 0) {
-                _shooSprite->setFrame((int) _shooFrames / step);
-                // CULog("drawing frame %d", (int) (_wipeFrames / step) % _framesize);
-            }
-            _shooFrames += 1;
-        } else {
-            _shooSprite->setFrame(0);
-            setAnimationState("IDLE");
-        }
-    };
+    void advanceShooFrame();
+    
+    /**
+     * Sets the player's movement freeze time to the given time in frames
+     * .Used when player throws projectile
+     */
+    void advanceThrowFrame();
     
     /**
      * Advance animation for player idle
      */
-    void advanceIdleFrame() {
-        int step = _maxidleFrame / _idleframesize;
-         if (_idleFrames == _maxidleFrame) {
-             _idleFrames = 0;
-        }
-        if (_idleFrames % step == 0) {
-            _idleSprite->setFrame((int) (_idleFrames / step));
-        }
-        _idleFrames = _idleFrames+1;
-    };
+    void advanceIdleFrame();
     
-    void advanceAnimation() {
-        switch (_animState) {
-            case IDLE:
-                advanceIdleFrame();
-                break;
-            case WIPING:
-                advanceWipeFrame();
-                break;
-            case STUNNED:
-                break;
-            case SHOOING:
-                advanceShooFrame();
-                break;
-            default:
-                advanceIdleFrame();
-                break;
-        }
-    }
+    void advanceAnimation();
 
     /** Decreases the stun frames by one, unless it is already at 0 then does nothing. */
     void decreaseStunFrames();
-
-    /**
-     * Returns the mass of the ship.
-     *
-     * This value is necessary to resolve collisions. It is set by the
-     * initial JSON file.
-     *
-     * @return the ship mass
-     */
-    float getMass() const {
-        return _mass;
-    }
 
     /**
      * Returns the radius of the ship.
@@ -434,7 +309,7 @@ public:
      * This value is necessary to resolve collisions. It is computed from
      * the sprite sheet.
      *
-     * @return the ship radius
+     * @return the player character radius
      */
     float getRadius() {
         return _radius;
@@ -449,7 +324,7 @@ public:
      * //will be ignored.     *
      * @return the texture for the ship
      */
-    const std::shared_ptr<cugl::SpriteSheet>& getIdleSprite() const {
+    const std::shared_ptr<cugl::Texture>& getIdleSprite() const {
         return _idleSprite;
     }
 
@@ -471,7 +346,7 @@ public:
      * in the initializing step.
      * @return the sprite sheet for the ship
      */
-    const std::shared_ptr<cugl::SpriteSheet>& getWipeSprite() const {
+    const std::shared_ptr<cugl::Texture>& getWipeSprite() const {
         return _wipeSprite;
     }
     
@@ -597,7 +472,16 @@ private:
      * @param size      The size of the window (for wrap around)
      */
     void wrapPosition(cugl::Size size);
+    
+#pragma mark utilities
+    
+public:
 
+    std::shared_ptr<cugl::Texture> getSubTexture(std::shared_ptr<cugl::Texture> texture, int size, int cols, int frame);
+    
+    /** applies ease function on given sprite and returns texture index as well as percentage of completion*/
+    std::pair <int,float> getTextureIdxWithEase(cugl::EasingFunction::Type ef, int maxFrameNum, int curFrame, int spriteSize);
+    
 };
 
 #endif /* __SL_SHIP_H__ */
