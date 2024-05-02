@@ -767,13 +767,13 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
     player->setPosition(getWorldPosition(playerBoardPos));
 
     if (data->animState == 1) {
-        player->setAnimationState("IDLE");
+        player->setAnimationState(Player::IDLE);
     } else if (data->animState == 2) {
-        player->setAnimationState("WIPING");
+        player->setAnimationState(Player::WIPING);
     } else if (data->animState == 3) {
-        player->setAnimationState("SHOOING");
+        player->setAnimationState(Player::SHOOING);
     } else if (data->animState == 4) {
-        player->setAnimationState("STUNNED");
+        player->setAnimationState(Player::STUNNED);
     }
     
 
