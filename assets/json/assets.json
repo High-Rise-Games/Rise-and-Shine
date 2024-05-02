@@ -1,16 +1,16 @@
 {
     "textures": {
         "progress": {
-            "file":      "textures/progress.png",
-            "wrapS":     "clamp",
-            "wrapT":     "clamp",
+            "file": "textures/progress.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
             "minfilter": "linear",
             "magfilter": "linear",
-            "atlas":     {
-                "background" : [0,    0, 320, 45],
-                "foreground" : [24,  45, 296, 90],
-                "leftcap"    : [0,   45,  24, 90],
-                "rightcap"   : [296, 45, 320, 90]
+            "atlas": {
+                "background": [ 0, 0, 320, 45 ],
+                "foreground": [ 24, 45, 296, 90 ],
+                "leftcap": [ 0, 45, 24, 90 ],
+                "rightcap": [ 296, 45, 320, 90 ]
             }
         },
         "invalid": {
@@ -43,6 +43,139 @@
         },
         "menu_join": {
             "file": "textures/JoinGameButton.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_background": {
+            "file": "textures/ClientKeypadUI/KeypadBackground.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_title": {
+            "file": "textures/ClientKeypadUI/Title.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_back": {
+            "file": "textures/ClientKeypadUI/Back.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_placeholderText": {
+            "file": "textures/ClientKeypadUI/KeyPadPlaceholder.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_next": {
+            "file": "textures/ClientKeypadUI/Next.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_inputfield": {
+            "file": "textures/ClientKeypadUI/InputID.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_subtitle": {
+            "file": "textures/ClientKeypadUI/Subtitle.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_c": {
+            "file": "textures/ClientKeypadUI/C.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_9": {
+            "file": "textures/ClientKeypadUI/b9.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_8": {
+            "file": "textures/ClientKeypadUI/b8.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_7": {
+            "file": "textures/ClientKeypadUI/b7.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_6": {
+            "file": "textures/ClientKeypadUI/b6.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_5": {
+            "file": "textures/ClientKeypadUI/b5.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_4": {
+            "file": "textures/ClientKeypadUI/b4.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_3": {
+            "file": "textures/ClientKeypadUI/b3.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_2": {
+            "file": "textures/ClientKeypadUI/b2.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_1": {
+            "file": "textures/ClientKeypadUI/b1.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_0": {
+            "file": "textures/ClientKeypadUI/b0.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "keypad_-1": {
+            "file": "textures/ClientKeypadUI/b-1.png",
             "wrapS": "clamp",
             "wrapT": "clamp",
             "minfilter": "linear",
@@ -242,6 +375,18 @@
         "wipe_mushroom": {
             "file": "textures/wipe-mush-4096.png"
         },
+        "shoo_mushroom": {
+            "file": "textures/shoo-m-4096.png"
+        },
+        "shoo_flower": {
+            "file": "textures/shoo-fl-4096.png"
+        },
+        "shoo_chameleon": {
+            "file": "textures/shoo-c-4096.png"
+        },
+        "shoo_frog": {
+            "file": "textures/shoo-fr-4096.png"
+        },
         "idle_flower": {
             "file": "textures/idle-fl-4096.png"
         },
@@ -266,6 +411,33 @@
         "throw_mushroom": {
             "file": "textures/throw-m-4096.png"
         },
+        "profile_flower": {
+            "file": "textures/profile_fl.png"
+        },
+        "profile_chameleon": {
+            "file": "textures/profile_c.png"
+        },
+        "profile_frog": {
+            "file": "textures/profile_fr.png"
+        },
+        "profile_mushroom": {
+            "file": "textures/profile_m.png"
+        },
+        "C1": {
+            "file": "textures/CountDown/C1.png"
+        },
+        "C2": {
+            "file": "textures/CountDown/C2.png"
+        },
+        "C3": {
+            "file": "textures/CountDown/C3.png"
+        },
+        "Go": {
+            "file": "textures/CountDown/Go.png"
+        },
+        "Sparkle": {
+            "file": "textures/CountDown/Sparkle.png"
+        },
         "start_game": {
             "file": "textures/StartButton.png",
             "wrapS": "clamp",
@@ -280,6 +452,9 @@
             "minfilter": "linear",
             "magfilter": "linear"
         },
+        "arrow": {
+            "file": "textures/Arrow.png"
+        },
         "player_id": {
             "file": "textures/PlayerID.png",
             "wrapS": "clamp",
@@ -289,6 +464,21 @@
         },
         "background": {
             "file": "textures/ice.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
+        "nightLevel": {
+            "file": "textures/nightLevel.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
+        "night level background": {
+            "file": "textures/level3_backdrop.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
+        "night level parallax": {
+            "file": "textures/level3_parallax.png",
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
@@ -302,77 +492,122 @@
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
-        "ship": {
-            "file": "textures/ships.png"
-        },
-        "building_1": {
-            "file": "textures/building.png"
-        },
         "window": {
             "file": "textures/GenericWindow.png"
         },
-        "window_1": {
-            "file": "textures/window_1.png"
+        "level1Window1": {
+            "file": "textures/level1Window1.png"
         },
-        "window_2": {
-            "file": "textures/window_2.png"
+        "level1Window2": {
+            "file": "textures/level1Window2.png"
         },
-	"window_3": {
-            "file": "textures/window_3.png"
+        "level2Window1": {
+            "file": "textures/level2Window1.png"
         },
-        "window_4": {
-            "file": "textures/window_4.png"
+        "level2Window2": {
+            "file": "textures/level2Window2.png"
         },
-        "window_5": {
-            "file": "textures/window_5.png"
+        "level3Window1": {
+            "file": "textures/level3Window1.png"
         },
-        "window_6": {
-            "file": "textures/window_6.png"
+        "level3Window2": {
+            "file": "textures/level3Window2.png"
         },
-        "window_7": {
-            "file": "textures/window_7.png"
+        "down_blocked_1": {
+            "file": "textures/down_blocked_1.png"
         },
-        "window_8": {
-            "file": "textures/window_8.png"
+        "left_blocked_1": {
+            "file": "textures/left_blocked_1.png"
         },
-        "window_9": {
-            "file": "textures/window_9.png"
+        "fully_blocked_1": {
+            "file": "textures/fully_blocked_1.png"
         },
-        "window_10": {
-            "file": "textures/window_10.png"
+        "fully_blocked_2": {
+            "file": "textures/fully_blocked_2.png"
         },
-        "window_11": {
-            "file": "textures/window_11.png"
+        "fully_blocked_3": {
+            "file": "textures/fully_blocked_3.png"
         },
-        "window_12": {
-            "file": "textures/window_12.png"
+        "fully_blocked_4": {
+            "file": "textures/fully_blocked_4.png"
         },
-        "window_13": {
-            "file": "textures/window_13.png"
+        "nightWindow1": {
+            "file": "textures/nightWindow1.png"
         },
-        "nightmare_window1": {
-            "file": "textures/window1nightmare.png"
+        "nightWindow2": {
+            "file": "textures/nightWindow2.png"
         },
-        "nightmare_window2": {
-            "file": "textures/window2nightmare.png"
+        "nightWindow3": {
+            "file": "textures/nightWindow3.png"
         },
-        "nightmare_window3": {
-            "file": "textures/window3nightmare.png"
+        "nightWindow4": {
+            "file": "textures/nightWindow4.png"
         },
-        "nightmare_window4": {
-            "file": "textures/window4nightmare.png"
+        "nightWindow5": {
+            "file": "textures/nightWindow5.png"
         },
-        "nightmare_window5": {
-            "file": "textures/window5nightmare.png"
+        "dreamywin1": {
+            "file": "textures/dreamywin1.png"
+        },
+        "dreamywin2": {
+            "file": "textures/dreamywin2.png"
+        },
+        "dreamywin3": {
+            "file": "textures/dreamywin3.png"
+        },
+        "dreamywin4": {
+            "file": "textures/dreamywin4.png"
+        },
+        "dreamywin5": {
+            "file": "textures/dreamywin5.png"
+        },
+        "day1Building": {
+            "file": "textures/day1Building.png"
+        },
+        "day2Building": {
+            "file": "textures/day2Building.png"
+        },
+        "day3Building": {
+            "file": "textures/day3Building.png"
+        },
+        "nightBuilding": {
+            "file": "textures/nightBuilding.png"
+        },
+        "dreamyBuilding": {
+            "file": "textures/dreamyBuilding.png"
         },
         "dirt": {
             "file": "textures/GenericDirt.png"
+        },
+        "dirt2": {
+            "file": "textures/dirt2.png"
+        },
+        "level1dirt": {
+            "file": "textures/level1dirt.png"
+        },
+        "faded-dirt": {
+            "file": "textures/FadedDirt.png"
         },
         "bucketempty": {
             "file": "textures/bucket_empty.png"
         },
         "bucketfull": {
             "file": "textures/bucket_full.png"
+        },
+        "throwButton": {
+            "file": "textures/ThrowButton.png"
+        },
+        "throwArcGreen": {
+            "file": "textures/dirtThrowArcGreen.png"
+        },
+        "throwArcRed": {
+            "file": "textures/dirtThrowArcRed.png"
+        },
+        "throwArcBlue": {
+            "file": "textures/dirtThrowArcBlue.png"
+        },
+        "throwArcYellow": {
+            "file": "textures/dirtThrowArcYellow.png"
         },
         "button": {
             "file": "textures/button.png"
@@ -397,6 +632,49 @@
         },
         "countdown1": {
             "file": "textures/countdown1.png"
+        },
+        "progress_bg": {
+            "file": "textures/ProgressBars/Bg.png"
+        },
+        "progress_medal_blue": {
+            "file": "textures/ProgressBars/MedalBlue.png"
+        },
+        "progress_medal_green": {
+            "file": "textures/ProgressBars/MedalGreen.png"
+        },
+        "progress_medal_red": {
+            "file": "textures/ProgressBars/MedalRed.png"
+        },
+        "progress_medal_yellow": {
+            "file": "textures/ProgressBars/MedalYellow.png"
+        },
+        "progress_fg_blue": {
+            "file": "textures/ProgressBars/FgBlue.png",
+            "atlas": {
+                "leftcap": [ 0, 0, 2, 18 ],
+                "rightcap": [ 81, 0, 83, 18 ]
+            }
+        },
+        "progress_fg_green": {
+            "file": "textures/ProgressBars/FgGreen.png",
+            "atlas": {
+                "leftcap": [ 0, 0, 2, 18 ],
+                "rightcap": [ 81, 0, 83, 18 ]
+            }
+        },
+        "progress_fg_red": {
+            "file": "textures/ProgressBars/FgRed.png",
+            "atlas": {
+                "leftcap": [ 0, 0, 2, 18 ],
+                "rightcap": [ 81, 0, 83, 18 ]
+            }
+        },
+        "progress_fg_yellow": {
+            "file": "textures/ProgressBars/FgYellow.png",
+            "atlas": {
+                "leftcap": [ 0, 0, 2, 18 ],
+                "rightcap": [ 81, 0, 83, 18 ]
+            }
         }
     },
     "fonts": {
@@ -433,14 +711,34 @@
             "file": "sounds/clean.wav",
             "volume": 0.4
         },
-        "tower_of_dragons" : {
+        "high_rising" : {
             "type": "sample",
-            "file": "sounds/Swing_Men.mp3",
+            "file": "sounds/high_rising.wav",
             "volume": 0.2
         },
-        "click" : {
+        "riser_riser" : {
             "type": "sample",
-            "file": "sounds/mouse-click.mp3",
+            "file": "sounds/riser_riser.wav",
+            "volume": 0.2
+        },
+        "button_press" : {
+            "type": "sample",
+            "file": "sounds/button_press.mp3",
+            "volume": 0.1
+        },
+        "UI_go" : {
+            "type": "sample",
+            "file": "sounds/UI_go.wav",
+            "volume": 0.05
+        },
+        "UI_back" : {
+            "type": "sample",
+            "file": "sounds/UI_back.wav",
+            "volume": 0.1
+        },
+        "UI_move" : {
+            "type": "sample",
+            "file": "sounds/UI_move.wav",
             "volume": 0.1
         }
     },
@@ -449,7 +747,12 @@
         "server": "json/server.json",
         "templatelevel": "json/templatelevel.json",
         "templatelevel2": "json/templatelevel2.json",
-        "templatelevel3": "json/templatelevel3.json"
+        "templatelevel3": "json/templatelevel3.json",
+        "level1": "json/level1.json",
+        "level2": "json/level2.json",
+        "level3": "json/level3.json",
+        "nightlevel": "json/nightlevel.json",
+        "dreamylevel": "json/dreamylevel.json"
     },
     "widgets": {
         "colorbutton" : "widgets/colorbutton.json",
@@ -467,7 +770,7 @@
         "lose": {
             "type": "Image",
             "data": {
-                "texture": "win-background"
+                "texture": "lose-background"
             }
         },
         "invalid": {
@@ -810,6 +1113,444 @@
                         "y_anchor": "bottom",
                         "y_offset": 85,
                         "x_offset": 860,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                }
+            }
+        },
+        "client_join": {
+            "type": "Image",
+            "format": {
+                "type": "Anchored"
+            },
+            "data": {
+                "texture": "keypad_background"
+            },
+            "children": {
+                "title": {
+                    "type": "Image",
+                    "format": {
+                        "type": "Anchored"
+                    },
+                    "data": {
+                        "texture": "keypad_title",
+                        "anchor": [ 0, 0 ],
+                        "scale": 0.75
+                    },
+                    "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "top",
+                        "y_offset": -130,
+                        "x_offset": -10,
+                        "absolute": true
+                    }
+                },
+                "subtitle": {
+                    "type": "Image",
+                    "format": {
+                        "type": "Anchored"
+                    },
+                    "data": {
+                        "texture": "keypad_subtitle",
+                        "anchor": [ 0, 0 ],
+                        "scale": 0.75
+                    },
+                    "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "top",
+                        "y_offset": -175,
+                        "x_offset": -10,
+                        "absolute": true
+                    }
+                },
+                "inputUI": {
+                    "type": "Image",
+                    "format": {
+                        "type": "Anchored"
+                    },
+                    "data": {
+                        "texture": "keypad_inputfield",
+                        "anchor": [ 0, 0 ],
+                        "scale": 0.72
+                    },
+                    "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "middle",
+                        "y_offset": 60,
+                        "x_offset": -10,
+                        "absolute": true
+                    }
+                },
+                "client_id_field": {
+                    "type": "Textfield",
+                    "format": {
+                        "type": "Anchored"
+                    },
+                    "data": {
+                        "anchor": [ 0, 0 ],
+                        "text": "123456",
+                        "font": "gyparody",
+                        "halign"   : "left",
+                        "valign"   : "middle",
+                        "cursor": false
+                    },
+                    "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "middle",
+                        "y_offset": 60,
+                        "x_offset": 20,
+                        "absolute": true
+                    }
+                },
+                "inputPlaceholder": {
+                    "type": "Image",
+                    "format": {
+                        "type": "Anchored"
+                    },
+                    "data": {
+                        "texture": "keypad_placeholderText",
+                        "anchor": [ 0, 0 ],
+                        "scale": 0.75
+                    },
+                    "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "middle",
+                        "y_offset": 80,
+                        "x_offset": 27,
+                        "absolute": true
+                    }
+                },
+                "back": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.5, 0.5 ],
+                        "scale": 0.75
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_back"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "bottom",
+                        "y_offset": 85,
+                        "x_offset": 60,
+                        "absolute": true
+                    }
+                },
+                "next": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.5, 0.5 ],
+                        "scale": 0.75
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_next"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "bottom",
+                        "y_offset": 85,
+                        "x_offset": -150,
+                        "absolute": true
+                    }
+                },
+                "b1": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.0, 1 ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_1"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -50,
+                        "x_offset": 100,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b2": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.0, 1 ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_2"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -50,
+                        "x_offset": 250,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b3": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.0, 1 ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_3"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -50,
+                        "x_offset": 400,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b4": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.0, 1 ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_4"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -200,
+                        "x_offset": 100,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b5": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.0, 1 ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_5"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -200,
+                        "x_offset": 250,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b6": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.0, 1 ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_6"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -200,
+                        "x_offset": 400,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b7": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.0, 1 ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_7"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -350,
+                        "x_offset": 100,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b8": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.0, 1 ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_8"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -350,
+                        "x_offset": 250,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b9": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.0, 1 ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_9"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -350,
+                        "x_offset": 400,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "bc": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.0, 1 ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_c"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -500,
+                        "x_offset": 100,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b0": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.0, 1 ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_0"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -500,
+                        "x_offset": 250,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b-1": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.0, 1 ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_-1"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -500,
+                        "x_offset": 400,
                         "priority": 1,
                         "absolute": true
                     }
@@ -1585,14 +2326,64 @@
                 "anchor": [ 0.5, 0.5 ]
             },
             "children": {
-                "player bar"  : {
+                "bluebar"  : {
                     "type"   : "Progress",
-                    "data"   : {
-                        "anchor"     : [0.5,0.5],
-                        "background" : "progress_background",
-                        "foreground" : "progress_foreground",
-                        "left_cap"   : "progress_leftcap",
-                        "right_cap"  : "progress_rightcap"
+                    "data": {
+                        "anchor": [ 0.5, 0.5 ],
+                        "background": "progress_bg",
+                        "foreground": "progress_fg_blue",
+                        "left_cap": "progress_fg_blue_leftcap",
+                        "right_cap": "progress_fg_blue_rightcap",
+                        "visible": false
+                    },
+                    "layout": {
+                        "y_offset": 265,
+                        "absolute": true
+                    }
+                },
+                "greenbar"  : {
+                    "type"   : "Progress",
+                    "data": {
+                        "anchor": [ 0.5, 0.5 ],
+                        "background": "progress_bg",
+                        "foreground": "progress_fg_green",
+                        "left_cap": "progress_fg_green_leftcap",
+                        "right_cap": "progress_fg_green_rightcap",
+                        "visible": false
+                    },
+                    "layout": {
+                        "y_offset": 265,
+                        "absolute": true
+                    }
+                },
+                "redbar"  : {
+                    "type"   : "Progress",
+                    "data": {
+                        "anchor": [ 0.5, 0.5 ],
+                        "background": "progress_bg",
+                        "foreground": "progress_fg_red",
+                        "left_cap": "progress_fg_red_leftcap",
+                        "right_cap": "progress_fg_red_rightcap",
+                        "visible": false
+                    },
+                    "layout": {
+                        "y_offset" : 265,
+                        "absolute": true
+                    }
+                },
+                "yellowbar"  : {
+                    "type"   : "Progress",
+                    "data": {
+                        "anchor": [ 0.5, 0.5 ],
+                        "background": "progress_bg",
+                        "foreground": "progress_fg_yellow",
+                        "left_cap": "progress_fg_yellow_leftcap",
+                        "right_cap": "progress_fg_yellow_rightcap",
+                        "visible": false
+                    },
+                    "layout": {
+                        "y_offset" : 265,
+                        "absolute": true
                     }
                 },
                 "back": {
@@ -1612,31 +2403,127 @@
                     "layout": {
                         "x_anchor": "left",
                         "y_anchor": "bottom",
-                        "y_offset": 10,
-                        "x_offset": 10,
+                        "y_offset": 625,
+                        "x_offset": 20,
                         "absolute": true
                     }
                 },
-                "switch": {
+                "throw": {
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        "anchor": [ 0.0, 0.0 ],
-                        "scale": 0.75
+                        "anchor": [ 0.5, 0.5 ],
+                        "scale": 0.2
                     },
                     "children": {
                         "up": {
                             "type": "Image",
                             "data": {
-                                "texture": "switchSceneButton"
+                                "texture": "throwButton"
                             }
                         }
                     },
                     "layout": {
                         "x_anchor": "right",
-                        "y_anchor": "bottom",
-                        "y_offset": 100,
-                        "x_offset": -250,
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "greenarc": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.5, 0.5 ],
+                        "scale": 1.0
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "throwArcGreen"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "redarc": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.5, 0.5 ],
+                        "scale": 1.0
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "throwArcRed"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "bluearc": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.5, 0.5 ],
+                        "scale": 1.0
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "throwArcBlue"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "yellowarc": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [ 0.5, 0.5 ],
+                        "scale": 1.0
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "throwArcYellow"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
                         "priority": 1,
                         "absolute": true
                     }
@@ -1645,3 +2532,4 @@
         }
     }
 }
+

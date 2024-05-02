@@ -12,6 +12,7 @@
 #define __MENU_SCENE_H__
 #include <cugl/cugl.h>
 #include <vector>
+#include "AudioController.h"
 
 
 /**
@@ -41,6 +42,8 @@ public:
 protected:
     /** The asset manager for this scene. */
     std::shared_ptr<cugl::AssetManager> _assets;
+    
+    std::shared_ptr<AudioController> _audioController;
     /** The menu button for hosting a game */
     std::shared_ptr<cugl::scene2::Button> _hostbutton;
     /** The menu button for joining a game */
@@ -87,6 +90,10 @@ public:
      * @return true if the controller is initialized properly, false otherwise.
      */
     bool init(const std::shared_ptr<cugl::AssetManager>& assets);
+    
+    /** Sets the pointer to the audio controller from app */
+    void setAudioController(std::shared_ptr<AudioController> audioController) {_audioController = audioController;};
+    
 
     /**
      * Sets whether the scene is currently active

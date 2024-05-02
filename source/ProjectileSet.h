@@ -16,7 +16,7 @@ Inherits the behaviour of a projectile object.
  * all common information in the ProjectileSet. Individual projectile information (scale, texture,
  * velocity, and position) goes in the projectile itself.
  *
- * ProjectileSet is composed of two unordered sets: current and pending. Since it is not safe 
+ * ProjectileSet is composed of two unordered sets: current and pending. Since it is not safe
  * to ADD elements to a set when you loop over it, when we spawn a new projectile, it is not added to the
  * current set immediately. Instead, it is added to the pending set. Projectiles are
  * moved from the pending set to the current set when we call {@link #update}. So
@@ -33,10 +33,12 @@ public:
         cugl::Vec2 position;
         /** projectile velocity */
         cugl::Vec2 velocity;
-        /** projectile destination, ONLY active for dirt*/
+        /** projectile destination, ONLY active for dirt. In board position. */
         cugl::Vec2 destination;
         /** type of projectile */
         ProjectileType type;
+        /** amount of dirt to land */
+        int spawnAmount;
     
     private:
         /** The drawing scale factor for this projectile */
@@ -54,10 +56,10 @@ public:
 
     public:
 
-        /** Use this constructor to generate a specialized projectile 
+        /** Use this constructor to generate a specialized projectile
          * @param t     type of projectile
         */
-        Projectile(const cugl::Vec2 p, const cugl::Vec2 v, const cugl::Vec2 dest, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t);
+        Projectile(const cugl::Vec2 p, const cugl::Vec2 v, const cugl::Vec2 dest, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t, int s);
 
         /** sets projectile scale for drawing */
         void setScale(float s) { _scaleFactor = s; }
@@ -87,7 +89,7 @@ public:
 
         /**
          * Returns the radius of the projectile.
-         * 
+         *
          * @return radius
          */
         float getRadius() const { return _radius; }
@@ -107,9 +109,9 @@ public:
     
     };
 
-public: 
+public:
     /** The collection of all active projectiles. */
-	std::unordered_set<std::shared_ptr<Projectile>> current;
+    std::unordered_set<std::shared_ptr<Projectile>> current;
 
 private:
     /** The collection of all pending projectiles (for next frame). */
@@ -160,8 +162,8 @@ public:
     bool isEmpty() const { return current.empty() && _pending.empty(); }
 
     /** Clears the projectile current/active set. */
-    void clearCurrentSet() { 
-        current.clear(); 
+    void clearCurrentSet() {
+        current.clear();
     }
 
     /**
@@ -180,7 +182,7 @@ public:
      * Sets the image for a single dirt projectile; reused by all dirt projectiles.
      *
      * This value should be loaded by the GameScene and set there. However,
-     * we have to be prepared for this to be null at all times. 
+     * we have to be prepared for this to be null at all times.
      *
      * @param value the image for a dirt projectile; reused by all dirt projectiles.
      */
@@ -212,13 +214,13 @@ public:
         _poopTexture = value;
     }
 
-    /** 
+    /**
      * Sets the texture scale factors.
      *
      * This must be called during the initialization of projectile set in GameScene
      * otherwise projectiles may "collide" with the player if it is too large at the
-     * very start of the game 
-     * 
+     * very start of the game
+     *
      * @param windowHeight  the height of each window grid
      * @param windowWidth   the width of each window grid
      */
@@ -235,16 +237,17 @@ public:
      * @param v     The projectile velocity.
      * @param dest  The projectile's destination.
      * @param t     The projectile type.
+     * @param amt   The amount of filth to spawn when landing
      */
-    void spawnProjectile(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2 dest, Projectile::ProjectileType t);
+    void spawnProjectile(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2 dest, Projectile::ProjectileType t, int amt = 1);
 
     /**
-     * ONLY CALLED ON CLIENT SIDE. Adds a projectile directly to the current set. 
+     * ONLY CALLED ON CLIENT SIDE. Adds a projectile directly to the current set.
      *
      * We do not need to add it to a pending set because the only thing the client needs to do is draw
      * projectiles in the current set.
-     * 
-     * If we only added projectiles to the pending set, then projectiles will never be drawn as the 
+     *
+     * If we only added projectiles to the pending set, then projectiles will never be drawn as the
      * pending set will repeatedly be cleared then repopulated before any move to the current set.
      *
      * @param p     The projectile position.
@@ -263,10 +266,10 @@ public:
      * This movement code does not support "wrap around".
      * This method performs no collision detection. Collisions
      * are resolved afterwards.
-     * 
+     *
      * @returns list of destinations to spawn filth objects
      */
-    std::vector<cugl::Vec2> update(cugl::Size size);
+    std::vector<std::pair<cugl::Vec2, int>> update(cugl::Size size);
 
     /**
      * Draws all active projectiles to the sprite batch within the given bounds.

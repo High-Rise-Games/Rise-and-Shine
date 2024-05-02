@@ -2,8 +2,8 @@
 //
 //  NetworkController.h
 //
-//  This class handles all network connection and sending.  
-//  We just keep track of the connection and trade game states 
+//  This class handles all network connection and sending.
+//  We just keep track of the connection and trade game states
 //  back-and-forth across the network.
 //
 //  Author: High Rise Games
@@ -15,8 +15,8 @@
 class NetworkController {
 
 protected:
-	/** The network connection (as made by this scene) */
-	std::shared_ptr<cugl::net::NetcodeConnection> _network;
+    /** The network connection (as made by this scene) */
+    std::shared_ptr<cugl::net::NetcodeConnection> _network;
 
     /** Whether we quit the game */
     bool _quit;
@@ -51,6 +51,35 @@ public:
     void setConnection(const std::shared_ptr<cugl::net::NetcodeConnection>& network) {
         _network = network;
     }
+    
+    /**
+     *
+     * FUNCTION FOR HOST ONLY
+     *
+     * Connects to the game server as specified in the assets file
+     *
+     * The {@link #init} method set the configuration data. This method simply uses
+     * this to create a new {@Link NetworkConnection}. It also immediately calls
+     * {@link #checkConnection} to determine the scene state.
+     *
+     * @return true if the connection was successful
+     */
+    bool connect(cugl::net::NetcodeConfig config);
+    
+    /**
+     * FUNCTION FOR CLIENT ONLY
+     *
+     * Connects to the game server as specified in the assets file
+     *
+     * The {@link #init} method set the configuration data. This method simply uses
+     * this to create a new {@Link NetworkConnection}. It also immediately calls
+     * {@link #checkConnection} to determine the scene state.
+     *
+     * @param room  The room ID to use
+     *
+     * @return true if the connection was successful
+     */
+    bool connect(const std::string room, cugl::net::NetcodeConfig config);
 
     /** Returns the number of players on this network. */
     int getNumPlayers() { return _network->getPeers().size() + 1; }
@@ -82,10 +111,10 @@ public:
      * Typically this is where players would communicate their names after being
      * connected. In this lab, we only need it to do one thing: communicate that
      * the host has started the game.
-     * 
+     *
      * We do not handle any gameplay in this method. We simply return the JSON value
      * representing the board state retrieved from the network.
-     * 
+     *
      * Example board state:
      * {
         "player_id":  1,
@@ -94,27 +123,27 @@ public:
         "player_x": 30.2,
         "player_y": 124.2,
         "dirts": [ [0, 1], [2, 2], [0, 2] ],
-        "projectiles": [ 
-            { 
+        "projectiles": [
+            {
                 "pos": [0.5, 1.676],
                 "vel": [2, 3],
                 "type: "DIRT"
             },
             {
                 "pos": [1.5, 3.281],
-                "vel": [0, -2], 
+                "vel": [0, -2],
                 "type": "POOP
             }
         ]
      * }
-     * 
+     *
      *
      * Example movement message:
      * {
      *    "player_id":  1,
      *    "vel": [0.234, 1.153]
      * }
-     * 
+     *
      *
      * @param source    The UUID of the sender
      * @param data      The data received
@@ -137,31 +166,13 @@ public:
      * Transmits the board state belonging to the user given by
      * their id to all other devices.
      *
-     * Example board state:
-     * {
-        "player_id":  1,
-        "num_dirt": 1,
-        "curr_board": 0,
-        "player_x": 3,
-        "player_y": 6,
-        "dirts": [ [0, 1], [2, 2], [0, 2] ],
-        "projectiles": [ 
-            { 
-                "pos": [0.5, 1.676],
-                "vel": [2, 3],
-                "type: "DIRT"
-            },
-            {
-                "pos": [1.5, 3.281],
-                "vel": [0, -2], 
-                "type": "POOP
-            }
-        ]
-     * }
-     *
      * @param state     The user's board state
      */
     void transmitMessage(const std::shared_ptr<cugl::JsonValue> state);
+
+    void transmitMessage(const std::string uuid, const std::shared_ptr<cugl::JsonValue> state);
+
+    void sendToHost(const std::shared_ptr<cugl::JsonValue> msg);
 };
 
 #endif NetworkController_h

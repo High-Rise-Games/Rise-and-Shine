@@ -10,7 +10,6 @@
 #include <random>
 
 #include "GameScene.h"
-//#include "GLCollisionController.h"
 
 using namespace cugl;
 using namespace std;
@@ -50,24 +49,36 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _dirtThrowInput.init();
 
     // Get the background image and constant values
-    _background = _assets->get<Texture>("background");
+    _background = _assets->get<Texture>("night level background");
+    _parallax = _assets->get<Texture>("night level parallax");
+    _background->setWrapS(GL_CLAMP_TO_EDGE);
+    _background->setWrapT(GL_CLAMP_TO_EDGE);
     _constants = _assets->get<JsonValue>("constants");
-    
-    // test progress bar
-    _player_bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game")->getChildByName("player bar"));
-    
-    
+
+    // progress bars for player
+    auto greenBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_greenbar"));
+    auto blueBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_bluebar"));
+    auto redBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_redbar"));
+    auto yellowBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_yellowbar"));
+
+    _player_bars = { redBar, greenBar, blueBar, yellowBar };
+    for (auto currBar : _player_bars) {
+        currBar->setAngle(1.5708);
+        currBar->setScale(2);
+        currBar->setVisible(false);
+    }
+    _char_to_barIdx["Mushroom"] = 0;
+    _char_to_barIdx["Chameleon"] = 1;
+    _char_to_barIdx["Frog"] = 2;
+    _char_to_barIdx["Flower"] = 3;
     
     // Initialize dirt bucket
     setEmptyBucket(assets->get<Texture>("bucketempty"));
     setFullBucket(assets->get<Texture>("bucketfull"));
     
-    _countdown1 =assets->get<Texture>("countdown1");
+//    _countdown1 =assets->get<Texture>("countdown1");
     
-//    // Initialize switch scene icon
-//    setSwitchSceneButton(assets->get<Texture>("switchSceneButton"));
-//    // Initialize return scene icon
-//    setReturnSceneButton(assets->get<Texture>("returnSceneButton"));
+
 
     // Create and layout the dirt amount
     std::string dirt_msg = "0";
@@ -80,13 +91,13 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     std::string time_msg = "Time";
     _timeText = TextLayout::allocWithText(time_msg, assets->get<Font>("pixel32"));
     _timeText->layout();
-//    _healthText = TextLayout::allocWithText(health_msg, assets->get<Font>("pixel32"));
-//    _healthText->layout();
-    
+
     reset();
     
     // Acquire the scene built by the asset loader and resize it the scene
     _scene_UI = _assets->get<scene2::SceneNode>("game");
+    
+//    _scene_UI->addChild(_dirtThrowArc);
     _scene_UI->setContentSize(dimen);
     _scene_UI->doLayout(); // Repositions the HUD
     
@@ -104,15 +115,10 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
             _quit = true;
         }
     });
-
-    _tn_button = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("game_switch"));
-    _tn_button->addListener([=](const std::string& name, bool down) {
-        if (down) {
-            CULog("switch scene button pressed");
-            _gameController->switchScene();
-        }
-    });
     
+    _dirtThrowButton = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("game_throw"));
+    
+    _dirtThrowArc = _assets->get<scene2::SceneNode>("game_greenarc");
     
     _quit = false;
     addChild(_scene_UI);
@@ -131,7 +137,8 @@ void GameScene::dispose() {
     if (_active) {
         removeAllChildren();
         _active = false;
-        _tn_button = nullptr;
+        _dirtThrowButton = nullptr;
+        _dirtThrowArc = nullptr;
         _winBackground = nullptr;
         _loseBackground = nullptr;
     }
@@ -152,14 +159,20 @@ void GameScene::setActive(bool value) {
         if (value) {
             _quit = false;
             _backout->activate();
-            _tn_button->activate();
+            _dirtThrowButton->activate();
+            for (auto bar : _player_bars) {
+                bar->setVisible(false);
+            }
         }
         else {
             _backout->deactivate();
-            _tn_button->deactivate();
+            _dirtThrowButton->deactivate();
             // If any were pressed, reset them
             _backout->setDown(false);
-            _tn_button->setDown(false);
+            _dirtThrowButton->setDown(false);
+            for (auto bar : _player_bars) {
+                bar->setVisible(false);
+            }
         }
     }
 }
@@ -169,11 +182,11 @@ void GameScene::setActive(bool value) {
 #pragma mark -
 #pragma mark Gameplay Handling
 
-/** 
+/**
  * Converts game state into a JSON value for sending over the network.
  * Only called by the host, as only the host transmits board states over the network.
  * This method contains any gameplay code that is not an OpenGL call.
- * 
+ *
  * We need to update this method to constantly talk to the server.
  *
  * @param timestep  The amount of time (in seconds) since the last frame
@@ -184,20 +197,24 @@ void GameScene::update(float timestep) {
     Vec3 convertedWorldPos = screenToWorldCoords(screenPos);
     Vec2 worldPos = Vec2(convertedWorldPos.x, convertedWorldPos.y);
     
-    
+    _gameController->update(timestep, worldPos, _dirtThrowInput, _dirtThrowButton, _dirtThrowArc);
 
-    _gameController->update(timestep, worldPos, _dirtThrowInput);
+    for (auto bar : _player_bars) {
+        bar->setVisible(false);
+    }
     
-    
+    for(int id = 1; id <= 4; id++) {
+        auto player = _gameController->getPlayer(id);
+        if (player == nullptr) continue;
+        // float numWindowPanes = _gameController->getPlayerWindow(id)->getNHorizontal() * _gameController->getPlayerWindow(id)->getNVertical();
+        // auto progress = (numWindowPanes - _gameController->getPlayerWindow(id)->getTotalDirt()) / numWindowPanes;
+        _player_bars[_char_to_barIdx[player->getChar()]]->setProgress(_gameController->getPlayerProgress(id));
+        _player_bars[_char_to_barIdx[player->getChar()]]->setVisible(true);
+    }
 
-    // each player manages their own UI elements/text boxes for displaying resource information
-    // Update the health meter
-//    
-//    _healthText->setText(strtool::format("Health %d", _gameController->getPlayerHealth()));
     _timeText->setText(strtool::format("Time %d", _gameController->getTime()));
         
-        
-//    _healthText->layout();
+
     _timeText->layout();
         
     // Update the dirt display
@@ -223,36 +240,31 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     // CULog("current board: %d", _curBoard);
     
     
-    Vec3 idk = Vec3(getCamera()->getPosition().x, _gameController->getPlayer()->getPosition().y, 1);
+    Vec3 idk = Vec3(getCamera()->getPosition().x, _gameController->getPlayer(_gameController->getId())->getPosition().y, 1);
     getCamera()->setPosition(idk);
     getCamera()->update();
     batch->begin(getCamera()->getCombined());
     _scene_UI->setPosition(idk-getSize().operator Vec2()/2);
     
-    batch->draw(_background,Rect(Vec2::ZERO,getSize()));
-    
+//    batch->draw(_background,Rect(Vec2::ZERO));
+    batch->draw(_background,(idk-getSize().operator Vec2()/2)-Vec2(0,idk.y-400));
+    batch->draw(_parallax, (idk-getSize().operator Vec2()/2)-Vec2(0,idk.y));
     
 
     _gameController->draw(batch);
+    _gameController->drawCountdown(batch, getCamera()->getPosition(), getSize());
+    
+    batch->setColor(Color4::WHITE);
 
-    batch->setColor(Color4::BLACK);
-//    batch->drawText(_timeText, Vec2(getSize().width - 10 - _timeText->getBounds().size.width, getSize().height - _timeText->getBounds().size.height));
-//    batch->drawText(_healthText, Vec2(10, getSize().height - _healthText->getBounds().size.height));
-    
-    batch->drawText(_timeText, Vec2(getCamera()->getPosition().x+ 412, getCamera()->getPosition().y + 300));
-    
-//    batch->drawText(_timeText, Vec2(getSize().width - 10 - _timeText->getBounds().size.width, getSize().height - _timeText->getBounds().size.height));
+
+    batch->drawText(_timeText, Vec2(getCamera()->getPosition().x+ 450, getCamera()->getPosition().y+130));
     
     //set bucket texture location
     Affine2 bucketTrans = Affine2();
     Vec2 bOrigin(_fullBucket->getWidth()/2,_fullBucket->getHeight()/2);
     float bucketScaleFactor = std::min(((float)getSize().getIWidth() / (float)_fullBucket->getWidth()) /2, ((float)getSize().getIHeight() / (float)_fullBucket->getHeight() /2));
-    bucketTrans.scale(bucketScaleFactor);
-    
-//    Vec2 bucketLocation(getSize().width - ((float)_fullBucket->getWidth() * bucketScaleFactor/2 + getCamera()->getPosition().x),
-//                        getSize().height + (float)_fullBucket->getHeight() * bucketScaleFactor/2 + getCamera()->getPosition().y + 100);
-    
-    Vec2 bucketLocation(getCamera()->getPosition().x+ 500, getCamera()->getPosition().y + 120);
+    bucketTrans.scale(bucketScaleFactor*0.75);
+    Vec2 bucketLocation(getCamera()->getPosition().x - 560, getCamera()->getPosition().y - 300);
     bucketTrans.translate(bucketLocation);
     
     // draw different bucket based on dirt amount
@@ -272,17 +284,20 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->setColor(Color4::WHITE);
     
     if (_gameController->getCurBoard() != 0) {
-        _tn_button->setVisible(true);
-        _tn_button->activate();
-        _tn_button->setDown(false);
+        _dirtThrowButton->setVisible(true);
+        _dirtThrowButton->activate();
+        _dirtThrowButton->setDown(false);
+        _dirtThrowArc->setVisible(true);
     }
     else {
-        _tn_button->setVisible(false);
-        _tn_button->deactivate();
+        _dirtThrowButton->setVisible(false);
+        _dirtThrowButton->deactivate();
+        _dirtThrowArc->setVisible(false);
     }
     _scene_UI->render(batch);
+
     
-    if (_gameController->isGameWin() && _gameController->isGameOver()) {
+    if (_gameController->isGameWin()) {
         _winBackground->setPosition(idk-getSize().operator Vec2()/2);
         _winBackground->setVisible(true);
         _winBackground->render(batch);
@@ -292,22 +307,35 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _loseBackground->render(batch);
     }
     
-//    _player_bar->render(batch);
-//    _player_bar->setPosition(idk-getSize().operator Vec2()/2);
+    int offset_ct = 0;
+    for (int id = 1; id <= 4; id++) {
+        auto player = _gameController->getPlayer(id);
+        if (player == nullptr) continue;
+        int barIdx = _char_to_barIdx[player->getChar()];
+        // CULog("character: %a", player->getChar().c_str());
+        _player_bars[barIdx]->setPositionX(getSize().width - _gameController->getPlayerWindow(_gameController->getId())->sideGap + (offset_ct + 1) * 50);
+        _player_bars[barIdx]->setVisible(true);
+        Affine2 profileTrans = Affine2();
+        profileTrans.scale(0.2);
+        profileTrans.translate((idk - getSize().operator Vec2() / 2) + _player_bars[barIdx]->getPosition());
+        profileTrans.translate(0, _player_bars[barIdx]->getHeight() / -2);
+        batch->draw(player->getProfileTexture(), player->getProfileTexture()->getSize().operator Vec2() / 2, profileTrans);
+        offset_ct += 1;
+    }
     
     batch->end();
 }
 
-void GameScene::renderCountdown(std::shared_ptr<cugl::SpriteBatch> batch) {
-    Affine2 countdown1Trans = Affine2();
-    Vec2 countdown1Origin(_countdown1->getWidth()/2,_countdown1->getHeight()/2);
-    float countdown1ScaleFactor = std::min(((float)getSize().getIWidth() / (float)_countdown1->getWidth()) /2, ((float)getSize().getIHeight() / (float)_countdown1->getHeight() /2));
-    countdown1Trans.scale(countdown1ScaleFactor);
-    
-    Vec2 countdown1Location(getSize().width/2,
-                        getSize().height - 10*_countdownFrame);
-    countdown1Trans.translate(countdown1Location);
-    
-    batch->draw(_countdown1, countdown1Origin, countdown1Trans);
-}
+//void GameScene::renderCountdown(std::shared_ptr<cugl::SpriteBatch> batch) {
+//    Affine2 countdown1Trans = Affine2();
+//    Vec2 countdown1Origin(_countdown1->getWidth()/2,_countdown1->getHeight()/2);
+//    float countdown1ScaleFactor = std::min(((float)getSize().getIWidth() / (float)_countdown1->getWidth()) /2, ((float)getSize().getIHeight() / (float)_countdown1->getHeight() /2));
+//    countdown1Trans.scale(countdown1ScaleFactor);
+//    
+//    Vec2 countdown1Location(getSize().width/2,
+//                        getSize().height - 10*_countdownFrame);
+//    countdown1Trans.translate(countdown1Location);
+//    
+//    batch->draw(_countdown1, countdown1Origin, countdown1Trans);
+//}
 

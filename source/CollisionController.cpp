@@ -22,10 +22,12 @@ using namespace cugl;
  *
  * @return true if there is a ship-asteroid collision
  */
-bool CollisionController::resolveCollision(const std::shared_ptr<Player>& player, ProjectileSet& pset) {
+std::pair<bool, std::optional<std::pair<cugl::Vec2, int>>> CollisionController::resolveCollision(const std::shared_ptr<Player>& player, std::shared_ptr<ProjectileSet>& pset) {
     bool collision = false;
-    auto it = pset.current.begin();
-    while (it != pset.current.end()) {
+    std::optional<std::pair<cugl::Vec2, int>> landedDirt;
+
+    auto it = pset->current.begin();
+    while (it != pset->current.end()) {
         // Calculate the normal of the (possible) point of collision
         std::shared_ptr<ProjectileSet::Projectile> proj = *it;
 
@@ -34,7 +36,7 @@ bool CollisionController::resolveCollision(const std::shared_ptr<Player>& player
         float distance = norm.length();
         float impactDistance = (player->getRadius() + proj->getRadius() * proj->getScale());
 
-        // finds the NEAREST collision 
+        // finds the NEAREST collision
         Vec2 pos = proj->position;
         pos = player->getPosition() - pos;
         float dist = pos.length();
@@ -46,23 +48,26 @@ bool CollisionController::resolveCollision(const std::shared_ptr<Player>& player
         // If this normal is too small, there was a collision
         if (distance < impactDistance) {
 
-            // Damage and/or stun the player as the last step
-            player->setHealth(player->getHealth() - proj->getDamage());
+            // Damage and/or stun the player
             if (player->getStunFrames() == 0) {
                 player->setStunFrames(proj->getStunTime());
             }
 
+            if ((*it)->type == ProjectileSet::Projectile::ProjectileType::DIRT) {
+                // if dirt, include the player's current position in the return so that dirt
+                // lands on top and around the player
+                landedDirt = std::make_pair(player->getPosition(), (*it)->spawnAmount);
+            }
 
             // delete projectile from set after colliding
-            it = pset.current.erase(it);
-
+            it = pset->current.erase(it);
             collision = true;
         }
         else {
             ++it;
         }
     }
-    return collision;
+    return std::make_pair(collision, landedDirt);
 }
 
 /** Returns true if there is a player bird collision*/
@@ -71,7 +76,7 @@ bool CollisionController::resolveBirdCollision(const std::shared_ptr<Player>& pl
 
     Vec2 norm = player->getPosition() - birdWorldPos;
     float distance = norm.length();
-    float impactDistance = (player->getRadius() + bird.getRadius() * bird.getScale() * radiusMultiplier);
+    float impactDistance = (player->getRadius() + bird.getRadius() * radiusMultiplier);
 
     // finds the NEAREST collision
     Vec2 pos = birdWorldPos;

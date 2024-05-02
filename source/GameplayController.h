@@ -8,15 +8,19 @@
 #include <cugl/cugl.h>
 #include <vector>
 #include <unordered_set>
+
+// models
 #include "PlayerCharacter.h"
+#include "WindowGrid.h"
+#include "ProjectileSet.h"
+#include "Bird.h"
+
+// controllers
 #include "InputController.h"
 #include "DirtThrowInputController.h"
 #include "CollisionController.h"
-#include "WindowGrid.h"
-#include "ProjectileSet.h"
 #include "NetworkController.h"
-#include "GameAudioController.h"
-#include "Bird.h"
+#include "AudioController.h"
 
 
 
@@ -31,6 +35,9 @@ class GameplayController {
 protected:
     /** The asset manager for this game mode. */
     std::shared_ptr<cugl::AssetManager> _assets;
+    
+    /** The audio controller, set ny app */
+    std::shared_ptr<AudioController> _audioController;
         
     /** Whether this player is the host */
     bool _ishost;
@@ -38,13 +45,20 @@ protected:
     /** Whether this player won the game */
     bool _gameWin;
     
+    /** game starts after countdown timer completes */
+    bool _gameStart;
+    
     /** Whether the game has ended */
     bool _gameOver;
     
     /** ID of the player to distinguish in multiplayer */
     int _id;
-    /** Seconds left in the game */
+    
+    /** Length of a game session*/
     int _gameTime;
+    
+    /** Seconds left in the game */
+    int _gameTimeLeft;
     
     /** The FPS of the game, as set by the App */
     int _fps;
@@ -54,6 +68,13 @@ protected:
     
     /** The number of frames that the win screen has been shown for */
     int _frameCountForWin;
+
+    /** Selected level number */
+    std::shared_ptr<cugl::JsonValue> _levelJson;
+    /** Initial dirt count for this level */
+    int _initDirtCount;
+    /** Which dirt is being used for this level */
+    std::string _dirtTextureString;
 
     /** Size of the scene */
     cugl::Size _size;
@@ -76,14 +97,8 @@ protected:
     /** The JSON value with all of the constants */
     std::shared_ptr<cugl::JsonValue> _constants;
 
-    /** Location and animation information for the player */
-    std::shared_ptr<Player> _player;
-    /** Location and animation information for the player to the left */
-    std::shared_ptr<Player> _playerLeft;
-    /** Location and animation information for the player to the right */
-    std::shared_ptr<Player> _playerRight;
-    /** Location and animation information for the player across the building. Only non-null for host. */
-    std::shared_ptr<Player> _playerAcross;
+    /** Location and animation information for all players in the game */
+    std::vector<std::shared_ptr<Player>> _playerVec;
 
     /** True if a neighobr player's board is on display */
     bool _onAdjacentBoard;
@@ -93,17 +108,10 @@ protected:
 
     /** True if game scene is active and that gameplay is currently active */
     bool _isActive;
-    
-    /** Which board is the player currently on, 0 for his own board, -1 for left neighbor, 1 for right neighbor */
 
-    /** Which board is the player currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor */
-
-    int _curBoard;
-    /** Which board is the player currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor */
-    int _curBoardRight;
-    /** Which board is the player currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor */
-    int _curBoardLeft;
-    /** Which board the bird enemy is currently on, 0 for own board, -1 for left neighbor, 1 for right neighbor, 2 for none of these */
+    /** The current board being displayed for each player in the lobby */
+    std::vector<int> _allCurBoards;
+    /** The id of the board the bird enemy is currently on */
     int _curBirdBoard;
     /** The position of the bird enemy for drawing, if they are on your board */
     cugl::Vec2 _curBirdPos;
@@ -114,15 +122,13 @@ protected:
     /** The position of the dirt when it is selected*/
     cugl::Vec2 _prevInputPos;
     
-    /** Todo: probably need to change _windows to a vector, length 3 or 4*/
-    /** Grid of windows and dirt placement to be drawn */
-    WindowGrid _windows;
-    /** Grid of windows and dirt placement to be drawn for the left neighbor */
-    WindowGrid _windowsLeft;
-    /** Grid of windows and dirt placement to be drawn for the right neighbor */
-    WindowGrid _windowsRight;
-    /** Grid of windows and dirt placement to be drawn for neighbor across the building. Only non-null for host. */
-    WindowGrid _windowsAcross;
+    /** Window texture names and ids */
+    std::vector<std::string> _texture_strings_selected;
+    std::vector<int> _texture_ids_selected;
+    /** Vector of windows and dirt placements for all players */
+    std::vector<std::shared_ptr<WindowGrid>> _windowVec;
+    /** Vector of progress values for all players */
+    std::vector<float> _progressVec;
 
     /** Random number generator for dirt generation */
     std::mt19937 _rng;
@@ -138,36 +144,34 @@ protected:
     int _maxDirtAmount;
     /** The amount of dirt player is currently holdinfg in the bucket **/
     int _currentDirtAmount;
+    /** number of animation frames for countdown timer */
+    int _maxCountDownFrames;
+    /** number of animation frames for current countdown timer */
+    int _countDownFrames;
     
 
     /** Projectile generation chance, increases over time */
     float _projectileGenChance;
     /** Projectile generation timer, on timer generate projectile based on chance, then reset timer*/
     float _projectileGenCountDown;
-    /** The projectile set of your board */
-    ProjectileSet _projectiles;
-    /** The projectile set of your left neighbor */
-    ProjectileSet _projectilesLeft;
-    /** The projectile set of your right neighbor */
-    ProjectileSet _projectilesRight;
-    /** The projectile set of the neighbor across the building. Only non-null if host */
-    ProjectileSet _projectilesAcross;
-    
-    
-    
+    /** The projectile set of all players */
+    std::vector<std::shared_ptr<ProjectileSet>> _projectileVec;
+        
     // for host only
     /** Number of players in the lobby */
     int _numPlayers;
+    /** player id to UUID map */
+    std::map<std::string, int> _UUIDmap;
+    /** Whether a player has won */
+    std::vector<bool> _hasWon;
     /** The amount of dirt held by each player in the lobby */
     std::vector<int> _allDirtAmounts;
-    /** The current board being displayed for each player in the lobby */
-    std::vector<int> _allCurBoards;
     /** Bird enemy for entire game */
     Bird _bird;
-    /** True if bird exists in this level */;
+    /** True if bird exists in this level */
     bool _birdActive;
-    /** The current board that the bird is on */
-    int _boardWithBird;
+    /** True if the is shooed and is leaving the current board */
+    bool _birdLeaving;
     
     cugl::scheduable t;
     
@@ -183,12 +187,20 @@ protected:
     std::shared_ptr<cugl::TextLayout> _healthText;
     /** The text with the current time */
     std::shared_ptr<cugl::TextLayout> _text;
-    /** Empty bucket texture image */
-    std::shared_ptr<cugl::Texture> _emptyBucket;
-    /** Full bucket texture image */
-    std::shared_ptr<cugl::Texture> _fullBucket;
     /** The text with the current dirt */
     std::shared_ptr<cugl::TextLayout> _dirtText;
+    /** Arrow texture for showing opponent player locations */
+    std::shared_ptr<cugl::Texture> _arrowTexture;
+    /** Count down sprite sheet for 1 */
+    std::shared_ptr<cugl::SpriteSheet> _countdown1Sprite;
+    /** Count down sprite sheet for 2 */
+    std::shared_ptr<cugl::SpriteSheet> _countdown2Sprite;
+    /** Count down sprite sheet for 3 */
+    std::shared_ptr<cugl::SpriteSheet> _countdown3Sprite;
+    /** Count down sprite sheet for go */
+    std::shared_ptr<cugl::SpriteSheet> _countdownGoSprite;
+    /** Count down sprite sheet for sparkle */
+    std::shared_ptr<cugl::SpriteSheet> _countdownSparkleSprite;
 
     /** The scene node for the UI elements (buttons, labels) */
     std::shared_ptr<cugl::scene2::SceneNode> _scene_UI;
@@ -201,8 +213,6 @@ protected:
     /** The sound of a ship-asteroid collision */
     std::shared_ptr<cugl::Sound> _clean;
     
-    /** Gameplay Audio Controller */
-    GameAudioController _audioController;
 
     
 public:
@@ -229,8 +239,11 @@ public:
      */
     bool init(const std::shared_ptr<cugl::AssetManager>& assets, int fps, cugl::Rect bounds, cugl::Size size);
 
-    /** Initializes the player models for all players, whether host or client. */
-    bool initPlayers(const std::shared_ptr<cugl::AssetManager>& assets);
+    /** Initializes the player model for client. */
+    bool initClient(const std::shared_ptr<cugl::AssetManager>& assets);
+    
+    /** Sets the pointer to the audio controller from app */
+    void setAudioController(std::shared_ptr<AudioController> audioController) {_audioController = audioController;};
     
     /** Returns true if gameplay is active, and false if not. Tells us if the game is running */
     bool isActive() {
@@ -255,13 +268,45 @@ public:
     bool initHost(const std::shared_ptr<cugl::AssetManager>& assets);
 
     
-#pragma mark -
+#pragma mark Graphics
+    /**
+     * Sets the texture for countdown 3.
+     */
+    void setCountdown3Texture(const std::shared_ptr<cugl::Texture>& texture);
+    /**
+     * Sets the texture for countdown 2.
+     */
+    void setCountdown2Texture(const std::shared_ptr<cugl::Texture>& texture);
+    /**
+     * Sets the texture for countdown 1.
+     */
+    void setCountdown1Texture(const std::shared_ptr<cugl::Texture>& texture);
+    /**
+     * Sets the texture for countdown Go.
+     */
+    void setCountdownGoTexture(const std::shared_ptr<cugl::Texture>& texture);
+    /**
+     * Sets the texture for countdown sparkles.
+     */
+    void setCountdownSparkleTexture(const std::shared_ptr<cugl::Texture>& texture);
+    
+    std::shared_ptr<cugl::SpriteSheet> getCurrentCountdownSprite();
+    
+    void drawCountdown(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Vec3 campos, cugl::Size s);
+    
 #pragma mark Gameplay Handling
     
-    
-    /** Returns the main player of who owns this controller**/
-    std::shared_ptr<Player> getPlayer() { return _player; }
-    
+    std::shared_ptr<WindowGrid> getPlayerWindow(int id) {
+            return _windowVec[id-1];
+    }
+
+    /** Returns the player given the id */
+    std::shared_ptr<Player> getPlayer(int id) { return _playerVec[id-1]; }
+
+    /** Returns the current player's progress given player id */
+    float getPlayerProgress(int id) {
+        return _progressVec[id - 1];
+    }
 
     /** Returns the id of this player. */
     const int getId() const { return _id; }
@@ -285,6 +330,9 @@ public:
     */
     void setCharacters(std::vector<std::string>& chars);
 
+    /** HOST ONLY. Sets the player id to UUID map */
+    void setUUIDMap(std::map<std::string, int> m) { _UUIDmap = m; }
+
     /**
      * Sets the character texture of the given player.
      * Possible values: "Mushroom", "Frog", "Flower", "Chameleon"
@@ -297,16 +345,13 @@ public:
     /** Returns the current dirt amount in the dirt bucket */
     int getCurDirtAmount() { return _currentDirtAmount; }
 
-    /** Returns the current player's health */
-    int getPlayerHealth() { return _player->getHealth(); }
-
     /** Returns the current game time */
-    int getTime() { return _gameTime; }
+    int getTime() { return _gameTimeLeft; }
 
     /** Returns the player's current board */
-    int getCurBoard() { return _curBoard; }
+    int getCurBoard() { return _allCurBoards[_id-1]; }
 
-    /** 
+    /**
      * Given the world positions, convert it to the board position
      * based off of grid coordinates. Ex. [2, 3] or [2.3, 3] if the
      * player is in the process of moving in between x = 2 and x = 3.
@@ -328,6 +373,11 @@ public:
         _gameWin = f;
     };
     
+    /** Method to set whether the game countdown is over or not **/
+    void setGameStart(bool f) {
+        _gameStart = f;
+    }
+    
     /** Method to set whether the game is over or not **/
     void setGameOver(bool f) {
         _gameOver = f;
@@ -343,6 +393,9 @@ public:
         return _gameWin;
     }
     
+    /** advances countdown animation for all players */
+    void advanceCountDownAnim(bool ishost=true);
+    
     /** If we set this to true, this lets App know that we want to switch to main menu  **/
     void setRequestForMenu(bool f) {
         _transitionToMenu = f;
@@ -356,8 +409,9 @@ public:
     /** Checks whether board is full */
     const bool checkBoardFull(); // TODO: Unimplemented
     
-    /** Checks whether board is empty */
-    const bool checkBoardEmpty(WindowGrid playerWindowGrid); 
+    /** Counts number of dirt on board */
+    const int countBoardDirt(WindowGrid playerWindowGrid);
+    
     
     /** update when dirt is generated */
     void updateDirtGenTime();
@@ -366,19 +420,19 @@ public:
     void generateDirt();
 
     /** generates poo before bird is ready */
-    void generatePoo(ProjectileSet* projectiles);
+    void generatePoo(std::shared_ptr<ProjectileSet> projectiles);
 
     /**
      * Called by host only. Converts game state into a JSON value for sending over the network
-     * 
+     *
      * @param id    the id of the player of the board state to get
      * @returns JSON value representing game board state
      */
-    std::shared_ptr<cugl::JsonValue> getJsonBoard(int id);
+    std::shared_ptr<cugl::JsonValue> getJsonBoard(int id, bool isPartial);
 
     /**
      * Called by client only. Converts a movement vector into a JSON value for sending over the network.
-     * 
+     *
      * @param move    the movement vector
      * @returns JSON value representing a movement
      */
@@ -400,14 +454,15 @@ public:
      * @param pos   The starting position of the dirt projectile
      * @param vel   The velocity vector of the dirt projectile
      * @param dest  The destination coordinates of the dirt projectile
-     * 
+     * @param amt   The amount of dirt to spawn when landing on windows
+     *
      * @returns JSON value representing a dirt throw action
      */
-    std::shared_ptr<cugl::JsonValue> getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest);
+    std::shared_ptr<cugl::JsonValue> getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest, const int amt);
 
     /**
      * Updates a neighboring or own board given the JSON value representing its game state
-     * 
+     *
      * @params data     The data to update
      */
     void updateBoard(std::shared_ptr<cugl::JsonValue> data);
@@ -420,17 +475,17 @@ public:
      */
     void processMovementRequest(std::shared_ptr<cugl::JsonValue> data);
 
-    /** 
+    /**
      * Called by host only to process switch scene requests. Updates a client player's
      * currently viewed board for the player at player_id based on the current board
      * value stored in the JSON value.
-     * 
+     *
      * @params data     The data to update
      */
     void processSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data);
 
     /**
-     * Called by host only. Updates the boards of both the dirt thrower and the player 
+     * Called by host only. Updates the boards of both the dirt thrower and the player
      * receiving the dirt projectile given the information stored in the JSON value.
      *
      * @params data     The data to update
@@ -445,14 +500,16 @@ public:
      * @param timestep  The amount of time (in seconds) since the last frame
      * @param worldPos  The position of the user's touch in world positions, used for dirt throwing
      * @param dirtCon   The dirt throw input controller used by the game scene
+     * @param dirtThrowButton   The dirt throw button from the game scene
+     * @param dirtThrowArc   The dirt throw arc from the game scene
      */
-    void update(float timestep, cugl::Vec2 worldPos, DirtThrowInputController& dirtCon);
+    void update(float timestep, cugl::Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton, std::shared_ptr<cugl::scene2::SceneNode> dirtThrowArc);
 
     /**
      * This method does all the heavy lifting work for update.
      * The host steps forward each player's game state, given references to the player, board, and projectile set.
      */
-    void stepForward(std::shared_ptr<Player>& player, WindowGrid& windows, ProjectileSet& projectiles);
+    void stepForward(std::shared_ptr<Player>& player, std::shared_ptr<WindowGrid>& windows, std::shared_ptr<ProjectileSet>& projectiles);
 
     /**
      * Draws all this scene to the given SpriteBatch.

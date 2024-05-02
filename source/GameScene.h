@@ -46,13 +46,6 @@ protected:
     std::shared_ptr<cugl::scene2::SceneNode> _winBackground;
     /** The win screen scene */
     std::shared_ptr<cugl::scene2::SceneNode> _loseBackground;
-    
-    /** Progress bar for this player **/
-    std::shared_ptr<cugl::scene2::ProgressBar>  _player_bar;
-    /** The progress for this player displayed on the screen */
-    float _player_progress;
-
-
 
     /** The game controller for this scene */
     std::shared_ptr<GameplayController> _gameController;
@@ -65,10 +58,21 @@ protected:
     
     cugl::scheduable t;
     
+    /** Progress bars vector for players in the lobby **/
+    std::vector<std::shared_ptr<cugl::scene2::ProgressBar>>  _player_bars;
+    std::map<std::string, int> _char_to_barIdx;
+
+    std::shared_ptr<cugl::scene2::SceneNode> _profilePlayer;
+    std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerLeft;
+    std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerRight;
+    std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerAcross;
+    
     // VIEW items are going to be individual variables
     // In the future, we will replace this with the scene graph
     /** The backgrounnd image */
     std::shared_ptr<cugl::Texture> _background;
+    /** The parallax image */
+    std::shared_ptr<cugl::Texture> _parallax;
     /** The text with the current health */
     std::shared_ptr<cugl::TextLayout> _healthText;
     /** The text with the current time */
@@ -79,10 +83,6 @@ protected:
     std::shared_ptr<cugl::Texture> _fullBucket;
     /** The text with the current dirt */
     std::shared_ptr<cugl::TextLayout> _dirtText;
-    
-    
-    /** texture for number 1 */
-    std::shared_ptr<cugl::Texture> _countdown1;
 
     /** The scene node for the UI elements (buttons, labels) */
     std::shared_ptr<cugl::scene2::SceneNode> _scene_UI;
@@ -92,9 +92,10 @@ protected:
 //    std::shared_ptr<cugl::Texture> _switchSceneButton;
 //    /** Return scene button texture image */
 //    std::shared_ptr<cugl::Texture> _returnSceneButton;
-    /** Switch scene button */
-    std::shared_ptr<cugl::scene2::Button> _tn_button;
-
+    /** Dirt throw button */
+    std::shared_ptr<cugl::scene2::Button> _dirtThrowButton;
+    /** The semicircle that constains the dirt throw button*/
+    std::shared_ptr<cugl::scene2::SceneNode> _dirtThrowArc;
     
 public:
 #pragma mark -

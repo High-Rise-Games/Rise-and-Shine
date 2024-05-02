@@ -15,6 +15,26 @@
  * Model class representing a player.
  */
 class Player {
+    
+public:
+    
+    enum AnimStatus {
+        /** Character in idle state */
+        IDLE,
+        /** Character in wiping state */
+        WIPING,
+        /** Character in shooing bird state */
+        SHOOING,
+        /** Character in stunned state */
+        STUNNED,
+        /** Character in throwing state */
+        THROWING,
+    };
+    
+    
+    const std::vector<AnimStatus> animStatusNames = { IDLE, WIPING, SHOOING, STUNNED, THROWING };
+    std::map<AnimStatus, int> statusToInt;
+    
 private:
     /** The player's id */
     int _id;
@@ -30,6 +50,8 @@ private:
     cugl::Vec2 _vel;
     /** Coordinates in relation to window grid of the player */
     cugl::Vec2 _coors;
+    /** Character Animation State */
+    AnimStatus _animState;
     
     // TODO: do we still need window height and width?
     // height of a window pane of the game board
@@ -40,27 +62,14 @@ private:
     // used to discretize movement
     float _windowWidth;
     
-       
-    // TODO: remove unnecessary fields from here and constants json file
-    // The following are protected, because they have no accessors
-    /** The amount of health this ship has */
-    int _health;
     /** The amount of time in frames for the player to be stunned */
     int _stunFrames;
     
     /** A property to adjust the rotation of the player when player colides. Resets to zero when stun frames is zero. */
     float _stunRotate;
-
-    // JSON DEFINED ATTRIBUTES
-    /** Mass/weight of the ship. Used in collisions. */
-    float _mass;
-    /** The shadow offset in pixels */
-    //float _shadows;
-    /** Amount to adjust forward movement from input */
-    float _thrust;
-    /** The maximum allowable velocity */
-    float _maxvel;
     
+    /** The shadow offset in pixels */
+    float _shadows;
     // Asset references. These should be set by GameScene
     /** The number of columns in the sprite sheet */
     int _framecols;
@@ -78,21 +87,38 @@ private:
     int _maxidleFrame;
     // number of frames that the player is idling for
     int _idleFrames;
+    /** The number of columns in the sprite sheet */
+    int _shooframecols;
+    /** The number of frames in the sprite sheet */
+    int _shooframesize;
+    /** total number of frames */
+    int _maxshooFrame;
+    // number of frames that the player is shooing
+    int _shooFrames;
     /** The number of columns in the throw sprite sheet */
     int _throwframecols;
     /** The number of frames in the throw sprite sheet */
     int _throwframesize;
+    /** total number of frames */
+    int _maxthrowFrame;
+    // number of frames that the player is throwing
+    int _throwFrames;
 
+    /** player profile texture */
+    std::shared_ptr<cugl::Texture> _profileTexture;
     /** player idle sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _idleSprite;
     /** Reference to the player wiping animation sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _wipeSprite;
+    /** Reference to the player shooing animation sprite sheet */
+    std::shared_ptr<cugl::SpriteSheet> _shooSprite;
     /** Reference to the player throwing animation sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _throwSprite;
     /** Radius of the ship in pixels (derived from sprite sheet) */
     float _radius;
 
 public:
+    
 #pragma mark Constructors
     /**
      * Creates a player with the given fields.
@@ -103,7 +129,7 @@ public:
      * @param windowWidth   The width of the window panes
      * @param windowHeight  The height of the window panes
      */
-    Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data, const float windowWidth, const float windowHeight);
+    Player(const int id, const cugl::Vec2& pos, const float windowWidth, const float windowHeight);
     
     /**
      * Disposes the ship, releasing all resources.
@@ -123,7 +149,13 @@ public:
     const std::string getChar() { return _character; }
 
     /** Sets the character of the player. */
-    void setChar(std::string c) { _character = c; }
+    void setChar(std::string c) { CULog("here: %a", c.c_str()); _character = c; }
+
+    /** Sets the profile texture of the player */
+    void setProfileTexture(std::shared_ptr<cugl::Texture> t) { _profileTexture = t; }
+    
+    /** Gets the profile texture of the player */
+    std::shared_ptr<cugl::Texture> getProfileTexture() { return _profileTexture; }
 
     /**
      * Returns the position of this ship.
@@ -168,54 +200,26 @@ public:
      */
     const cugl::Vec2& getCoors() const { return _coors; }
 
-    /** 
+    /**
      * Sets the coordinates of the player in relation to the window grid.
      */
     void setCoors(cugl::Vec2 value) { _coors = value; }
 
-    /** 
+    /**
      * Calculates the coordinates of the player in relation to the window grid
-     * using the scene position of the player (_pos). 
+     * using the scene position of the player (_pos).
      */
     const cugl::Vec2& getCoorsFromPos(const float windowHeight, const float windowWidth, const float sideGap);
     
-    /**
-     * Returns the angle that this ship is facing.
-     *
-     * The angle is specified in degrees. The angle is counter clockwise
-     * from the line facing north.
-     *
-     * @return the angle of the ship
-     */
-    //float getAngle() const { return _ang; }
+    void setAnimationState(AnimStatus as) {
+        if (as != _animState) {
+            resetAnimationFrames();
+            // _throwing = true;
+            _animState = as;
+        } 
+    };
     
-    /**
-     * Sets the angle that this ship is facing.
-     *
-     * The angle is specified in degrees. The angle is counter clockwise
-     * from the line facing north.
-     *
-     * @param value the angle of the ship
-     */
-    //void setAngle(float value) { _ang = value; }
-    
-    /**
-     * Returns the current player's health.
-     * 
-     * When the health of the player is 0, it is "dead"
-     *
-     * @return the current player health.
-     */
-    int getHealth() const { return _health; }
-
-    /**
-     * Sets the current ship health.
-     * 
-     * When the health of the ship is 0, it is "dead"
-     *
-     * @param value The current ship health.
-     */
-    void setHealth(int value);
+    AnimStatus getAnimationState() { return _animState; };
 
     /**
      * Returns the current player's stunned time in frames.
@@ -230,74 +234,44 @@ public:
     void setStunFrames(int value) { _stunFrames = value; }
     
     /**
-     * Sets the player's wiping time to the max  frames to freeze the player.
+     * Sets the player's wiping time to the initial frame to play and freeze the player.
      *
      * @param value The time in frames to stun the player.
      */
-    void resetWipeFrames() { _wipeFrames = 0; }
-    
-    /**
-     * Returns the current player's maximum wipe time in frames.
-     */
-    int getMaxWipeFrames() const { return _maxwipeFrame; }
-    
+    void resetAnimationFrames() {
+        _wipeFrames = 0;
+        _shooFrames = 0;
+        _stunFrames = 60;
+        _throwFrames = 0;
+    }
     
     /**
      * Sets the player's movement freeze time to the given time in frames
      * .Used when player wipes dirt
      */
-    void advanceWipeFrame() {
-        int step = _maxwipeFrame / (_framesize * 2);
-        if (_wipeFrames < _maxwipeFrame) {
-            if (_wipeFrames % step == 0) {
-                _wipeSprite->setFrame((int) (_wipeFrames / step) % _framesize);
-                CULog("drawing frame %d", (int) (_wipeFrames / step) % _framesize);
-            }
-            _wipeFrames += 1;
-        } else {
-            _wipeSprite->setFrame(0);
-        }
-    };
+    void advanceWipeFrame();
+    
+    /**
+     * Sets the player's movement freeze time to the given time in frames
+     * .Used when player shoos bird
+     */
+    void advanceShooFrame();
+    
+    /**
+     * Sets the player's movement freeze time to the given time in frames
+     * .Used when player throws projectile
+     */
+    void advanceThrowFrame();
     
     /**
      * Advance animation for player idle
      */
-    void advanceIdleFrame() {
-        int step = _maxidleFrame / _idleframesize;
-         if (_idleFrames == _maxidleFrame) {
-             _idleFrames = 0;
-        }
-        if (_idleFrames % step == 0) {
-            _idleSprite->setFrame((int) (_idleFrames / step));
-        }
-        _idleFrames = _idleFrames+1;
-    };
+    void advanceIdleFrame();
     
-    /**
-     * Gets the amount of frames that the player is wiping dirt for
-     * @returns _wipeFrames
-     */
-    int getWipeFrames() {
-        return _wipeFrames;
-    }
-    
-    /** Sets the wipe frames */
-    void setWipeFrames(int n) { _wipeFrames = n; }
+    void advanceAnimation();
 
     /** Decreases the stun frames by one, unless it is already at 0 then does nothing. */
     void decreaseStunFrames();
-
-    /**
-     * Returns the mass of the ship.
-     *
-     * This value is necessary to resolve collisions. It is set by the
-     * initial JSON file.
-     *
-     * @return the ship mass
-     */
-    float getMass() const {
-        return _mass;
-    }
 
     /**
      * Returns the radius of the ship.
@@ -305,7 +279,7 @@ public:
      * This value is necessary to resolve collisions. It is computed from
      * the sprite sheet.
      *
-     * @return the ship radius
+     * @return the player character radius
      */
     float getRadius() {
         return _radius;
@@ -327,8 +301,8 @@ public:
     /**
      * Sets the idle texture for the player.
      *
-     * The texture should be formated as a sprite sheet, and the size and 
-     * layout of the sprite sheet should already be specified in the 
+     * The texture should be formated as a sprite sheet, and the size and
+     * layout of the sprite sheet should already be specified in the
      * initializing JSON. If so, this method will construct a sprite sheet
      * from this texture. Otherwise, the texture will be ignored.
      *
@@ -356,12 +330,34 @@ public:
      * @param texture   The texture for the sprite sheet
      */
     void setWipeTexture(const std::shared_ptr<cugl::Texture>& texture);
+    
+    
+    /** Gets player shoo sprite.
+     *
+     * The size and layout of the sprite sheet should already be specified
+     * in the initializing step.
+     * @return the sprite sheet for the ship
+     */
+    const std::shared_ptr<cugl::SpriteSheet>& getShooSprite() const {
+        return _shooSprite;
+    }
+    
+    /**
+     * Sets the player shoo sprite.
+     *
+     * The texture should be formated as a sprite sheet, and the size and
+     * layout of the sprite sheet should already be specified in the
+     * initializing step. If so, this method will construct a sprite sheet
+     * from this texture.
+     * @param texture   The texture for the sprite sheet
+     */
+    void setShooTexture(const std::shared_ptr<cugl::Texture>& texture);
 
    /** Gets player dirt throwing sprite.
     *
     * The size and layout of the sprite sheet should already be specified
     * in the initializing step.
-    * 
+    *
     * @return the sprite sheet
     */
     const std::shared_ptr<cugl::SpriteSheet>& getThrowSprite() const { return _throwSprite; }
@@ -373,7 +369,7 @@ public:
      * layout of the sprite sheet should already be specified in the
      * initializing step. If so, this method will construct a sprite sheet
      * from this texture.
-     * 
+     *
      * @param texture   The texture for the sprite sheet
      */
     void setThrowTexture(const std::shared_ptr<cugl::Texture>& texture);
@@ -414,7 +410,7 @@ public:
      * @param size      The size of the window (for wrap around)
      * @return 0 if moved, -1 if moving off of left edge, 1 if moving off of right edge, 2 otherwise
      */
-    int move(cugl::Vec2 dir, cugl::Size size, WindowGrid* windows);
+    int move(cugl::Vec2 dir, cugl::Size size, std::shared_ptr<WindowGrid> windows);
 
     /** Continues a movement between two grid spots */
     bool move();

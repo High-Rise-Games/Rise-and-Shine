@@ -8,24 +8,34 @@ using namespace cugl;
 
 /**
  * Creates a player with the given fields.
- * 
+ *
  * @param id    The player's id
  * @param pos   The player position
  * @param data  The data defining the constants
  * @param windowWidth   The width of the window panes
  * @param windowHeight  The height of the window panes
  */
-Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonValue> data, const float windowWidth, const float windowHeight) {
+Player::Player(const int id, const cugl::Vec2& pos, const float windowWidth, const float windowHeight) {
     _id = id;
     _pos = pos;
     _coors = Vec2();
     _speed = 10;
+    _shadows = 10;
     _framecols = 7;
     _framesize = 7;
     _idleframecols = 4;
     _idleframesize = 8;
     _throwframecols = 7;
     _throwframesize = 7;
+    _shooframecols = 4;
+    _shooframesize = 16;
+
+
+    statusToInt[AnimStatus::IDLE] = 0;
+    statusToInt[AnimStatus::WIPING] = 1;
+    statusToInt[AnimStatus::SHOOING] = 2;
+    statusToInt[AnimStatus::STUNNED] = 3;
+    statusToInt[AnimStatus::THROWING] = 4;
     
     // height of a window pane of the game board
     _windowWidth = windowWidth;
@@ -39,52 +49,29 @@ Player::Player(const int id, const cugl::Vec2& pos, std::shared_ptr<cugl::JsonVa
     // number of frames the player is frozen for because wiping dirt
     _wipeFrames = 3;
     // number of total frames the player will play wipe animation
-    _maxwipeFrame = _wipeFrames * _framesize * 2;
+    _maxwipeFrame = _wipeFrames * _framesize;
+    _wipeFrames = _maxwipeFrame;
+    
+    // number of frames the player is frozen for because shooing bird
+    _shooFrames = 2;
+    // number of total frames the player will play shoo animation
+    _maxshooFrame = _shooFrames * _shooframesize;
+    _shooFrames = _maxshooFrame;
+    
+    // number of frames the player is frozen for because throwing projectile
+    _throwFrames = 2;
+    // number of total frames the player will play shoo animation
+    _maxthrowFrame = _throwFrames * _throwframesize;
+    _throwFrames = _maxthrowFrame;
     
     _idleFrames = 5;
     _maxidleFrame = _idleFrames * _idleframesize;
-    _idleFrames = _maxwipeFrame/_idleframesize;
     
     // rotation property of player when player is stunned
     _stunRotate = 0;
 
     // radius of player for collisions
     _radius = _windowHeight / 2;
-    
-    // Physics
-    _mass = data->getFloat("mass",1.0);
-    //_shadows  = data->getFloat("shadow",0.0);
-    _maxvel   = data->getFloat("max velocity",0.0);
-
-    // Sprite sheet information
-    //_framecols = data->getInt("sprite cols",0);
-    //_framesize = data->getInt("sprite size",0);
-    //_frameflat = data->getInt("sprite frame",0);
-    
-    _health = data->getInt("health",0);
-}
-
-/**
- * Sets the current ship health.
- *
- * When the health of the ship is 0, it is "dead"
- *
- * @param value The current ship health.
- */
-void Player::setHealth(int value) {
-    if (value >= 0) {
-        // Do not allow health to go negative
-        _health = value;
-    } else {
-        _health = 0;
-    }
-}
-
-/** Decreases the stun frames by one, unless it is already at 0 then does nothing. */
-void Player::decreaseStunFrames() {
-    if (_stunFrames > 0) {
-        _stunFrames -= 1;
-    }
 }
 
 #pragma mark Graphics
@@ -121,8 +108,24 @@ void Player::setWipeTexture(const std::shared_ptr<cugl::Texture>& texture) {
 }
 
 /**
+ * Sets the shooing texture for player.
+ *
+ * @param texture   The texture for the sprite sheet
+ */
+void Player::setShooTexture(const std::shared_ptr<cugl::Texture>& texture) {
+    if (_shooframecols > 0) {
+        int rows = _shooframesize/_shooframecols;
+        if (_shooframesize % _shooframecols != 0) {
+            rows++;
+        }
+        _shooSprite = SpriteSheet::alloc(texture, rows, _shooframecols, _shooframesize);
+        _shooSprite->setFrame(0);
+    }
+}
+
+/**
 * Sets the player dirt throwing sprite.
-* 
+*
 * @param texture   The texture for the sprite sheet
 */
 void Player::setThrowTexture(const std::shared_ptr<cugl::Texture>& texture) {
@@ -133,6 +136,106 @@ void Player::setThrowTexture(const std::shared_ptr<cugl::Texture>& texture) {
         }
         _throwSprite = SpriteSheet::alloc(texture, rows, _throwframecols, _throwframesize);
         _throwSprite->setFrame(0);
+    }
+}
+
+void Player::advanceWipeFrame() {
+    int step = _maxwipeFrame / _framesize;
+    if (_wipeFrames < _maxwipeFrame) {
+        if (_wipeFrames % step == 0) {
+            _wipeSprite->setFrame((int)_wipeFrames / step);
+            // CULog("drawing frame %d", (int) (_wipeFrames / step) % _framesize);
+        }
+        _wipeFrames += 1;
+    }
+    else {
+        _wipeSprite->setFrame(0);
+        setAnimationState(AnimStatus::IDLE);
+    }
+};
+
+/**
+     * Sets the player's movement freeze time to the given time in frames
+     * .Used when player shoos bird
+     */
+void Player::advanceShooFrame() {
+    int step = _maxshooFrame / _shooframesize;
+    if (_shooFrames < _maxshooFrame) {
+        if (_shooFrames % step == 0) {
+            _shooSprite->setFrame((int)_shooFrames / step);
+            // CULog("drawing frame %d", (int) (_wipeFrames / step) % _framesize);
+        }
+        _shooFrames += 1;
+    }
+    else {
+        _shooSprite->setFrame(0);
+        setAnimationState(AnimStatus::IDLE);
+    }
+};
+
+/**
+ * Sets the player's movement freeze time to the given time in frames
+ * .Used when player throws projectile
+ */
+void Player::advanceThrowFrame() {
+    int step = _maxthrowFrame / _throwframesize;
+    if (_throwFrames < _maxthrowFrame) {
+        if (_throwFrames % step == 0) {
+            _throwSprite->setFrame((int)_throwFrames / step);
+        }
+        _throwFrames += 1;
+    }
+    else {
+        _throwSprite->setFrame(0);
+        setAnimationState(IDLE);
+    }
+};
+
+/**
+ * Advance animation for player idle
+ */
+void Player::advanceIdleFrame() {
+    int step = _maxidleFrame / _idleframesize;
+    if (_idleFrames == _maxidleFrame) {
+        _idleFrames = 0;
+    }
+    if (_idleFrames % step == 0) {
+        _idleSprite->setFrame((int)(_idleFrames / step));
+    }
+    _idleFrames = _idleFrames + 1;
+};
+
+
+/** Decreases the stun frames by one, unless it is already at 0 then does nothing. */
+void Player::decreaseStunFrames() {
+    if (_stunFrames > 0) {
+        _stunFrames -= 1;
+    }
+    else {
+        setAnimationState(IDLE);
+    }
+}
+
+void Player::advanceAnimation() {
+    switch (_animState) {
+    case IDLE:
+        advanceIdleFrame();
+        break;
+    case WIPING:
+        advanceWipeFrame();
+        break;
+    case STUNNED:
+        decreaseStunFrames();
+        break;
+    case SHOOING:
+        advanceShooFrame();
+        break;
+    case THROWING:
+        advanceThrowFrame();
+        break;
+    default:
+        advanceIdleFrame();
+        break;
     }
 }
 
@@ -156,31 +259,63 @@ const cugl::Vec2& Player::getCoorsFromPos(const float windowHeight, const float 
 void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) {
     // Transform to place the ship, start with centered version
     Affine2 player_trans;
-    if (_idleSprite && _wipeFrames == _maxwipeFrame) {
-        player_trans.translate( -(int)(_idleSprite->getFrameSize().width)/2 , -(int)(_idleSprite->getFrameSize().height) / 2);
-        double player_scale = _windowHeight / _idleSprite->getFrameSize().height;
-        player_trans.scale(player_scale);
-    }
-    else if (_wipeSprite && _wipeFrames < _maxwipeFrame) {
-        player_trans.translate( -(int)(_wipeSprite->getFrameSize().width)/2 , -(int)(_wipeSprite->getFrameSize().height) / 2);
-        double player_scale = _windowHeight / _wipeSprite->getFrameSize().height;
-        player_trans.scale(player_scale);
+    double player_scale;
+    switch (_animState) {
+        case IDLE:
+            player_trans.translate( -(int)(_idleSprite->getFrameSize().width)/2 , -(int)(_idleSprite->getFrameSize().height) / 2);
+            player_scale = _windowHeight / _idleSprite->getFrameSize().height;
+            player_trans.scale(player_scale);
+            break;
+        case WIPING:
+            player_trans.translate( -(int)(_wipeSprite->getFrameSize().width)/2 , -(int)(_wipeSprite->getFrameSize().height) / 2);
+            player_scale = _windowHeight / _wipeSprite->getFrameSize().height;
+            player_trans.scale(player_scale);
+            break;
+        case STUNNED:
+            player_trans.translate(-(int)(_idleSprite->getFrameSize().width) / 2, -(int)(_idleSprite->getFrameSize().height) / 2);
+            player_scale = _windowHeight / _idleSprite->getFrameSize().height;
+            player_trans.scale(player_scale);
+            _stunRotate += 0.1;
+            player_trans.rotate(_stunRotate * M_PI);
+            break;
+        case SHOOING:
+            player_trans.translate( -(int)(_shooSprite->getFrameSize().width)/2 , -(int)(_shooSprite->getFrameSize().height) / 2);
+            player_scale = _windowHeight / _shooSprite->getFrameSize().height;
+            player_trans.scale(player_scale);
+            break;
+        default: // default IDLE - throwing status should only be called while peeking, in which case drawPeeking handles
+            player_trans.translate( -(int)(_idleSprite->getFrameSize().width)/2 , -(int)(_idleSprite->getFrameSize().height) / 2);
+            player_scale = _windowHeight / _idleSprite->getFrameSize().height;
+            player_trans.scale(player_scale);
+            break;
     }
     // Don't draw if texture not set
-    if (getStunFrames()>0) {
-        _stunRotate += 0.1;
-        player_trans.rotate(_stunRotate*M_PI);
-    } else {
+    if (_animState != STUNNED) {
         _stunRotate = 0;
         player_trans.rotate(0);
     }
+
     player_trans.translate(_pos);
-    if (_idleSprite && _wipeFrames == _maxwipeFrame) {
-        // CULog("drawing player at (%f, %f)", _pos.x, _pos.y);
-        _idleSprite->draw(batch, player_trans);
-    }
-    else if (_wipeSprite && _wipeFrames < _maxwipeFrame) {
-        _wipeSprite->draw(batch, player_trans);
+    Affine2 shadtrans = player_trans;
+    shadtrans.translate(_shadows,-_shadows);
+    Color4f shadow(0,0,0,0.5f);
+    switch (_animState) {
+        case IDLE:
+            _idleSprite->draw(batch, shadow, shadtrans);
+            _idleSprite->draw(batch, player_trans);
+            break;
+        case WIPING:
+            _wipeSprite->draw(batch, shadow, shadtrans);
+            _wipeSprite->draw(batch, player_trans);
+            break;
+        case SHOOING:
+            _shooSprite->draw(batch, shadow, shadtrans);
+            _shooSprite->draw(batch, player_trans);
+            break;
+        default: // STUNNED
+            _idleSprite->draw(batch, shadow, shadtrans);
+            _idleSprite->draw(batch, player_trans);
+            break;
     }
 }
 
@@ -190,16 +325,26 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
 * @param batch     The sprite batch to draw to
 * @param size      The size of the window (for wrap around)
 * @param peekDirection The direction (-1 for left, 1 for right) that the player is peeking from. Draw on the opposite side.
+* @param sideGap   The size of the side gap for the window grid
 */
 void Player::drawPeeking(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, int peekDirection, float sideGap) {
+    Affine2 player_trans;
+    double player_scale;
+    
     if (_throwSprite) {
-        Affine2 player_trans;
+        if (_animState == THROWING) {
+            CULog("throwing");
+            advanceThrowFrame();
+        }
+        else {
+            CULog("not throwing");
+        }
         player_trans.translate(0, -(int)(_throwSprite->getFrameSize().height) / 2);
-        double player_scale = _windowHeight / _throwSprite->getFrameSize().height;
+        player_scale = _windowHeight / _throwSprite->getFrameSize().height;
 
         // flip sprite and translate position depending on peeking side
         if (peekDirection == -1) {
-            player_trans.translate(-(int)(_throwSprite->getFrameSize().width)*0.85, 0);
+            player_trans.translate(-(int)(_throwSprite->getFrameSize().width)*0.65, 0);
             player_trans.scale(-player_scale, player_scale);
             player_trans.translate(size.width - sideGap, _pos.y);
         }
@@ -208,9 +353,7 @@ void Player::drawPeeking(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::
             player_trans.scale(player_scale);
             player_trans.translate(sideGap, _pos.y);
         }
-
         _throwSprite->draw(batch, player_trans);
-
     }
 }
 
@@ -229,7 +372,7 @@ void Player::drawPeeking(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::
  * @param size      Size of the game scene
  * @return 0 if moved, -1 if moving off of left edge, 1 if moving off of right edge, 2 otherwise
  */
-int Player::move(Vec2 dir, Size size, WindowGrid* windows) {
+int Player::move(Vec2 dir, Size size, std::shared_ptr<WindowGrid> windows) {
 
     float sideGap = windows->sideGap;
 
