@@ -293,9 +293,13 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
             player_trans.scale(player_scale);
             break;
         default: // default IDLE - throwing status should only be called while peeking, in which case drawPeeking handles
-//            player_trans.translate( -(int)(_idleSprite->getFrameSize().width)/2 , -(int)(_idleSprite->getFrameSize().height) / 2);
-//            player_scale = _windowHeight / _idleSprite->getFrameSize().height;
-//            player_trans.scale(player_scale);
+            animProgress = getTextureIdxWithEase(cugl::EasingFunction::Type::SINE_IN_OUT, _maxidleFrame, _idleFrames, _idleframesize);
+//            CULog("frame: %d, progress: %f", animProgress.first, animProgress.second);
+            curSubTexture = Player::getSubTexture(_idleSprite, 8, 4, animProgress.first);
+            nextSubTexture = Player::getSubTexture(_idleSprite, 8, 4, (animProgress.first + 1) % _idleframesize);
+            player_trans.translate( -(int)(curSubTexture->getWidth())/2 , -(int)(curSubTexture->getHeight()) / 2);
+            player_scale = _windowHeight / curSubTexture->getHeight();
+            player_trans.scale(player_scale);
             break;
     }
     // Don't draw if texture not set
