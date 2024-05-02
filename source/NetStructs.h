@@ -144,6 +144,9 @@ public:
         
         /* The player character of the player that owns this board state */
         float playerChar;
+
+        /** Current frame number in the countdown animation spritesheet */
+        float countdownFrames;
         
         /* Whether the board state as achieved a win */
         bool hasWon;

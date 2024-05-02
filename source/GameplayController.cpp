@@ -109,7 +109,6 @@ bool GameplayController::initLevel(int selected_level) {
     _birdActive = true;
 
     // Initialize the window grids
-//    std::shared_ptr<cugl::JsonValue> level = _constants->get("easy board"); // TODO: make field passed in from level select through App
     switch (selected_level) {
         case 1:
             _levelJson = _assets->get<JsonValue>("level1");
@@ -227,6 +226,7 @@ bool GameplayController::initClient(const std::shared_ptr<cugl::AssetManager>& a
     _playerVec[_id - 1] = make_shared<Player>(_id, startingPos, _windowVec[_id - 1]->getPaneHeight(), _windowVec[_id - 1]->getPaneWidth());
     _playerVec[_id - 1]->setPosition(startingPos);
     _playerVec[_id - 1]->setVelocity(Vec2::ZERO);
+    _playerVec[_id - 1]->setAnimationState(Player::IDLE);
     // set temporary character until host sends message on character
     changeCharTexture(_playerVec[_id - 1], ""); // empty string defaults to Mushroom
     _playerVec[_id - 1]->setChar("");
@@ -578,10 +578,9 @@ std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getBoardState(int i
         boardState->animState = float(4);
     }
     
-    // TODO: add countdown frames to struct
-    // if (!_gameStart) {
-    //     json->appendValue("countdown_frame", std::to_string(_countDownFrames));
-    // }
+    if (!_gameStart) {
+        boardState->countdownFrames = float(_countDownFrames);
+    }
     cugl::Vec2 playerBoardPos = getBoardPosition(player->getPosition());
     if (!isPartial) {
         boardState->playerX = float(playerBoardPos.x);
@@ -725,13 +724,14 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
             setWin(playerId == _id);
             return;
     }
-    /** TODO: add into structs 
-    _progressVec[playerId - 1] = std::stod(data->getString("progress", "0"));
+
+
     // set to some random default high value indicating count down is over
     if (!_gameStart) {
-        _countDownFrames = std::stod(data->getString("countdown_frame", "5000"));
+        _countDownFrames = static_cast<int>(data->countdownFrames);
         advanceCountDownAnim(false);
-    } */
+    } 
+
     Vec2 playerBoardPos(data->playerX, data->playerY);
 
     _progressVec[playerId - 1] = data->progress;
@@ -1246,7 +1246,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             // pass movement over network for host to process
             if (_network.getConnection()) {
                 _network.checkConnection();
-                if (_input.getDir().length() > 0 && !_ishost) {
+                if (_input.getDir().length() > 0) {
                     // CULog("transmitting movement message over network for player %d", _id);
                     std::shared_ptr<NetStructs::MOVE_STATE> m = getMoveState(_input.getDir());
                     _network.sendToHost(*netStructs.serializeMoveState(m));

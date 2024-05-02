@@ -69,6 +69,7 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeBoardState(st
     _serializer.writeFloat(message->numProjectile);
     _serializer.writeFloat(message->playerChar);
     _serializer.writeFloat(message->animState);
+    _serializer.writeFloat(message->countdownFrames);
     _serializer.writeFloat(message->playerId);
     _serializer.writeFloat(message->currBoard);
     _serializer.writeFloat(message->playerY);
@@ -127,6 +128,7 @@ const std::shared_ptr<NetStructs::BOARD_STATE> NetStructs::deserializeBoardState
     receivedMessage->numProjectile = _deserializer.readFloat();
     receivedMessage->playerChar = _deserializer.readFloat();
     receivedMessage->animState = _deserializer.readFloat();
+    receivedMessage->countdownFrames = _deserializer.readFloat();
     receivedMessage->playerId = _deserializer.readFloat();
     receivedMessage->currBoard = _deserializer.readFloat();
     receivedMessage->playerY = _deserializer.readFloat();

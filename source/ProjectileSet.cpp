@@ -182,7 +182,6 @@ void ProjectileSet::draw(const std::shared_ptr<SpriteBatch>& batch, Size size, f
 
         batch->draw(texture, origin, trans);
         
-        std::string a = "b";
     }
     
 }
