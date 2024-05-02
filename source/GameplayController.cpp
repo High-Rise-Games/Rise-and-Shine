@@ -167,7 +167,7 @@ bool GameplayController::initLevel(int selected_level) {
     _texture_strings_selected = texture_strings_levels.at(selected_level - 1);
     _texture_ids_selected = texture_ids_levels.at(selected_level - 1);
     
-    _initDirtCount = selected_level * 5;
+    _initDirtCount = selected_level;
     
     // get the win background when game is win
     _winBackground = _assets->get<Texture>("win-background");
