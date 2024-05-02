@@ -37,10 +37,13 @@ public:
         /* Designates the type of the struct as a window dirt type message */
         WindowDirtType = 4,
         
+        /* Designates the type of the struct as a dirt state type message */
         DirtStateType = 7,
         
+        /* Designates the type of the struct as a dirt state type message */
         MoveStateType = 8,
         
+        /* Designates the type of the struct as a scene switch state type message */
         SceneSwitchType = 27
     };
     
@@ -145,6 +148,7 @@ public:
         /* Whether the board state as achieved a win */
         bool hasWon;
         
+        /* Bool value of whether there is a bird on the board by owner of this board state message */
         bool currBoardBird;
         
         /* The number of dirt that the player has collected in thier bucket*/
@@ -204,8 +208,10 @@ public:
         /* The player ID that owns this board state */
         float playerId;
         
+        /* The velocity of the player's over request in x direction */
         float moveX;
         
+        /* The velocity of the player's over request in y direction */
         float moveY;
         
 
@@ -216,9 +222,10 @@ public:
         /* Sets the default of ths struct as a board state type */
         STRUCT_TYPE type = SceneSwitchType;
         
-        /* The player ID that owns this board state */
+        /* The player ID that owns this scene switch state */
         float playerId;
         
+        /* The destination that the owwner of this switch state wants to move to */
         float switchDestination;
         
 
@@ -228,28 +235,28 @@ public:
     /* To serialize a DIRT_REQUEST message to send over the network */
     const std::shared_ptr<std::vector<std::byte>> serializeDirtRequest(std::shared_ptr<DIRT_REQUEST> message);
     
-    /* To serialize a DIRT_REQUEST message to send over the network */
+    /* To serialize a DIRT_STATE message to send over the network */
     const std::shared_ptr<std::vector<std::byte>> serializeDirtStateMessage(std::shared_ptr<DIRT_STATE> message);
     
     /* To serialize a BOARD_STATE message to send over te network */
     const std::shared_ptr<std::vector<std::byte>> serializeBoardState(std::shared_ptr<NetStructs::BOARD_STATE> message);
     
-    /* To serialize a BOARD_STATE message to send over te network */
+    /* To serialize a MOVE_STATE message to send over te network */
     const std::shared_ptr<std::vector<std::byte>> serializeMoveState(std::shared_ptr<NetStructs::MOVE_STATE> message);
     
-    /* To serialize a BOARD_STATE message to send over te network */
+    /* To serialize a SCENE_SWITCH_STATE message to send over te network */
     const std::shared_ptr<std::vector<std::byte>> serializeSwitchState(std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> message);
     
-    /* The deserialize a DIRT_REQUEST message sent over the network */
+    /* The deserialize a SCENE_SWITCH_STATE message sent over the network */
     const std::shared_ptr<SCENE_SWITCH_STATE> deserializeSwitchState(const std::vector<std::byte>& data);
     
-    /* The deserialize a DIRT_REQUEST message sent over the network */
+    /* The deserialize a MOVE_STATE message sent over the network */
     const std::shared_ptr<MOVE_STATE> deserializeMoveState(const std::vector<std::byte>& data);
     
     /* The deserialize a DIRT_REQUEST message sent over the network */
     const std::shared_ptr<DIRT_REQUEST> deserializeDirtRequest(const std::vector<std::byte>& data);
     
-    /* The deserialize a DIRT_REQUEST message sent over the network */
+    /* The deserialize a DIRT_STATE message sent over the network */
     const std::shared_ptr<DIRT_STATE> deserializeDirtStateMessage(const std::vector<std::byte>& data);
     
     /* The deserialize a BOARD_STATE message sent over the network */

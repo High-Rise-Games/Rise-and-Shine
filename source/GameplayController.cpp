@@ -453,7 +453,7 @@ void GameplayController::switchScene() {
  * @param id    the id of the player of the board state to get
  * @returns JSON value representing game board state
  */
-std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getJsonBoard(int id, bool isPartial) {
+std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getBoardState(int id, bool isPartial) {
     
 
     
@@ -759,27 +759,6 @@ void GameplayController::updateWindowDirt(std::shared_ptr<NetStructs::DIRT_STATE
 }
 
 
-/**
- * Converts a movement vector into a JSON value for sending over the network.
- *
- * @param move    the movement vector
- * @returns JSON value representing a movement
- */
-std::shared_ptr<cugl::JsonValue> GameplayController::getJsonMove(const cugl::Vec2 move) {
-    const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-    json->init(JsonValue::Type::ObjectType);
-    json->appendValue("player_id", std::to_string(_id));
-
-    const std::shared_ptr<JsonValue> vel = std::make_shared<JsonValue>();
-    vel->init(JsonValue::Type::ArrayType);
-    vel->appendValue(std::to_string(move.x));
-    vel->appendValue(std::to_string(move.y));
-    json->appendChild("vel", vel);
-    
-
-    return json;
-}
-
 std::shared_ptr<NetStructs::MOVE_STATE> GameplayController::getMoveState(const cugl::Vec2 move) {
     
     
@@ -795,14 +774,14 @@ std::shared_ptr<NetStructs::MOVE_STATE> GameplayController::getMoveState(const c
 
 /**
 * Called by the host only. Updates a client player's board for player at player_id
-* based on the movement or other action data stored in the JSON value.
-* 
+* based on the movement or other action data stored in the MOVE_STATE value.
+*
 * Player ids assigned clockwise with host at top
-* 
+*
 *          host: 1
 * left: 4            right: 2
 *         across: 3
-* 
+*
  * Example movement message:
  * {
  *    "player_id":  1,
@@ -811,27 +790,6 @@ std::shared_ptr<NetStructs::MOVE_STATE> GameplayController::getMoveState(const c
 *
 * @params data     The data to update
 */
-void GameplayController::processMovementRequest(std::shared_ptr<cugl::JsonValue> data) {
-//    int playerId = data->getInt("player_id", 0);
-    int playerId = std::stod(data->getString("player_id", "0"));
-    const std::vector<std::shared_ptr<JsonValue>>& vel = data->get("vel")->children();
-    Vec2 moveVec(std::stod(vel[0]->asString()), std::stod(vel[1]->asString()));
-    std::shared_ptr<Player> player = _playerVec[playerId-1];
-    std::shared_ptr<WindowGrid> windows = _windowVec[playerId-1];
-
-
-    // Check if player is stunned for this frame
-
-    if (player->getAnimationState() == Player::IDLE) {
-        // Move the player, ignoring collisions
-        int moveResult = player->move(moveVec, getSize(), windows);
-        if (moveResult == -1 || moveResult == 1) {
-            // Request to switch to neighbor's board
-            _allCurBoards[playerId - 1] = moveResult;
-        }
-    }
-}
-
 void GameplayController::processMovementRequest(std::shared_ptr<NetStructs::MOVE_STATE> data) {
 
     int playerId = data->playerId;
@@ -854,14 +812,12 @@ void GameplayController::processMovementRequest(std::shared_ptr<NetStructs::MOVE
 }
 
 
-
-
 /**
-* Called by the client only. Returns a JSON value representing a return to board request
+* Called by the client only. Returns a SCENE_SWITCH_STATE value representing a return to board request
 * for sending over the network.
-* 
+*
 * pre-condition: if not returning, guarantee that the player is on an edge
-* 
+*
 * Player ids assigned clockwise with host at top
 *
 *          host: 1
@@ -875,24 +831,8 @@ void GameplayController::processMovementRequest(std::shared_ptr<NetStructs::MOVE
 * }
 *
 * @param returning  whether the player is returning to their board
-* @returns JSON value representing a scene switch
+* @returns SCENE_SWITCH_STATE value representing a scene switch
 */
-std::shared_ptr<cugl::JsonValue> GameplayController::getJsonSceneSwitch(bool returning) {
-    const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-    json->init(JsonValue::Type::ObjectType);
-    json->appendValue("player_id", std::to_string(_id));
-
-    if (returning) {
-        json->appendValue("switch_destination", std::to_string(0));
-    }
-    else {
-        // pre-condition: if not returning, guarantee that the player is on an edge
-        int edge = _playerVec[_id-1]->getEdge(_windowVec[_id - 1]->sideGap, getSize());
-        json->appendValue("switch_destination", std::to_string(edge));
-    }
-    return json;
-}
-
 std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> GameplayController::getSwitchState(bool returning) {
     const std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> switchState = std::make_shared<NetStructs::SCENE_SWITCH_STATE>();
     
@@ -911,24 +851,6 @@ std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> GameplayController::getSwitchSta
 }
 
 
-
-/**
-* Called by host only to process return to board requests. Updates a client player's
-* currently viewed board for the player at player_id based on the current board
-* value stored in the JSON value.
-*
-* @params data     The data to update
-*/
-void GameplayController::processSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data) {
-
-    int playerId = std::stod(data->getString("player_id", "0"));
-    int switchDestination = std::stod(data->getString("switch_destination", "0"));
-
-    // update the board of the player to their switch destination
-    if (switchDestination == 0) {
-        _allCurBoards[playerId - 1] = switchDestination;
-    }
-}
 
 void GameplayController::processSceneSwitchRequest(std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> data) {
     
@@ -963,7 +885,7 @@ void GameplayController::processSceneSwitchRequest(std::shared_ptr<NetStructs::S
 *
 * @returns JSON value representing a dirt throw action
 */
-const std::shared_ptr<std::vector<std::byte>> GameplayController::getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest, const int amt) {
+const std::shared_ptr<std::vector<std::byte>> GameplayController::getDirtThrowRequest(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest, const int amt) {
     
     cugl::Vec2 boardPos = getBoardPosition(pos);
     cugl::Vec2 boardDest = getBoardPosition(dest);
@@ -1111,12 +1033,12 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             for (int boardToTransmit = 1; boardToTransmit <= _numPlayers; boardToTransmit++) {
                 if (curBoardId == boardToTransmit) {
                     // transmit full board state
-                    _network.transmitMessage(peer_uuid, *netStructs.serializeBoardState(getJsonBoard(boardToTransmit, false)));
+                    _network.transmitMessage(peer_uuid, *netStructs.serializeBoardState(getBoardState(boardToTransmit, false)));
                     _network.transmitMessage(peer_uuid, *netStructs.serializeDirtStateMessage(getDirtState(boardToTransmit)));
                 }
                 else {
                     // transmit partial board state
-                    _network.transmitMessage(peer_uuid, *netStructs.serializeBoardState(getJsonBoard(boardToTransmit, true)));
+                    _network.transmitMessage(peer_uuid, *netStructs.serializeBoardState(getBoardState(boardToTransmit, true)));
                     _network.transmitMessage(peer_uuid, *netStructs.serializeDirtStateMessage(getDirtState(boardToTransmit)));
                 }
             }
@@ -1184,10 +1106,10 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     int targetId = calculateNeighborId(_id, myCurBoard, _playerVec);
 
                     if (_ishost) {
-                        processDirtThrowRequest(*getJsonDirtThrow(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
+                        processDirtThrowRequest(*getDirtThrowRequest(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
                     }
                     else {
-                        _network.sendToHost(*getJsonDirtThrow(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
+                        _network.sendToHost(*getDirtThrowRequest(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
                     }
                     dirtThrowButton->setPosition(buttonPos);
                 } else if (dirtCon.isDown()) {
