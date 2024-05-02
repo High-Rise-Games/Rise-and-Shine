@@ -1,0 +1,1156 @@
+{
+    "variables": {},
+    "contents": {
+        "type": "Node",
+        "format": {
+            "type": "Anchored"
+        },
+        "data": {
+            "anchor": [
+                0,
+                0
+            ],
+            "size": [
+                1280,
+                720
+            ],
+            "angle": 0,
+            "position": [
+                281,
+                1670
+            ],
+            "visible": true
+        },
+        "children": {
+            "bg": {
+                "type": "Image",
+                "data": {
+                    "texture": "bg",
+                    "anchor": [
+                        0,
+                        1
+                    ],
+                    "size": [
+                        1286,
+                        724
+                    ],
+                    "angle": 0,
+                    "position": [
+                        -6,
+                        -2
+                    ],
+                    "visible": true
+                },
+                "layout": {
+                    "x_anchor": "left",
+                    "y_anchor": "top",
+                    "absolute": false,
+                    "x_offset": 0,
+                    "y_offset": 0
+                }
+            },
+            "bg2": {
+                "type": "Image",
+                "data": {
+                    "texture": "bg2",
+                    "anchor": [
+                        0,
+                        1
+                    ],
+                    "size": [
+                        1384,
+                        932
+                    ],
+                    "angle": 0,
+                    "position": [
+                        -36,
+                        -313
+                    ],
+                    "visible": true
+                },
+                "layout": {
+                    "x_anchor": "left",
+                    "y_anchor": "top",
+                    "absolute": false,
+                    "x_offset": -0.03,
+                    "y_offset": -0.14
+                }
+            },
+            "buttons": {
+                "type": "Node",
+                "format": {
+                    "type": "Float",
+                    "x_alignment": "left",
+                    "y_alignment": "middle",
+                    "orientation": "horizontal"
+                },
+                "data": {
+                    "anchor": [
+                        0,
+                        1
+                    ],
+                    "size": [
+                        1211,
+                        80
+                    ],
+                    "angle": 0,
+                    "position": [
+                        35,
+                        603
+                    ],
+                    "visible": true
+                },
+                "children": {
+                    "settings": {
+                        "type": "Button",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "size": [
+                                56,
+                                56.88
+                            ],
+                            "angle": 0,
+                            "position": [
+                                28,
+                                40
+                            ],
+                            "visible": true,
+                            "upnode": "settings"
+                        },
+                        "children": {
+                            "settings": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "settings",
+                                    "anchor": [
+                                        0,
+                                        1
+                                    ],
+                                    "size": [
+                                        56,
+                                        56.88
+                                    ],
+                                    "angle": 0,
+                                    "position": [
+                                        0,
+                                        0
+                                    ],
+                                    "visible": true
+                                },
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0,
+                                    "y_offset": 0
+                                }
+                            }
+                        },
+                        "layout": {
+                            "priority": 0,
+                            "padding": [
+                                0,
+                                0,
+                                1031,
+                                0
+                            ]
+                        }
+                    },
+                    "backtohome": {
+                        "type": "Button",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "size": [
+                                124,
+                                80
+                            ],
+                            "angle": 0,
+                            "position": [
+                                1149,
+                                40
+                            ],
+                            "visible": true,
+                            "upnode": "Backtohome"
+                        },
+                        "children": {
+                            "Backtohome": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "Backtohome",
+                                    "anchor": [
+                                        0,
+                                        1
+                                    ],
+                                    "size": [
+                                        124,
+                                        80
+                                    ],
+                                    "angle": 0,
+                                    "position": [
+                                        0,
+                                        0
+                                    ],
+                                    "visible": true
+                                },
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0,
+                                    "y_offset": 0
+                                }
+                            }
+                        },
+                        "layout": {
+                            "priority": 1,
+                            "padding": [
+                                0,
+                                0,
+                                0,
+                                0
+                            ]
+                        }
+                    }
+                },
+                "layout": {
+                    "x_anchor": "left",
+                    "y_anchor": "top",
+                    "absolute": false,
+                    "x_offset": 0.03,
+                    "y_offset": -0.05
+                }
+            },
+            "yellowwinner": {
+                "type": "Node",
+                "format": {
+                    "type": "Float",
+                    "x_alignment": "center",
+                    "y_alignment": "top",
+                    "orientation": "vertical"
+                },
+                "data": {
+                    "anchor": [
+                        0.5,
+                        0.5
+                    ],
+                    "size": [
+                        565,
+                        292.48
+                    ],
+                    "angle": -1.5308806722812968e-22,
+                    "position": [
+                        355,
+                        402.52
+                    ],
+                    "visible": true
+                },
+                "children": {
+                    "winnertitile": {
+                        "type": "Node",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "size": [
+                                565,
+                                246.13
+                            ],
+                            "angle": 0,
+                            "position": [
+                                282.49993896484375,
+                                123.06414794921875
+                            ],
+                            "visible": true
+                        },
+                        "children": {
+                            "W": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        119.58507537841797,
+                                        187.91940307617188
+                                    ],
+                                    "position": [
+                                        0,
+                                        -15.46173095703125
+                                    ],
+                                    "angle": 24.21780432276441,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular132",
+                                    "text": "W",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.16,
+                                    "y_offset": -0.55
+                                }
+                            },
+                            "i": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        36.3026123046875,
+                                        187.91940307617188
+                                    ],
+                                    "position": [
+                                        147.552734375,
+                                        41.49041938781738
+                                    ],
+                                    "angle": 11.961232316212667,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular132",
+                                    "text": "i",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.33,
+                                    "y_offset": -0.43
+                                }
+                            },
+                            "n": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        70.46977996826172,
+                                        187.91940307617188
+                                    ],
+                                    "position": [
+                                        213.71875,
+                                        54.396668672561646
+                                    ],
+                                    "angle": 3.1010601969043106,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular132",
+                                    "text": "n",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.45,
+                                    "y_offset": -0.39
+                                }
+                            },
+                            "n_3": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        70.46977996826172,
+                                        187.91940307617188
+                                    ],
+                                    "position": [
+                                        320.6611328125,
+                                        56.605653047561646
+                                    ],
+                                    "angle": -8.121824294414665,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular132",
+                                    "text": "n",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.61,
+                                    "y_offset": -0.4
+                                }
+                            },
+                            "e": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        68.33433532714844,
+                                        187.91940307617188
+                                    ],
+                                    "position": [
+                                        425.638671875,
+                                        37.98846626281738
+                                    ],
+                                    "angle": -19.197040159222755,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular132",
+                                    "text": "e",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.76,
+                                    "y_offset": -0.49
+                                }
+                            },
+                            "r": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        51.25074768066406,
+                                        187.91940307617188
+                                    ],
+                                    "position": [
+                                        520.150390625,
+                                        1.33123779296875
+                                    ],
+                                    "angle": -28.943228839526242,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular132",
+                                    "text": "r",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.88,
+                                    "y_offset": -0.62
+                                }
+                            }
+                        },
+                        "layout": {
+                            "priority": 0,
+                            "padding": [
+                                0,
+                                -52,
+                                0,
+                                0
+                            ]
+                        }
+                    },
+                    "desc": {
+                        "type": "Node",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "size": [
+                                383,
+                                98.35
+                            ],
+                            "angle": 0,
+                            "position": [
+                                282.49993896484375,
+                                243.3036766052246
+                            ],
+                            "visible": true
+                        },
+                        "children": {
+                            "T": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        14.918257713317871,
+                                        40.49241256713867
+                                    ],
+                                    "position": [
+                                        0,
+                                        -7.700153350830078
+                                    ],
+                                    "angle": 35.920045994545156,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular40",
+                                    "text": "T",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.05,
+                                    "y_offset": -0.79
+                                }
+                            },
+                            "h": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        15.983846664428711,
+                                        40.49241256713867
+                                    ],
+                                    "position": [
+                                        23.737850189208984,
+                                        8.996807098388672
+                                    ],
+                                    "angle": 30.631205710035033,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular40",
+                                    "text": "h",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.11,
+                                    "y_offset": -0.63
+                                }
+                            },
+                            "e": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        14.918257713317871,
+                                        40.49241256713867
+                                    ],
+                                    "position": [
+                                        48.858543395996094,
+                                        23.38555145263672
+                                    ],
+                                    "angle": 25.452548036864048,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular40",
+                                    "text": "e",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.17,
+                                    "y_offset": -0.5
+                                }
+                            },
+                            "b": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        14.918257713317871,
+                                        40.49241256713867
+                                    ],
+                                    "position": [
+                                        90.0458755493164,
+                                        40.98553466796875
+                                    ],
+                                    "angle": 17.188734004828625,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular40",
+                                    "text": "b",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.27,
+                                    "y_offset": -0.35
+                                }
+                            },
+                            "e_4": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        14.918257713317871,
+                                        40.49241256713867
+                                    ],
+                                    "position": [
+                                        117.82199096679688,
+                                        49.1410436630249
+                                    ],
+                                    "angle": 12.010076764996883,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular40",
+                                    "text": "e",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.34,
+                                    "y_offset": -0.27
+                                }
+                            },
+                            "s": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        12.787077903747559,
+                                        40.49241256713867
+                                    ],
+                                    "position": [
+                                        144.9633026123047,
+                                        54.50254940986633
+                                    ],
+                                    "angle": 7.161972067091572,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular40",
+                                    "text": "s",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.4,
+                                    "y_offset": -0.23
+                                }
+                            },
+                            "t": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        11.721487998962402,
+                                        40.49241256713867
+                                    ],
+                                    "position": [
+                                        170.05569458007812,
+                                        57.29506230354309
+                                    ],
+                                    "angle": 2.7546049571845543,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular40",
+                                    "text": "t",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.46,
+                                    "y_offset": -0.21
+                                }
+                            },
+                            "c": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        12.787077903747559,
+                                        40.49241256713867
+                                    ],
+                                    "position": [
+                                        210.00918579101562,
+                                        57.637793347239494
+                                    ],
+                                    "angle": -4.627736393311704,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular40",
+                                    "text": "c",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.56,
+                                    "y_offset": -0.21
+                                }
+                            },
+                            "l": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        8.524718284606934,
+                                        40.49241256713867
+                                    ],
+                                    "position": [
+                                        233.72171020507812,
+                                        55.363847494125366
+                                    ],
+                                    "angle": -8.484182183500057,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular40",
+                                    "text": "l",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.61,
+                                    "y_offset": -0.24
+                                }
+                            },
+                            "e_9": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        14.918257713317871,
+                                        40.49241256713867
+                                    ],
+                                    "position": [
+                                        252.20980834960938,
+                                        52.46404504776001
+                                    ],
+                                    "angle": -12.671181644438644,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular40",
+                                    "text": "e",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.67,
+                                    "y_offset": -0.27
+                                }
+                            },
+                            "a": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        14.918257713317871,
+                                        40.49241256713867
+                                    ],
+                                    "position": [
+                                        279.25872802734375,
+                                        45.99238872528076
+                                    ],
+                                    "angle": -17.739655502017975,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular40",
+                                    "text": "a",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.73,
+                                    "y_offset": -0.34
+                                }
+                            },
+                            "n": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        15.983846664428711,
+                                        40.49241256713867
+                                    ],
+                                    "position": [
+                                        305.701171875,
+                                        37.14396667480469
+                                    ],
+                                    "angle": -22.918311681134373,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular40",
+                                    "text": "n",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.8,
+                                    "y_offset": -0.43
+                                }
+                            },
+                            "e_12": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        14.918257713317871,
+                                        40.49241256713867
+                                    ],
+                                    "position": [
+                                        332.20025634765625,
+                                        25.48813247680664
+                                    ],
+                                    "angle": -28.09696854443306,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular40",
+                                    "text": "e",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.86,
+                                    "y_offset": -0.55
+                                }
+                            },
+                            "r": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        11.721487998962402,
+                                        40.49241256713867
+                                    ],
+                                    "position": [
+                                        356.2748718261719,
+                                        12.154403686523438
+                                    ],
+                                    "angle": -32.72470376235231,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular40",
+                                    "text": "r",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.91,
+                                    "y_offset": -0.67
+                                }
+                            },
+                            "exclamationpoint": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "size": [
+                                        9.59030818939209,
+                                        40.49241256713867
+                                    ],
+                                    "position": [
+                                        375.3098449707031,
+                                        -0.4461784362792969
+                                    ],
+                                    "angle": -36.69133640300495,
+                                    "visible": true,
+                                    "font": "saira stencil oneRegular40",
+                                    "text": "!",
+                                    "foreground": "#ffffffff",
+                                    "background": "#00000000",
+                                    "padding": [
+                                        0,
+                                        0,
+                                        0,
+                                        0
+                                    ],
+                                    "valign": "top",
+                                    "halign": "left"
+                                },
+                                "children": {},
+                                "layout": {
+                                    "x_anchor": "left",
+                                    "y_anchor": "top",
+                                    "absolute": false,
+                                    "x_offset": 0.96,
+                                    "y_offset": -0.79
+                                }
+                            }
+                        },
+                        "layout": {
+                            "priority": 1,
+                            "padding": [
+                                0,
+                                0,
+                                0,
+                                0
+                            ]
+                        }
+                    }
+                },
+                "layout": {
+                    "x_anchor": "left",
+                    "y_anchor": "top",
+                    "absolute": false,
+                    "x_offset": 0.5,
+                    "y_offset": -0.24
+                }
+            }
+        }
+    }
+}
