@@ -440,6 +440,9 @@ void LobbyScene::update(float timestep) {
                     _network.transmitMessage(json);
                     _UUIDmap[peer] = i;
                 }
+                if (!_network.getConnection()->isPlayerActive(peer)) {
+                    _UUIDmap.erase(peer);
+                }
             }
         }
         

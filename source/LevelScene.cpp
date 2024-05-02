@@ -57,14 +57,14 @@ bool LevelScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _scene->setContentSize(dimen);
     _scene->doLayout(); // Repositions the HUD
     
-    _scene_ui = assets->get<scene2::SceneNode>("level_ui");
-    _scene_ui->setContentSize(Application::get()->getDisplaySize() * SCENE_HEIGHT/dimen.height);
+    _scene_ui = assets->get<scene2::SceneNode>("levelui");
+    _scene_ui->setContentSize(Application::get()->getDisplaySize() * SCENE_HEIGHT/Application::get()->getDisplaySize().height);
     _scene_ui->doLayout();
     
     _choice = Choice::NONE;
     _selectedlevel = -1;
-    _backbutton = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_ui_back"));
-    _nextbutton = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_ui_next"));
+    _backbutton = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("levelui_back"));
+    _nextbutton = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("levelui_next"));
     _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level1")));
     _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level2")));
     _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level3")));
@@ -110,6 +110,9 @@ bool LevelScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     }
 
     addChild(_scene);
+    addChild(_scene_ui);
+    std::cout<<_scene->getContentSize().width<<", "<<_scene->getContentSize().height<<"\n";
+    std::cout<<_scene_ui->getContentSize().width<<", "<<_scene_ui->getContentSize().height<<"\n";
     setActive(false);
     return true;
 }
@@ -189,6 +192,8 @@ void LevelScene::update(float timestep) {
     } else {
         if (_input->didPress()) {
             _pressed = true;
+//            std::cout<<_input->getPosition().x<<", "<<_input->getPosition().y<<"\n";
+//            std::cout<<_scene_ui->getChildByName("title")->getPosition().x<<", "<<_scene_ui->getChildByName("title")->getPosition().y<<"\n";
             if (_backbutton->isDown() || _nextbutton->isDown()) {
                 _pressed = false;
             }
