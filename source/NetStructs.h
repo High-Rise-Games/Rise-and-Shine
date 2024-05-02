@@ -175,6 +175,9 @@ public:
         /* The y-position of the bird in the board state message */
         float birdPosY=0;
         
+        /** Whether the bird is facing right, needed for bird animation on client side */
+        bool birdFacingRight;
+        
         /* The vector of PROJECTILE objects */
         std::vector<PROJECTILE> projectileVector;
         

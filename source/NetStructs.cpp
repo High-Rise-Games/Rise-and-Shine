@@ -84,6 +84,7 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeBoardState(st
         if (message->currBoardBird) {
             _serializer.writeFloat(message->birdPosX);
             _serializer.writeFloat(message->birdPosY);
+            _serializer.writeFloat(message->birdFacingRight);
         }
         
         
@@ -119,28 +120,29 @@ const std::shared_ptr<NetStructs::BOARD_STATE> NetStructs::deserializeBoardState
     _deserializer.receive(data);
     
     // Creates a new BOARD_STATE object to write the deserialized data into
-    std::shared_ptr<BOARD_STATE> recievedMessage = std::make_shared<BOARD_STATE>();
+    std::shared_ptr<BOARD_STATE> receivedMessage = std::make_shared<BOARD_STATE>();
     
     // Deserialize the data in the order it was serialized
-    recievedMessage->type = static_cast<STRUCT_TYPE>(_deserializer.readFloat());
-    recievedMessage->numProjectile = _deserializer.readFloat();
-    recievedMessage->playerChar = _deserializer.readFloat();
-    recievedMessage->animState = _deserializer.readFloat();
-    recievedMessage->playerId = _deserializer.readFloat();
-    recievedMessage->currBoard = _deserializer.readFloat();
-    recievedMessage->playerY = _deserializer.readFloat();
-    recievedMessage->timer = _deserializer.readFloat();
-    recievedMessage->numDirt = _deserializer.readFloat();
-    recievedMessage->progress = _deserializer.readFloat();
-    recievedMessage->currBoardBird = _deserializer.readBool();
-    if (!recievedMessage->optional) {
-        recievedMessage->playerX = _deserializer.readFloat();
-        if (recievedMessage->currBoardBird) {
-            recievedMessage->birdPosX = _deserializer.readFloat();
-            recievedMessage->birdPosY = _deserializer.readFloat();
+    receivedMessage->type = static_cast<STRUCT_TYPE>(_deserializer.readFloat());
+    receivedMessage->numProjectile = _deserializer.readFloat();
+    receivedMessage->playerChar = _deserializer.readFloat();
+    receivedMessage->animState = _deserializer.readFloat();
+    receivedMessage->playerId = _deserializer.readFloat();
+    receivedMessage->currBoard = _deserializer.readFloat();
+    receivedMessage->playerY = _deserializer.readFloat();
+    receivedMessage->timer = _deserializer.readFloat();
+    receivedMessage->numDirt = _deserializer.readFloat();
+    receivedMessage->progress = _deserializer.readFloat();
+    receivedMessage->currBoardBird = _deserializer.readBool();
+    if (!receivedMessage->optional) {
+        receivedMessage->playerX = _deserializer.readFloat();
+        if (receivedMessage->currBoardBird) {
+            receivedMessage->birdPosX = _deserializer.readFloat();
+            receivedMessage->birdPosY = _deserializer.readFloat();
+            receivedMessage->birdFacingRight = _deserializer.readBool();
         };
         std::vector<PROJECTILE> projectileVector;
-        for (int i=0; i<recievedMessage->numProjectile; i++) {
+        for (int i=0; i<receivedMessage->numProjectile; i++) {
             PROJECTILE projectile;
             projectile.PosX = _deserializer.readFloat();
             projectile.PosY = _deserializer.readFloat();
@@ -151,13 +153,13 @@ const std::shared_ptr<NetStructs::BOARD_STATE> NetStructs::deserializeBoardState
             projectile.type = static_cast<PROJECTILE_TYPE>(_deserializer.readFloat());
             projectileVector.push_back(projectile);
         }
-        recievedMessage->projectileVector = projectileVector;
+        receivedMessage->projectileVector = projectileVector;
     }
     
-    recievedMessage->optional = _deserializer.readBool();
-    recievedMessage->hasWon = _deserializer.readBool();
+    receivedMessage->optional = _deserializer.readBool();
+    receivedMessage->hasWon = _deserializer.readBool();
     
-    return recievedMessage;
+    return receivedMessage;
     
 };
 

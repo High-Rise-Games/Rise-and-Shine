@@ -454,14 +454,11 @@ void GameplayController::switchScene() {
  * @returns JSON value representing game board state
  */
 std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getBoardState(int id, bool isPartial) {
-    
-
-    
+        
     std::shared_ptr<Player> player = _playerVec[id-1];
     std::shared_ptr<WindowGrid> windows = _windowVec[id - 1];
     std::shared_ptr<ProjectileSet> projectiles = _projectileVec[id-1];
     
-
 
     std::shared_ptr<NetStructs::BOARD_STATE> boardState = std::make_shared<NetStructs::BOARD_STATE>();
     boardState->playerId = float(id);
@@ -498,13 +495,14 @@ std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getBoardState(int i
 //    boardState->animState = player->animStatustoString(player->getAnimationState());
     boardState->timer = float(_gameTimeLeft);
     
+    boardState->currBoardBird = _curBirdBoard == id;
+    
     if (!isPartial) {
-        
         if (_curBirdBoard == id) {
             boardState->birdPosX = float(_bird.birdPosition.x);
             boardState->birdPosY = float(_bird.birdPosition.y);
+            boardState->birdFacingRight = _bird.isFacingRight();
         };
-        
         
         const std::shared_ptr<std::vector<NetStructs::PROJECTILE>> projArray = std::make_shared<std::vector<NetStructs::PROJECTILE>>();
         
@@ -645,7 +643,8 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
             return;
     }
     Vec2 playerBoardPos(data->playerX, data->playerY);
-//    
+    
+//
 //    _playerVec[_id - 1]->setChar(playerChar);
 //    changeCharTexture(_playerVec[_id - 1], playerChar);
 //    
@@ -709,10 +708,26 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
         _gameTimeLeft = data->timer;
         _currentDirtAmount = data->numDirt;
     }
+    
+    _allCurBoards[playerId - 1] = static_cast<int>(data->currBoard);
+    
+    if (data->currBoardBird) {
+        _curBirdBoard = playerId;
+        if (data->birdPosX && data->birdPosY) {
+            _curBirdPos = getWorldPosition(Vec2(data->birdPosX, data->birdPosY));
+        }
+        _bird.setFacingRight(data->birdFacingRight);
+        if (playerId == _id) _birdLeaving = false;
+    }
+    else if (playerId == _id && _curBirdBoard == _id) {
+        _birdLeaving = true;
+        // set to arbitrary value to represent bird not on board
+        // this value should be updated upon a later message from the host
+        _curBirdBoard = 0;
+    }
 
     if (data->projectileVector.size()>0) {
 
-        
         //     populate player's projectile setZ
         projectiles->clearCurrentSet(); // clear current set to rewrite
         for (NetStructs::PROJECTILE projNode : data->projectileVector) {
