@@ -84,7 +84,7 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeBoardState(st
         if (message->currBoardBird) {
             _serializer.writeFloat(message->birdPosX);
             _serializer.writeFloat(message->birdPosY);
-            _serializer.writeFloat(message->birdFacingRight);
+            _serializer.writeBool(message->birdFacingRight);
         }
         
         

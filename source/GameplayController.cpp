@@ -459,7 +459,6 @@ std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getBoardState(int i
     std::shared_ptr<WindowGrid> windows = _windowVec[id - 1];
     std::shared_ptr<ProjectileSet> projectiles = _projectileVec[id-1];
     
-
     std::shared_ptr<NetStructs::BOARD_STATE> boardState = std::make_shared<NetStructs::BOARD_STATE>();
     boardState->playerId = float(id);
     boardState->optional = bool(isPartial);
@@ -496,6 +495,8 @@ std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getBoardState(int i
     boardState->timer = float(_gameTimeLeft);
     
     boardState->currBoardBird = _curBirdBoard == id;
+
+    boardState->numProjectile = float(projectiles->current.size());
     
     if (!isPartial) {
         if (_curBirdBoard == id) {
@@ -507,49 +508,36 @@ std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getBoardState(int i
         const std::shared_ptr<std::vector<NetStructs::PROJECTILE>> projArray = std::make_shared<std::vector<NetStructs::PROJECTILE>>();
         
         for (shared_ptr<ProjectileSet::Projectile> projectile : projectiles->current) {
-            const std::shared_ptr<NetStructs::PROJECTILE> proj = std::make_shared<NetStructs::PROJECTILE>();
+            NetStructs::PROJECTILE projStruct;
 
             cugl::Vec2 projBoardPos = getBoardPosition(projectile->position);
             cugl::Vec2 projDestBoardPos = getBoardPosition(projectile->destination);
-            proj->PosX = float(projBoardPos.x);
-            proj->PosY = float(projBoardPos.y);
-            proj->velX = float(projectile->velocity.x);
-            proj->velY = float(projectile->velocity.y);
-            proj->destX = float(projDestBoardPos.x);
-            proj->destY = float(projDestBoardPos.y);
-            
+            projStruct.PosX = projBoardPos.x;
+            projStruct.PosY = projBoardPos.y;
+            projStruct.velX = float(projectile->velocity.x);
+            projStruct.velY = float(projectile->velocity.y);
+            projStruct.destX = float(projDestBoardPos.x);
+            projStruct.destY = float(projDestBoardPos.y);
             
             if (projectile->type == ProjectileSet::Projectile::ProjectileType::DIRT) {
-                proj->type = NetStructs::Dirt;
+                projStruct.type = NetStructs::Dirt;
             } else {
-                proj->type = NetStructs::Poop;
+                projStruct.type = NetStructs::Poop;
             }
-            
-            projArray->push_back(*proj);
-
+            projArray->push_back(projStruct);
         }
-        
         boardState->projectileVector = *projArray;
-        
     }
-    
-    
     return boardState;
 }
 
 std::shared_ptr<NetStructs::DIRT_STATE> GameplayController::getDirtState(int id) {
     
-
-    
     std::shared_ptr<Player> player = _playerVec[id-1];
     std::shared_ptr<WindowGrid> windows = _windowVec[id - 1];
-    
-
-
     std::shared_ptr<NetStructs::DIRT_STATE> dirtState = std::make_shared<NetStructs::DIRT_STATE>();
     
     dirtState->playerId = id;
-    
         
     const std::shared_ptr<std::vector<NetStructs::WINDOW_DIRT>> dirtArray = std::make_shared<std::vector<NetStructs::WINDOW_DIRT>>();
             dirtState->numWindowDirt = _windowVec[id-1]->getTotalDirt();
@@ -621,9 +609,7 @@ std::shared_ptr<NetStructs::DIRT_STATE> GameplayController::getDirtState(int id)
 */
 void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> data) {
     
-    
     int playerId = data->playerId;
-    
     
     std::string playerChar;
     if (data->playerChar == 1) {
@@ -643,11 +629,7 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
             return;
     }
     Vec2 playerBoardPos(data->playerX, data->playerY);
-    
-//
-//    _playerVec[_id - 1]->setChar(playerChar);
-//    changeCharTexture(_playerVec[_id - 1], playerChar);
-//    
+
     _progressVec[playerId - 1] = data->progress;
     
     if (playerId == _id && playerChar != _playerVec[_id - 1]->getChar()) {
@@ -657,11 +639,8 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
         
     }
     
-    
-//
     if (_playerVec[playerId - 1] == nullptr) {
             // first time this client is receiving message on another player
-    
             // instantiate this player's window grid in this client's game instance
             _windowVec[playerId - 1] = make_shared<WindowGrid>();
             for (string thisWindow : _texture_strings_selected) {
@@ -715,8 +694,8 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
         _curBirdBoard = playerId;
         if (data->birdPosX && data->birdPosY) {
             _curBirdPos = getWorldPosition(Vec2(data->birdPosX, data->birdPosY));
+            _bird.setFacingRight(data->birdFacingRight);
         }
-        _bird.setFacingRight(data->birdFacingRight);
         if (playerId == _id) _birdLeaving = false;
     }
     else if (playerId == _id && _curBirdBoard == _id) {
@@ -726,9 +705,8 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
         _curBirdBoard = 0;
     }
 
-    if (data->projectileVector.size()>0) {
-
-        //     populate player's projectile setZ
+    if (data->numProjectile > 0 && !data->optional) {
+        //     populate player's projectile set
         projectiles->clearCurrentSet(); // clear current set to rewrite
         for (NetStructs::PROJECTILE projNode : data->projectileVector) {
             // get projectile position
@@ -812,7 +790,6 @@ void GameplayController::processMovementRequest(std::shared_ptr<NetStructs::MOVE
     
     std::shared_ptr<Player> player = _playerVec[playerId-1];
     std::shared_ptr<WindowGrid> windows = _windowVec[playerId-1];
-
 
     // Check if player is stunned for this frame
 
@@ -989,8 +966,6 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 }
             });
         _network.checkConnection();
-
-
     }
     
     // host steps all boards forward
