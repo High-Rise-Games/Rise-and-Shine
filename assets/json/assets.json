@@ -659,7 +659,7 @@
             "file": "textures/returnSceneButton.png"
         },
         "bird": {
-            "file": "textures/bird_sprite.png"
+            "file": "textures/bird-flying-4096.png"
         },
         "poop": {
             "file": "textures/bird_poop.png"

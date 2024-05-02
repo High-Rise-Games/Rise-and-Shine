@@ -72,9 +72,9 @@ private:
     float _shadows;
     // Asset references. These should be set by GameScene
     /** The number of columns in the sprite sheet */
-    int _framecols;
+    int _wipeframecols;
     /** The number of frames in the sprite sheet */
-    int _framesize;
+    int _wipeframesize;
     /** total number of frames*/
     int _maxwipeFrame;
     // number of frames that the player is wiping for
@@ -109,9 +109,9 @@ private:
     /** player warning sign texture */
     std::shared_ptr<cugl::Texture> _warnTexture;
     /** player idle sprite sheet */
-    std::shared_ptr<cugl::SpriteSheet> _idleSprite;
+    std::shared_ptr<cugl::Texture> _idleSprite;
     /** Reference to the player wiping animation sprite sheet */
-    std::shared_ptr<cugl::SpriteSheet> _wipeSprite;
+    std::shared_ptr<cugl::Texture> _wipeSprite;
     /** Reference to the player shooing animation sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _shooSprite;
     /** Reference to the player throwing animation sprite sheet */
@@ -324,7 +324,7 @@ public:
      * //will be ignored.     *
      * @return the texture for the ship
      */
-    const std::shared_ptr<cugl::SpriteSheet>& getIdleSprite() const {
+    const std::shared_ptr<cugl::Texture>& getIdleSprite() const {
         return _idleSprite;
     }
 
@@ -346,7 +346,7 @@ public:
      * in the initializing step.
      * @return the sprite sheet for the ship
      */
-    const std::shared_ptr<cugl::SpriteSheet>& getWipeSprite() const {
+    const std::shared_ptr<cugl::Texture>& getWipeSprite() const {
         return _wipeSprite;
     }
     
@@ -472,7 +472,16 @@ private:
      * @param size      The size of the window (for wrap around)
      */
     void wrapPosition(cugl::Size size);
+    
+#pragma mark utilities
+    
+public:
 
+    std::shared_ptr<cugl::Texture> getSubTexture(std::shared_ptr<cugl::Texture> texture, int size, int cols, int frame);
+    
+    /** applies ease function on given sprite and returns texture index as well as percentage of completion*/
+    std::pair <int,float> getTextureIdxWithEase(cugl::EasingFunction::Type ef, int maxFrameNum, int curFrame, int spriteSize);
+    
 };
 
 #endif /* __SL_SHIP_H__ */

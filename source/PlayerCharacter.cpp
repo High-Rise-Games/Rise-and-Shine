@@ -21,8 +21,8 @@ Player::Player(const int id, const cugl::Vec2& pos, const float windowWidth, con
     _coors = Vec2();
     _speed = 10;
     _shadows = 10;
-    _framecols = 7;
-    _framesize = 7;
+    _wipeframecols = 7;
+    _wipeframesize = 7;
     _idleframecols = 4;
     _idleframesize = 8;
     _throwframecols = 7;
@@ -47,9 +47,9 @@ Player::Player(const int id, const cugl::Vec2& pos, const float windowWidth, con
     _stunFrames = 0;
     
     // number of frames the player is frozen for because wiping dirt
-    _wipeFrames = 3;
+    _wipeFrames = 4;
     // number of total frames the player will play wipe animation
-    _maxwipeFrame = _wipeFrames * _framesize;
+    _maxwipeFrame = _wipeFrames * _wipeframesize;
     _wipeFrames = _maxwipeFrame;
     
     // number of frames the player is frozen for because shooing bird
@@ -64,7 +64,7 @@ Player::Player(const int id, const cugl::Vec2& pos, const float windowWidth, con
     _maxthrowFrame = _throwFrames * _throwframesize;
     _throwFrames = _maxthrowFrame;
     
-    _idleFrames = 5;
+    _idleFrames = 4;
     _maxidleFrame = _idleFrames * _idleframesize;
     
     // rotation property of player when player is stunned
@@ -81,14 +81,15 @@ Player::Player(const int id, const cugl::Vec2& pos, const float windowWidth, con
  * @param texture   The texture for the sprite sheet
  */
 void Player::setIdleTexture(const std::shared_ptr<cugl::Texture>& texture) {
-    if (_idleframecols > 0) {
-        int rows = _idleframesize/_idleframecols;
-        if (_idleframesize % _idleframecols != 0) {
-            rows++;
-        }
-        _idleSprite = SpriteSheet::alloc(texture, rows, _idleframecols, _idleframesize);
-        _idleSprite->setFrame(1);
-    }
+//    if (_idleframecols > 0) {
+//        int rows = _idleframesize/_idleframecols;
+//        if (_idleframesize % _idleframecols != 0) {
+//            rows++;
+//        }
+//        _idleSprite = SpriteSheet::alloc(texture, rows, _idleframecols, _idleframesize);
+//        _idleSprite->setFrame(1);
+//    }
+    _idleSprite = texture;
 }
 
 /**
@@ -97,14 +98,15 @@ void Player::setIdleTexture(const std::shared_ptr<cugl::Texture>& texture) {
  * @param texture   The texture for the sprite sheet
  */
 void Player::setWipeTexture(const std::shared_ptr<cugl::Texture>& texture) {
-    if (_framecols > 0) {
-        int rows = _framesize/_framecols;
-        if (_framesize % _framecols != 0) {
-            rows++;
-        }
-        _wipeSprite = SpriteSheet::alloc(texture, rows, _framecols, _framesize);
-        _wipeSprite->setFrame(0);
-    }
+//    if (_framecols > 0) {
+//        int rows = _framesize/_framecols;
+//        if (_framesize % _framecols != 0) {
+//            rows++;
+//        }
+//        _wipeSprite = SpriteSheet::alloc(texture, rows, _framecols, _framesize);
+//        _wipeSprite->setFrame(0);
+//    }
+    _wipeSprite = texture;
 }
 
 /**
@@ -140,16 +142,10 @@ void Player::setThrowTexture(const std::shared_ptr<cugl::Texture>& texture) {
 }
 
 void Player::advanceWipeFrame() {
-    int step = _maxwipeFrame / _framesize;
-    if (_wipeFrames < _maxwipeFrame) {
-        if (_wipeFrames % step == 0) {
-            _wipeSprite->setFrame((int)_wipeFrames / step);
-            // CULog("drawing frame %d", (int) (_wipeFrames / step) % _framesize);
-        }
-        _wipeFrames += 1;
-    }
-    else {
-        _wipeSprite->setFrame(0);
+//    int step = _maxwipeFrame / _wipeframesize;
+    _wipeFrames = _wipeFrames + 1;
+    if (_wipeFrames == _maxwipeFrame) {
+        _wipeFrames = 0;
         setAnimationState(AnimStatus::IDLE);
     }
 };
@@ -187,7 +183,7 @@ void Player::advanceThrowFrame() {
     }
     else {
         _throwSprite->setFrame(0);
-        setAnimationState(IDLE);
+        setAnimationState(AnimStatus::IDLE);
     }
 };
 
@@ -195,14 +191,14 @@ void Player::advanceThrowFrame() {
  * Advance animation for player idle
  */
 void Player::advanceIdleFrame() {
-    int step = _maxidleFrame / _idleframesize;
+//    int step = _maxidleFrame / _idleframesize;
+//    if (_idleFrames % step == 0) {
+//        _idleSprite->setFrame((int)(_idleFrames / step));
+//    }
+    _idleFrames = _idleFrames + 1;
     if (_idleFrames == _maxidleFrame) {
         _idleFrames = 0;
     }
-    if (_idleFrames % step == 0) {
-        _idleSprite->setFrame((int)(_idleFrames / step));
-    }
-    _idleFrames = _idleFrames + 1;
 };
 
 
@@ -231,10 +227,9 @@ void Player::advanceAnimation() {
         advanceShooFrame();
         break;
     case THROWING:
-        advanceThrowFrame();
         break;
     default:
-        advanceIdleFrame();
+//        advanceIdleFrame();
         break;
     }
 }
@@ -260,20 +255,34 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
     // Transform to place the ship, start with centered version
     Affine2 player_trans;
     double player_scale;
+    std::shared_ptr<cugl::Texture> curSubTexture;
+    std::shared_ptr<cugl::Texture> nextSubTexture;
+    std::pair<int,float> animProgress;
     switch (_animState) {
         case IDLE:
-            player_trans.translate( -(int)(_idleSprite->getFrameSize().width)/2 , -(int)(_idleSprite->getFrameSize().height) / 2);
-            player_scale = _windowHeight / _idleSprite->getFrameSize().height;
+            animProgress = getTextureIdxWithEase(cugl::EasingFunction::Type::SINE_IN_OUT, _maxidleFrame, _idleFrames, _idleframesize);
+//            CULog("frame: %d, progress: %f", animProgress.first, animProgress.second);
+            curSubTexture = Player::getSubTexture(_idleSprite, 8, 4, animProgress.first);
+            nextSubTexture = Player::getSubTexture(_idleSprite, 8, 4, (animProgress.first + 1) % _idleframesize);
+            player_trans.translate( -(int)(curSubTexture->getWidth())/2 , -(int)(curSubTexture->getHeight()) / 2);
+            player_scale = _windowHeight / curSubTexture->getHeight();
             player_trans.scale(player_scale);
             break;
         case WIPING:
-            player_trans.translate( -(int)(_wipeSprite->getFrameSize().width)/2 , -(int)(_wipeSprite->getFrameSize().height) / 2);
-            player_scale = _windowHeight / _wipeSprite->getFrameSize().height;
+            animProgress = getTextureIdxWithEase(cugl::EasingFunction::Type::SINE_IN_OUT, _maxwipeFrame, _wipeFrames, _wipeframesize);
+            curSubTexture = Player::getSubTexture(_wipeSprite, 7, 7, animProgress.first);
+            nextSubTexture = Player::getSubTexture(_wipeSprite, 7, 7, (animProgress.first + 1) % _wipeframesize);
+            player_trans.translate( -(int)(curSubTexture->getWidth())/2 , -(int)(curSubTexture->getWidth()) / 2);
+            player_scale = _windowHeight / curSubTexture->getHeight();
             player_trans.scale(player_scale);
             break;
         case STUNNED:
-            player_trans.translate(-(int)(_idleSprite->getFrameSize().width) / 2, -(int)(_idleSprite->getFrameSize().height) / 2);
-            player_scale = _windowHeight / _idleSprite->getFrameSize().height;
+            animProgress = getTextureIdxWithEase(cugl::EasingFunction::Type::SINE_IN_OUT, _maxidleFrame, _idleFrames, _idleframesize);
+//            CULog("frame: %d, progress: %f", animProgress.first, animProgress.second);
+            curSubTexture = Player::getSubTexture(_idleSprite, 8, 4, animProgress.first);
+            nextSubTexture = Player::getSubTexture(_idleSprite, 8, 4, (animProgress.first + 1) % _idleframesize);
+            player_trans.translate( -(int)(curSubTexture->getWidth())/2 , -(int)(curSubTexture->getHeight()) / 2);
+            player_scale = _windowHeight / curSubTexture->getHeight();
             player_trans.scale(player_scale);
             _stunRotate += 0.1;
             player_trans.rotate(_stunRotate * M_PI);
@@ -284,8 +293,12 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
             player_trans.scale(player_scale);
             break;
         default: // default IDLE - throwing status should only be called while peeking, in which case drawPeeking handles
-            player_trans.translate( -(int)(_idleSprite->getFrameSize().width)/2 , -(int)(_idleSprite->getFrameSize().height) / 2);
-            player_scale = _windowHeight / _idleSprite->getFrameSize().height;
+            animProgress = getTextureIdxWithEase(cugl::EasingFunction::Type::SINE_IN_OUT, _maxidleFrame, _idleFrames, _idleframesize);
+//            CULog("frame: %d, progress: %f", animProgress.first, animProgress.second);
+            curSubTexture = Player::getSubTexture(_idleSprite, 8, 4, animProgress.first);
+            nextSubTexture = Player::getSubTexture(_idleSprite, 8, 4, (animProgress.first + 1) % _idleframesize);
+            player_trans.translate( -(int)(curSubTexture->getWidth())/2 , -(int)(curSubTexture->getHeight()) / 2);
+            player_scale = _windowHeight / curSubTexture->getHeight();
             player_trans.scale(player_scale);
             break;
     }
@@ -298,25 +311,52 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
     player_trans.translate(_pos);
     Affine2 shadtrans = player_trans;
     shadtrans.translate(_shadows,-_shadows);
+    Affine2 bgtrans = player_trans;
     Color4f shadow(0,0,0,0.5f);
+    Color4f bg(1.f,1.f,1.f,1.f);
+    batch->setTexture(curSubTexture);
+    Color4f transition = bg;
+//    batch->setSrcBlendFunc(GL_ONE);
+//    batch->setDstBlendFunc(GL_ONE_MINUS_SRC_ALPHA);
     switch (_animState) {
         case IDLE:
-            _idleSprite->draw(batch, shadow, shadtrans);
-            _idleSprite->draw(batch, player_trans);
+//            alphaValue = ((float) (_idleFrames % animProgress.second)) / (animProgress.second - 1);
+//            CULog("cur frame: %d", cur_frame);
+//            CULog("next frame: %d", next_frame);
+            batch->draw(curSubTexture, shadow, Vec2(), shadtrans);
+//            batch->draw(curSubTexture, bg, Vec2(), bgtrans);
+//            _idleSprite->draw(batch, player_trans);
+            transition.a = 1.f; // Alpha for current sub-texture
+//            transition.scale(1.f - alphaValue);
+            batch->draw(curSubTexture, transition, Vec2(), player_trans);
+//            CULog("cur frame transparency: %f", transition.a);
+//            transition = bg;
+            transition.a = animProgress.second; // Alpha for next sub-texture
+//            transition.scale(alphaValue);
+            batch->draw(nextSubTexture, transition, Vec2(), player_trans);
+//            CULog("next frame transparency: %f", transition.a);
             break;
         case WIPING:
-            _wipeSprite->draw(batch, shadow, shadtrans);
-            _wipeSprite->draw(batch, player_trans);
+            batch->draw(curSubTexture, shadow, Vec2(), shadtrans);
+            transition.a = 1.f; // Alpha for current sub-texture
+            batch->draw(curSubTexture, transition, Vec2(), player_trans);
+            transition.a = animProgress.second; // Alpha for next sub-texture
+            batch->draw(nextSubTexture, transition, Vec2(), player_trans);
             break;
         case SHOOING:
             _shooSprite->draw(batch, shadow, shadtrans);
             _shooSprite->draw(batch, player_trans);
             break;
         default: // STUNNED
-            _idleSprite->draw(batch, shadow, shadtrans);
-            _idleSprite->draw(batch, player_trans);
+            batch->draw(curSubTexture, shadow, Vec2(), shadtrans);
+            transition.a = 1.f; // Alpha for current sub-texture
+            batch->draw(curSubTexture, transition, Vec2(), player_trans);
+            transition.a = animProgress.second; // Alpha for next sub-texture
+            batch->draw(nextSubTexture, transition, Vec2(), player_trans);
             break;
     }
+//    batch->setSrcBlendFunc(GL_SRC_ALPHA);
+//    batch->setDstBlendFunc(GL_ONE_MINUS_SRC_ALPHA);
 }
 
 /**
@@ -369,9 +409,6 @@ void Player::drawPeeking(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::
  * @return 0 if moved, -1 if moving off of left edge, 1 if moving off of right edge, 2 otherwise
  */
 int Player::move(Vec2 dir, Size size, std::shared_ptr<WindowGrid> windows) {
-
-    float sideGap = windows->sideGap;
-
     // Process moving direction
     if (!_targetDist.isZero()) {
         if (abs(_targetDist.x - _vel.x) > abs(_vel.x) || abs(_targetDist.y - _vel.y) > abs(_vel.y)) {
@@ -446,4 +483,53 @@ int Player::getEdge(float sideGap, Size size) {
     }
     return 0;
 };
+
+
+std::shared_ptr<cugl::Texture> Player::getSubTexture(std::shared_ptr<cugl::Texture> texture, int size, int cols, int frame) {
+    int rows = size/cols;
+    if (size % cols != 0) {
+        rows++;
+    }
+    
+    float col = frame % cols;
+    float row = frame / cols;
+
+    GLfloat minS = col /cols;
+    GLfloat maxS = (col + 1)/cols;
+    GLfloat minT = row / rows;
+    GLfloat maxT = (row + 1) / rows;
+
+//    CULog("%f, %f, %f, %f", minS, maxS, minT, maxT);
+    std::shared_ptr<Texture> subTexture = texture->getSubTexture(minS, maxS, minT, maxT);
+    return subTexture;
+}
+
+std::pair <int,float> Player::getTextureIdxWithEase(cugl::EasingFunction::Type ef, int maxFrameNum, int curFrame, int spriteSize) {
+    float t = (float) curFrame / (maxFrameNum - 1);
+    float eased_t;
+    switch (ef) {
+        case cugl::EasingFunction::Type::SINE_IN_OUT:
+            eased_t = cugl::EasingFunction::sineInOut(t);
+            break;
+        case cugl::EasingFunction::Type::CIRC_IN_OUT :
+            eased_t = cugl::EasingFunction::circInOut(t);
+            break;
+        default:
+            eased_t = t;
+            break;
+    }
+    int curSpriteIdx = int(eased_t * (spriteSize - 1));
+    int nextSpriteIdx = curSpriteIdx + 1 < spriteSize ? curSpriteIdx + 1 : curSpriteIdx;
+
+    float t_cur = (float) curSpriteIdx / (spriteSize - 1);
+    float t_next = (float) nextSpriteIdx / (spriteSize - 1);
+
+    if (t_next - t_cur == 0) {
+            return std::make_pair(curSpriteIdx, 0.0f);
+        }
+
+    float progress = (eased_t - t_cur) / (t_next - t_cur);
+    
+    return std::make_pair(curSpriteIdx, progress);
+}
 
