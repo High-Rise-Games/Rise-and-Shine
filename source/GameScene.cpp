@@ -314,7 +314,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         auto player = _gameController->getPlayer(id);
         if (player == nullptr) continue;
         int barIdx = _char_to_barIdx[player->getChar()];
-        // CULog("character: %a", player->getChar().c_str());
+//         CULog("character t: %s", player->getChar().c_str());
         _player_bars[barIdx]->setPositionX(getSize().width - _gameController->getPlayerWindow(_gameController->getId())->sideGap + (offset_ct + 1) * 50);
         _player_bars[barIdx]->setVisible(true);
         Affine2 profileTrans = Affine2();
@@ -326,9 +326,9 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     }
     
     if (_gameController->isGameWin()) {
-        auto p = _gameController->getPlayer(_id);
-        int barIdx = _char_to_barIdx[p->getChar()];
-        CULog("%s", p->getChar().c_str());
+//        std::shared_ptr<Player> p = _gameController->getPlayer(_id);
+        int barIdx = 0;
+//        CULog("%s", p->getChar().c_str());
         _victory_UI->setPosition(idk-getSize().operator Vec2()/2);
         _victory_UI->getChildByName("victorybg1")->setVisible(true);
         _victory_UI->getChildByName("victorybg2")->setVisible(true);
