@@ -43,7 +43,7 @@ void ProjectileSet::Projectile::setProjectileTexture(const std::shared_ptr<cugl:
 bool ProjectileSet::Projectile::update(Size size) {
     Vec2 newPosition = position + velocity;
     // when the new position is over the destination, remove it
-    if (std::min(position.x, newPosition.x) <= destination.x && destination.x <= std::max(position.x, newPosition.x)) {
+    if (std::min(position.x, newPosition.x) <= destination.x && destination.x <= std::max(position.x, newPosition.x) && std::min(position.y, newPosition.y) <= destination.y && destination.y <= std::max(position.y, newPosition.y)) {
 //        CULog("reached destination");
         return true;
     }
@@ -175,10 +175,12 @@ void ProjectileSet::draw(const std::shared_ptr<SpriteBatch>& batch, Size size, f
         float r = proj->getRadius() * proj->getScale();
         Vec2 origin(r, r);
 
+        auto sprite = proj->getTexture();
         Affine2 trans;
+        // trans.translate(sprite->getSize() / -2.0);
         trans.scale(proj->getScale());
         trans.translate(pos);
-        auto sprite = proj->getTexture();
+        
 
         batch->draw(texture, origin, trans);
         
