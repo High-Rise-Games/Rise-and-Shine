@@ -1237,7 +1237,8 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     dirtThrowButton->setPosition(buttonPos);
                 } else if (dirtCon.isDown()) {
                     // cugl::Vec2 buttonPos(button_x, dirtThrowButton->getPositionY());
-                    std::vector<Vec2> vertices = { playerPos };
+                    std::vector<Vec2> vertices;
+                    vertices.push_back(playerPos);
                     Vec2 diff = worldPos - _prevInputPos;
                     if ((myCurBoard == -1 && diff.x > 0) || (myCurBoard == 1 && diff.x < 0)) {
                         diff.x = 0;
