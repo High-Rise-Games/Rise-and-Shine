@@ -24,6 +24,9 @@ class GameScene : public cugl::Scene2 {
 protected:
     /** The asset manager for this game mode. */
     std::shared_ptr<cugl::AssetManager> _assets;
+    
+    /** The asset manager for this game mode. */
+    std::shared_ptr<cugl::AssetManager> _gamescene;
         
     /** Whether this player is the host */
     bool _ishost;
@@ -60,6 +63,9 @@ protected:
     std::shared_ptr<cugl::JsonValue> _constants;
     
     cugl::scheduable t;
+
+    /** The scene node for the gameplay elements (progress bars, dirt throw buttons) */
+    std::shared_ptr<cugl::scene2::SceneNode> _gameplay_elem;
     
     /** Progress bars vector for players in the lobby **/
     std::vector<std::shared_ptr<cugl::scene2::ProgressBar>>  _player_bars;

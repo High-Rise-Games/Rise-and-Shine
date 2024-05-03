@@ -7,8 +7,7 @@
         "halign" : ["children","text","data","halign"],
         "valign" : ["children","text","data","valign"],
         "foreground"  : ["children","text","data","foreground"],
-        "background"  : ["children","text","data","background"],
-        "framecolor"  : ["children","frame","data","color"]
+        "background"  : ["children","text","data","background"]
     },
     "contents": {
         "type"   : "Node",
@@ -17,20 +16,19 @@
         },
         "data"   : {
             "anchor"  : [0.5,0.5],
-            "size"    : [350, 75]
+            "size"    : [200, 60]
         },
         "children": {
 			"text": {
 				"type"   : "TextField",
 				"data": {
-					"anchor"   : [0.5, 0.5],
-					"font"     : "gyparody",
-					"text"     : "Text",
-					"padding"  : [20, 20, 20, 20],
-					"halign"   : "left",
-					"valign"   : "middle",
-					"background" : "#ffffff",
-					"foreground" : "#000000",
+					"anchor": [ 0.5, 0.5 ],
+					"font": "saira stencil oneRegular48",
+					"text": "Text",
+					"padding": [ 20, 20, 20, 20 ],
+					"halign": "left",
+					"valign": "middle",
+					"foreground": "#ffffff",
 					"cursor": true
 				},
 				"layout" : {
@@ -40,19 +38,6 @@
                     "y_offset" : 2,
                     "absolute" : true
 
-				}
-			},
-			"frame": {
-				"type"   : "NinePatch",
-				"data": {
-					"texture":  "frame",
-					"anchor"   : [0.5, 0.5],
-					"interior" : [20,20,88,88],
-					"color"    : "#ffffff"
-				},
-				"layout" : {
-					"x_anchor" : "fill",
-					"y_anchor" : "fill"
 				}
 			}
 		},

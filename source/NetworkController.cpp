@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "NetworkController.h"
+#include "NetStructs.h"
 
 using namespace cugl;
 using namespace cugl::net;
@@ -187,6 +188,12 @@ void NetworkController::transmitMessage(const std::shared_ptr<cugl::JsonValue> m
     }
 }
 
+void NetworkController::transmitMessage(const std::string uuid, const std::vector<std::byte> msg) {
+    if (_network->isOpen()) {
+        _network->sendTo(uuid, msg);
+    }
+}
+
 void NetworkController::transmitMessage(const std::string uuid, const std::shared_ptr<cugl::JsonValue> msg) {
     if (_network->isOpen()) {
         NetcodeSerializer netSerializer;
@@ -204,6 +211,12 @@ void NetworkController::sendToHost(const std::shared_ptr<cugl::JsonValue> msg) {
         const std::vector<std::byte>& byteState = netSerializer.serialize();
         _network->sendToHost(byteState);
         netSerializer.reset();
+    }
+}
+
+void NetworkController::sendToHost(const std::vector<std::byte>& byteState) {
+    if (_network->isOpen()) {
+        _network->sendToHost(byteState);
     }
 }
 
