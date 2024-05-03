@@ -553,7 +553,6 @@ std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getBoardState(int i
     
     std::shared_ptr<NetStructs::BOARD_STATE> boardState = std::make_shared<NetStructs::BOARD_STATE>();
     boardState->playerId = float(id);
-    boardState->optional = bool(isPartial);
     if (player->getChar() == "Frog") {
         boardState->playerChar = float(1);
     } else if (player->getChar() == "Flower") {
@@ -563,10 +562,13 @@ std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getBoardState(int i
     } else if (player->getChar() == "Mushroom") {
         boardState->playerChar = float(4);
     }
-    boardState->hasWon = _hasWon[id-1] ? true : false;
+
+    boardState->hasWon = float(_hasWon[id - 1] ? 1 : 0);
+
     boardState->numDirt = float(_allDirtAmounts[id - 1]);
     boardState->currBoard = float(_allCurBoards[id - 1]);
     boardState->progress = float(_progressVec[id-1]);
+    boardState->optional = bool(isPartial);
     
     if (player->getAnimationState() == Player::IDLE) {
         boardState->animState = float(1);
@@ -718,13 +720,11 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
         playerChar = "Mushroom";
     }
     
-    bool playerHasWon = data->hasWon;
-    if (playerHasWon == true && !_gameOver) {
-            _gameOver = true;
-            setWin(playerId == _id);
-            return;
+    if (data->hasWon == 1 && !_gameOver) {
+        _gameOver = true;
+        setWin(playerId == _id);
+        return;
     }
-
 
     // set to some random default high value indicating count down is over
     if (!_gameStart) {
@@ -990,8 +990,8 @@ const std::shared_ptr<std::vector<std::byte>> GameplayController::getDirtThrowRe
     dirtRequest->playerIdTarget = target;
     dirtRequest->dirtPosX = boardPos.x;
     dirtRequest->dirtPosY = boardPos.y;
-    dirtRequest->dirtDestY = boardDest.x;
-    dirtRequest->dirtDestX = boardDest.y;
+    dirtRequest->dirtDestX = boardDest.x;
+    dirtRequest->dirtDestY = boardDest.y;
     dirtRequest->dirtVelX = vel.x;
     dirtRequest->dirtVelY = vel.y;
     dirtRequest->dirtAmount = amt;
@@ -1006,9 +1006,7 @@ const std::shared_ptr<std::vector<std::byte>> GameplayController::getDirtThrowRe
 *
 * @params data     The data to update
 */
-void GameplayController::processDirtThrowRequest(std::vector<std::byte> msg) {
-    
-    std::shared_ptr<NetStructs::DIRT_REQUEST> dirtRequest = netStructs.deserializeDirtRequest(msg);
+void GameplayController::processDirtThrowRequest(std::shared_ptr<NetStructs::DIRT_REQUEST> dirtRequest) {    
     int source_id = dirtRequest->playerIdSource;
     int target_id = dirtRequest->playerIdTarget;
     _playerVec[source_id - 1]->setAnimationState(Player::THROWING);
@@ -1058,9 +1056,10 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 else { // is host
                     // process action data - movement or dirt throw
                         // CULog("got movement message");
-                    if (netStructs.deserializeDirtRequest(data)->type == netStructs.DirtRequestType && sizeof netStructs.deserializeDirtRequest(data) == sizeof (NetStructs::DIRT_REQUEST)) {
+                    auto dirtThrowReq = netStructs.deserializeDirtRequest(data);
+                    if (dirtThrowReq->type == netStructs.DirtRequestType) {
                         // CULog("got dirt throw message");
-                        processDirtThrowRequest(data);
+                        processDirtThrowRequest(dirtThrowReq);
                     } if (netStructs.deserializeMoveState(data)->type == netStructs.MoveStateType && sizeof netStructs.deserializeMoveState(data) == sizeof (NetStructs::MOVE_STATE)) {
                         // CULog("got movement message");
                         processMovementRequest(netStructs.deserializeMoveState(data));
@@ -1155,11 +1154,24 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
 
     }
     else {
-        // not host - advance all players' animations on local instance
-        for (auto player : _playerVec) {
+        // not host - step forward for player that they are currently viewing
+        // optimistic synchronization - do not have to wait for host to send update, go ahead and update board based on
+        // current saved board state
+        auto player = _playerVec[_id - 1];
+        auto windows = _windowVec[_id - 1];
+        auto projectiles = _projectileVec[_id - 1];
+        if (_allCurBoards[_id - 1] != 0) {
+            int nbrIdx = calculateNeighborId(_id, _allCurBoards[_id - 1], _playerVec);
+            player = _playerVec[nbrIdx - 1];
+            windows = _windowVec[nbrIdx - 1];
+            projectiles = _projectileVec[nbrIdx - 1];
+        }
+        if(player != nullptr && windows != nullptr && projectiles != nullptr && _gameStart) // can be null on initial update calls
+            clientStepForward(player, windows, projectiles);
+        /** for (auto player : _playerVec) {
             if (player == nullptr) continue;
             player->advanceAnimation();
-        }
+        } */
     }
 
     // When the player is on other's board and are able to throw dirt
@@ -1205,7 +1217,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     int targetId = calculateNeighborId(_id, myCurBoard, _playerVec);
 
                     if (_ishost) {
-                        processDirtThrowRequest(*getDirtThrowRequest(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
+                        processDirtThrowRequest(netStructs.deserializeDirtRequest(*getDirtThrowRequest(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount)));
                     }
                     else {
                         _network.sendToHost(*getDirtThrowRequest(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
@@ -1358,6 +1370,85 @@ std::vector<cugl::Vec2> calculateLandedDirtPositions(const int width, const int 
 }
 
 /**
+* This method does some of the same actions as host's stepForward, for optimistic synchronization on the client end.
+* The client steps forward the given game state, given references to the player, board, and projectile set.
+*/
+void GameplayController::clientStepForward(std::shared_ptr<Player>& player, std::shared_ptr<WindowGrid>& windows, std::shared_ptr<ProjectileSet>& projectiles) {
+    int player_id = player->getId();
+
+    std::vector<std::pair<cugl::Vec2, int>> landedDirts;
+
+    if (_allCurBoards[player_id - 1] == 0) {
+        player->move();
+
+        // remove any dirt the player collides with
+        Vec2 grid_coors = player->getCoorsFromPos(windows->getPaneHeight(), windows->getPaneWidth(), windows->sideGap);
+        player->setCoors(grid_coors);
+
+        int clamped_y = std::clamp(static_cast<int>(grid_coors.y), 0, windows->getNVertical() - 1);
+        int clamped_x = std::clamp(static_cast<int>(grid_coors.x), 0, windows->getNHorizontal() - 1);
+        bool dirtExists = windows->hasDirt(clamped_y, clamped_x);
+        if (dirtExists) {
+            // filling up dirty bucket
+            // set amount of frames player is frozen for for cleaning dirt
+            if (_cleanInProgress && player->getAnimationState() == Player::IDLE) {
+                windows->removeDirt(clamped_y, clamped_x);
+                _cleanInProgress = false;
+            }
+            else if (player->getAnimationState() == Player::IDLE) {
+                // TODO: also move sound logic into update board for client
+                if (player_id == _id) {
+                    AudioEngine::get()->play("clean", _clean, false, _clean->getVolume(), true);
+                };
+                player->setAnimationState(Player::AnimStatus::WIPING);
+                _cleanInProgress = true;
+            }
+        }
+
+        // Check for collisions and play sound
+        auto collision_result = _collisions.resolveCollision(player, projectiles);
+        if (collision_result.first) { // if collision occurred
+            if (player_id == _id) {
+                // TODO: also move sound logic into update board for client
+                AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
+            };
+            player->setAnimationState(Player::STUNNED);
+            if (collision_result.second.has_value()) {
+                landedDirts.push_back(collision_result.second.value());
+            }
+        }
+        player->advanceAnimation();
+
+        if (!_birdLeaving && _curBirdBoard == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.5)) {
+            // set amount of frames plaer is frozen for for shooing bird
+            if (player->getAnimationState() == Player::AnimStatus::IDLE) {
+                player->setAnimationState(Player::AnimStatus::SHOOING);
+                _bird.resetBirdPathToExit(windows->getNHorizontal());
+                _birdLeaving = true;
+            }
+        }
+    }
+
+    // Move the projectiles, get the center destination and amount of landed dirts
+    auto landedProjs = projectiles->update(getSize());;
+    landedDirts.insert(landedDirts.end(), landedProjs.begin(), landedProjs.end());
+    // Add any landed dirts
+    for (auto landedDirt : landedDirts) {
+        cugl::Vec2 center = landedDirt.first;
+        int x_coor = (int)((center.x - windows->sideGap) / windows->getPaneWidth());
+        int y_coor = (int)(center.y / windows->getPaneHeight());
+        x_coor = std::clamp(x_coor, 0, windows->getNHorizontal() - 1);
+        y_coor = std::clamp(y_coor, 0, windows->getNVertical() - 1);
+
+        int amount = landedDirt.second;
+        std::vector<cugl::Vec2> landedCoords = calculateLandedDirtPositions(windows->getNVertical(), windows->getNHorizontal(), Vec2(x_coor, y_coor), amount);
+        for (cugl::Vec2 dirtPos : landedCoords) {
+            windows->addDirt(dirtPos.y, dirtPos.x);
+        }
+    }
+}
+
+/**
 * FOR HOST ONLY. This method does all the heavy lifting work for update.
 * The host steps forward each player's game state, given references to the player, board, and projectile set.
 */
@@ -1378,18 +1469,6 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
     std::vector<std::pair<cugl::Vec2, int>> landedDirts;
 
     if (_allCurBoards[player_id - 1] == 0) {
-        // only check if player is stunned, has removed dirt, or collided with projectile
-        // if they are on their own board.
-
-        // note: the frame updates only update to the host's local state.
-        // the host only sends over movement/positioning updates
-        // if (player->getStunFrames() > 0) {
-        //     player->decreaseStunFrames();
-        // } 
-        // else {
-        //     player->move();
-        // }
-        
         player->move();
         
         // remove any dirt the player collides with

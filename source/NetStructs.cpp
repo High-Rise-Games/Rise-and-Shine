@@ -27,8 +27,8 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeDirtRequest(s
     _serializer.writeFloat(message->dirtPosY);
     _serializer.writeFloat(message->dirtVelX);
     _serializer.writeFloat(message->dirtVelY);
-    _serializer.writeSint32(message->dirtDestX);
-    _serializer.writeSint32(message->dirtDestY);
+    _serializer.writeFloat(message->dirtDestX);
+    _serializer.writeFloat(message->dirtDestY);
     _serializer.writeSint32(message->dirtAmount);
     
     // Call the serialize() method of _serializer to store the serialized data in buffer
@@ -55,6 +55,8 @@ const std::shared_ptr<NetStructs::DIRT_REQUEST> NetStructs::deserializeDirtReque
     recievedMessage->dirtPosY = _deserializer.readFloat();
     recievedMessage->dirtVelX = _deserializer.readFloat();
     recievedMessage->dirtVelY = _deserializer.readFloat();
+    recievedMessage->dirtDestX = _deserializer.readFloat();
+    recievedMessage->dirtDestY = _deserializer.readFloat();
     recievedMessage->dirtAmount = _deserializer.readSint32();
     return recievedMessage;
 };
@@ -66,6 +68,7 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeBoardState(st
     
     // Writes the data in a specific order
     _serializer.writeFloat(message->type);
+    _serializer.writeFloat(message->hasWon);
     _serializer.writeFloat(message->numProjectile);
     _serializer.writeFloat(message->playerChar);
     _serializer.writeFloat(message->animState);
@@ -106,7 +109,7 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeBoardState(st
     }
     
     _serializer.writeBool(message->optional);
-    _serializer.writeBool(message->hasWon);
+    
 
     std::shared_ptr<std::vector<std::byte>> buffer = std::make_shared<std::vector<std::byte>>(_serializer.serialize());
     return buffer;
@@ -125,6 +128,7 @@ const std::shared_ptr<NetStructs::BOARD_STATE> NetStructs::deserializeBoardState
     
     // Deserialize the data in the order it was serialized
     receivedMessage->type = static_cast<STRUCT_TYPE>(_deserializer.readFloat());
+    receivedMessage->hasWon = _deserializer.readFloat();
     receivedMessage->numProjectile = _deserializer.readFloat();
     receivedMessage->playerChar = _deserializer.readFloat();
     receivedMessage->animState = _deserializer.readFloat();
@@ -142,7 +146,7 @@ const std::shared_ptr<NetStructs::BOARD_STATE> NetStructs::deserializeBoardState
             receivedMessage->birdPosX = _deserializer.readFloat();
             receivedMessage->birdPosY = _deserializer.readFloat();
             receivedMessage->birdFacingRight = _deserializer.readBool();
-        };
+        }
         std::vector<PROJECTILE> projectileVector;
         for (int i=0; i<receivedMessage->numProjectile; i++) {
             PROJECTILE projectile;
@@ -159,7 +163,7 @@ const std::shared_ptr<NetStructs::BOARD_STATE> NetStructs::deserializeBoardState
     }
     
     receivedMessage->optional = _deserializer.readBool();
-    receivedMessage->hasWon = _deserializer.readBool();
+    
     
     return receivedMessage;
     

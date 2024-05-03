@@ -513,7 +513,7 @@ public:
      *
      * @params data     The data to update
      */
-    void processDirtThrowRequest(std::vector<std::byte> msg);
+    void processDirtThrowRequest(std::shared_ptr<NetStructs::DIRT_REQUEST> dirtRequest);
     
     /**
      * The method called to update the game mode.
@@ -533,6 +533,12 @@ public:
      * The host steps forward each player's game state, given references to the player, board, and projectile set.
      */
     void stepForward(std::shared_ptr<Player>& player, std::shared_ptr<WindowGrid>& windows, std::shared_ptr<ProjectileSet>& projectiles);
+
+    /**
+     * This method does some of the same actions as host's stepForward, for optimistic synchronization on the client end.
+     * The client steps forward the given game state, given references to the player, board, and projectile set.
+     */
+    void clientStepForward(std::shared_ptr<Player>& player, std::shared_ptr<WindowGrid>& windows, std::shared_ptr<ProjectileSet>& projectiles);
 
     /**
      * Draws all this scene to the given SpriteBatch.

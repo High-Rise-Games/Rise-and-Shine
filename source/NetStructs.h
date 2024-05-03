@@ -117,10 +117,10 @@ public:
         float dirtVelY;
         
         /* The x-destination of this dirt */
-        Sint32 dirtDestX;
+        float dirtDestX;
         
         /* The y-destination of this dirt */
-        Sint32 dirtDestY;
+        float dirtDestY;
         
         /* The amount of dirt that is thrown */
         Sint32 dirtAmount;
@@ -149,7 +149,7 @@ public:
         float countdownFrames;
         
         /* Whether the board state as achieved a win */
-        bool hasWon;
+        float hasWon;
         
         /* Bool value of whether there is a bird on the board by owner of this board state message */
         bool currBoardBird;
