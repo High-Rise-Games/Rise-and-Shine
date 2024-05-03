@@ -1,0 +1,633 @@
+{
+    "textures": {
+        "timerbg": {
+            "file": "textures/timerbg.png"
+        },
+        "time": {
+            "file": "textures/time.png"
+        },
+        "dirt": {
+            "file": "textures/dirt.png"
+        },
+        "bucket": {
+            "file": "textures/bucket.png"
+        },
+        "Settings": {
+            "file": "textures/Settings.png"
+        },
+        "textbox": {
+            "file": "textures/textbox.png"
+        },
+        "mushroomtalk": {
+            "file": "textures/mushroomtalk.png"
+        }
+    },
+    "scene2s" : {
+        "gamescene": {
+            "type": "Node",
+            "format": {
+                "type": "Anchored"
+            },
+            "data": {
+                "anchor": [
+                    0,
+                    0
+                ],
+                "size": [
+                    932,
+                    430
+                ],
+                "angle": -1.5308806722812968e-22,
+                "position": [
+                    6998,
+                    189
+                ],
+                "visible": true
+            },
+            "children": {
+                "leftgroup": {
+                    "type": "Node",
+                    "format": {
+                        "type": "Float",
+                        "x_alignment": "left",
+                        "y_alignment": "top",
+                        "orientation": "horizontal"
+                    },
+                    "data": {
+                        "anchor": [
+                            0,
+                            1
+                        ],
+                        "size": [
+                            196.84,
+                            104
+                        ],
+                        "angle": 0,
+                        "position": [
+                            0,
+                            326
+                        ],
+                        "visible": true
+                    },
+                    "children": {
+                        "TimerUI": {
+                            "type": "Node",
+                            "format": {
+                                "type": "Float",
+                                "x_alignment": "left",
+                                "y_alignment": "top",
+                                "orientation": "vertical"
+                            },
+                            "data": {
+                                "anchor": [
+                                    0.5,
+                                    0.5
+                                ],
+                                "size": [
+                                    134,
+                                    104
+                                ],
+                                "angle": 0,
+                                "position": [
+                                    67,
+                                    52
+                                ],
+                                "visible": true
+                            },
+                            "children": {
+                                "UITimer": {
+                                    "type": "Node",
+                                    "format": {
+                                        "type": "Anchored"
+                                    },
+                                    "data": {
+                                        "anchor": [
+                                            0.5,
+                                            0.5
+                                        ],
+                                        "size": [
+                                            134,
+                                            72
+                                        ],
+                                        "angle": 0,
+                                        "position": [
+                                            67,
+                                            52
+                                        ],
+                                        "visible": true
+                                    },
+                                    "children": {
+                                        "timerbg": {
+                                            "type": "Image",
+                                            "data": {
+                                                "texture": "timerbg",
+                                                "anchor": [
+                                                    0.5,
+                                                    0.5
+                                                ],
+                                                "size": [
+                                                    134,
+                                                    72
+                                                ],
+                                                "angle": 1.5308806722812968e-22,
+                                                "position": [
+                                                    0,
+                                                    0
+                                                ],
+                                                "visible": true
+                                            },
+                                            "layout": {
+                                                "x_anchor": "left",
+                                                "y_anchor": "top",
+                                                "absolute": false,
+                                                "x_offset": 0.5,
+                                                "y_offset": -0.5
+                                            }
+                                        },
+                                        "time": {
+                                            "type": "Node",
+                                            "format": {
+                                                "type": "Float",
+                                                "x_alignment": "center",
+                                                "y_alignment": "middle",
+                                                "orientation": "horizontal"
+                                            },
+                                            "data": {
+                                                "anchor": [
+                                                    0,
+                                                    1
+                                                ],
+                                                "size": [
+                                                    85,
+                                                    48
+                                                ],
+                                                "angle": 0,
+                                                "position": [
+                                                    24,
+                                                    14
+                                                ],
+                                                "visible": true
+                                            },
+                                            "children": {
+                                                "time": {
+                                                    "type": "Image",
+                                                    "data": {
+                                                        "texture": "time",
+                                                        "anchor": [
+                                                            0.5,
+                                                            0.5
+                                                        ],
+                                                        "size": [
+                                                            32,
+                                                            32
+                                                        ],
+                                                        "angle": 1.5308806722812968e-22,
+                                                        "position": [
+                                                            24,
+                                                            24
+                                                        ],
+                                                        "visible": true
+                                                    },
+                                                    "layout": {
+                                                        "priority": 0,
+                                                        "padding": [
+                                                            8,
+                                                            8,
+                                                            2,
+                                                            8
+                                                        ]
+                                                    }
+                                                },
+                                                "number": {
+                                                    "type": "Label",
+                                                    "data": {
+                                                        "anchor": [
+                                                            0.5,
+                                                            0.5
+                                                        ],
+                                                        "size": [
+                                                            35,
+                                                            31
+                                                        ],
+                                                        "position": [
+                                                            59.5,
+                                                            24
+                                                        ],
+                                                        "angle": 1.5308806722812968e-22,
+                                                        "visible": true,
+                                                        "font": "saira stencil oneRegular20",
+                                                        "text": "109",
+                                                        "foreground": "#000000ff",
+                                                        "background": "#00000000",
+                                                        "padding": [
+                                                            0,
+                                                            0,
+                                                            0,
+                                                            0
+                                                        ],
+                                                        "valign": "top",
+                                                        "halign": "left"
+                                                    },
+                                                    "children": {},
+                                                    "layout": {
+                                                        "priority": 1,
+                                                        "padding": [
+                                                            0,
+                                                            8,
+                                                            8,
+                                                            8
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "layout": {
+                                                "x_anchor": "left",
+                                                "y_anchor": "top",
+                                                "absolute": false,
+                                                "x_offset": 0.18,
+                                                "y_offset": -0.14
+                                            }
+                                        }
+                                    },
+                                    "layout": {
+                                        "priority": 0,
+                                        "padding": [
+                                            0,
+                                            8,
+                                            0,
+                                            16
+                                        ]
+                                    }
+                                }
+                            },
+                            "layout": {
+                                "priority": 0,
+                                "padding": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            }
+                        },
+                        "BucketUI": {
+                            "type": "Node",
+                            "format": {
+                                "type": "Float",
+                                "x_alignment": "left",
+                                "y_alignment": "top",
+                                "orientation": "horizontal"
+                            },
+                            "data": {
+                                "anchor": [
+                                    0.5,
+                                    0.5
+                                ],
+                                "size": [
+                                    62.84,
+                                    100
+                                ],
+                                "angle": 0,
+                                "position": [
+                                    165.41772079467773,
+                                    50
+                                ],
+                                "visible": true
+                            },
+                            "children": {
+                                "BucketUI": {
+                                    "type": "Node",
+                                    "format": {
+                                        "type": "Anchored"
+                                    },
+                                    "data": {
+                                        "anchor": [
+                                            0.5,
+                                            0.5
+                                        ],
+                                        "size": [
+                                            62.84,
+                                            68
+                                        ],
+                                        "angle": 0,
+                                        "position": [
+                                            31.417720794677734,
+                                            50
+                                        ],
+                                        "visible": true
+                                    },
+                                    "children": {
+                                        "dirt": {
+                                            "type": "Image",
+                                            "data": {
+                                                "texture": "dirt",
+                                                "anchor": [
+                                                    0.5,
+                                                    0.5
+                                                ],
+                                                "size": [
+                                                    62.84,
+                                                    62.84
+                                                ],
+                                                "angle": 1.5308806722812968e-22,
+                                                "position": [
+                                                    0,
+                                                    5.16
+                                                ],
+                                                "visible": true
+                                            },
+                                            "layout": {
+                                                "x_anchor": "left",
+                                                "y_anchor": "bottom",
+                                                "absolute": false,
+                                                "x_offset": 0.5,
+                                                "y_offset": 0.54
+                                            }
+                                        },
+                                        "bucket": {
+                                            "type": "Image",
+                                            "data": {
+                                                "texture": "bucket",
+                                                "anchor": [
+                                                    0.5,
+                                                    0.5
+                                                ],
+                                                "size": [
+                                                    34.43,
+                                                    39.59
+                                                ],
+                                                "angle": 1.5308806722812968e-22,
+                                                "position": [
+                                                    12.05,
+                                                    0
+                                                ],
+                                                "visible": true
+                                            },
+                                            "layout": {
+                                                "x_anchor": "left",
+                                                "y_anchor": "bottom",
+                                                "absolute": false,
+                                                "x_offset": 0.47,
+                                                "y_offset": 0.29
+                                            }
+                                        },
+                                        "number": {
+                                            "type": "Label",
+                                            "data": {
+                                                "anchor": [
+                                                    0.5,
+                                                    0.5
+                                                ],
+                                                "size": [
+                                                    26,
+                                                    27
+                                                ],
+                                                "position": [
+                                                    16,
+                                                    33
+                                                ],
+                                                "angle": 1.5308806722812968e-22,
+                                                "visible": true,
+                                                "font": "saira stencil oneRegular24",
+                                                "text": "10",
+                                                "foreground": "#ffffffff",
+                                                "background": "#00000000",
+                                                "padding": [
+                                                    0,
+                                                    0,
+                                                    0,
+                                                    0
+                                                ],
+                                                "valign": "top",
+                                                "halign": "center"
+                                            },
+                                            "children": {},
+                                            "layout": {
+                                                "x_anchor": "left",
+                                                "y_anchor": "bottom",
+                                                "absolute": false,
+                                                "x_offset": 0.46,
+                                                "y_offset": 0.68
+                                            }
+                                        }
+                                    },
+                                    "layout": {
+                                        "priority": 0,
+                                        "padding": [
+                                            0,
+                                            16,
+                                            8,
+                                            16
+                                        ]
+                                    }
+                                }
+                            },
+                            "layout": {
+                                "priority": 1,
+                                "padding": [
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "absolute": false,
+                        "x_offset": 0,
+                        "y_offset": 0
+                    }
+                },
+                "SettingUI": {
+                    "type": "Node",
+                    "format": {
+                        "type": "Float",
+                        "x_alignment": "left",
+                        "y_alignment": "top",
+                        "orientation": "horizontal"
+                    },
+                    "data": {
+                        "anchor": [
+                            0,
+                            1
+                        ],
+                        "size": [
+                            32,
+                            65.42
+                        ],
+                        "angle": 0,
+                        "position": [
+                            884,
+                            364.58
+                        ],
+                        "visible": true
+                    },
+                    "children": {
+                        "Settings": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "Settings",
+                                "anchor": [
+                                    0.5,
+                                    0.5
+                                ],
+                                "size": [
+                                    32,
+                                    33.42
+                                ],
+                                "angle": 1.5308806722812968e-22,
+                                "position": [
+                                    16,
+                                    32.711111068725586
+                                ],
+                                "visible": true
+                            },
+                            "layout": {
+                                "priority": 0,
+                                "padding": [
+                                    0,
+                                    16,
+                                    8,
+                                    16
+                                ]
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "absolute": false,
+                        "x_offset": 0.95,
+                        "y_offset": 0
+                    }
+                },
+                "tutorial": {
+                    "type": "Node",
+                    "format": {
+                        "type": "Anchored"
+                    },
+                    "data": {
+                        "anchor": [
+                            0,
+                            1
+                        ],
+                        "size": [
+                            300,
+                            197
+                        ],
+                        "angle": 0,
+                        "position": [
+                            -4,
+                            -66
+                        ],
+                        "visible": true
+                    },
+                    "children": {
+                        "dialog": {
+                            "type": "Node",
+                            "format": {
+                                "type": "Float",
+                                "x_alignment": "left",
+                                "y_alignment": "top",
+                                "orientation": "vertical"
+                            },
+                            "data": {
+                                "anchor": [
+                                    0.5,
+                                    0.5
+                                ],
+                                "size": [
+                                    246,
+                                    131
+                                ],
+                                "angle": 1.5308806722812968e-22,
+                                "position": [
+                                    54,
+                                    66
+                                ],
+                                "visible": true
+                            },
+                            "children": {
+                                "textbox": {
+                                    "type": "Image",
+                                    "data": {
+                                        "texture": "textbox",
+                                        "anchor": [
+                                            0.5,
+                                            0.5
+                                        ],
+                                        "size": [
+                                            246,
+                                            131
+                                        ],
+                                        "angle": 0,
+                                        "position": [
+                                            123,
+                                            65.5
+                                        ],
+                                        "visible": true
+                                    },
+                                    "layout": {
+                                        "priority": 0,
+                                        "padding": [
+                                            0,
+                                            8,
+                                            0,
+                                            0
+                                        ]
+                                    }
+                                }
+                            },
+                            "layout": {
+                                "x_anchor": "left",
+                                "y_anchor": "top",
+                                "absolute": false,
+                                "x_offset": 0.59,
+                                "y_offset": -0.33
+                            }
+                        },
+                        "mushroomtalk": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "mushroomtalk",
+                                "anchor": [
+                                    0.5,
+                                    0.5
+                                ],
+                                "size": [
+                                    87,
+                                    176
+                                ],
+                                "angle": 1.5308806722812968e-22,
+                                "position": [
+                                    0,
+                                    0
+                                ],
+                                "visible": true
+                            },
+                            "layout": {
+                                "x_anchor": "left",
+                                "y_anchor": "top",
+                                "absolute": false,
+                                "x_offset": 0.14,
+                                "y_offset": -0.55
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "absolute": false,
+                        "x_offset": 0,
+                        "y_offset": -0.7
+                    }
+                }
+            }
+        }
+    }
+        
+    
+}

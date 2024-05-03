@@ -19,6 +19,7 @@ using namespace std;
 
 // Lock the screen size to fixed height regardless of aspect ratio
 #define SCENE_HEIGHT 720
+#define SCENE_WIDTH  1280
 
 #pragma mark -
 #pragma mark Constructors
@@ -35,9 +36,18 @@ using namespace std;
  */
 bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps) {
     
-    Size dimen = Application::get()->getDisplaySize();
+    
+    // Get the current display size of the device
+    Size displaySize = Application::get()->getDisplaySize();
 
-    dimen *= SCENE_HEIGHT/dimen.height;
+    // Calculate the device's aspect ratio
+    float aspectRatio = displaySize.width / displaySize.height;
+
+
+    // Create the new dimensions for the scene
+    Size dimen = Size(SCENE_WIDTH, SCENE_WIDTH / aspectRatio);
+
+
     if (assets == nullptr) {
         return false;
     } else if (!Scene2::init(dimen)) {
@@ -108,12 +118,20 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     reset();
     
     // Acquire the scene built by the asset loader and resize it the scene
-    _scene_UI = _assets->get<scene2::SceneNode>("game");
+    
+    _scene_UI = _assets->get<scene2::SceneNode>("gamescene");
+    
+    
+//    ["gamescene"]["children"]["Leftgroup"]["children"]["TimerUI"]["children"]["UITimer"]["children"]["timerbg"]["children"]["time"];
+
     
 //    _scene_UI->addChild(_dirtThrowArc);
     _scene_UI->setContentSize(dimen);
     _scene_UI->doLayout(); // Repositions the HUD
     
+//    _scene_UI->getChildByName("tutorial")->getChildByName("mushroomtalk")->setVisible(false);
+//    _scene_UI->getChildByName("tutorial")->getChildByName("dialog")->getChildByName("textbox")->setVisible(false);
+//    
     // get the win background scene when game is win
     _winBackground = _assets->get<scene2::SceneNode>("win");
     
@@ -216,7 +234,11 @@ void GameScene::update(float timestep) {
     Vec2 worldPos = Vec2(convertedWorldPos.x, convertedWorldPos.y);
     
     _gameController->update(timestep, worldPos, _dirtThrowInput, _dirtThrowButton, _dirtThrowArc);
-
+    
+    _scene_UI->getChild(0)->getChild(0)->getChild(0)->getChild(1)->getChild<scene2::Label>(1)->setText(std::to_string(_gameController->getTime()));
+    
+    _scene_UI->getChildByName("Leftgroup")->getChildByName("BucketUI")->getChildByName("BucketUI")->getChildByName<scene2::Label>("number")->setText(std::to_string(_gameController->getCurDirtAmount()));
+    
     for (auto bar : _player_bars) {
         bar->setVisible(false);
     }
@@ -276,31 +298,6 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->setColor(Color4::WHITE);
 
 
-    batch->drawText(_timeText, Vec2(getCamera()->getPosition().x+ 450, getCamera()->getPosition().y+130));
-    
-    //set bucket texture location
-    Affine2 bucketTrans = Affine2();
-    Vec2 bOrigin(_fullBucket->getWidth()/2,_fullBucket->getHeight()/2);
-    float bucketScaleFactor = std::min(((float)getSize().getIWidth() / (float)_fullBucket->getWidth()) /2, ((float)getSize().getIHeight() / (float)_fullBucket->getHeight() /2));
-    bucketTrans.scale(bucketScaleFactor*0.75);
-    Vec2 bucketLocation(getCamera()->getPosition().x - 560, getCamera()->getPosition().y - 300);
-    bucketTrans.translate(bucketLocation);
-    
-    // draw different bucket based on dirt amount
-    if (_gameController->getCurDirtAmount() == 0) {
-        batch->draw(_emptyBucket, bOrigin, bucketTrans);
-    } else {
-        batch->draw(_fullBucket, bOrigin, bucketTrans);
-    }
-    
-    // draw dirt amount text, centered at bucket
-    Affine2 dirtTextTrans = Affine2();
-    dirtTextTrans.scale(1.2);
-    dirtTextTrans.translate(bucketLocation.x - _dirtText->getBounds().size.width/2,
-                            bucketLocation.y);
-    batch->setColor(Color4::BLACK);
-    batch->drawText(_dirtText, dirtTextTrans);
-    batch->setColor(Color4::WHITE);
     
     if (_gameController->getCurBoard() != 0) {
         _dirtThrowButton->setVisible(true);

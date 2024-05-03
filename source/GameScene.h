@@ -24,6 +24,9 @@ class GameScene : public cugl::Scene2 {
 protected:
     /** The asset manager for this game mode. */
     std::shared_ptr<cugl::AssetManager> _assets;
+    
+    /** The asset manager for this game mode. */
+    std::shared_ptr<cugl::AssetManager> _gamescene;
         
     /** Whether this player is the host */
     bool _ishost;
