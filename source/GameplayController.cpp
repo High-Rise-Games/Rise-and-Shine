@@ -1453,10 +1453,12 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
                 }
             }
             
-            if (_curBirdBoard == maxIndex +1) {
-                _curBirdBoard = secondMaxIndex +1;
-            } else {
-                _curBirdBoard = maxIndex +1;
+            if (_numPlayers != 1) {
+                if (_curBirdBoard == maxIndex +1) {
+                    _curBirdBoard = secondMaxIndex +1;
+                } else {
+                    _curBirdBoard = maxIndex +1;
+                }
             }
             
             std::uniform_int_distribution<> distr(0, windows->getNVertical() - 1);
