@@ -118,9 +118,9 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _scene_UI->setContentSize(dimen);
     _scene_UI->doLayout(); // Repositions the HUD
     
-    _scene_UI->getChildByName("tutorial")->getChildByName("mushroomtalk")->setVisible(false);
-    _scene_UI->getChildByName("tutorial")->getChildByName("dialog")->getChildByName("textbox")->setVisible(false);
-    
+//    _scene_UI->getChildByName("tutorial")->getChildByName("mushroomtalk")->setVisible(false);
+//    _scene_UI->getChildByName("tutorial")->getChildByName("dialog")->getChildByName("textbox")->setVisible(false);
+//    
     // get the win background scene when game is win
     _winBackground = _assets->get<scene2::SceneNode>("win");
     
