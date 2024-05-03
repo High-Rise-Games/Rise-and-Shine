@@ -50,7 +50,7 @@ bool ProjectileSet::Projectile::update(Size size) {
     // when the projectile move over the edge, remove it
     position = newPosition;
     float r = getRadius() * getScale();
-    if (position.x - r > size.width || position.x + r < 0 || position.y - r > size.height || position.y + r < 0) {
+    if (position.x - r > size.width || position.x + r < 0 || position.y - r > size.height * 2 || position.y + r < 0) {
         // delete the projectile once it goes completely off screen
         return true;
     }

@@ -1425,7 +1425,30 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
        // }
         
         if (_birdLeaving && _bird.birdReachesExit()) {
-            _curBirdBoard = std::distance(_progressVec.begin(), std::max_element(_progressVec.begin(), _progressVec.end())) + 1;
+            int maxIndex = 0, secondMaxIndex = 0;
+
+            // First pass to find the index of the maximum element
+            for (int i = 0; i < _progressVec.size(); ++i) {
+                if (_progressVec[i] > _progressVec[maxIndex]) {
+                    maxIndex = i;
+                }
+            }
+
+            // Second pass to find the index of the second maximum element
+            int highestValue = _progressVec[maxIndex];
+            float secondHighestValue = -1.f; // Use the limits header to set to minimum int
+            for (int i = 0; i < _progressVec.size(); ++i) {
+                if (i != maxIndex && _progressVec[i] > secondHighestValue) {
+                    secondHighestValue = _progressVec[i];
+                    secondMaxIndex = i;
+                }
+            }
+            
+            if (_curBirdBoard == maxIndex +1) {
+                _curBirdBoard = secondMaxIndex +1;
+            } else {
+                _curBirdBoard = maxIndex +1;
+            }
             
             std::uniform_int_distribution<> distr(0, windows->getNVertical() - 1);
             int spawnRow = distr(_rng);
@@ -1494,6 +1517,7 @@ void GameplayController::generatePoo(std::shared_ptr<ProjectileSet> projectiles)
     int rand_row_center = rowDist(_rng);
     cugl::Vec2 birdPooDest = getWorldPosition(Vec2(_bird.birdPosition.x, rand_row_center));
     projectiles->spawnProjectile(Vec2(birdWorldPos.x, birdWorldPos.y - _windowVec[_id - 1]->getPaneHeight()/2), Vec2(0, min(-2.4f,-2-_projectileGenChance)), birdPooDest, ProjectileSet::Projectile::ProjectileType::POOP);
+    
 }
 
 /** Checks whether board is full except player current location*/
@@ -1700,9 +1724,9 @@ void GameplayController::drawCountdown(const std::shared_ptr<cugl::SpriteBatch>&
         std::shared_ptr<cugl::SpriteSheet> currentCountdownSprite = getCurrentCountdownSprite();
         currentCountdownSprite->setOrigin(Vec2(currentCountdownSprite->getFrameSize().width/2, currentCountdownSprite->getFrameSize().height/2));
         _countdownSparkleSprite->setOrigin(Vec2(_countdownSparkleSprite->getFrameSize().width/2, _countdownSparkleSprite->getFrameSize().height/2));
-        countdownScale = (float)getSize().getIHeight() / currentCountdownSprite->getFrameSize().height / 2;
-        sparkleHScale = (float)getSize().getIHeight() / _countdownSparkleSprite->getFrameSize().height / 2;
-        sparkleWScale = (float)getSize().getIWidth() / _countdownSparkleSprite->getFrameSize().width * 1.4 / 2;
+        countdownScale = (float)_windowVec[_id - 1]->getPaneHeight() / currentCountdownSprite->getFrameSize().height *4;
+        sparkleHScale = (float)_windowVec[_id - 1]->getPaneHeight() / _countdownSparkleSprite->getFrameSize().height *4;
+        sparkleWScale = (float)_windowVec[_id - 1]->getPaneWidth() / _countdownSparkleSprite->getFrameSize().width * 1.4 *4;
         countdownTrans.scale(countdownScale);
         sparkleTrans.scale(Vec2(sparkleWScale, sparkleHScale));
         countdownTrans.translate(campos);
