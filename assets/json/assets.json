@@ -602,8 +602,14 @@
         "down_blocked_1": {
             "file": "textures/down_blocked_1.png"
         },
+        "down_blocked_2": {
+            "file": "textures/down_blocked_2.png"
+        },
         "left_blocked_1": {
             "file": "textures/left_blocked_1.png"
+        },
+        "left_blocked_2": {
+            "file": "textures/left_blocked_2.png"
         },
         "fully_blocked_1": {
             "file": "textures/fully_blocked_1.png"
@@ -616,6 +622,9 @@
         },
         "fully_blocked_4": {
             "file": "textures/fully_blocked_4.png"
+        },
+        "fully_blocked_5": {
+            "file": "textures/fully_blocked_5.png"
         },
         "nightWindow1": {
             "file": "textures/nightWindow1.png"
