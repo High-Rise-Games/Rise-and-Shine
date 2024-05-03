@@ -538,7 +538,8 @@ std::shared_ptr<cugl::SpriteSheet> GameplayController::getCurrentCountdownSprite
 void GameplayController::switchScene() {
     if (_allCurBoards[_id-1] != 0) {
         if (_ishost) {
-            _playerVec[_id - 1]->setAnimationState(Player::IDLE);
+            if(_playerVec[_id - 1]->getAnimationState() == Player::THROWING)
+                _playerVec[_id - 1]->setAnimationState(Player::IDLE);
             _allCurBoards[0] = 0;
             _allCurBoards[_id - 1] = 0;
         }
@@ -1221,12 +1222,10 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     }
                     Vec2 destination = playerPos - diff * 7;
                     Vec2 snapped_dest = getBoardPosition(destination);
-                    snapped_dest.x = clamp(round(snapped_dest.x), 0.0f, (float)_windowVec[_id - 1]->getNHorizontal());
-                    snapped_dest.y = clamp(round(snapped_dest.y), 0.0f, (float)_windowVec[_id - 1]->getNVertical());
+                    snapped_dest.x = clamp(round(snapped_dest.x), 0.0f, (float)_windowVec[_id - 1]->getNHorizontal()) + 0.5;
+                    snapped_dest.y = clamp(round(snapped_dest.y), 0.0f, (float)_windowVec[_id - 1]->getNVertical()) + 0.5;
                     snapped_dest = getWorldPosition(snapped_dest);
-
-                    Vec2 vel_endpoint = Vec2(playerPos.x, playerPos.y - (_windowVec[_id - 1]->getPaneHeight() / 2.0));
-                    Vec2 velocity = (snapped_dest - vel_endpoint).getNormalization() * 8;
+                    Vec2 velocity = (snapped_dest - playerPos).getNormalization() * 8;
                     int targetId = calculateNeighborId(_id, myCurBoard, _playerVec);
 
                     if (_ishost) {
@@ -1703,46 +1702,46 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 
             Affine2 leftTransArrow = Affine2();
             leftTransArrow.translate(_arrowTexture->getSize() * -0.5);
-            leftTransArrow.scale(0.75);
+            leftTransArrow.scale(Vec2(-0.75, 0.75));
             Affine2 rightTransArrow = Affine2();
             rightTransArrow.translate(_arrowTexture->getSize() * -0.5);
-            rightTransArrow.scale(Vec2(-0.75, 0.75));
+            rightTransArrow.scale(0.75);
 
             if (yTransLeft > screenMaxY) {
                 yTransLeft = screenMaxY;
-                leftTransArrow.rotate(3.0 * M_PI / 2.0);
-                leftTransArrow.translate(_windowVec[_id - 1]->sideGap - 50, yTransLeft + 60);
+                leftTransArrow.rotate(M_PI / 2.0);
+                leftTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransLeft + 60);
             }
             else if (yTransLeft < screenMinY) {
                 yTransLeft = screenMinY;
-                leftTransArrow.rotate(M_PI / 2.0);
-                leftTransArrow.translate(_windowVec[_id - 1]->sideGap - 50, yTransLeft - 60);
+                leftTransArrow.rotate(3.0 * M_PI / 2.0);
+                leftTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransLeft - 60);
             }
             else {
-                leftTransArrow.translate(_windowVec[_id - 1]->sideGap - 100, yTransLeft);
+                leftTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransLeft);
             }
 
             if (yTransRight > screenMaxY) {
                 yTransRight = screenMaxY;
-                rightTransArrow.rotate(M_PI / 2.0);
-                rightTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransRight + 60);
+                rightTransArrow.rotate(3.0 * M_PI / 2.0);
+                rightTransArrow.translate(_windowVec[_id - 1]->sideGap - 50, yTransRight + 60);
             }
             else if (yTransRight < screenMinY) {
                 yTransRight = screenMinY;
-                rightTransArrow.rotate(3.0 * M_PI / 2.0);
-                rightTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransRight - 60);
+                rightTransArrow.rotate(M_PI / 2.0);
+                rightTransArrow.translate(_windowVec[_id - 1]->sideGap - 50, yTransRight - 60);
             }
             else {
-                rightTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 100, yTransRight);
+                rightTransArrow.translate(_windowVec[_id - 1]->sideGap - 50, yTransRight);
             }
             
             batch->draw(_arrowTexture, Vec2(), leftTransArrow);
             batch->draw(_arrowTexture, Vec2(), rightTransArrow);
 
-            leftTrans.translate(_windowVec[_id - 1]->sideGap - 50, yTransLeft);
+            leftTrans.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransLeft);
             batch->draw(leftPlayerTexture, Vec2(), leftTrans);
             
-            rightTrans.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransRight);
+            rightTrans.translate(_windowVec[_id - 1]->sideGap - 50, yTransRight);
             batch->draw(rightPlayerTexture, Vec2(), rightTrans);
         }
         // character indicators drawing end

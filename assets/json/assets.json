@@ -548,12 +548,12 @@
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
-        "night level background": {
+        "nightLevelBackground": {
             "file": "textures/level3_backdrop.png",
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
-        "night level parallax": {
+        "nightLevelParallax": {
             "file": "textures/level3_parallax.png",
             "wrapS": "repeat",
             "wrapT": "repeat"

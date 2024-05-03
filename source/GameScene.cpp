@@ -49,8 +49,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _dirtThrowInput.init();
     
     // Get the background image and constant values
-    _background = _assets->get<Texture>("night level background");
-    _parallax = _assets->get<Texture>("night level parallax");
+    _background = _assets->get<Texture>("nightLevelBackground");
+    _parallax = _assets->get<Texture>("nightLevelParallax");
     _background->setWrapS(GL_CLAMP_TO_EDGE);
     _background->setWrapT(GL_CLAMP_TO_EDGE);
     _constants = _assets->get<JsonValue>("constants");

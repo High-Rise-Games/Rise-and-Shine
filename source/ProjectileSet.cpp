@@ -172,18 +172,15 @@ void ProjectileSet::draw(const std::shared_ptr<SpriteBatch>& batch, Size size, f
         // float projWidth = (float)texture->getWidth() * scaleFactor;
         // float projHeight = (float)texture->getHeight() * scaleFactor;
 
-        float r = proj->getRadius() * proj->getScale();
-        Vec2 origin(r, r);
+        // float r = proj->getRadius() * proj->getScale();
+        Vec2 origin(0, 0);
 
-        auto sprite = proj->getTexture();
-        Affine2 trans;
-        // trans.translate(sprite->getSize() / -2.0);
+        Affine2 trans = Affine2();
+        // trans.translate(texture->getSize() / -2.0);
         trans.scale(proj->getScale());
         trans.translate(pos);
         
-
-        batch->draw(texture, origin, trans);
-        
+        batch->draw(proj->getTexture(), Vec2(), trans);
     }
     
 }
