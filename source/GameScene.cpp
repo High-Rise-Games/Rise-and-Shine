@@ -55,6 +55,19 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _background->setWrapT(GL_CLAMP_TO_EDGE);
     _constants = _assets->get<JsonValue>("constants");
 
+    // victory screen
+//    auto _victoryJson = _assets->get<JsonValue>("victory");
+    _victory_UI = assets->get<scene2::SceneNode>("victory");
+    _victoryBackout = std::dynamic_pointer_cast<scene2::Button>(_victory_UI->getChildByName("buttons")->getChildByName("backtohome"));
+    _victoryBackout->addListener([=](const std::string& name, bool down) {
+        if (down) {
+            _quit = true;
+        }
+    });
+    _victory_UI->setContentSize(dimen);
+    _victory_UI->doLayout(); // This rearranges the children to fit the screen
+    addChild(_victory_UI);
+
     // progress bars for player
     auto greenBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_greenbar"));
     auto blueBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_bluebar"));
@@ -301,24 +314,13 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _dirtThrowArc->setVisible(false);
     }
     _scene_UI->render(batch);
-
-    
-    if (_gameController->isGameWin()) {
-        _winBackground->setPosition(idk-getSize().operator Vec2()/2);
-        _winBackground->setVisible(true);
-        _winBackground->render(batch);
-    } else if (_gameController->isGameOver() && !_gameController->isGameWin()) {
-        _loseBackground->setPosition(idk-getSize().operator Vec2()/2);
-        _loseBackground->setVisible(true);
-        _loseBackground->render(batch);
-    }
     
     int offset_ct = 0;
     for (int id = 1; id <= 4; id++) {
         auto player = _gameController->getPlayer(id);
         if (player == nullptr) continue;
         int barIdx = _char_to_barIdx[player->getChar()];
-        // CULog("character: %a", player->getChar().c_str());
+//         CULog("character t: %s", player->getChar().c_str());
         _player_bars[barIdx]->setPositionX(getSize().width - _gameController->getPlayerWindow(_gameController->getId())->sideGap + (offset_ct + 1) * 50);
         _player_bars[barIdx]->setVisible(true);
         Affine2 profileTrans = Affine2();
@@ -327,6 +329,39 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         profileTrans.translate(0, _player_bars[barIdx]->getHeight() / -2);
         batch->draw(player->getProfileTexture(), player->getProfileTexture()->getSize().operator Vec2() / 2, profileTrans);
         offset_ct += 1;
+    }
+    
+    if (_gameController->isGameWin()) {
+//        std::shared_ptr<Player> p = _gameController->getPlayer(_id);
+        int barIdx = 0;
+//        CULog("%s", p->getChar().c_str());
+        _victory_UI->setPosition(idk-getSize().operator Vec2()/2);
+        _victory_UI->getChildByName("victorybg1")->setVisible(true);
+        _victory_UI->getChildByName("victorybg2")->setVisible(true);
+        switch (barIdx) {
+            case 0:
+                _victory_UI->getChildByName("redwinner")->setVisible(true);
+                break;
+            case 1:
+                _victory_UI->getChildByName("greenwinner")->setVisible(true);
+                break;
+            case 2:
+                _victory_UI->getChildByName("bluewinner")->setVisible(true);
+                break;
+            case 3:
+                _victory_UI->getChildByName("yellowwinner")->setVisible(true);
+                break;
+            default:
+                _victory_UI->getChildByName("yellowwinner")->setVisible(true);
+                break;
+        }
+        _victoryBackout->activate();
+        _backout->deactivate();
+        _victory_UI->render(batch);
+    } else if (_gameController->isGameOver() && !_gameController->isGameWin()) {
+        _loseBackground->setPosition(idk-getSize().operator Vec2()/2);
+        _loseBackground->setVisible(true);
+        _loseBackground->render(batch);
     }
     
     batch->end();

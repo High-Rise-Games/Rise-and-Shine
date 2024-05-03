@@ -70,6 +70,11 @@ protected:
     std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerRight;
     std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerAcross;
     
+    /** The scene node for the victory UI */
+    std::shared_ptr<cugl::scene2::SceneNode> _victory_UI;
+    /** back button for victory screen */
+    std::shared_ptr<cugl::scene2::Button> _victoryBackout;
+    
     // VIEW items are going to be individual variables
     // In the future, we will replace this with the scene graph
     /** The backgrounnd image */
