@@ -105,6 +105,9 @@ bool GameplayController::initLevel(int selected_level) {
     else {
         reset();
     }
+
+    this->selectedLevel = selected_level;
+
     // TODO: update depending on level
     _birdActive = true;
 
@@ -145,11 +148,11 @@ bool GameplayController::initLevel(int selected_level) {
     
     // texture mappings for each level (update these from the python script)
     
-    std::vector<string> texture_strings_level_1 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level1Window1", "level1Window2", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4", "left_blocked_1", "down_blocked_1", "planter-brown1" };
-    std::vector<string> texture_strings_level_2 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level2Window1", "level2Window2", "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4", "left_blocked_1" };
-    std::vector<string> texture_strings_level_3 = { "level3Window1", "level3Window2", "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4", "left_blocked_1", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
+    std::vector<string> texture_strings_level_1 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level1Window1", "level1Window2", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2", "down_blocked_2", "planter-brown1" };
+    std::vector<string> texture_strings_level_2 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level2Window1", "level2Window2", "down_blocked_2", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2" };
+    std::vector<string> texture_strings_level_3 = { "level3Window1", "level3Window2", "down_blocked_2", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
     std::vector<string> texture_strings_level_4 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4", "left_blocked_1", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
-    std::vector<string> texture_strings_level_5 = { "dreamywin1", "dreamywin2", "dreamywin3", "dreamywin4", "dreamywin5", "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4", "left_blocked_1", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
+    std::vector<string> texture_strings_level_5 = { "dreamywin1", "dreamywin2", "dreamywin3", "dreamywin4", "dreamywin5", "down_blocked_2", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
     std::vector<std::vector<string>> texture_strings_levels;
     std::vector<int> texture_ids_level_1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
     std::vector<int> texture_ids_level_2 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
@@ -168,6 +171,9 @@ bool GameplayController::initLevel(int selected_level) {
     texture_ids_levels.push_back(texture_ids_level_4);
     texture_ids_levels.push_back(texture_ids_level_5);
 
+    std::vector<string> background_strings = { "level1Background", "level2Background", "level3Background", "night level background", "level5Background" };
+    std::vector<string> parallax_strings   = { "level1Parallax",   "level2Parallax",   "level3Parallax",   "night level parallax",   "level5Parallax"   };
+
     std::vector<int>     dirt_counts = { 22, 50, 50, 60, 60 };
     std::vector<string>  dirt_texture_strings = { "level1dirt", "level1dirt", "level1dirt", "dirt2", "level1dirt"};
     _dirtTextureString = dirt_texture_strings.at(selected_level - 1);
@@ -177,6 +183,9 @@ bool GameplayController::initLevel(int selected_level) {
     
     _initDirtCount = dirt_counts.at(selected_level - 1);
     
+    background_string = background_strings.at(selected_level - 1);
+    parallax_string = parallax_strings.at(selected_level - 1);
+
     // get the win background when game is win
     _winBackground =  _assets->get<Texture>("win-background" );
     
