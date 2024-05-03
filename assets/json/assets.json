@@ -583,13 +583,13 @@
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
-        "nightLevelBackground": {
-            "file": "textures/level3_backdrop.png",
+        "level4Background": {
+            "file": "textures/level4Background.png",
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
-        "nightLevelParallax": {
-            "file": "textures/level3_parallax.png",
+        "level4Parallax": {
+            "file": "textures/level4Parallax.png",
             "wrapS": "repeat",
             "wrapT": "repeat"
         },

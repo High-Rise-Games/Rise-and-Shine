@@ -170,8 +170,8 @@ bool GameplayController::initLevel(int selected_level) {
     texture_ids_levels.push_back(texture_ids_level_4);
     texture_ids_levels.push_back(texture_ids_level_5);
 
-    std::vector<string> background_strings = { "level1Background", "level2Background", "level3Background", "night level background", "level5Background" };
-    std::vector<string> parallax_strings   = { "level1Parallax",   "level2Parallax",   "level3Parallax",   "night level parallax",   "level5Parallax"   };
+    std::vector<string> background_strings = { "level1Background", "level2Background", "level3Background", "level4Background", "level5Background" };
+    std::vector<string> parallax_strings   = { "level1Parallax",   "level2Parallax",   "level3Parallax",   "level4Parallax",   "level5Parallax"   };
 
     std::vector<int>     dirt_counts = { 22, 50, 50, 60, 60 };
     std::vector<string>  dirt_texture_strings = { "level1dirt", "level1dirt", "level1dirt", "dirt2", "level1dirt"};
