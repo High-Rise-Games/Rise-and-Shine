@@ -78,22 +78,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _victory_UI->doLayout(); // This rearranges the children to fit the screen
     addChild(_victory_UI);
 
-    // progress bars for player
-    auto greenBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_greenbar"));
-    auto blueBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_bluebar"));
-    auto redBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_redbar"));
-    auto yellowBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_yellowbar"));
-
-    _player_bars = { redBar, greenBar, blueBar, yellowBar };
-    for (auto currBar : _player_bars) {
-        currBar->setAngle(1.5708);
-        currBar->setScale(2);
-        currBar->setVisible(false);
-    }
-    _char_to_barIdx["Mushroom"] = 0;
-    _char_to_barIdx["Chameleon"] = 1;
-    _char_to_barIdx["Frog"] = 2;
-    _char_to_barIdx["Flower"] = 3;
+    
     
     // Initialize dirt bucket
     setEmptyBucket(assets->get<Texture>("bucketempty"));
@@ -116,12 +101,34 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _timeText->layout();
 
     reset();
+
+    _gameplay_elem = _assets->get<scene2::SceneNode>("game");
+
+    _gameplay_elem->setContentSize(dimen);
+    _gameplay_elem->doLayout();
     
+    // progress bars for player
+    auto greenBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_greenbar"));
+    auto blueBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_bluebar"));
+    auto redBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_redbar"));
+    auto yellowBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_yellowbar"));
+
+    _player_bars = { redBar, greenBar, blueBar, yellowBar };
+    for (auto currBar : _player_bars) {
+        currBar->setAngle(1.5708);
+        currBar->setScale(2);
+        currBar->setVisible(false);
+    }
+    _char_to_barIdx["Mushroom"] = 0;
+    _char_to_barIdx["Chameleon"] = 1;
+    _char_to_barIdx["Frog"] = 2;
+    _char_to_barIdx["Flower"] = 3;
+    
+
     // Acquire the scene built by the asset loader and resize it the scene
-    
+
     _scene_UI = _assets->get<scene2::SceneNode>("gamescene");
-    
-    
+
 //    ["gamescene"]["children"]["Leftgroup"]["children"]["TimerUI"]["children"]["UITimer"]["children"]["timerbg"]["children"]["time"];
 
     
@@ -153,6 +160,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     
     _quit = false;
     addChild(_scene_UI);
+    addChild(_gameplay_elem);
     addChild(_winBackground);
     addChild(_loseBackground);
 //    _loseBackground->setVisible(false);
@@ -285,6 +293,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     getCamera()->update();
     batch->begin(getCamera()->getCombined());
     _scene_UI->setPosition(idk-getSize().operator Vec2()/2);
+    _gameplay_elem->setPosition(idk - getSize().operator Vec2() / 2);
     
 //    batch->draw(_background,Rect(Vec2::ZERO));
     //batch->draw(_background, (idk - getSize().operator Vec2() / 2) - Vec2(0, idk.y - 400)); // revert next line to this to disable parallax
@@ -311,6 +320,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _dirtThrowArc->setVisible(false);
     }
     _scene_UI->render(batch);
+    _gameplay_elem->render(batch);
     
     int offset_ct = 0;
     for (int id = 1; id <= 4; id++) {
@@ -318,7 +328,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         if (player == nullptr) continue;
         int barIdx = _char_to_barIdx[player->getChar()];
 //         CULog("character t: %s", player->getChar().c_str());
-        _player_bars[barIdx]->setPositionX(getSize().width - _gameController->getPlayerWindow(_gameController->getId())->sideGap + (offset_ct + 1) * 50);
+        _player_bars[barIdx]->setPositionX(getSize().width - _gameController->getPlayerWindow(_gameController->getId())->sideGap + (offset_ct + 2) * 50);
         _player_bars[barIdx]->setVisible(true);
         Affine2 profileTrans = Affine2();
         profileTrans.scale(0.2);

@@ -724,9 +724,6 @@
         "dreamyBuilding": {
             "file": "textures/dreamyBuilding.png"
         },
-        "dirt": {
-            "file": "textures/GenericDirt.png"
-        },
         "dirt2": {
             "file": "textures/dirt2.png"
         },
@@ -882,8 +879,16 @@
             "file": "fonts/sairastenciloneRegular20.ttf",
             "size": 32
         },
+        "saira stencil oneRegular48": {
+            "file": "fonts/sairastenciloneRegular20.ttf",
+            "size": 48
+        },
         "saira stencil oneRegular24": {
             "file": "fonts/sairastenciloneRegular20.ttf",
+            "size": 24
+        },
+        "retrogame": {
+            "file": "fonts/RetroGame.ttf",
             "size": 24
         }
     },
@@ -2371,7 +2376,7 @@
                             0
                         ],
                         "text": "123456",
-                        "font": "gyparody",
+                        "font": "saira stencil oneRegular32",
                         "halign": "left",
                         "valign": "middle",
                         "cursor": false
@@ -3153,7 +3158,7 @@
                                     0.5,
                                     0.5
                                 ],
-                                "font": "gyparody",
+                                "font": "saira stencil oneRegular32",
                                 "text": "Game ID:",
                                 "padding": [
                                     20,
@@ -3162,7 +3167,8 @@
                                     20
                                 ],
                                 "halign": "left",
-                                "valign": "middle"
+                                "valign": "middle",
+                                "foreground": [ 255, 255, 255, 255 ]
                             },
                             "layout": {
                                 "priority": 1
@@ -3171,15 +3177,14 @@
                         "game_field": {
                             "type": "Widget",
                             "data": {
-                                "key": "labelbox",
+                                "key": "textfield",
                                 "variables": {
                                     "size": [
                                         200,
                                         100
                                     ],
                                     "text": "",
-                                    "halign": "center",
-                                    "framecolor": "#000088"
+                                    "halign": "center"
                                 }
                             },
                             "layout": {
@@ -3193,7 +3198,7 @@
                                     0.5,
                                     0.5
                                 ],
-                                "font": "gyparody",
+                                "font": "saira stencil oneRegular32",
                                 "text": "Players:",
                                 "padding": [
                                     20,
@@ -3202,7 +3207,8 @@
                                     20
                                 ],
                                 "halign": "left",
-                                "valign": "middle"
+                                "valign": "middle",
+                                "foreground": [ 255, 255, 255, 255 ]
                             },
                             "layout": {
                                 "priority": 3
@@ -3214,16 +3220,38 @@
                                 "key": "textfield",
                                 "variables": {
                                     "size": [
-                                        200,
+                                        80,
                                         100
                                     ],
                                     "text": "1",
-                                    "halign": "center",
-                                    "framecolor": "#000088"
+                                    "halign": "center"
                                 }
                             },
                             "layout": {
                                 "priority": 4
+                            }
+                        },
+                        "level_label": {
+                            "type": "Label",
+                            "data": {
+                                "anchor": [
+                                    0.5,
+                                    0.5
+                                ],
+                                "font": "saira stencil oneRegular32",
+                                "text": "Level:",
+                                "padding": [
+                                    20,
+                                    20,
+                                    20,
+                                    20
+                                ],
+                                "halign": "left",
+                                "valign": "middle",
+                                "foreground": [ 255, 255, 255, 255 ]
+                            },
+                            "layout": {
+                                "priority": 5
                             }
                         },
                         "level_field": {
@@ -3232,41 +3260,46 @@
                                 "key": "textfield",
                                 "variables": {
                                     "size": [
-                                        200,
+                                        80,
                                         100
                                     ],
                                     "text": "1",
-                                    "halign": "center",
-                                    "framecolor": "#000088"
+                                    "halign": "center"
                                 }
                             },
                             "layout": {
-                                "priority": 5
-                            }
-                        },
-                        "start": {
-                            "type": "Widget",
-                            "data": {
-                                "key": "textbutton",
-                                "variables": {
-                                    "size": [
-                                        400,
-                                        100
-                                    ],
-                                    "text": "Waiting",
-                                    "color": "#000088"
-                                }
-                            },
-                            "layout": {
-                                "priority": 6,
-                                "padding": [
-                                    20,
-                                    0,
-                                    20,
-                                    20
-                                ]
+                                "priority": 6
                             }
                         }
+
+                    }
+                },
+                "start": {
+                    "type": "Widget",
+                    "data": {
+                        "key": "textbutton",
+                        "variables": {
+                            "size": [
+                                300,
+                                100
+                            ],
+                            "text": "Waiting",
+                            "color": "#000000"
+                        },
+                        "anchor": [
+                            1,
+                            1
+                        ]
+                    },
+                    "format": {
+                        "type": "Anchored"
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "bottom",
+                        "absolute":  true,
+                        "x_offset": -200,
+                        "y_offset":  75
                     }
                 }
             },
@@ -3645,7 +3678,7 @@
                                     0.5,
                                     0.5
                                 ],
-                                "font": "gyparody",
+                                "font": "saira stencil oneRegular32",
                                 "text": "Game ID:",
                                 "padding": [
                                     20,
@@ -3654,7 +3687,8 @@
                                     20
                                 ],
                                 "halign": "left",
-                                "valign": "middle"
+                                "valign": "middle",
+                                "foreground": [ 255, 255, 255, 255 ]
                             },
                             "layout": {
                                 "priority": 1
@@ -3670,8 +3704,7 @@
                                         100
                                     ],
                                     "text": "",
-                                    "halign": "center",
-                                    "framecolor": "#000088"
+                                    "halign": "center"
                                 }
                             },
                             "layout": {
@@ -3685,7 +3718,7 @@
                                     0.5,
                                     0.5
                                 ],
-                                "font": "gyparody",
+                                "font": "saira stencil oneRegular32",
                                 "text": "Players:",
                                 "padding": [
                                     20,
@@ -3694,7 +3727,8 @@
                                     20
                                 ],
                                 "halign": "left",
-                                "valign": "middle"
+                                "valign": "middle",
+                                "foreground": [ 255, 255, 255, 255 ]
                             },
                             "layout": {
                                 "priority": 3
@@ -3706,16 +3740,38 @@
                                 "key": "textfield",
                                 "variables": {
                                     "size": [
-                                        200,
+                                        80,
                                         100
                                     ],
                                     "text": "1",
-                                    "halign": "center",
-                                    "framecolor": "#000088"
+                                    "halign": "center"
                                 }
                             },
                             "layout": {
                                 "priority": 4
+                            }
+                        },
+                        "level_label": {
+                            "type": "Label",
+                            "data": {
+                                "anchor": [
+                                    0.5,
+                                    0.5
+                                ],
+                                "font": "saira stencil oneRegular32",
+                                "text": "Level:",
+                                "padding": [
+                                    20,
+                                    20,
+                                    20,
+                                    20
+                                ],
+                                "halign": "left",
+                                "valign": "middle",
+                                "foreground": [ 255, 255, 255, 255 ]
+                            },
+                            "layout": {
+                                "priority": 5
                             }
                         },
                         "level_field": {
@@ -3724,41 +3780,45 @@
                                 "key": "textfield",
                                 "variables": {
                                     "size": [
-                                        200,
+                                        80,
                                         100
                                     ],
                                     "text": "1",
-                                    "halign": "center",
-                                    "framecolor": "#000088"
+                                    "halign": "center"
                                 }
                             },
                             "layout": {
-                                "priority": 5
-                            }
-                        },
-                        "start": {
-                            "type": "Widget",
-                            "data": {
-                                "key": "textbutton",
-                                "variables": {
-                                    "size": [
-                                        400,
-                                        100
-                                    ],
-                                    "text": "Waiting",
-                                    "color": "#000088"
-                                }
-                            },
-                            "layout": {
-                                "priority": 5,
-                                "padding": [
-                                    20,
-                                    0,
-                                    20,
-                                    20
-                                ]
+                                "priority": 6
                             }
                         }
+                    }
+                },
+                "start": {
+                    "type": "Widget",
+                    "data": {
+                        "key": "textbutton",
+                        "variables": {
+                            "size": [
+                                300,
+                                100
+                            ],
+                            "text": "Waiting",
+                            "color": "#000000"
+                        },
+                        "anchor": [
+                            1,
+                            1
+                        ]
+                    },
+                    "format": {
+                        "type": "Anchored"
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "bottom",
+                        "absolute":  true,
+                        "x_offset": -200,
+                        "y_offset":  75
                     }
                 }
             },
@@ -3853,6 +3913,12 @@
                 },
                 "back": {
                     "type": "Button",
+                    "format": {
+                        "type": "Float",
+                        "x_alignment": "left",
+                        "y_alignment": "top",
+                        "orientation": "horizontal"
+                    },
                     "data": {
                         "upnode": "up",
                         "anchor": [
@@ -3864,16 +3930,16 @@
                         "up": {
                             "type": "Image",
                             "data": {
-                                "texture": "left"
+                                "texture": "Settings"
                             }
                         }
                     },
                     "layout": {
                         "x_anchor": "left",
-                        "y_anchor": "bottom",
-                        "y_offset": 625,
-                        "x_offset": 20,
-                        "absolute": true
+                        "y_anchor": "top",
+                        "absolute": false,
+                        "x_offset": 0.95,
+                        "y_offset": 0
                     }
                 },
                 "throw": {
