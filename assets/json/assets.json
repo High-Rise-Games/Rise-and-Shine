@@ -518,6 +518,36 @@
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
+        "level1Background": {
+            "file": "textures/level1Background.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
+        "level1Parallax": {
+            "file": "textures/level1Parallax.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
+        "level2Background": {
+            "file": "textures/level2Background.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
+        "level2Parallax": {
+            "file": "textures/level2Parallax.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
+        "level3Background": {
+            "file": "textures/level3Background.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
+        "level3Parallax": {
+            "file": "textures/level3Parallax.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
         "night level background": {
             "file": "textures/level3_backdrop.png",
             "wrapS": "repeat",
@@ -525,6 +555,16 @@
         },
         "night level parallax": {
             "file": "textures/level3_parallax.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
+        "level5Background": {
+            "file": "textures/level5Background.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat"
+        },
+        "level5Parallax": {
+            "file": "textures/level5Parallax.png",
             "wrapS": "repeat",
             "wrapT": "repeat"
         },

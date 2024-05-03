@@ -125,6 +125,7 @@ protected:
     /** Window texture names and ids */
     std::vector<std::string> _texture_strings_selected;
     std::vector<int> _texture_ids_selected;
+    
     /** Vector of windows and dirt placements for all players */
     std::vector<std::shared_ptr<WindowGrid>> _windowVec;
     /** Vector of progress values for all players */
@@ -220,6 +221,12 @@ protected:
 public:
 #pragma mark -
 #pragma mark Constructors
+    // Which level is being played, set during initLevel
+    int selectedLevel = 0;
+    /** Background texture names */
+    std::string background_string;
+    std::string parallax_string;
+
     /**
      * Creates a new game mode with the default values.
      *

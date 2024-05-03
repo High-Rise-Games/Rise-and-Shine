@@ -105,6 +105,9 @@ bool GameplayController::initLevel(int selected_level) {
     else {
         reset();
     }
+
+    this->selectedLevel = selected_level;
+
     // TODO: update depending on level
     _birdActive = true;
 
@@ -168,6 +171,9 @@ bool GameplayController::initLevel(int selected_level) {
     texture_ids_levels.push_back(texture_ids_level_4);
     texture_ids_levels.push_back(texture_ids_level_5);
 
+    std::vector<string> background_strings = { "level1Background", "level2Background", "level3Background", "night level background", "level5Background" };
+    std::vector<string> parallax_strings   = { "level1Parallax",   "level2Parallax",   "level3Parallax",   "night level parallax",   "level5Parallax"   };
+
     std::vector<int>     dirt_counts = { 22, 50, 50, 60, 60 };
     std::vector<string>  dirt_texture_strings = { "level1dirt", "level1dirt", "level1dirt", "dirt2", "level1dirt"};
     _dirtTextureString = dirt_texture_strings.at(selected_level - 1);
@@ -177,6 +183,9 @@ bool GameplayController::initLevel(int selected_level) {
     
     _initDirtCount = dirt_counts.at(selected_level - 1);
     
+    background_string = background_strings.at(selected_level - 1);
+    parallax_string = parallax_strings.at(selected_level - 1);
+
     // get the win background when game is win
     _winBackground =  _assets->get<Texture>("win-background" );
     

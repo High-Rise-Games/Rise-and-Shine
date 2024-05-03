@@ -365,6 +365,7 @@ void App::updateLobbyScene(float timestep) {
                 _gameplay->setHost(true);
                 _gameplay->setUUIDMap(_lobby_host.getUUIDMap());
                 _gameplay->initLevel(_lobby_host.getLevel());
+                _gamescene.loadBackgroundTextures();
                 _gameplay->setActive(true);
                 _gameplay->setId(_lobby_host.getId());
                 _gameplay->initHost(_assets);
@@ -397,6 +398,7 @@ void App::updateLobbyScene(float timestep) {
                 _lobby_client.getNetworkController().disconnect();
                 _gameplay->setHost(false);
                 _gameplay->initLevel(_lobby_client.getLevel());
+                _gamescene.loadBackgroundTextures();
                 _gameplay->setActive(true);
                 _gameplay->setId(_lobby_client.getId());
                 _gameplay->initClient(_assets);
