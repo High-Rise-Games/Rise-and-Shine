@@ -105,6 +105,9 @@ bool GameplayController::initLevel(int selected_level) {
     else {
         reset();
     }
+
+    this->selectedLevel = selected_level;
+
     // TODO: update depending on level
     _birdActive = true;
 
@@ -144,11 +147,11 @@ bool GameplayController::initLevel(int selected_level) {
     
     // texture mappings for each level (update these from the python script)
     
-    std::vector<string> texture_strings_level_1 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level1Window1", "level1Window2", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4", "left_blocked_1", "down_blocked_1", "planter-brown1" };
-    std::vector<string> texture_strings_level_2 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level2Window1", "level2Window2", "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4", "left_blocked_1" };
-    std::vector<string> texture_strings_level_3 = { "level3Window1", "level3Window2", "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4", "left_blocked_1", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
+    std::vector<string> texture_strings_level_1 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level1Window1", "level1Window2", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2", "down_blocked_2", "planter-brown1" };
+    std::vector<string> texture_strings_level_2 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level2Window1", "level2Window2", "down_blocked_2", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2" };
+    std::vector<string> texture_strings_level_3 = { "level3Window1", "level3Window2", "down_blocked_2", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
     std::vector<string> texture_strings_level_4 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4", "left_blocked_1", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
-    std::vector<string> texture_strings_level_5 = { "dreamywin1", "dreamywin2", "dreamywin3", "dreamywin4", "dreamywin5", "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4", "left_blocked_1", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
+    std::vector<string> texture_strings_level_5 = { "dreamywin1", "dreamywin2", "dreamywin3", "dreamywin4", "dreamywin5", "down_blocked_2", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
     std::vector<std::vector<string>> texture_strings_levels;
     std::vector<int> texture_ids_level_1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
     std::vector<int> texture_ids_level_2 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
@@ -167,6 +170,9 @@ bool GameplayController::initLevel(int selected_level) {
     texture_ids_levels.push_back(texture_ids_level_4);
     texture_ids_levels.push_back(texture_ids_level_5);
 
+    std::vector<string> background_strings = { "level1Background", "level2Background", "level3Background", "night level background", "level5Background" };
+    std::vector<string> parallax_strings   = { "level1Parallax",   "level2Parallax",   "level3Parallax",   "night level parallax",   "level5Parallax"   };
+
     std::vector<int>     dirt_counts = { 22, 50, 50, 60, 60 };
     std::vector<string>  dirt_texture_strings = { "level1dirt", "level1dirt", "level1dirt", "dirt2", "level1dirt"};
     _dirtTextureString = dirt_texture_strings.at(selected_level - 1);
@@ -176,6 +182,9 @@ bool GameplayController::initLevel(int selected_level) {
     
     _initDirtCount = dirt_counts.at(selected_level - 1);
     
+    background_string = background_strings.at(selected_level - 1);
+    parallax_string = parallax_strings.at(selected_level - 1);
+
     // get the win background when game is win
     _winBackground =  _assets->get<Texture>("win-background" );
     
@@ -1527,7 +1536,32 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
        // }
         
         if (_birdLeaving && _bird.birdReachesExit()) {
-            _curBirdBoard = std::distance(_progressVec.begin(), std::max_element(_progressVec.begin(), _progressVec.end())) + 1;
+            int maxIndex = 0, secondMaxIndex = 0;
+
+            // First pass to find the index of the maximum element
+            for (int i = 0; i < _progressVec.size(); ++i) {
+                if (_progressVec[i] > _progressVec[maxIndex]) {
+                    maxIndex = i;
+                }
+            }
+
+            // Second pass to find the index of the second maximum element
+            int highestValue = _progressVec[maxIndex];
+            float secondHighestValue = -1.f; // Use the limits header to set to minimum int
+            for (int i = 0; i < _progressVec.size(); ++i) {
+                if (i != maxIndex && _progressVec[i] > secondHighestValue) {
+                    secondHighestValue = _progressVec[i];
+                    secondMaxIndex = i;
+                }
+            }
+            
+            if (_numPlayers != 1) {
+                if (_curBirdBoard == maxIndex +1) {
+                    _curBirdBoard = secondMaxIndex +1;
+                } else {
+                    _curBirdBoard = maxIndex +1;
+                }
+            }
             
             std::uniform_int_distribution<> distr(0, windows->getNVertical() - 1);
             int spawnRow = distr(_rng);
@@ -1596,6 +1630,7 @@ void GameplayController::generatePoo(std::shared_ptr<ProjectileSet> projectiles)
     int rand_row_center = rowDist(_rng);
     cugl::Vec2 birdPooDest = getWorldPosition(Vec2(_bird.birdPosition.x, rand_row_center));
     projectiles->spawnProjectile(Vec2(birdWorldPos.x, birdWorldPos.y - _windowVec[_id - 1]->getPaneHeight()/2), Vec2(0, min(-2.4f,-2-_projectileGenChance)), birdPooDest, ProjectileSet::Projectile::ProjectileType::POOP);
+    
 }
 
 /** Checks whether board is full except player current location*/
@@ -1802,9 +1837,9 @@ void GameplayController::drawCountdown(const std::shared_ptr<cugl::SpriteBatch>&
         std::shared_ptr<cugl::SpriteSheet> currentCountdownSprite = getCurrentCountdownSprite();
         currentCountdownSprite->setOrigin(Vec2(currentCountdownSprite->getFrameSize().width/2, currentCountdownSprite->getFrameSize().height/2));
         _countdownSparkleSprite->setOrigin(Vec2(_countdownSparkleSprite->getFrameSize().width/2, _countdownSparkleSprite->getFrameSize().height/2));
-        countdownScale = (float)getSize().getIHeight() / currentCountdownSprite->getFrameSize().height / 2;
-        sparkleHScale = (float)getSize().getIHeight() / _countdownSparkleSprite->getFrameSize().height / 2;
-        sparkleWScale = (float)getSize().getIWidth() / _countdownSparkleSprite->getFrameSize().width * 1.4 / 2;
+        countdownScale = (float)_windowVec[_id - 1]->getPaneHeight() / currentCountdownSprite->getFrameSize().height *4;
+        sparkleHScale = (float)_windowVec[_id - 1]->getPaneHeight() / _countdownSparkleSprite->getFrameSize().height *4;
+        sparkleWScale = (float)_windowVec[_id - 1]->getPaneWidth() / _countdownSparkleSprite->getFrameSize().width * 1.4 *4;
         countdownTrans.scale(countdownScale);
         sparkleTrans.scale(Vec2(sparkleWScale, sparkleHScale));
         countdownTrans.translate(campos);

@@ -47,7 +47,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     // Start up the input handler
     _assets = assets;
     _dirtThrowInput.init();
-
+    
     // Get the background image and constant values
     _background = _assets->get<Texture>("night level background");
     _parallax = _assets->get<Texture>("night level parallax");
@@ -128,6 +128,11 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
 //    _winBackground->setVisible(false);
     setActive(false);
     return true;
+}
+
+void GameScene::loadBackgroundTextures() {
+    _background = _assets->get<Texture>(_gameController->background_string);
+    _parallax   = _assets->get<Texture>(_gameController->parallax_string);
 }
 
 /**
@@ -247,7 +252,8 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     _scene_UI->setPosition(idk-getSize().operator Vec2()/2);
     
 //    batch->draw(_background,Rect(Vec2::ZERO));
-    batch->draw(_background,(idk-getSize().operator Vec2()/2)-Vec2(0,idk.y-400));
+    //batch->draw(_background, (idk - getSize().operator Vec2() / 2) - Vec2(0, idk.y - 400)); // revert next line to this to disable parallax
+    batch->draw(_background,(idk-getSize().operator Vec2()/2)-Vec2(0,idk.y/2-0));
     batch->draw(_parallax, (idk-getSize().operator Vec2()/2)-Vec2(0,idk.y));
     
 

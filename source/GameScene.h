@@ -46,6 +46,9 @@ protected:
     std::shared_ptr<cugl::scene2::SceneNode> _winBackground;
     /** The win screen scene */
     std::shared_ptr<cugl::scene2::SceneNode> _loseBackground;
+    /** Background Textures */
+    std::shared_ptr<cugl::Texture> _backgroundTexture;
+    std::shared_ptr<cugl::Texture> _parallaxTexture;
 
     /** The game controller for this scene */
     std::shared_ptr<GameplayController> _gameController;
@@ -180,6 +183,9 @@ public:
 
     /** Sets the controller for this scene */
     void setController(std::shared_ptr<GameplayController>& gc) { _gameController = gc; }
+
+    /** Loads background and parallax textures from the attached GameplayController */
+    void loadBackgroundTextures();
 
     /**
      * Draws all this scene to the given SpriteBatch.
