@@ -174,7 +174,7 @@ void Player::advanceShooFrame() {
  * .Used when player throws projectile
  */
 void Player::advanceThrowFrame() {
-    int step = _maxthrowFrame / _throwframesize;
+    int step = _maxthrowFrame / _throwframesize * 2;
     if (_throwFrames < _maxthrowFrame) {
         if (_throwFrames % step == 0) {
             _throwSprite->setFrame((int)_throwFrames / step);
@@ -227,9 +227,10 @@ void Player::advanceAnimation() {
         advanceShooFrame();
         break;
     case THROWING:
+        advanceThrowFrame();
         break;
     default:
-//        advanceIdleFrame();
+        advanceIdleFrame();
         break;
     }
 }

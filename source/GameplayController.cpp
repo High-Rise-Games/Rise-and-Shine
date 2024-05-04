@@ -538,8 +538,6 @@ std::shared_ptr<cugl::SpriteSheet> GameplayController::getCurrentCountdownSprite
 void GameplayController::switchScene() {
     if (_allCurBoards[_id-1] != 0) {
         if (_ishost) {
-            if(_playerVec[_id - 1]->getAnimationState() == Player::THROWING)
-                _playerVec[_id - 1]->setAnimationState(Player::IDLE);
             _allCurBoards[0] = 0;
             _allCurBoards[_id - 1] = 0;
         }
@@ -547,6 +545,8 @@ void GameplayController::switchScene() {
             // TODO: unused?
             _network.sendToHost(*netStructs.serializeSwitchState(getSwitchState(true)));
         }
+        
+        _playerVec[_id - 1]->setAnimationState(Player::IDLE);
     }
 }
 
