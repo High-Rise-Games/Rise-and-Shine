@@ -30,8 +30,7 @@ void AudioController::playGameplayMusic() {
     
     if (!_gameplayMusicIsActive & _menuMusicIsActive || (!_menuMusicIsActive && !_gameplayIsActive) ) {
         stopMusic();
-        AudioEngine::get()->getMusicQueue()->enqueue(_gameplayMusic);
-        AudioEngine::get()->getMusicQueue()->setLoop(true);
+        AudioEngine::get()->getMusicQueue()->enqueue(_gameplayMusic, true);
         _gameplayMusicIsActive = true;
     }
     
@@ -41,8 +40,7 @@ void AudioController::playMenuMusic() {
     
     if ((!_menuMusicIsActive && !_gameplayMusicIsActive) || (!_menuMusicIsActive && _gameplayMusicIsActive)) {
         stopMusic();
-        AudioEngine::get()->getMusicQueue()->enqueue(_menuMusic);
-        AudioEngine::get()->getMusicQueue()->setLoop(true);
+        AudioEngine::get()->getMusicQueue()->enqueue(_menuMusic, true);
         _menuMusicIsActive = true;
     }
 };
