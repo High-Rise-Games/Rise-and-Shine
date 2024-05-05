@@ -74,7 +74,7 @@ void AudioController::playCleanSoundHost() {
 
 void AudioController::playCleanSoundClient() {
     _soundQueue->clear();
-    _cleanEffectIsActive = _soundQueue->isActive("clean");
+//    _cleanEffectIsActive = _soundQueue->isActive("clean");
     if (!_cleanEffectIsActive) {
 //        AudioEngine::get()->play("clean", _clean, false, _clean->getVolume(), true);
         _soundQueue->play(_clean);
