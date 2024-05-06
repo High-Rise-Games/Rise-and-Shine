@@ -396,7 +396,7 @@ void LobbyScene::update(float timestep) {
         _all_characters[0] = character;
     }
 
-    if (_network.getConnection()) {
+    if (_network.getConnection()->isOpen()) {
         _network.getConnection()->receive([this](const std::string source,
             const std::vector<std::byte>& data) {
                 processData(source, data);
@@ -412,36 +412,43 @@ void LobbyScene::update(float timestep) {
         
         if (isHost()) {
             // sends level data across network
-            const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-            json->init(JsonValue::Type::ObjectType);
-            json->appendValue("level", std::to_string(_level));
+            if (_network.getConnection()->isOpen()) {
+                const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+                json->init(JsonValue::Type::ObjectType);
+                json->appendValue("level", std::to_string(_level));
 
-            _network.transmitMessage(json);
+                _network.transmitMessage(json);
+            }
+            
         }
         
         else if ((!isHost() && _status == WAIT && _id != 0) || isHost()) {
             // sends current character selection across network
-            const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-            json->init(JsonValue::Type::ObjectType);
-            json->appendValue("id", std::to_string(_id));
-            json->appendValue("char", character);
-            _network.transmitMessage(json);
+            if (_network.getConnection()->isOpen()) {
+                const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+                json->init(JsonValue::Type::ObjectType);
+                json->appendValue("id", std::to_string(_id));
+                json->appendValue("char", character);
+                _network.transmitMessage(json);
+            }
         }
 
         
-        if (isHost()) {
-            int i=0;
-            for (auto peer : _network.getConnection()->getPlayers()) {
-                i++;
-                if (_UUIDmap[peer] != i) {
-                    const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-                    json->init(JsonValue::Type::ObjectType);
-                    json->appendValue(peer, std::to_string(i));
-                    _network.transmitMessage(json);
-                    _UUIDmap[peer] = i;
-                }
-                if (!_network.getConnection()->isPlayerActive(peer)) {
-                    _UUIDmap.erase(peer);
+        if (_network.getConnection()->isOpen()) {
+            if (isHost()) {
+                int i=0;
+                for (auto peer : _network.getConnection()->getPlayers()) {
+                    i++;
+                    if (_UUIDmap[peer] != i) {
+                        const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+                        json->init(JsonValue::Type::ObjectType);
+                        json->appendValue(peer, std::to_string(i));
+                        _network.transmitMessage(json);
+                        _UUIDmap[peer] = i;
+                    }
+                    if (!_network.getConnection()->isPlayerActive(peer)) {
+                        _UUIDmap.erase(peer);
+                    }
                 }
             }
         }
