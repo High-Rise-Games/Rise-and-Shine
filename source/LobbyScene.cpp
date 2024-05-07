@@ -15,6 +15,7 @@
 #include <cugl/cugl.h>
 #include <iostream>
 #include <sstream>
+#include <mutex>
 /** Regardless of logo, lock the height to this */
 #define SCENE_HEIGHT  720
 
@@ -90,7 +91,7 @@ void LobbyScene::updateText(const std::shared_ptr<scene2::Button>& button, const
 bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Initialize the scene to a locked width
     
-    _hostIDcounter = 2;
+    _hostIDcounter = 1;
     
     _UUIDisProcessed = false;
     
@@ -395,11 +396,18 @@ void LobbyScene::update(float timestep) {
     if (isHost()) {
         _all_characters[0] = character;
     }
+    
+    requestID();
 
-    if (_network.getConnection()->isOpen()) {
+    if (_network.getConnection()) {
         _network.getConnection()->receive([this](const std::string source,
             const std::vector<std::byte>& data) {
-                processData(source, data);
+            std::shared_ptr<JsonValue> jsonData = _network.processMessage(source, data);
+            processData(source, data);
+            if (isHost() && jsonData->has("id request")) {
+                _STUNmap[jsonData->getString("id request")] = true;
+            }
+            
                 
             });
         if (!checkConnection()) {
@@ -407,29 +415,32 @@ void LobbyScene::update(float timestep) {
         }
         
         configureStartButton();
+        
+    
 
         _player_field->setText(std::to_string(_network.getNumPlayers()));
-        
+    
         if (isHost()) {
-            // sends level data across network
-            if (_network.getConnection()->isOpen()) {
-                const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-                json->init(JsonValue::Type::ObjectType);
-                json->appendValue("level", std::to_string(_level));
-
-                _network.transmitMessage(json);
+            for (auto peer : _network.getConnection()->getPlayers()) {
+                if (_STUNmap[peer] && peer!="") {
+                    const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+                    json->init(JsonValue::Type::ObjectType);
+                    json->appendValue("level", std::to_string(_level));
+                    _network.transmitMessage(peer, json);
+                }
             }
-            
         }
+    
         
-        else if ((!isHost() && _status == WAIT && _id != 0) || isHost()) {
+        
+        if ((!isHost() && _status == WAIT && _id != 0) || isHost()) {
             // sends current character selection across network
             if (_network.getConnection()->isOpen()) {
                 const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
                 json->init(JsonValue::Type::ObjectType);
                 json->appendValue("id", std::to_string(_id));
                 json->appendValue("char", character);
-                _network.transmitMessage(json);
+                _network.sendToHost(json);
             }
         }
 
@@ -439,7 +450,7 @@ void LobbyScene::update(float timestep) {
                 int i=0;
                 for (auto peer : _network.getConnection()->getPlayers()) {
                     i++;
-                    if (_UUIDmap[peer] != i) {
+                    if (_UUIDmap[peer] != i && _STUNmap[peer] && peer!="") {
                         const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
                         json->init(JsonValue::Type::ObjectType);
                         json->appendValue(peer, std::to_string(i));
@@ -723,5 +734,18 @@ void LobbyScene::setActive(bool value) {
         }
 
     }
+}
+
+void LobbyScene::requestID() {
+
+    
+    if (!isHost() && _id ==0 && _status == WAIT) {
+        const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+        json->init(JsonValue::Type::ObjectType);
+        json->appendValue("id request", _network.getConnection()->getUUID());
+        _network.transmitMessage(json);
+    }
+
+    
 }
 
