@@ -271,6 +271,27 @@
             "minfilter": "linear",
             "magfilter": "linear"
         },
+        "level_choice6_inactive": {
+            "file": "textures/Level6Inactive.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "level_choice7_inactive": {
+            "file": "textures/Level7Inactive.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "level_choice8_inactive": {
+            "file": "textures/Level8Inactive.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
         "level_choice1_active": {
             "file": "textures/Level1Active.png",
             "wrapS": "clamp",
@@ -301,6 +322,27 @@
         },
         "level_choice5_active": {
             "file": "textures/Level5Active.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "level_choice6_active": {
+            "file": "textures/Level6Active.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "level_choice7_active": {
+            "file": "textures/Level7Active.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "level_choice8_active": {
+            "file": "textures/Level8Active.png",
             "wrapS": "clamp",
             "wrapT": "clamp",
             "minfilter": "linear",
@@ -2256,7 +2298,7 @@
                         "x_anchor": "left",
                         "y_anchor": "bottom",
                         "y_offset": 80,
-                        "x_offset": 2260,
+                        "x_offset": 1860,
                         "priority": 1,
                         "absolute": true
                     }
@@ -2283,7 +2325,169 @@
                         "x_anchor": "left",
                         "y_anchor": "bottom",
                         "y_offset": 80,
+                        "x_offset": 1860,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "level6": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ],
+                        "scale": 0.75
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "level_choice6_inactive"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "bottom",
+                        "y_offset": 80,
                         "x_offset": 2260,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "level6h": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ],
+                        "scale": 0.75
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "level_choice6_active"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "bottom",
+                        "y_offset": 80,
+                        "x_offset": 2260,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "level7": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ],
+                        "scale": 0.75
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "level_choice7_inactive"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "bottom",
+                        "y_offset": 80,
+                        "x_offset": 2460,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "level7h": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ],
+                        "scale": 0.75
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "level_choice7_active"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "bottom",
+                        "y_offset": 80,
+                        "x_offset": 2460,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "level8": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ],
+                        "scale": 0.75
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "level_choice8_inactive"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "bottom",
+                        "y_offset": 80,
+                        "x_offset": 2660,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "level8h": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ],
+                        "scale": 0.75
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "level_choice8_active"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "bottom",
+                        "y_offset": 80,
+                        "x_offset": 2660,
                         "priority": 1,
                         "absolute": true
                     }
