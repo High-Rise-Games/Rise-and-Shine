@@ -43,14 +43,17 @@ void ProjectileSet::Projectile::setProjectileTexture(const std::shared_ptr<cugl:
 bool ProjectileSet::Projectile::update(Size size) {
     Vec2 newPosition = position + velocity;
     // when the new position is over the destination, remove it
-    if (std::min(position.x, newPosition.x) <= destination.x && destination.x <= std::max(position.x, newPosition.x) && std::min(position.y, newPosition.y) <= destination.y && destination.y <= std::max(position.y, newPosition.y)) {
+    if (type == ProjectileType::DIRT && std::min(position.x, newPosition.x) <= destination.x && destination.x <= std::max(position.x, newPosition.x)) {
+        return true;
+    }
+    if (type == ProjectileType::POOP && std::min(position.y, newPosition.y) <= destination.y && destination.y <= std::max(position.y, newPosition.y)) {
 //        CULog("reached destination");
         return true;
     }
     // when the projectile move over the edge, remove it
     position = newPosition;
     float r = getRadius() * getScale();
-    if (position.x - r > size.width || position.x + r < 0 || position.y - r > size.height || position.y + r < 0) {
+    if (position.x - r > size.width || position.x + r < 0 || position.y - r > size.height * 2 || position.y + r < 0) {
         // delete the projectile once it goes completely off screen
         return true;
     }
@@ -172,17 +175,15 @@ void ProjectileSet::draw(const std::shared_ptr<SpriteBatch>& batch, Size size, f
         // float projWidth = (float)texture->getWidth() * scaleFactor;
         // float projHeight = (float)texture->getHeight() * scaleFactor;
 
-        float r = proj->getRadius() * proj->getScale();
-        Vec2 origin(r, r);
+        // float r = proj->getRadius() * proj->getScale();
+        Vec2 origin(0, 0);
 
-        Affine2 trans;
+        Affine2 trans = Affine2();
+        // trans.translate(texture->getSize() / -2.0);
         trans.scale(proj->getScale());
         trans.translate(pos);
-        auto sprite = proj->getTexture();
-
-        batch->draw(texture, origin, trans);
         
-        std::string a = "b";
+        batch->draw(proj->getTexture(), Vec2(), trans);
     }
     
 }

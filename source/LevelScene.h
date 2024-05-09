@@ -8,6 +8,7 @@
 #include <cugl/cugl.h>
 #include <vector>
 #include "AudioController.h"
+#include "DirtThrowInputController.h"
 
 /**
  * This class presents the level select scene to the player.
@@ -40,6 +41,14 @@ protected:
     std::shared_ptr<AudioController> _audioController;
     /** The asset manager for this scene. */
     std::shared_ptr<cugl::AssetManager> _assets;
+    /** The entire node of the level scene*/
+    std::shared_ptr<cugl::scene2::SceneNode> _scene;
+    /** The UI layer that will move with the camera */
+    std::shared_ptr<cugl::scene2::SceneNode> _scene_ui;
+    /** The camera for this scene */
+    std::shared_ptr <cugl::OrthographicCamera> _camera;
+    /** The input controller*/
+    std::shared_ptr<DirtThrowInputController> _input;
     /** The button for going back to character select scene */
     std::shared_ptr<cugl::scene2::Button> _backbutton;
     /** The button for continuing to character select scene */
@@ -52,6 +61,8 @@ protected:
     int _selectedlevel;
     /** The player's action choice */
     Choice _choice;
+    /** If there is currently a valid swipe going on*/
+    bool _pressed;
     
 public:
 #pragma mark -
@@ -92,6 +103,13 @@ public:
      * @return true if the controller is initialized properly, false otherwise.
      */
     bool init(const std::shared_ptr<cugl::AssetManager>& assets);
+    
+    /**
+     * The method called to update the level scene.
+     *
+     * @param timestep  The amount of time (in seconds) since the last frame
+     */
+    void update(float timestep) override;
     
     /** Sets the pointer to the audio controller from app */
     void setAudioController(std::shared_ptr<AudioController> audioController) {_audioController = audioController;};

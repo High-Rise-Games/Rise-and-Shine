@@ -202,7 +202,7 @@ void WindowGrid::clearWindowTextures() {
 }
 
 // draws an entire grid of _nHorizontal x nVertical windows as large as possible with center (horizontal) alignment
-void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size) {
+void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, Color4 tint) {
 	// draw building background
 	Affine2 building_trans = Affine2();
     //building_trans.scale(getPaneWidth() * _nHorizontal / _buildingTexture->getWidth(), getPaneHeight() * _nVertical / _buildingTexture->getHeight());
@@ -210,7 +210,8 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 	building_trans.scale(_scaleFactor);
 	building_trans.translate(sideGap, 0);
 	
-	batch->draw(_buildingTexture, Vec2(), building_trans);
+	// batch->setColor(tint);
+	batch->draw(_buildingTexture, tint, Vec2(), building_trans);
 	
 	// calculate scale and size of dirt drawing in reference to a window pane so that it is centered
 	// scale applied to each dirt tile
@@ -238,8 +239,13 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 
 			// get scale and size of window pane drawing as transform
 			Affine2 trans = Affine2();
+			Affine2 leftTrans = Affine2();
+			Affine2 downTrans = Affine2();
 			Affine2 blocked_trans = Affine2();
+
 			float paneScaleFactor = std::min(_windowHeight / (float)window_texture->getHeight(), _windowWidth / (float)window_texture->getWidth()) * 0.9;
+			float leftScaleFactor    = left_texture    != NULL ? std::min(_windowHeight / (float)left_texture->getHeight(),    _windowWidth / (float)left_texture->getWidth())    * 0.9 : 1;
+			float downScaleFactor    = down_texture    != NULL ? std::min(_windowHeight / (float)down_texture->getHeight(),    _windowWidth / (float)down_texture->getWidth())    * 0.9 : 1;
 			float blockedScaleFactor = blocked_texture != NULL ? std::min(_windowHeight / (float)blocked_texture->getHeight(), _windowWidth / (float)blocked_texture->getWidth()) * 0.9 : 1;
 			float paneWidth = (float)window_texture->getWidth() * paneScaleFactor;
 			float paneHeight = (float)window_texture->getHeight() * paneScaleFactor;
@@ -248,13 +254,21 @@ void WindowGrid::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Siz
 
             float pane_horizontal_trans = (_windowWidth - paneWidth) / 2;
             float pane_vertical_trans = (_windowHeight - paneHeight) / 2;
+
             trans.scale(paneScaleFactor);
 			blocked_trans.scale(blockedScaleFactor);
+			leftTrans.scale(leftScaleFactor);
+			downTrans.scale(downScaleFactor);
             trans.translate(sideGap + (_windowWidth * x) + pane_horizontal_trans, (_windowHeight * y) + pane_vertical_trans);
 			blocked_trans.translate(sideGap + (_windowWidth * x) + pane_horizontal_trans, (_windowHeight * y) + pane_vertical_trans);
+			leftTrans.translate(sideGap + (_windowWidth * x) + pane_horizontal_trans, (_windowHeight * y) + pane_vertical_trans);
+			downTrans.translate(sideGap + (_windowWidth * x) + pane_horizontal_trans, (_windowHeight * y) + pane_vertical_trans);
 
-			Affine2 leftTrans = Affine2(trans).translate(-pipeLeftOffset, 0);
-			Affine2 downTrans = Affine2(trans).translate(0, -pipeDownOffset);
+			//Affine2 leftTrans = Affine2(trans).translate(-pipeLeftOffset, 0);
+			//Affine2 downTrans = Affine2(trans).translate(0, -pipeDownOffset);
+
+			leftTrans.translate(-pipeLeftOffset, 0);
+			downTrans.translate(0, -pipeDownOffset);
 
 			// draw window panes and dirt
 			if (window_texture  != NULL) { batch->draw(window_texture,  Vec2(), trans); }

@@ -15,6 +15,7 @@
 #include <cugl/cugl.h>
 #include <iostream>
 #include <sstream>
+#include <mutex>
 /** Regardless of logo, lock the height to this */
 #define SCENE_HEIGHT  720
 
@@ -90,7 +91,7 @@ void LobbyScene::updateText(const std::shared_ptr<scene2::Button>& button, const
 bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Initialize the scene to a locked width
     
-    _hostIDcounter = 2;
+    _hostIDcounter = 1;
     
     _UUIDisProcessed = false;
     
@@ -147,7 +148,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     _character_field_green = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("host_character_green"));
     _character_field_yellow = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("host_character_yellow"));
 
-    _startgame = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("host_bottom_start"));
+    _startgame = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("host_start"));
     _backout = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("host_back"));
     _gameid_host = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("host_bottom_game_field_text"));
     _player_field = std::dynamic_pointer_cast<scene2::Label>(_assets->get<scene2::SceneNode>("host_bottom_players_field_text"));
@@ -280,7 +281,7 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
     _character_field_green = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("client_character_green"));
     _character_field_yellow = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("client_character_yellow"));
 
-    _startgame = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("client_bottom_start"));
+    _startgame = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("client_start"));
     _backout = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("client_back"));
     _gameid_client = "";
     _clientField = std::dynamic_pointer_cast<scene2::TextField>(_assets->get<scene2::SceneNode>("client_bottom_game_field_text"));
@@ -395,11 +396,18 @@ void LobbyScene::update(float timestep) {
     if (isHost()) {
         _all_characters[0] = character;
     }
+    
+    requestID();
 
     if (_network.getConnection()) {
         _network.getConnection()->receive([this](const std::string source,
             const std::vector<std::byte>& data) {
-                processData(source, data);
+            std::shared_ptr<JsonValue> jsonData = _network.processMessage(source, data);
+            processData(source, data);
+            if (isHost() && jsonData->has("id request")) {
+                _STUNmap[jsonData->getString("id request")] = true;
+            }
+            
                 
             });
         if (!checkConnection()) {
@@ -407,38 +415,51 @@ void LobbyScene::update(float timestep) {
         }
         
         configureStartButton();
+        
+    
 
         _player_field->setText(std::to_string(_network.getNumPlayers()));
-        
+    
         if (isHost()) {
-            // sends level data across network
-            const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-            json->init(JsonValue::Type::ObjectType);
-            json->appendValue("level", std::to_string(_level));
-
-            _network.transmitMessage(json);
-        }
-        
-        else if ((!isHost() && _status == WAIT && _id != 0) || isHost()) {
-            // sends current character selection across network
-            const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-            json->init(JsonValue::Type::ObjectType);
-            json->appendValue("id", std::to_string(_id));
-            json->appendValue("char", character);
-            _network.transmitMessage(json);
-        }
-
-        
-        if (isHost()) {
-            int i=0;
             for (auto peer : _network.getConnection()->getPlayers()) {
-                i++;
-                if (_UUIDmap[peer] != i) {
+                if (_STUNmap[peer] && peer!="") {
                     const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
                     json->init(JsonValue::Type::ObjectType);
-                    json->appendValue(peer, std::to_string(i));
-                    _network.transmitMessage(json);
-                    _UUIDmap[peer] = i;
+                    json->appendValue("level", std::to_string(_level));
+                    _network.transmitMessage(peer, json);
+                }
+            }
+        }
+    
+        
+        
+        if ((!isHost() && _status == WAIT && _id != 0) || isHost()) {
+            // sends current character selection across network
+            if (_network.getConnection()->isOpen()) {
+                const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+                json->init(JsonValue::Type::ObjectType);
+                json->appendValue("id", std::to_string(_id));
+                json->appendValue("char", character);
+                _network.sendToHost(json);
+            }
+        }
+
+        
+        if (_network.getConnection()->isOpen()) {
+            if (isHost()) {
+                int i=0;
+                for (auto peer : _network.getConnection()->getPlayers()) {
+                    i++;
+                    if (_UUIDmap[peer] != i && _STUNmap[peer] && peer!="") {
+                        const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+                        json->init(JsonValue::Type::ObjectType);
+                        json->appendValue(peer, std::to_string(i));
+                        _network.transmitMessage(json);
+                        _UUIDmap[peer] = i;
+                    }
+                    if (!_network.getConnection()->isPlayerActive(peer)) {
+                        _UUIDmap.erase(peer);
+                    }
                 }
             }
         }
@@ -713,5 +734,18 @@ void LobbyScene::setActive(bool value) {
         }
 
     }
+}
+
+void LobbyScene::requestID() {
+
+    
+    if (!isHost() && _id ==0 && _status == WAIT) {
+        const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+        json->init(JsonValue::Type::ObjectType);
+        json->appendValue("id request", _network.getConnection()->getUUID());
+        _network.transmitMessage(json);
+    }
+
+    
 }
 

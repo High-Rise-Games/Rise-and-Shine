@@ -24,6 +24,9 @@ class GameScene : public cugl::Scene2 {
 protected:
     /** The asset manager for this game mode. */
     std::shared_ptr<cugl::AssetManager> _assets;
+    
+    /** The asset manager for this game mode. */
+    std::shared_ptr<cugl::AssetManager> _gamescene;
         
     /** Whether this player is the host */
     bool _ishost;
@@ -46,6 +49,9 @@ protected:
     std::shared_ptr<cugl::scene2::SceneNode> _winBackground;
     /** The win screen scene */
     std::shared_ptr<cugl::scene2::SceneNode> _loseBackground;
+    /** Background Textures */
+    std::shared_ptr<cugl::Texture> _backgroundTexture;
+    std::shared_ptr<cugl::Texture> _parallaxTexture;
 
     /** The game controller for this scene */
     std::shared_ptr<GameplayController> _gameController;
@@ -57,6 +63,9 @@ protected:
     std::shared_ptr<cugl::JsonValue> _constants;
     
     cugl::scheduable t;
+
+    /** The scene node for the gameplay elements (progress bars, dirt throw buttons) */
+    std::shared_ptr<cugl::scene2::SceneNode> _gameplay_elem;
     
     /** Progress bars vector for players in the lobby **/
     std::vector<std::shared_ptr<cugl::scene2::ProgressBar>>  _player_bars;
@@ -66,6 +75,11 @@ protected:
     std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerLeft;
     std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerRight;
     std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerAcross;
+    
+    /** The scene node for the victory UI */
+    std::shared_ptr<cugl::scene2::SceneNode> _victory_UI;
+    /** back button for victory screen */
+    std::shared_ptr<cugl::scene2::Button> _victoryBackout;
     
     // VIEW items are going to be individual variables
     // In the future, we will replace this with the scene graph
@@ -180,6 +194,9 @@ public:
 
     /** Sets the controller for this scene */
     void setController(std::shared_ptr<GameplayController>& gc) { _gameController = gc; }
+
+    /** Loads background and parallax textures from the attached GameplayController */
+    void loadBackgroundTextures();
 
     /**
      * Draws all this scene to the given SpriteBatch.

@@ -39,6 +39,7 @@ bool LevelScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Initialize the scene to a locked width
     Size dimen = Application::get()->getDisplaySize();
     dimen *= SCENE_HEIGHT/dimen.height;
+    
     if (assets == nullptr) {
         return false;
     } else if (!Scene2::init(dimen)) {
@@ -47,22 +48,39 @@ bool LevelScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     
     // Acquire the scene built by the asset loader and resize it the scene
     _assets = assets;
+    _camera = std::dynamic_pointer_cast<OrthographicCamera>(getCamera());
+    _input = std::make_shared<DirtThrowInputController>();
+    _input->init();
     
-    std::shared_ptr<scene2::SceneNode> scene = assets->get<scene2::SceneNode>("level");
-    scene->setContentSize(dimen);
-    scene->doLayout(); // Repositions the HUD
+    _scene = assets->get<scene2::SceneNode>("level");
+    dimen = _scene->getContentSize() * dimen.height / _scene->getContentSize().height;
+    _scene->setContentSize(dimen);
+    _scene->doLayout(); // Repositions the HUD
+    
+    _scene_ui = assets->get<scene2::SceneNode>("levelui");
+    _scene_ui->setContentSize(Application::get()->getDisplaySize() * SCENE_HEIGHT/Application::get()->getDisplaySize().height);
+    _scene_ui->doLayout();
+    
     _choice = Choice::NONE;
     _selectedlevel = -1;
-    _backbutton = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_back"));
-    _nextbutton = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_next"));
+    _backbutton = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("levelui_back"));
+    _nextbutton = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("levelui_next"));
     _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level1")));
     _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level2")));
     _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level3")));
     _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level4")));
+    _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level5")));
+    _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level6")));
+    _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level7")));
+    _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level8")));
     _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level1h"));
     _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level2h"));
     _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level3h"));
     _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level4h"));
+    _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level5h"));
+    _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level6h"));
+    _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level7h"));
+    _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level8h"));
     
     // Program the buttons
     _backbutton->addListener([this](const std::string& name, bool down) {
@@ -97,7 +115,10 @@ bool LevelScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
         item->setVisible(false);
     }
 
-    addChild(scene);
+    addChild(_scene);
+    addChild(_scene_ui);
+    std::cout<<_scene->getContentSize().width<<", "<<_scene->getContentSize().height<<"\n";
+    std::cout<<_scene_ui->getContentSize().width<<", "<<_scene_ui->getContentSize().height<<"\n";
     setActive(false);
     return true;
 }
@@ -109,6 +130,7 @@ void LevelScene::dispose() {
     if (_active) {
         removeAllChildren();
         _active = false;
+        _input->dispose();
     }
 }
 
@@ -154,3 +176,38 @@ void LevelScene::setActive(bool value) {
     }
 }
 
+/**
+ * The method called to update the level scene.
+ *
+ * @param timestep  The amount of time (in seconds) since the last frame
+ */
+void LevelScene::update(float timestep) {
+    _input->update();
+    if (_pressed) {
+        if (_input->didRelease()) {
+            _pressed = false;
+        } else if (_input->isDown()) {
+            Vec2 cameraPos = _camera->getPosition();
+            Vec2 dst = Vec2((_input->getPrevious() - _input->getPosition()).x, 0) + cameraPos;
+            dst.x = std::max(std::min(_scene->getSize().width - _camera->getViewport().getMaxX() / (2 * _camera->getZoom()), dst.x), _camera->getViewport().getMaxX() / (2 * _camera->getZoom()));
+            _camera->translate(dst - cameraPos);
+            _camera->update();
+            Vec2 uiPos = Vec2(_camera->getPosition().x - _camera->getViewport().getMaxX() / (2 * _camera->getZoom()), _camera->getPosition().y - _camera->getViewport().getMaxY() / (2 * _camera->getZoom()));
+            _scene_ui->setPosition(uiPos);
+        }
+    } else {
+        if (_input->didPress()) {
+            _pressed = true;
+//            std::cout<<_input->getPosition().x<<", "<<_input->getPosition().y<<"\n";
+//            std::cout<<_scene_ui->getChildByName("title")->getPosition().x<<", "<<_scene_ui->getChildByName("title")->getPosition().y<<"\n";
+            if (_backbutton->isDown() || _nextbutton->isDown()) {
+                _pressed = false;
+            }
+            for (size_t i = 0; i < _levelbuttons.size(); ++i) {
+                if (_levelbuttons[i]->isDown()) {
+                    _pressed = false;
+                }
+            }
+        }
+    }
+}

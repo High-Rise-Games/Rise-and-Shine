@@ -34,8 +34,11 @@ private:
     /** The gameplay  music */
     std::shared_ptr<cugl::Sound> _backPress;
     
-    /** The bird poop sound effect */
-    std::shared_ptr<cugl::Sound> _birdPoop;
+    /** The window cleaning sound effect */
+    std::shared_ptr<cugl::Sound> _clean;
+    
+    /** The bird poop collision sound effect */
+    std::shared_ptr<cugl::Sound> _bang;
     
     /** Whether gameplay music is playing */
     bool _gameplayMusicIsActive;
@@ -43,8 +46,11 @@ private:
     /** Whether menu music is playing */
     bool _menuMusicIsActive;
     
-    /** Whether poop colllision sound effect is playing */
-    bool _poopCollisionEffectIsActive;
+    /** Whether poop colllision sound effect is playing for the client */
+    bool _bangEffectIsActive;
+    
+    /** Whether clean sound effect is playing for the host */
+    bool _cleanEffectIsActive;
     
     /* Whether the gamplay controller is active */
     bool _gameplayIsActive;
@@ -64,15 +70,26 @@ public:
     /** Plays the menu music */
     void playMenuMusic();
     
+    /** Plays the go sound effect when pressing a go button */
     void playGoPress();
 
+    /** Plays the back sound effect when pressing a back button */
     void playBackPress();
 
+    /** Plays the normal button press sound effect when pressing a normal button */
     void playMovePress();
-
     
-    /** Plays the poop collision sound effect */
-    void playPoopSound();
+    /** Plays the poop collision sound effec for the host */
+    void playBangSoundHost();
+    
+    /** Plays the cleaning sound effect for the host */
+    void playCleanSoundHost();
+    
+    /** Plays the poop collision sound effec for the client */
+    void playBangSoundClient();
+    
+    /** Plays the cleaning sound effect for the client */
+    void playCleanSoundClient();
     
     /** Stops all music */
     void stopMusic();
