@@ -138,6 +138,21 @@ bool GameplayController::initLevel(int selected_level) {
             _size = _nativeSize;
             _size.height *= 3.5;
             break;
+        case 6:
+            _levelJson = _assets->get<JsonValue>("level6");
+            _size = _nativeSize;
+            _size.height *= 3.5;
+            break;
+        case 7:
+            _levelJson = _assets->get<JsonValue>("level7");
+            _size = _nativeSize;
+            _size.height *= 3.5;
+            break;
+        case 8:
+            _levelJson = _assets->get<JsonValue>("level8");
+            _size = _nativeSize;
+            _size.height *= 3.5;
+            break;
         default:
             _levelJson = _assets->get<JsonValue>("level1");
             _size = _nativeSize;
@@ -152,29 +167,41 @@ bool GameplayController::initLevel(int selected_level) {
     std::vector<string> texture_strings_level_3 = { "level3Window1", "level3Window2", "down_blocked_2", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
     std::vector<string> texture_strings_level_4 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4", "left_blocked_1", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
     std::vector<string> texture_strings_level_5 = { "dreamywin1", "dreamywin2", "dreamywin3", "dreamywin4", "dreamywin5", "down_blocked_2", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
+    std::vector<string> texture_strings_level_6 = { "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_1", "day6Building", "level6Window1", "level6Window2" };
+    std::vector<string> texture_strings_level_7 = { "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_1", "day7Building", "level7Window1", "level7Window2" };
+    std::vector<string> texture_strings_level_8 = { "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_1", "day8Building", "level8Window1", "level8Window2" };
     std::vector<std::vector<string>> texture_strings_levels;
     std::vector<int> texture_ids_level_1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
     std::vector<int> texture_ids_level_2 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
     std::vector<int> texture_ids_level_3 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
     std::vector<int> texture_ids_level_4 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
     std::vector<int> texture_ids_level_5 = { 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
+    std::vector<int> texture_ids_level_6 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    std::vector<int> texture_ids_level_7 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    std::vector<int> texture_ids_level_8 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
     std::vector<std::vector<int>> texture_ids_levels;
     texture_strings_levels.push_back(texture_strings_level_1);
     texture_strings_levels.push_back(texture_strings_level_2);
     texture_strings_levels.push_back(texture_strings_level_3);
     texture_strings_levels.push_back(texture_strings_level_4);
     texture_strings_levels.push_back(texture_strings_level_5);
+    texture_strings_levels.push_back(texture_strings_level_6);
+    texture_strings_levels.push_back(texture_strings_level_7);
+    texture_strings_levels.push_back(texture_strings_level_8);
     texture_ids_levels.push_back(texture_ids_level_1);
     texture_ids_levels.push_back(texture_ids_level_2);
     texture_ids_levels.push_back(texture_ids_level_3);
     texture_ids_levels.push_back(texture_ids_level_4);
     texture_ids_levels.push_back(texture_ids_level_5);
+    texture_ids_levels.push_back(texture_ids_level_6);
+    texture_ids_levels.push_back(texture_ids_level_7);
+    texture_ids_levels.push_back(texture_ids_level_8);
 
-    std::vector<string> background_strings = { "level1Background", "level2Background", "level3Background", "level4Background", "level5Background" };
-    std::vector<string> parallax_strings   = { "level1Parallax",   "level2Parallax",   "level3Parallax",   "level4Parallax",   "level5Parallax"   };
+    std::vector<string> background_strings = { "level1Background", "level2Background", "level3Background", "level4Background", "level5Background", "level6Background", "level7Background", "level8Background" };
+    std::vector<string> parallax_strings   = { "level1Parallax",   "level2Parallax",   "level3Parallax",   "level4Parallax",   "level5Parallax",   "level6Parallax",   "level7Parallax",   "level8Parallax"   };
 
-    std::vector<int>     dirt_counts = { 22, 50, 50, 60, 60 };
-    std::vector<string>  dirt_texture_strings = { "level1dirt", "level1dirt", "level1dirt", "dirt2", "level1dirt"};
+    std::vector<int>     dirt_counts = { 22, 50, 50, 60, 60, 20, 15, 20 };
+    std::vector<string>  dirt_texture_strings = { "level1dirt", "level1dirt", "level1dirt", "dirt2", "level1dirt", "level1dirt" , "level1dirt" , "level1dirt" };
     _dirtTextureString = dirt_texture_strings.at(selected_level - 1);
     // select the correct mapping for this level
     _texture_strings_selected = texture_strings_levels.at(selected_level - 1);

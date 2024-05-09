@@ -70,11 +70,17 @@ bool LevelScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level3")));
     _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level4")));
     _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level5")));
+    _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level6")));
+    _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level7")));
+    _levelbuttons.push_back(std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("level_level8")));
     _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level1h"));
     _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level2h"));
     _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level3h"));
     _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level4h"));
     _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level5h"));
+    _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level6h"));
+    _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level7h"));
+    _highlightedlevels.push_back(_assets->get<scene2::SceneNode>("level_level8h"));
     
     // Program the buttons
     _backbutton->addListener([this](const std::string& name, bool down) {
