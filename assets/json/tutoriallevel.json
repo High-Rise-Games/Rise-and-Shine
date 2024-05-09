@@ -1,0 +1,145 @@
+{ "compressionlevel":-1,
+ "height":6,
+ "infinite":false,
+ "layers":[
+        {
+         "id":4,
+         "image":"",
+         "name":"Background",
+         "opacity":1,
+         "type":"imagelayer",
+         "visible":false,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":3,
+         "name":"Building",
+         "objects":[
+                {
+                 "gid":10,
+                 "height":2908,
+                 "id":24,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":1864,
+                 "x":-450.094146256731,
+                 "y":2326.30901511204
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[1, 2, 1,
+            2, 2, 1,
+            1, 1, 2,
+            1, 2, 2,
+            2, 1, 1,
+            2, 1, 2],
+         "height":6,
+         "id":1,
+         "name":"Windows",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":3,
+         "x":0,
+         "y":0
+        },
+    
+        {
+         "data":[0, 0, 0,
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0],
+         "height":6,
+         "id":5,
+         "name":"Pipes Left",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":3,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 0, 0,
+            6, 0, 6,
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0],
+         "height":6,
+         "id":11,
+         "name":"Blocked Tiles",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":3,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[0, 0, 0,
+            0, 0, 0,
+            0, 8, 0,
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0],
+         "height":6,
+         "id":2,
+         "name":"Pipes Down",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":3,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":12,
+ "nextobjectid":25,
+ "orientation":"orthogonal",
+ "properties":[
+        {
+         "name":"number dirts",
+         "type":"int",
+         "value":5
+        }],
+ "renderorder":"right-down",
+ "tiledversion":"1.10.2",
+ "tileheight":320,
+ "tilesets":[
+        {
+         "firstgid":1,
+         "source":"Tilesets\/level1.tsx"
+        }, 
+        {
+         "firstgid":3,
+         "source":"Tilesets\/Blockers Full Tile.tsx"
+        }, 
+        {
+         "firstgid":7,
+         "source":"Tilesets\/Blockers Leftward.tsx"
+        },
+    
+        {
+         "firstgid":8,
+         "source":"Tilesets\/Blockers Downward.tsx"
+        }, 
+        {
+         "firstgid":10,
+         "source":"Tilesets\/tutorialbuilding.tsx"
+        }],
+ "tilewidth":320,
+ "type":"map",
+ "version":"1.10",
+ "width":3
+}
