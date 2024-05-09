@@ -82,6 +82,13 @@
             "minfilter": "linear",
             "magfilter": "linear"
         },
+        "menu_tutorial": {
+            "file": "textures/TutorialButton.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
         "victorybg1": {
             "file": "textures/victorybg1.png",
             "wrapS": "clamp",
@@ -2051,6 +2058,50 @@
                         "y_offset": -115,
                         "absolute": true
                     }
+                },
+                "tutorial": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "pushable": [
+                            160,
+                            280,
+                            190,
+                            370,
+                            280,
+                            400,
+                            370,
+                            370,
+                            400,
+                            280,
+                            370,
+                            190,
+                            280,
+                            160,
+                            190,
+                            190
+                        ],
+                        "visible": true,
+                        "pushsize": true,
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ]
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "menu_tutorial"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "middle",
+                        "y_offset": -115,
+                        "absolute": true
+                    }
                 }
             }
         },
@@ -2309,7 +2360,7 @@
                         "up": {
                             "type": "Image",
                             "data": {
-                                "texture": "menu_join"
+                                "texture": "menu_tutorial"
                             }
                         }
                     },
