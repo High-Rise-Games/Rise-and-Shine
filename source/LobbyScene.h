@@ -64,6 +64,8 @@ public:
     
 protected:
     
+
+    
     /** The audio controller pointer initialized by app */
     std::shared_ptr<AudioController> _audioController;
     
@@ -75,6 +77,9 @@ protected:
     
     /** UUID mappings to player ids */
     std::map<std::string, int> _UUIDmap;
+    
+    /** UUID mappings to bool knowing whether client finished STUN proticols */
+    std::map<std::string, bool> _STUNmap;
 
     /** To let us know that player IDs have been sent out to all players **/
     bool _UUIDisProcessed;
@@ -290,10 +295,6 @@ private:
      */
     void updateText(const std::shared_ptr<cugl::scene2::Button>& button, const std::string text);
     
-  
-
-
-    
     /**
      * Processes data sent over the network.
      *
@@ -337,6 +338,14 @@ private:
      * players.
      */
     void startGame();
+    
+    /**
+     * Function for client to send a message to the host so that the host
+     * can send them their player ID
+     */
+    void requestID();
+    
+
     
 };
 

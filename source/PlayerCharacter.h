@@ -72,9 +72,9 @@ private:
     float _shadows;
     // Asset references. These should be set by GameScene
     /** The number of columns in the sprite sheet */
-    int _framecols;
+    int _wipeframecols;
     /** The number of frames in the sprite sheet */
-    int _framesize;
+    int _wipeframesize;
     /** total number of frames*/
     int _maxwipeFrame;
     // number of frames that the player is wiping for
@@ -106,16 +106,20 @@ private:
 
     /** player profile texture */
     std::shared_ptr<cugl::Texture> _profileTexture;
+    /** player warning sign texture */
+    std::shared_ptr<cugl::Texture> _warnTexture;
     /** player idle sprite sheet */
-    std::shared_ptr<cugl::SpriteSheet> _idleSprite;
+    std::shared_ptr<cugl::Texture> _idleSprite;
     /** Reference to the player wiping animation sprite sheet */
-    std::shared_ptr<cugl::SpriteSheet> _wipeSprite;
+    std::shared_ptr<cugl::Texture> _wipeSprite;
     /** Reference to the player shooing animation sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _shooSprite;
     /** Reference to the player throwing animation sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _throwSprite;
     /** Radius of the ship in pixels (derived from sprite sheet) */
     float _radius;
+    /** Color of this character to tint their board */
+    cugl::Color4 _color;
 
 public:
     
@@ -151,11 +155,36 @@ public:
     /** Sets the character of the player. */
     void setChar(std::string c) { CULog("here: %a", c.c_str()); _character = c; }
 
+    /** Returns the tint color */
+    const cugl::Color4 getColor() { return _color; }
+
+    /** Sets the tint color */
+    void setColor() {
+        if (_character == "Flower") {
+            _color = cugl::Color4(255, 255, 100, 255);
+        }
+        else if (_character == "Frog") {
+            _color = cugl::Color4(150, 255, 255, 255);
+        }
+        else if (_character == "Chameleon") {
+            _color = cugl::Color4(150, 255, 150, 255);
+        }
+        else {
+            _color = cugl::Color4(255, 100, 100, 255);
+        }
+    }
+
     /** Sets the profile texture of the player */
     void setProfileTexture(std::shared_ptr<cugl::Texture> t) { _profileTexture = t; }
     
     /** Gets the profile texture of the player */
     std::shared_ptr<cugl::Texture> getProfileTexture() { return _profileTexture; }
+
+    /** Sets the warning sign texture of the player when they are peeking */
+    void setWarnTexture(std::shared_ptr<cugl::Texture> t) { _warnTexture = t; }
+
+    /** Gets the warning sign texture of the player */
+    std::shared_ptr<cugl::Texture> getWarnTexture() { return _warnTexture; }
 
     /**
      * Returns the position of this ship.
@@ -213,6 +242,7 @@ public:
     
     void setAnimationState(AnimStatus as) {
         if (as != _animState) {
+            if (_animState == STUNNED && as != IDLE) return;
             resetAnimationFrames();
             // _throwing = true;
             _animState = as;
@@ -294,7 +324,7 @@ public:
      * //will be ignored.     *
      * @return the texture for the ship
      */
-    const std::shared_ptr<cugl::SpriteSheet>& getIdleSprite() const {
+    const std::shared_ptr<cugl::Texture>& getIdleSprite() const {
         return _idleSprite;
     }
 
@@ -316,7 +346,7 @@ public:
      * in the initializing step.
      * @return the sprite sheet for the ship
      */
-    const std::shared_ptr<cugl::SpriteSheet>& getWipeSprite() const {
+    const std::shared_ptr<cugl::Texture>& getWipeSprite() const {
         return _wipeSprite;
     }
     
@@ -442,7 +472,16 @@ private:
      * @param size      The size of the window (for wrap around)
      */
     void wrapPosition(cugl::Size size);
+    
+#pragma mark utilities
+    
+public:
 
+    std::shared_ptr<cugl::Texture> getSubTexture(std::shared_ptr<cugl::Texture> texture, int size, int cols, int frame);
+    
+    /** applies ease function on given sprite and returns texture index as well as percentage of completion*/
+    std::pair <int,float> getTextureIdxWithEase(cugl::EasingFunction::Type ef, int maxFrameNum, int curFrame, int spriteSize);
+    
 };
 
 #endif /* __SL_SHIP_H__ */

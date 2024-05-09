@@ -15,9 +15,9 @@ bool Bird::init(const std::vector<cugl::Vec2> positions, const float speed, cons
     _toRight = true;
     _shadows = 10;
     _framecols = 5;
-    _framesize = 5;
+    _framesize = 10;
     _frameflat = 4;
-    _frametimer = 4;
+    _frametimer = 3;
     _frameright = true;
     return true;
 }
@@ -95,7 +95,7 @@ void Bird::advanceBirdFrame() {
             _frameright = true;
         }
         _sprite->setFrame(_frameright ? frame + 1 : frame - 1);
-        _frametimer = 4;
+        _frametimer = 3;
     }
     else {
         _frametimer -= 1;

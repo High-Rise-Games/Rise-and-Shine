@@ -165,12 +165,22 @@ public:
     bool addDirt(const int row, const int col);
 
     /**
+     * Check dirt exists from board at specified location
+     * Returns true if the dirt is present.
+     */
+    bool hasDirt(const int row, const int col) {
+//        CULog("size: %d, %d", _board.size(), board[0].size());
+        bool dirtExisted = _boardFilth[row][col] != nullptr;
+        return dirtExisted;
+    }
+    
+    /**
      * Remove dirt from board at specified location
      * Returns true if the dirt was successfully removed, and false if there is no dirt to remove.
      */
     bool removeDirt(const int row, const int col) {
 //        CULog("size: %d, %d", _board.size(), board[0].size());
-        bool dirtExisted = _boardFilth[row][col] != nullptr;
+        bool dirtExisted = hasDirt(row, col);
         if (dirtExisted) {
             _boardFilth[row][col].reset();
             _boardFilth[row][col] = nullptr;
@@ -184,7 +194,7 @@ public:
 	void clearWindowTextures();
 
     /** draws entire grid of window panes to fit in "size" */
-    void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size);
+    void draw(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, cugl::Color4 tint);
 
     /** draws potential dirts when aiming */
     void drawPotentialDirt(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, std::vector<cugl::Vec2> potentialFilth);

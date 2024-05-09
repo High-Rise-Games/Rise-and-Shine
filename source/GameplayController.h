@@ -21,6 +21,7 @@
 #include "CollisionController.h"
 #include "NetworkController.h"
 #include "AudioController.h"
+#include "NetStructs.h"
 
 
 
@@ -38,6 +39,9 @@ protected:
     
     /** The audio controller, set ny app */
     std::shared_ptr<AudioController> _audioController;
+    
+    /** For serializing */
+    NetStructs netStructs;
         
     /** Whether this player is the host */
     bool _ishost;
@@ -125,6 +129,7 @@ protected:
     /** Window texture names and ids */
     std::vector<std::string> _texture_strings_selected;
     std::vector<int> _texture_ids_selected;
+    
     /** Vector of windows and dirt placements for all players */
     std::vector<std::shared_ptr<WindowGrid>> _windowVec;
     /** Vector of progress values for all players */
@@ -172,6 +177,8 @@ protected:
     bool _birdActive;
     /** True if the is shooed and is leaving the current board */
     bool _birdLeaving;
+    /** True if the player is wiping, only remove dirt after player finishes wiping */
+    bool _cleanInProgress;
     
     cugl::scheduable t;
     
@@ -218,6 +225,12 @@ protected:
 public:
 #pragma mark -
 #pragma mark Constructors
+    // Which level is being played, set during initLevel
+    int selectedLevel = 0;
+    /** Background texture names */
+    std::string background_string;
+    std::string parallax_string;
+
     /**
      * Creates a new game mode with the default values.
      *
@@ -423,32 +436,40 @@ public:
     void generatePoo(std::shared_ptr<ProjectileSet> projectiles);
 
     /**
+     * Called by host only. Converts game state into a BOARD_STATE object for sending over the network
+     *
+     * @param id    the id of the player of the board state to get
+     * @returns BOARD_STATE value representing game board state
+     */
+    std::shared_ptr<NetStructs::BOARD_STATE> getBoardState(int id, bool isPartial);
+    
+    /**
      * Called by host only. Converts game state into a JSON value for sending over the network
      *
      * @param id    the id of the player of the board state to get
-     * @returns JSON value representing game board state
+     * @returns DIRT_STATE value representing game board state
      */
-    std::shared_ptr<cugl::JsonValue> getJsonBoard(int id, bool isPartial);
+    std::shared_ptr<NetStructs::DIRT_STATE> getDirtState(int id);
 
     /**
-     * Called by client only. Converts a movement vector into a JSON value for sending over the network.
+     * Called by client only. Converts a movement vector into a MOVE_STATE obect for sending over the network.
      *
      * @param move    the movement vector
-     * @returns JSON value representing a movement
+     * @returns MOVE_STATE value representing a movement
      */
-    std::shared_ptr<cugl::JsonValue> getJsonMove(const cugl::Vec2 move);
+    std::shared_ptr<NetStructs::MOVE_STATE> getMoveState(const cugl::Vec2 move);
 
     /**
-    * Called by the client only. Returns a JSON value representing a scene switch request
+    * Called by the client only. Returns a SCENE_SWITCH_STATE object representing a scene switch request
     * for sending over the network.
     *
     * @param returning  whether the player is returning to their board
-    * @returns JSON value representing a scene switch
+    * @returns SCENE_SWITCH_STATE value representing a scene switch
     */
-    std::shared_ptr<cugl::JsonValue> getJsonSceneSwitch(bool returning);
+    std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> getSwitchState(bool returning);
 
     /**
-     * Called by client only. Represents a dirt throw action as a JSON value for sending over the network.
+     * Called by client only. Represents a dirt throw action as a byte vector for sending over the network.
      *
      * @param target The id of the player whose board the current player is sending dirt to
      * @param pos   The starting position of the dirt projectile
@@ -456,41 +477,50 @@ public:
      * @param dest  The destination coordinates of the dirt projectile
      * @param amt   The amount of dirt to spawn when landing on windows
      *
-     * @returns JSON value representing a dirt throw action
+     * @returns Byte vector value representing a dirt throw action
      */
-    std::shared_ptr<cugl::JsonValue> getJsonDirtThrow(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest, const int amt);
+    const std::shared_ptr<std::vector<std::byte>> getDirtThrowRequest(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest, const int amt);
 
     /**
-     * Updates a neighboring or own board given the JSON value representing its game state
+     * Updates a neighboring or own board given the BOARD_STATE value representing its game state
      *
      * @params data     The data to update
      */
-    void updateBoard(std::shared_ptr<cugl::JsonValue> data);
+    void updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> data);
+    
+    /**
+     * Updates a neighboring board about the window dirt they have
+     *
+     * @params data     The data to update
+     */
+    void updateWindowDirt(std::shared_ptr<NetStructs::DIRT_STATE> data);
 
+ 
     /**
      * Called by the host only. Updates a client player's board for player at player_id
-     * based on the movement stored in the JSON value.
+     * based on the movement stored in the MOVE_STATE value.
      *
      * @params data     The data to update
      */
-    void processMovementRequest(std::shared_ptr<cugl::JsonValue> data);
+    void processMovementRequest(std::shared_ptr<NetStructs::MOVE_STATE> data);
 
+    
     /**
      * Called by host only to process switch scene requests. Updates a client player's
      * currently viewed board for the player at player_id based on the current board
-     * value stored in the JSON value.
+     * value stored in the SCENE_SWITCH_STATE value.
      *
      * @params data     The data to update
      */
-    void processSceneSwitchRequest(std::shared_ptr<cugl::JsonValue> data);
+    void processSceneSwitchRequest(std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> data);
 
     /**
      * Called by host only. Updates the boards of both the dirt thrower and the player
-     * receiving the dirt projectile given the information stored in the JSON value.
+     * receiving the dirt projectile given the information stored in the DIRT_REQUEST value.
      *
      * @params data     The data to update
      */
-    void processDirtThrowRequest(std::shared_ptr<cugl::JsonValue> data);
+    void processDirtThrowRequest(std::shared_ptr<NetStructs::DIRT_REQUEST> dirtRequest);
     
     /**
      * The method called to update the game mode.
@@ -521,6 +551,12 @@ public:
      * The host steps forward each player's game state, given references to the player, board, and projectile set.
      */
     void stepForward(std::shared_ptr<Player>& player, std::shared_ptr<WindowGrid>& windows, std::shared_ptr<ProjectileSet>& projectiles);
+
+    /**
+     * This method does some of the same actions as host's stepForward, for optimistic synchronization on the client end.
+     * The client steps forward the given game state, given references to the player, board, and projectile set.
+     */
+    void clientStepForward(std::shared_ptr<Player>& player, std::shared_ptr<WindowGrid>& windows, std::shared_ptr<ProjectileSet>& projectiles);
 
     /**
      * Draws all this scene to the given SpriteBatch.
@@ -563,6 +599,7 @@ public:
      * Disconnects this scene from the network controller.
      */
     void disconnect() { _network.disconnect(); }
+    
 };
 
 #endif __GAME_CONTROLLER_H__

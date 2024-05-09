@@ -52,7 +52,7 @@ void App::onStartup() {
     // Queue up the other assets
     _assets->loadDirectoryAsync("json/assets.json",nullptr);
     
-    net::NetworkLayer::start(net::NetworkLayer::Log::INFO);
+    net::NetworkLayer::start(net::NetworkLayer::Log::VERBOSE);
     AudioEngine::start();
     Application::onStartup(); // YOU MUST END with call to parent
 }
@@ -401,6 +401,7 @@ void App::updateLobbyScene(float timestep) {
                 _gameplay->setHost(true);
                 _gameplay->setUUIDMap(_lobby_host.getUUIDMap());
                 _gameplay->initLevel(_lobby_host.getLevel());
+                _gamescene.loadBackgroundTextures();
                 _gameplay->setActive(true);
                 _gameplay->setId(_lobby_host.getId());
                 _gameplay->initHost(_assets);
@@ -433,6 +434,7 @@ void App::updateLobbyScene(float timestep) {
                 _lobby_client.getNetworkController().disconnect();
                 _gameplay->setHost(false);
                 _gameplay->initLevel(_lobby_client.getLevel());
+                _gamescene.loadBackgroundTextures();
                 _gameplay->setActive(true);
                 _gameplay->setId(_lobby_client.getId());
                 _gameplay->initClient(_assets);
