@@ -82,6 +82,13 @@
             "minfilter": "linear",
             "magfilter": "linear"
         },
+        "menu_tutorial": {
+            "file": "textures/TutorialButton.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
         "victorybg1": {
             "file": "textures/victorybg1.png",
             "wrapS": "clamp",
@@ -2083,7 +2090,7 @@
                         "up": {
                             "type": "Image",
                             "data": {
-                                "texture": "menu_join"
+                                "texture": "menu_tutorial"
                             }
                         }
                     },
