@@ -138,6 +138,18 @@
             "minfilter": "linear",
             "magfilter": "linear"
         },
+        "p1": {
+            "file": "textures/p1.png"
+        },
+        "p2": {
+            "file": "textures/p2.png"
+        },
+        "p3": {
+            "file": "textures/p3.png"
+        },
+        "p4": {
+            "file": "textures/p4.png"
+        },
         "keypad_inputfield": {
             "file": "textures/ClientKeypadUI/InputID.png",
             "wrapS": "clamp",
@@ -3385,6 +3397,82 @@
                             "absolute": true
                         }
                     },
+                    "p1": {
+                                        "type": "Image",
+                                        "format": {
+                                            "type": "Anchored"
+                                        },
+                                        "data": {
+                                            "texture": "p1",
+                                            "anchor": [
+                                                0.5,
+                                                0.5
+                                            ],
+                                            "scale": 1.25
+                                        },
+                                        "layout": {
+                                            "x_anchor": "center",
+                                            "y_anchor": "middle",
+                                            "absolute": true
+                                        }
+                                    },
+                                    "p2": {
+                                        "type": "Image",
+                                        "format": {
+                                            "type": "Anchored"
+                                        },
+                                        "data": {
+                                            "texture": "p2",
+                                            "anchor": [
+                                                0.5,
+                                                0.5
+                                            ],
+                                            "scale": 1.25
+                                        },
+                                        "layout": {
+                                            "x_anchor": "center",
+                                            "y_anchor": "middle",
+                                            "absolute": true
+                                        }
+                                    },
+                                    "p3": {
+                                        "type": "Image",
+                                        "format": {
+                                            "type": "Anchored"
+                                        },
+                                        "data": {
+                                            "texture": "p3",
+                                            "anchor": [
+                                                0.5,
+                                                0.5
+                                            ],
+                                            "scale": 1.25
+                                        },
+                                        "layout": {
+                                            "x_anchor": "center",
+                                            "y_anchor": "middle",
+                                            "absolute": true
+                                        }
+                                    },
+                                    "p4": {
+                                        "type": "Image",
+                                        "format": {
+                                            "type": "Anchored"
+                                        },
+                                        "data": {
+                                            "texture": "p4",
+                                            "anchor": [
+                                                0.5,
+                                                0.5
+                                            ],
+                                            "scale": 1.25
+                                        },
+                                        "layout": {
+                                            "x_anchor": "center",
+                                            "y_anchor": "middle",
+                                            "absolute": true
+                                        }
+                                    },
                     "character_red": {
                         "type": "Image",
                         "format": {
@@ -3905,6 +3993,82 @@
                             "absolute": true
                         }
                     },
+                    "p1": {
+                                        "type": "Image",
+                                        "format": {
+                                            "type": "Anchored"
+                                        },
+                                        "data": {
+                                            "texture": "p1",
+                                            "anchor": [
+                                                0.5,
+                                                0.5
+                                            ],
+                                            "scale": 1.25
+                                        },
+                                        "layout": {
+                                            "x_anchor": "center",
+                                            "y_anchor": "middle",
+                                            "absolute": true
+                                        }
+                                    },
+                                    "p2": {
+                                        "type": "Image",
+                                        "format": {
+                                            "type": "Anchored"
+                                        },
+                                        "data": {
+                                            "texture": "p2",
+                                            "anchor": [
+                                                0.5,
+                                                0.5
+                                            ],
+                                            "scale": 1.25
+                                        },
+                                        "layout": {
+                                            "x_anchor": "center",
+                                            "y_anchor": "middle",
+                                            "absolute": true
+                                        }
+                                    },
+                                    "p3": {
+                                        "type": "Image",
+                                        "format": {
+                                            "type": "Anchored"
+                                        },
+                                        "data": {
+                                            "texture": "p3",
+                                            "anchor": [
+                                                0.5,
+                                                0.5
+                                            ],
+                                            "scale": 1.25
+                                        },
+                                        "layout": {
+                                            "x_anchor": "center",
+                                            "y_anchor": "middle",
+                                            "absolute": true
+                                        }
+                                    },
+                                    "p4": {
+                                        "type": "Image",
+                                        "format": {
+                                            "type": "Anchored"
+                                        },
+                                        "data": {
+                                            "texture": "p4",
+                                            "anchor": [
+                                                0.5,
+                                                0.5
+                                            ],
+                                            "scale": 1.25
+                                        },
+                                        "layout": {
+                                            "x_anchor": "center",
+                                            "y_anchor": "middle",
+                                            "absolute": true
+                                        }
+                                    },
                     "character_red": {
                         "type": "Image",
                         "format": {
