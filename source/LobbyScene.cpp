@@ -96,15 +96,14 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     _UUIDisProcessed = false;
     
     _numAssignedPlayers = 0;
+
+    _chosenChars = { "", "", "", "" };
     
     setHost(true);
 
     // host only instantiates the all characters list, which stores char selections of all players in the lobby
     _all_characters = std::vector<std::string>(4);
-    
-//    // part 1 of initializing list to keep track of invalid character selections
-//    _all_characters_select = std::vector<int>(4);
-    
+        
     Size dimen = Application::get()->getDisplaySize();
     dimen *= SCENE_HEIGHT/dimen.height;
     if (assets == nullptr) {
@@ -125,19 +124,10 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     scene->setContentSize(dimen);
     scene->doLayout(); // Repositions the HUD
 
-//    // Acquire the invalid texture to draw on the screen when player picks
-//    // an already selected player charatcer
-//    _invalid = _assets->get<scene2::SceneNode>("invalid");
-//    
-//    scene->addChild(_invalid);
-//    _invalid->setVisible(false);
-    
-    // initialize the list to keep track of selectable vs non-selectable characters
-//    _all_characters_select;
-//    for (int i=0; i<4; i++) {
-//        _all_characters_select[i] = 0;
-//    };
-    
+    _p1 = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("host_p1"));
+    _p2 = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("host_p2"));
+    _p3 = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("host_p3"));
+    _p4 = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("host_p4"));
     
     _select_red = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("host_red"));
     _select_blue = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("host_blue"));
@@ -175,22 +165,24 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
 
     _select_red->addListener([this](const std::string& name, bool down) {
         if (down) {
-            // Mushroom = 0
             _audioController->playMovePress();
             character = "Mushroom";
             _character_field_red->setVisible(true);
             _character_field_blue->setVisible(false);
             _character_field_green->setVisible(false);
             _character_field_yellow->setVisible(false);
-            
+
             _select_blue->setDown(false);
             _select_green->setDown(false);
             _select_yellow->setDown(false);
         }
+        else if (character == "Mushroom") {
+            character = "";
+            _character_field_red->setVisible(false);
+        }
         });
     _select_blue->addListener([this](const std::string& name, bool down) {
         if (down) {
-            // Frog = 1
             _audioController->playMovePress();
             character = "Frog";
             _character_field_red->setVisible(false);
@@ -201,12 +193,14 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
             _select_red->setDown(false);
             _select_green->setDown(false);
             _select_yellow->setDown(false);
-
+        }
+        else if (character == "Frog") {
+            character = "";
+            _character_field_blue->setVisible(false);
         }
         });
     _select_green->addListener([this](const std::string& name, bool down) {
         if (down) {
-            // Chameleon = 2
             _audioController->playMovePress();
             character = "Chameleon";
             _character_field_red->setVisible(false);
@@ -217,12 +211,14 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
             _select_red->setDown(false);
             _select_blue->setDown(false);
             _select_yellow->setDown(false);
-   
+        }
+        else if (character == "Chameleon") {
+            character = "";
+            _character_field_green->setVisible(false);
         }
         });
     _select_yellow->addListener([this](const std::string& name, bool down) {
         if (down) {
-            // Flower = 3
             _audioController->playMovePress();
             character = "Flower";
             _character_field_red->setVisible(false);
@@ -233,10 +229,12 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
             _select_red->setDown(false);
             _select_blue->setDown(false);
             _select_green->setDown(false);
-   
+        }
+        else if (character == "Flower") {
+            character = "";
+            _character_field_yellow->setVisible(false);
         }
         });
-    
     // Create the server configuration
     auto json = _assets->get<JsonValue>("server");
     _config.set(json);
@@ -266,11 +264,18 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
     _quit = false;
     
     std::shared_ptr<scene2::SceneNode> scene;
+
+    _chosenChars = { "", "", "", "" };
     
     // Acquire the scene built by the asset loader and resize it the scene
     scene = _assets->get<scene2::SceneNode>("client");
     scene->setContentSize(dimen);
     scene->doLayout(); // Repositions the HUD
+
+    _p1 = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("client_p1"));
+    _p2 = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("client_p2"));
+    _p3 = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("client_p3"));
+    _p4 = std::dynamic_pointer_cast<scene2::SceneNode>(_assets->get<scene2::SceneNode>("client_p4"));
 
     _select_red = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("client_red"));
     _select_blue = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("client_blue"));
@@ -314,6 +319,10 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
             _select_green->setDown(false);
             _select_yellow->setDown(false);
         }
+        else if (character == "Mushroom") {
+            character = "";
+            _character_field_red->setVisible(false);
+        }
         });
     _select_blue->addListener([this](const std::string& name, bool down) {
         if (down) {
@@ -327,6 +336,10 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
             _select_red->setDown(false);
             _select_green->setDown(false);
             _select_yellow->setDown(false);
+        }
+        else if (character == "Frog") {
+            character = "";
+            _character_field_blue->setVisible(false);
         }
         });
     _select_green->addListener([this](const std::string& name, bool down) {
@@ -342,6 +355,10 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
             _select_blue->setDown(false);
             _select_yellow->setDown(false);
         }
+        else if (character == "Chameleon") {
+            character = "";
+            _character_field_green->setVisible(false);
+        }
         });
     _select_yellow->addListener([this](const std::string& name, bool down) {
         if (down) {
@@ -355,6 +372,10 @@ bool LobbyScene::init_client(const std::shared_ptr<cugl::AssetManager>& assets) 
             _select_red->setDown(false);
             _select_blue->setDown(false);
             _select_green->setDown(false);
+        }
+        else if (character == "Flower") {
+            character = "";
+            _character_field_yellow->setVisible(false);
         }
         });
     
@@ -391,8 +412,6 @@ void LobbyScene::dispose() {
 void LobbyScene::update(float timestep) {
     _level_field->setText(std::to_string(_level));
     
-
-
     if (isHost()) {
         _all_characters[0] = character;
     }
@@ -400,6 +419,10 @@ void LobbyScene::update(float timestep) {
     requestID();
 
     if (_network.getConnection()) {
+        if (!checkConnection()) {
+            return;
+        }
+
         _network.getConnection()->receive([this](const std::string source,
             const std::vector<std::byte>& data) {
             std::shared_ptr<JsonValue> jsonData = _network.processMessage(source, data);
@@ -407,17 +430,13 @@ void LobbyScene::update(float timestep) {
             if (isHost() && jsonData->has("id request")) {
                 _STUNmap[jsonData->getString("id request")] = true;
             }
-            
-                
-            });
-        if (!checkConnection()) {
-            return;
-        }
+            if (jsonData->has("char")) {
+                _chosenChars[stoi(jsonData->getString("id"))-1] = jsonData->getString("char");
+            }        
+        });
         
         configureStartButton();
         
-    
-
         _player_field->setText(std::to_string(_network.getNumPlayers()));
     
         if (isHost()) {
@@ -430,9 +449,7 @@ void LobbyScene::update(float timestep) {
                 }
             }
         }
-    
-        
-        
+            
         if ((!isHost() && _status == WAIT && _id != 0) || isHost()) {
             // sends current character selection across network
             if (_network.getConnection()->isOpen()) {
@@ -440,10 +457,9 @@ void LobbyScene::update(float timestep) {
                 json->init(JsonValue::Type::ObjectType);
                 json->appendValue("id", std::to_string(_id));
                 json->appendValue("char", character);
-                _network.sendToHost(json);
+                _network.transmitMessage(json);
             }
         }
-
         
         if (_network.getConnection()->isOpen()) {
             if (isHost()) {
@@ -463,8 +479,45 @@ void LobbyScene::update(float timestep) {
                 }
             }
         }
-        
-        
+    }
+
+    _select_blue->activate();
+    _select_yellow->activate();
+    _select_green->activate();
+    _select_red->activate();
+    _p1->setVisible(false);
+    _p2->setVisible(false);
+    _p3->setVisible(false);
+    _p4->setVisible(false);
+    std::vector< std::shared_ptr<cugl::scene2::SceneNode>> pVec = { _p1, _p2, _p3, _p4 };
+    for (int i = 0; i < _chosenChars.size(); i++) {
+        int id = i + 1;
+        string chosenChar = _chosenChars[i];
+        if (chosenChar == "Frog") {
+            if (id != _id) _select_blue->deactivate();
+            // TODO: position player id marker
+            pVec[i]->setVisible(true);
+            pVec[i]->setPositionX(_select_blue->getPositionX());
+            pVec[i]->setPositionY(_select_blue->getPositionY());
+        }
+        else if (chosenChar == "Flower") {
+            if (id != _id) _select_yellow->deactivate();
+            pVec[i]->setVisible(true);
+            pVec[i]->setPositionX(_select_yellow->getPositionX());
+            pVec[i]->setPositionY(_select_yellow->getPositionY());
+        }
+        else if (chosenChar == "Chameleon") {
+            if (id != _id) _select_green->deactivate();
+            pVec[i]->setVisible(true);
+            pVec[i]->setPositionX(_select_green->getPositionX());
+            pVec[i]->setPositionY(_select_green->getPositionY());
+        }
+        else if (chosenChar == "Mushroom") {
+            if (id != _id) _select_red->deactivate();
+            pVec[i]->setVisible(true);
+            pVec[i]->setPositionX(_select_red->getPositionX());
+            pVec[i]->setPositionY(_select_red->getPositionY());
+        }
     }
 }
 
@@ -516,19 +569,7 @@ void LobbyScene::processData(const std::string source,
         std::string char_selection = jsonData->getString("char");
         int player_id = std::stoi(jsonData->getString("id"));
         _all_characters[player_id - 1] = char_selection;
-//        response->appendValue("char", character);
-//        if (_all_characters_select[mapToSelectList(char_selection)] == 0) {
-//            _all_characters[player_id - 1] = char_selection;
-//            _all_characters_select[mapToSelectList(char_selection)] = 1;
-//        } else if (mapToSelectList(char_selection) != -1) {
-//            const std::shared_ptr<JsonValue> response = std::make_shared<JsonValue>();
-//            response->appendValue("invalid", std::to_string(_id));
-//            response->appendValue("char", character);
-//        }
     }
-    
-//    _all_characters[player_id - 1] = char_selection;
-//    response->appendValue("char", character);
 
 }
 
