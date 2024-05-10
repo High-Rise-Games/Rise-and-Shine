@@ -330,9 +330,9 @@ void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     if (_ishost) {
                         processDirtThrowRequest(netStructs.deserializeDirtRequest(*getDirtThrowRequest(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount)));
                     }
-                    else {
-                        _network.sendToHost(*getDirtThrowRequest(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
-                    }
+//                    else {
+//                        _network.sendToHost(*getDirtThrowRequest(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
+//                    }
                     dirtThrowButton->setPosition(buttonPos);
                 }
                 else if (dirtCon.isDown()) {
