@@ -190,15 +190,21 @@ void TutorialController::setCharacters(std::vector<std::string>& chars) {
  */
 void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton, std::shared_ptr<cugl::scene2::SceneNode> dirtThrowArc) {
 
-    CULog("%d", _currentTutorialStage); // TODO: delete me
+    //CULog("%d", _currentTutorialStage); // TODO: delete me
 
     // update tutorial phases that aren't easily hooked elsewhere
     if (_currentTutorialStage == FIRST_DIRT && _windowVec[0]->getTotalDirt() < 5 ) {
         _currentTutorialStage = THIRD_DIRT;
     }
     if (_currentTutorialStage == THIRD_DIRT && _windowVec[0]->getTotalDirt() <= 2) {
-        _currentTutorialStage = PEEK; // TODO: change to BIRD
-        //_birdLeaving = true;
+        _currentTutorialStage = BIRD; // TODO: change to BIRD
+        _curBirdBoard = 1;
+        int spawnRow = 5;
+        _bird.resetBirdPath(_windowVec[0]->getNVertical(), _windowVec[0]->getNHorizontal(), spawnRow);
+        _birdLeaving = false;
+    }
+    if (_currentTutorialStage == BIRD && _curBirdBoard != 1) {
+        _currentTutorialStage = PEEK;
     }
     if (_currentTutorialStage == ALL_DIRT && _windowVec[0]->getTotalDirt() == 0) {
         _currentTutorialStage = DONE;
