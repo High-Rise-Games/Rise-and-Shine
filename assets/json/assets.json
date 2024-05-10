@@ -236,6 +236,19 @@
             "minfilter": "linear",
             "magfilter": "linear"
         },
+        "p1": {
+            "file": "textures/p1.png"
+        },
+        "p2": {
+            "file": "textures/p2.png"
+        },
+        "p3": {
+            "file": "textures/p3.png"
+        },
+        "p4": {
+            "file": "textures/p4.png"
+        },
+        "timerbg
         "level_background": {
             "file": "textures/LevelSelectBackground.png",
             "wrapS": "clamp",
