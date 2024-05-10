@@ -43,6 +43,7 @@ protected:
         BIRD,        // player must shoe bird away
         PEEK,        // player must peek at opponent's board
         THROW,       // player must throw dirt at opponent
+        RETURN,      // player must return to their own board
         ALL_DIRT,    // player must finish cleaning their board (skipped if they did this earlier)
         DONE         // player has completed the tutorial
     };

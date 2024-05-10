@@ -27,6 +27,9 @@ using namespace std;
 bool TutorialController::initLevel(int selected_level) {
     hostReset();
 
+    // Initialize the tutorial stage system to the first phase
+    _currentTutorialStage = MOVE;
+
     // TODO: update depending on level
     _birdActive = true;
 
@@ -197,6 +200,9 @@ void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         _currentTutorialStage = PEEK; // TODO: change to BIRD
         //_birdLeaving = true;
     }
+    if (_currentTutorialStage == ALL_DIRT && _windowVec[0]->getTotalDirt() == 0) {
+        _currentTutorialStage = DONE;
+    }
 
     _input.update();
 
@@ -273,7 +279,10 @@ void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         dirtThrowArc->setPosition(buttonPos);
         dirtThrowArc->setAngle(arc_rotate_angle);
         if ((myCurBoard == 1 && _input.getDir().x == 1) || (myCurBoard == -1 && _input.getDir().x == -1)) {
-            ifSwitch = true;
+            if (_currentTutorialStage != THROW) { // don't allow returning to own board before player has thrown dirt for the first time
+                ifSwitch = true;
+                if (_currentTutorialStage == RETURN) { _currentTutorialStage = ALL_DIRT; } // player has returned to their board after throwing dirt
+            }
         }
         if (_currentDirtAmount > 0) {
             // _dirtThrowInput.update();
@@ -288,6 +297,7 @@ void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             else {
                 ifSwitch = false;
                 if (dirtCon.didRelease()) {
+                    if (_currentTutorialStage == THROW) { _currentTutorialStage = RETURN; } // player has thrown dirt at opponent
                     _dirtSelected = false;
                     Vec2 diff = worldPos - _prevInputPos;
                     if ((myCurBoard == -1 && diff.x > 0) || (myCurBoard == 1 && diff.x < 0)) {
@@ -348,9 +358,10 @@ void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             // Move the player, ignoring collisions
             int moveResult = _playerVec[_id - 1]->move(_input.getDir(), getSize(), _windowVec[_id - 1]);
             if (_currentTutorialStage < FIRST_DIRT && moveResult == 2 && !_input.getDir().equals(Vec2())) { _currentTutorialStage = FIRST_DIRT; } // player moved
-            if (_currentTutorialStage >= PEEK) {
+            if (_currentTutorialStage >= PEEK) { // don't allow peeking until all solo mechanics introduced
                 if (_numPlayers > 1 && (moveResult == -1 || moveResult == 1)) {
                     _allCurBoards[0] = moveResult;
+                    if (_currentTutorialStage == PEEK) { _currentTutorialStage = THROW; } // player has moved to another player's board
                 }
             }
         }
