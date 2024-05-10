@@ -102,6 +102,8 @@ bool TutorialController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
     if (assets == nullptr) {
         return false;
     }
+    
+    _ishost=true;
 
     _numPlayers = 2;
 
