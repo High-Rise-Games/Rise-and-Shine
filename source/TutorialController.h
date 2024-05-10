@@ -36,6 +36,19 @@ protected:
     std::vector<int> dirt_x_values = { 2, 1, 1, 0, 2 };
     std::vector<int> dirt_y_values = { 0, 2, 3, 5, 5 };
 
+    enum tutorialStages { 
+        MOVE,        // player must move in any direction
+        FIRST_DIRT,  // player must clean one dirt, can't be done in first move as no dirts are next to start
+        THIRD_DIRT,  // player must clean at least 3 dirts
+        BIRD,        // player must shoe bird away
+        PEEK,        // player must peek at opponent's board
+        THROW,       // player must throw dirt at opponent
+        ALL_DIRT,    // player must finish cleaning their board (skipped if they did this earlier)
+        DONE         // player has completed the tutorial
+    };
+
+    int _currentTutorialStage = MOVE;
+
 
 public:
 #pragma mark -

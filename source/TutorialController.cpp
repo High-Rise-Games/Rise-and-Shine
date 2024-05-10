@@ -187,6 +187,17 @@ void TutorialController::setCharacters(std::vector<std::string>& chars) {
  */
 void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton, std::shared_ptr<cugl::scene2::SceneNode> dirtThrowArc) {
 
+    CULog("%d", _currentTutorialStage); // TODO: delete me
+
+    // update tutorial phases that aren't easily hooked elsewhere
+    if (_currentTutorialStage == FIRST_DIRT && _windowVec[0]->getTotalDirt() < 5 ) {
+        _currentTutorialStage = THIRD_DIRT;
+    }
+    if (_currentTutorialStage == THIRD_DIRT && _windowVec[0]->getTotalDirt() <= 2) {
+        _currentTutorialStage = PEEK; // TODO: change to BIRD
+        //_birdLeaving = true;
+    }
+
     _input.update();
 
     // update time
@@ -231,6 +242,10 @@ void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     else {
         for (int i = 0; i < _numPlayers; i++) {
             stepForward(_playerVec[i], _windowVec[i], _projectileVec[i]);
+            if (_currentTutorialStage < DONE) { // don't allow game to end until all stages complete
+                _gameOver = false;
+                _hasWon[i] = false;
+            }
         }
     }
 
@@ -332,8 +347,11 @@ void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         if (_playerVec[_id - 1]->getAnimationState() == Player::IDLE) {
             // Move the player, ignoring collisions
             int moveResult = _playerVec[_id - 1]->move(_input.getDir(), getSize(), _windowVec[_id - 1]);
-            if (_numPlayers > 1 && (moveResult == -1 || moveResult == 1)) {
-                _allCurBoards[0] = moveResult;
+            if (_currentTutorialStage < FIRST_DIRT && moveResult == 2 && !_input.getDir().equals(Vec2())) { _currentTutorialStage = FIRST_DIRT; } // player moved
+            if (_currentTutorialStage >= PEEK) {
+                if (_numPlayers > 1 && (moveResult == -1 || moveResult == 1)) {
+                    _allCurBoards[0] = moveResult;
+                }
             }
         }
     }
