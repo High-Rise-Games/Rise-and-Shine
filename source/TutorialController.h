@@ -33,6 +33,9 @@
 class TutorialController : public GameplayController {
 protected:
 
+    std::vector<int> dirt_x_values = { 2, 1, 1, 0, 2 };
+    std::vector<int> dirt_y_values = { 0, 2, 3, 5, 5 };
+
 
 public:
 #pragma mark -

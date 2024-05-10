@@ -106,7 +106,12 @@ bool TutorialController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
         _windowVec[i - 1]->setInitDirtNum(_initDirtCount);
         _windowVec[i - 1]->setDirtTexture(assets->get<Texture>(_dirtTextureString));
         _windowVec[i - 1]->setFadedDirtTexture(assets->get<Texture>("faded-dirt"));
-        _windowVec[i - 1]->generateInitialBoard(_windowVec[i - 1]->getInitDirtNum());
+        //_windowVec[i - 1]->generateInitialBoard(_windowVec[i - 1]->getInitDirtNum());
+        // generate fixed dirt
+        for (int j = 0; j < this->dirt_x_values.size(); j++) {
+            //std::shared_ptr<StaticFilth> dirt = std::make_shared<StaticFilth>(Vec2(dirt_x_values.at(j), dirt_y_values.at(j)));
+            _windowVec[i - 1]->addDirt(dirt_y_values.at(j), dirt_x_values.at(j));
+        }
 
         // Initialize player characters
         Vec2 startingPos = Vec2(_windowVec[i - 1]->sideGap + (_windowVec[i - 1]->getPaneWidth() / 2), _windowVec[i - 1]->getPaneHeight() / 2);
