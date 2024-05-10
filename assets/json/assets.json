@@ -40,6 +40,20 @@
             "minfilter": "linear",
             "magfilter": "linear"
         },
+        "mushroom_point": {
+            "file": "textures/mushroomPoint.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "text_bubble": {
+            "file": "textures/textBubble.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
         "menu_background": {
             "file": "textures/HomeBG.jpg",
             "wrapS": "clamp",
@@ -817,6 +831,9 @@
         "nightBuilding": {
             "file": "textures/nightBuilding.png"
         },
+        "tutorialBuilding": {
+            "file": "textures/tutorialBuilding.png"
+        },
         "dreamyBuilding": {
             "file": "textures/dreamyBuilding.png"
         },
@@ -1054,6 +1071,7 @@
         "level2": "json/level2.json",
         "level3": "json/level3.json",
         "nightlevel": "json/nightlevel.json",
+        "tutoriallevel": "json/tutoriallevel.json",
         "dreamylevel": "json/dreamylevel.json",
         "level6": "json/level6.json",
         "level7": "json/level7.json",
@@ -2030,2315 +2048,2361 @@
                         "y_offset": -115,
                         "absolute": true
                     }
-                }
-            }
-        },
-        "levelui": {
-            "type": "Node",
-            "format": {
-                "type": "Anchored"
-            },
-            "children": {
-                "title": {
-                    "type": "Image",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "texture": "level_title",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ]
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "top",
-                        "y_offset": -100,
-                        "absolute": true
-                    }
                 },
-                "back": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.5
-                        ]
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "back_button"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "y_offset": -100,
-                        "x_offset": 30,
-                        "absolute": true
-                    }
-                },
-                "next": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.5
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "level_next"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "right",
-                        "y_anchor": "top",
-                        "y_offset": -100,
-                        "x_offset": -200,
-                        "absolute": true
-                    }
-                }
-            }
-        },
-        "level": {
-            "type": "Image",
-            "format": {
-                "type": "Anchored"
-            },
-            "data": {
-                "texture": "level_background"
-            },
-            "children": {
-                "level1": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "level_choice1_inactive"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "bottom",
-                        "y_offset": 85,
-                        "x_offset": 300,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "level1h": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "level_choice1_active"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "bottom",
-                        "y_offset": 85,
-                        "x_offset": 300,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "level2": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "level_choice2_inactive"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "bottom",
-                        "y_offset": 85,
-                        "x_offset": 660,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "level2h": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "level_choice2_active"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "bottom",
-                        "y_offset": 85,
-                        "x_offset": 660,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "level3": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "level_choice3_inactive"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "bottom",
-                        "y_offset": 70,
-                        "x_offset": 1050,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "level3h": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "level_choice3_active"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "bottom",
-                        "y_offset": 70,
-                        "x_offset": 1050,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "level4": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "level_choice4_inactive"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "bottom",
-                        "y_offset": 80,
-                        "x_offset": 1400,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "level4h": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "level_choice4_active"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "bottom",
-                        "y_offset": 80,
-                        "x_offset": 1400,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "level5": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "level_choice5_inactive"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "bottom",
-                        "y_offset": 80,
-                        "x_offset": 1860,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "level5h": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "level_choice5_active"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "bottom",
-                        "y_offset": 80,
-                        "x_offset": 1860,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "level6": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "level_choice6_inactive"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "bottom",
-                        "y_offset": 80,
-                        "x_offset": 2260,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "level6h": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "level_choice6_active"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "bottom",
-                        "y_offset": 80,
-                        "x_offset": 2260,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "level7": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "level_choice7_inactive"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "bottom",
-                        "y_offset": 80,
-                        "x_offset": 2460,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "level7h": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "level_choice7_active"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "bottom",
-                        "y_offset": 80,
-                        "x_offset": 2460,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "level8": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "level_choice8_inactive"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "bottom",
-                        "y_offset": 80,
-                        "x_offset": 2660,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "level8h": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "level_choice8_active"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "bottom",
-                        "y_offset": 80,
-                        "x_offset": 2660,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                }
-            }
-        },
-        "client_join": {
-            "type": "Image",
-            "format": {
-                "type": "Anchored"
-            },
-            "data": {
-                "texture": "keypad_background"
-            },
-            "children": {
-                "title": {
-                    "type": "Image",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "texture": "keypad_title",
-                        "anchor": [
-                            0,
-                            0
-                        ],
-                        "scale": 0.75
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "top",
-                        "y_offset": -130,
-                        "x_offset": -10,
-                        "absolute": true
-                    }
-                },
-                "subtitle": {
-                    "type": "Image",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "texture": "keypad_subtitle",
-                        "anchor": [
-                            0,
-                            0
-                        ],
-                        "scale": 0.75
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "top",
-                        "y_offset": -175,
-                        "x_offset": -10,
-                        "absolute": true
-                    }
-                },
-                "inputUI": {
-                    "type": "Image",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "texture": "keypad_inputfield",
-                        "anchor": [
-                            0,
-                            0
-                        ],
-                        "scale": 0.72
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "y_offset": 60,
-                        "x_offset": -10,
-                        "absolute": true
-                    }
-                },
-                "client_id_field": {
-                    "type": "Textfield",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "anchor": [
-                            0,
-                            0
-                        ],
-                        "text": "123456",
-                        "font": "saira stencil oneRegular32",
-                        "halign": "left",
-                        "valign": "middle",
-                        "cursor": false
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "y_offset": 60,
-                        "x_offset": 20,
-                        "absolute": true
-                    }
-                },
-                "inputPlaceholder": {
-                    "type": "Image",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "texture": "keypad_placeholderText",
-                        "anchor": [
-                            0,
-                            0
-                        ],
-                        "scale": 0.75
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "y_offset": 80,
-                        "x_offset": 27,
-                        "absolute": true
-                    }
-                },
-                "back": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "keypad_back"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "bottom",
-                        "y_offset": 85,
-                        "x_offset": 60,
-                        "absolute": true
-                    }
-                },
-                "next": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "scale": 0.75
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "keypad_next"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "right",
-                        "y_anchor": "bottom",
-                        "y_offset": 85,
-                        "x_offset": -150,
-                        "absolute": true
-                    }
-                },
-                "b1": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            1
-                        ],
-                        "scale": 0.85
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "keypad_1"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "y_offset": -50,
-                        "x_offset": 100,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "b2": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            1
-                        ],
-                        "scale": 0.85
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "keypad_2"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "y_offset": -50,
-                        "x_offset": 250,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "b3": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            1
-                        ],
-                        "scale": 0.85
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "keypad_3"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "y_offset": -50,
-                        "x_offset": 400,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "b4": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            1
-                        ],
-                        "scale": 0.85
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "keypad_4"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "y_offset": -200,
-                        "x_offset": 100,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "b5": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            1
-                        ],
-                        "scale": 0.85
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "keypad_5"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "y_offset": -200,
-                        "x_offset": 250,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "b6": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            1
-                        ],
-                        "scale": 0.85
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "keypad_6"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "y_offset": -200,
-                        "x_offset": 400,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "b7": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            1
-                        ],
-                        "scale": 0.85
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "keypad_7"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "y_offset": -350,
-                        "x_offset": 100,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "b8": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            1
-                        ],
-                        "scale": 0.85
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "keypad_8"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "y_offset": -350,
-                        "x_offset": 250,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "b9": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            1
-                        ],
-                        "scale": 0.85
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "keypad_9"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "y_offset": -350,
-                        "x_offset": 400,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "bc": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            1
-                        ],
-                        "scale": 0.85
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "keypad_c"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "y_offset": -500,
-                        "x_offset": 100,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "b0": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            1
-                        ],
-                        "scale": 0.85
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "keypad_0"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "y_offset": -500,
-                        "x_offset": 250,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "b-1": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            1
-                        ],
-                        "scale": 0.85
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "keypad_-1"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "y_offset": -500,
-                        "x_offset": 400,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                }
-            }
-        },
-        "host": {
-            "type": "Image",
-            "format": {
-                "type": "Anchored"
-            },
-            "data": {
-                "texture": "char_background"
-            },
-            "children": {
-                "title": {
-                    "type": "Image",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "texture": "char_title",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ]
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "top",
-                        "y_offset": -100,
-                        "absolute": true
-                    }
-                },
-                "back": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.5
-                        ]
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "back_button"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "y_offset": -100,
-                        "x_offset": 30,
-                        "absolute": true
-                    }
-                },
-                "box": {
-                    "type": "Image",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "texture": "char_box",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "scale": 0.7
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "absolute": true
-                    }
-                },
-                "red": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "downnode": "down",
-                        "visible": true,
-                        "pushsize": true,
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "scale": 0.7
-                    },
-                    "children": {
-                        "down": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "char_red"
-                            }
-                        },
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "char_red_inactive"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "x_offset": -370,
-                        "y_offset": 90,
-                        "padding": [
-                            10,
-                            10,
-                            10,
-                            10
-                        ],
-                        "absolute": true
-                    }
-                },
-                "green": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "downnode": "down",
-                        "visible": true,
-                        "pushsize": true,
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "scale": 0.7
-                    },
-                    "children": {
-                        "down": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "char_green"
-                            }
-                        },
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "char_green_inactive"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "x_offset": -370,
-                        "y_offset": -90,
-                        "padding": [
-                            10,
-                            10,
-                            10,
-                            10
-                        ],
-                        "absolute": true
-                    }
-                },
-                "blue": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "downnode": "down",
-                        "visible": true,
-                        "pushsize": true,
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "scale": 0.7
-                    },
-                    "children": {
-                        "down": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "char_blue"
-                            }
-                        },
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "char_blue_inactive"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "x_offset": 80,
-                        "y_offset": 90,
-                        "padding": [
-                            10,
-                            10,
-                            10,
-                            10
-                        ],
-                        "absolute": true
-                    }
-                },
-                "yellow": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "downnode": "down",
-                        "visible": true,
-                        "pushsize": true,
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "scale": 0.7
-                    },
-                    "children": {
-                        "down": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "char_yellow"
-                            }
-                        },
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "char_yellow_inactive"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "x_offset": 80,
-                        "y_offset": -90,
-                        "padding": [
-                            10,
-                            10,
-                            10,
-                            10
-                        ],
-                        "absolute": true
-                    }
-                },
-                "character_red": {
-                    "type": "Image",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "texture": "char_mushroom",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "visible": true,
-                        "scale": 0.7
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "x_offset": 450,
-                        "padding": [
-                            10,
-                            10,
-                            10,
-                            10
-                        ],
-                        "absolute": true
-                    }
-                },
-                "character_blue": {
-                    "type": "Image",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "texture": "char_frog",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "visible": false,
-                        "scale": 0.7
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "x_offset": 450,
-                        "padding": [
-                            10,
-                            10,
-                            10,
-                            10
-                        ],
-                        "absolute": true
-                    }
-                },
-                "character_green": {
-                    "type": "Image",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "texture": "char_chameleon",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "visible": false,
-                        "scale": 0.7
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "x_offset": 450,
-                        "padding": [
-                            10,
-                            10,
-                            10,
-                            10
-                        ],
-                        "absolute": true
-                    }
-                },
-                "character_yellow": {
-                    "type": "Image",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "texture": "char_flower",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "visible": false,
-                        "scale": 0.7
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "x_offset": 450,
-                        "padding": [
-                            10,
-                            10,
-                            10,
-                            10
-                        ],
-                        "absolute": true
-                    }
-                },
-                "bottom": {
-                    "type": "Node",
-                    "format": {
-                        "type": "Float",
-                        "orientation": "horizontal",
-                        "x_alignment": "left",
-                        "y_alignment": "bottom"
-                    },
-                    "data": {
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ],
-                        "size": [
-                            1800,
-                            100
-                        ]
-                    },
-                    "children": {
-                        "game_label": {
-                            "type": "Label",
-                            "data": {
-                                "anchor": [
-                                    0.5,
-                                    0.5
-                                ],
-                                "font": "saira stencil oneRegular32",
-                                "text": "Game ID:",
-                                "padding": [
-                                    20,
-                                    20,
-                                    40,
-                                    20
-                                ],
-                                "halign": "left",
-                                "valign": "middle",
-                                "foreground": [ 255, 255, 255, 255 ]
-                            },
-                            "layout": {
-                                "priority": 1
-                            }
-                        },
-                        "game_field": {
-                            "type": "Widget",
-                            "data": {
-                                "key": "textfield",
-                                "variables": {
-                                    "size": [
-                                        200,
-                                        100
-                                    ],
-                                    "text": "",
-                                    "halign": "center"
-                                }
-                            },
-                            "layout": {
-                                "priority": 2
-                            }
-                        },
-                        "players_label": {
-                            "type": "Label",
-                            "data": {
-                                "anchor": [
-                                    0.5,
-                                    0.5
-                                ],
-                                "font": "saira stencil oneRegular32",
-                                "text": "Players:",
-                                "padding": [
-                                    20,
-                                    20,
-                                    20,
-                                    20
-                                ],
-                                "halign": "left",
-                                "valign": "middle",
-                                "foreground": [ 255, 255, 255, 255 ]
-                            },
-                            "layout": {
-                                "priority": 3
-                            }
-                        },
-                        "players_field": {
-                            "type": "Widget",
-                            "data": {
-                                "key": "textfield",
-                                "variables": {
-                                    "size": [
-                                        80,
-                                        100
-                                    ],
-                                    "text": "1",
-                                    "halign": "center"
-                                }
-                            },
-                            "layout": {
-                                "priority": 4
-                            }
-                        },
-                        "level_label": {
-                            "type": "Label",
-                            "data": {
-                                "anchor": [
-                                    0.5,
-                                    0.5
-                                ],
-                                "font": "saira stencil oneRegular32",
-                                "text": "Level:",
-                                "padding": [
-                                    20,
-                                    20,
-                                    20,
-                                    20
-                                ],
-                                "halign": "left",
-                                "valign": "middle",
-                                "foreground": [ 255, 255, 255, 255 ]
-                            },
-                            "layout": {
-                                "priority": 5
-                            }
-                        },
-                        "level_field": {
-                            "type": "Widget",
-                            "data": {
-                                "key": "textfield",
-                                "variables": {
-                                    "size": [
-                                        80,
-                                        100
-                                    ],
-                                    "text": "1",
-                                    "halign": "center"
-                                }
-                            },
-                            "layout": {
-                                "priority": 6
-                            }
-                        }
 
-                    }
-                },
-                "start": {
-                    "type": "Widget",
+                "tutorial": {
+                    "type": "Button",
                     "data": {
-                        "key": "textbutton",
-                        "variables": {
-                            "size": [
-                                300,
-                                100
-                            ],
-                            "text": "Waiting",
-                            "color": "#000000"
-                        },
+                        "upnode": "up",
+                        "pushable": [
+                            160,
+                            280,
+                            190,
+                            370,
+                            280,
+                            400,
+                            370,
+                            370,
+                            400,
+                            280,
+                            370,
+                            190,
+                            280,
+                            160,
+                            190,
+                            190
+                        ],
+                        "visible": true,
+                        "pushsize": true,
                         "anchor": [
-                            1,
-                            1
+                            0.5,
+                            0.5
                         ]
                     },
-                    "format": {
-                        "type": "Anchored"
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "menu_join"
+                            }
+                        }
                     },
                     "layout": {
-                        "x_anchor": "right",
-                        "y_anchor": "bottom",
-                        "absolute":  true,
-                        "x_offset": -200,
-                        "y_offset":  75
+                        "x_anchor": "center",
+                        "y_anchor": "middle",
+                        "y_offset": -215,
+                        "absolute": true
+                    }
+                }
+            }
+        },
+            "levelui": {
+                "type": "Node",
+                "format": {
+                    "type": "Anchored"
+                },
+                "children": {
+                    "title": {
+                        "type": "Image",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "texture": "level_title",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ]
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "top",
+                            "y_offset": -100,
+                            "absolute": true
+                        }
+                    },
+                    "back": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.5
+                            ]
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "back_button"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "top",
+                            "y_offset": -100,
+                            "x_offset": 30,
+                            "absolute": true
+                        }
+                    },
+                    "next": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.5
+                            ],
+                            "scale": 0.75
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "level_next"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "right",
+                            "y_anchor": "top",
+                            "y_offset": -100,
+                            "x_offset": -200,
+                            "absolute": true
+                        }
                     }
                 }
             },
-            "layout": {
-                "x_anchor": "center",
-                "y_anchor": "bottom"
-            }
-        },
-        "client": {
-            "type": "Image",
-            "format": {
-                "type": "Anchored"
-            },
-            "data": {
-                "texture": "char_background"
-            },
-            "children": {
-                "title": {
-                    "type": "Image",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "texture": "char_title",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ]
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "top",
-                        "y_offset": -100,
-                        "absolute": true
-                    }
+            "level": {
+                "type": "Image",
+                "format": {
+                    "type": "Anchored"
                 },
-                "back": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.5
-                        ]
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "back_button"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "y_offset": -100,
-                        "x_offset": 30,
-                        "absolute": true
-                    }
+                "data": {
+                    "texture": "level_background"
                 },
-                "box": {
-                    "type": "Image",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "texture": "char_box",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "scale": 0.7
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "absolute": true
-                    }
-                },
-                "red": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "downnode": "down",
-                        "visible": true,
-                        "pushsize": true,
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "scale": 0.7
-                    },
-                    "children": {
-                        "down": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "char_red"
-                            }
-                        },
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "char_red_inactive"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "x_offset": -370,
-                        "y_offset": 90,
-                        "padding": [
-                            10,
-                            10,
-                            10,
-                            10
-                        ],
-                        "absolute": true
-                    }
-                },
-                "green": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "downnode": "down",
-                        "visible": true,
-                        "pushsize": true,
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "scale": 0.7
-                    },
-                    "children": {
-                        "down": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "char_green"
-                            }
-                        },
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "char_green_inactive"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "x_offset": -370,
-                        "y_offset": -90,
-                        "padding": [
-                            10,
-                            10,
-                            10,
-                            10
-                        ],
-                        "absolute": true
-                    }
-                },
-                "blue": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "downnode": "down",
-                        "visible": true,
-                        "pushsize": true,
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "scale": 0.7
-                    },
-                    "children": {
-                        "down": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "char_blue"
-                            }
-                        },
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "char_blue_inactive"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "x_offset": 80,
-                        "y_offset": 90,
-                        "padding": [
-                            10,
-                            10,
-                            10,
-                            10
-                        ],
-                        "absolute": true
-                    }
-                },
-                "yellow": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "downnode": "down",
-                        "visible": true,
-                        "pushsize": true,
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "scale": 0.7
-                    },
-                    "children": {
-                        "down": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "char_yellow"
-                            }
-                        },
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "char_yellow_inactive"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "x_offset": 80,
-                        "y_offset": -90,
-                        "padding": [
-                            10,
-                            10,
-                            10,
-                            10
-                        ],
-                        "absolute": true
-                    }
-                },
-                "character_red": {
-                    "type": "Image",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "texture": "char_mushroom",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "visible": true,
-                        "scale": 0.7
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "x_offset": 450,
-                        "padding": [
-                            10,
-                            10,
-                            10,
-                            10
-                        ],
-                        "absolute": true
-                    }
-                },
-                "character_blue": {
-                    "type": "Image",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "texture": "char_frog",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "visible": false,
-                        "scale": 0.7
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "x_offset": 450,
-                        "padding": [
-                            10,
-                            10,
-                            10,
-                            10
-                        ],
-                        "absolute": true
-                    }
-                },
-                "character_green": {
-                    "type": "Image",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "texture": "char_chameleon",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "visible": false,
-                        "scale": 0.7
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "x_offset": 450,
-                        "padding": [
-                            10,
-                            10,
-                            10,
-                            10
-                        ],
-                        "absolute": true
-                    }
-                },
-                "character_yellow": {
-                    "type": "Image",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "texture": "char_flower",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "visible": false,
-                        "scale": 0.7
-                    },
-                    "layout": {
-                        "x_anchor": "center",
-                        "y_anchor": "middle",
-                        "x_offset": 450,
-                        "padding": [
-                            10,
-                            10,
-                            10,
-                            10
-                        ],
-                        "absolute": true
-                    }
-                },
-                "bottom": {
-                    "type": "Node",
-                    "format": {
-                        "type": "Float",
-                        "orientation": "horizontal",
-                        "x_alignment": "left",
-                        "y_alignment": "bottom"
-                    },
-                    "data": {
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ],
-                        "size": [
-                            1800,
-                            100
-                        ]
-                    },
-                    "children": {
-                        "game_label": {
-                            "type": "Label",
-                            "data": {
-                                "anchor": [
-                                    0.5,
-                                    0.5
-                                ],
-                                "font": "saira stencil oneRegular32",
-                                "text": "Game ID:",
-                                "padding": [
-                                    20,
-                                    20,
-                                    40,
-                                    20
-                                ],
-                                "halign": "left",
-                                "valign": "middle",
-                                "foreground": [ 255, 255, 255, 255 ]
-                            },
-                            "layout": {
-                                "priority": 1
-                            }
-                        },
-                        "game_field": {
-                            "type": "Widget",
-                            "data": {
-                                "key": "textfield",
-                                "variables": {
-                                    "size": [
-                                        200,
-                                        100
-                                    ],
-                                    "text": "",
-                                    "halign": "center"
-                                }
-                            },
-                            "layout": {
-                                "priority": 2
-                            }
-                        },
-                        "players_label": {
-                            "type": "Label",
-                            "data": {
-                                "anchor": [
-                                    0.5,
-                                    0.5
-                                ],
-                                "font": "saira stencil oneRegular32",
-                                "text": "Players:",
-                                "padding": [
-                                    20,
-                                    20,
-                                    20,
-                                    20
-                                ],
-                                "halign": "left",
-                                "valign": "middle",
-                                "foreground": [ 255, 255, 255, 255 ]
-                            },
-                            "layout": {
-                                "priority": 3
-                            }
-                        },
-                        "players_field": {
-                            "type": "Widget",
-                            "data": {
-                                "key": "textfield",
-                                "variables": {
-                                    "size": [
-                                        80,
-                                        100
-                                    ],
-                                    "text": "1",
-                                    "halign": "center"
-                                }
-                            },
-                            "layout": {
-                                "priority": 4
-                            }
-                        },
-                        "level_label": {
-                            "type": "Label",
-                            "data": {
-                                "anchor": [
-                                    0.5,
-                                    0.5
-                                ],
-                                "font": "saira stencil oneRegular32",
-                                "text": "Level:",
-                                "padding": [
-                                    20,
-                                    20,
-                                    20,
-                                    20
-                                ],
-                                "halign": "left",
-                                "valign": "middle",
-                                "foreground": [ 255, 255, 255, 255 ]
-                            },
-                            "layout": {
-                                "priority": 5
-                            }
-                        },
-                        "level_field": {
-                            "type": "Widget",
-                            "data": {
-                                "key": "textfield",
-                                "variables": {
-                                    "size": [
-                                        80,
-                                        100
-                                    ],
-                                    "text": "1",
-                                    "halign": "center"
-                                }
-                            },
-                            "layout": {
-                                "priority": 6
-                            }
-                        }
-                    }
-                },
-                "start": {
-                    "type": "Widget",
-                    "data": {
-                        "key": "textbutton",
-                        "variables": {
-                            "size": [
-                                300,
-                                100
+                "children": {
+                    "level1": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.0
                             ],
-                            "text": "Waiting",
-                            "color": "#000000"
+                            "scale": 0.75
                         },
-                        "anchor": [
-                            1,
-                            1
-                        ]
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "level_choice1_inactive"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "bottom",
+                            "y_offset": 85,
+                            "x_offset": 300,
+                            "priority": 1,
+                            "absolute": true
+                        }
                     },
-                    "format": {
-                        "type": "Anchored"
+                    "level1h": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.0
+                            ],
+                            "scale": 0.75
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "level_choice1_active"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "bottom",
+                            "y_offset": 85,
+                            "x_offset": 300,
+                            "priority": 1,
+                            "absolute": true
+                        }
                     },
-                    "layout": {
-                        "x_anchor": "right",
-                        "y_anchor": "bottom",
-                        "absolute":  true,
-                        "x_offset": -200,
-                        "y_offset":  75
+                    "level2": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.0
+                            ],
+                            "scale": 0.75
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "level_choice2_inactive"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "bottom",
+                            "y_offset": 85,
+                            "x_offset": 660,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "level2h": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.0
+                            ],
+                            "scale": 0.75
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "level_choice2_active"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "bottom",
+                            "y_offset": 85,
+                            "x_offset": 660,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "level3": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.0
+                            ],
+                            "scale": 0.75
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "level_choice3_inactive"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "bottom",
+                            "y_offset": 70,
+                            "x_offset": 1050,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "level3h": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.0
+                            ],
+                            "scale": 0.75
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "level_choice3_active"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "bottom",
+                            "y_offset": 70,
+                            "x_offset": 1050,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "level4": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.0
+                            ],
+                            "scale": 0.75
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "level_choice4_inactive"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "bottom",
+                            "y_offset": 80,
+                            "x_offset": 1400,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "level4h": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.0
+                            ],
+                            "scale": 0.75
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "level_choice4_active"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "bottom",
+                            "y_offset": 80,
+                            "x_offset": 1400,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "level5": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.0
+                            ],
+                            "scale": 0.75
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "level_choice5_inactive"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "bottom",
+                            "y_offset": 80,
+                            "x_offset": 1860,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "level5h": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.0
+                            ],
+                            "scale": 0.75
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "level_choice5_active"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "bottom",
+                            "y_offset": 80,
+                            "x_offset": 1860,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "level6": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.0
+                            ],
+                            "scale": 0.75
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "level_choice6_inactive"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "bottom",
+                            "y_offset": 80,
+                            "x_offset": 2260,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "level6h": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.0
+                            ],
+                            "scale": 0.75
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "level_choice6_active"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "bottom",
+                            "y_offset": 80,
+                            "x_offset": 2260,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "level7": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.0
+                            ],
+                            "scale": 0.75
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "level_choice7_inactive"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "bottom",
+                            "y_offset": 80,
+                            "x_offset": 2460,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "level7h": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.0
+                            ],
+                            "scale": 0.75
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "level_choice7_active"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "bottom",
+                            "y_offset": 80,
+                            "x_offset": 2460,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "level8": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.0
+                            ],
+                            "scale": 0.75
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "level_choice8_inactive"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "bottom",
+                            "y_offset": 80,
+                            "x_offset": 2660,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "level8h": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.0
+                            ],
+                            "scale": 0.75
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "level_choice8_active"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "bottom",
+                            "y_offset": 80,
+                            "x_offset": 2660,
+                            "priority": 1,
+                            "absolute": true
+                        }
                     }
                 }
             },
-            "layout": {
-                "x_anchor": "center",
-                "y_anchor": "bottom"
-            }
-        },
-        "game": {
-            "type": "Node",
-            "format": {
-                "type": "anchored"
+            "client_join": {
+                "type": "Image",
+                "format": {
+                    "type": "Anchored"
+                },
+                "data": {
+                    "texture": "keypad_background"
+                },
+                "children": {
+                    "title": {
+                        "type": "Image",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "texture": "keypad_title",
+                            "anchor": [
+                                0,
+                                0
+                            ],
+                            "scale": 0.75
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "top",
+                            "y_offset": -130,
+                            "x_offset": -10,
+                            "absolute": true
+                        }
+                    },
+                    "subtitle": {
+                        "type": "Image",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "texture": "keypad_subtitle",
+                            "anchor": [
+                                0,
+                                0
+                            ],
+                            "scale": 0.75
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "top",
+                            "y_offset": -175,
+                            "x_offset": -10,
+                            "absolute": true
+                        }
+                    },
+                    "inputUI": {
+                        "type": "Image",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "texture": "keypad_inputfield",
+                            "anchor": [
+                                0,
+                                0
+                            ],
+                            "scale": 0.72
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "y_offset": 60,
+                            "x_offset": -10,
+                            "absolute": true
+                        }
+                    },
+                    "client_id_field": {
+                        "type": "Textfield",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "anchor": [
+                                0,
+                                0
+                            ],
+                            "text": "123456",
+                            "font": "saira stencil oneRegular32",
+                            "halign": "left",
+                            "valign": "middle",
+                            "cursor": false
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "y_offset": 60,
+                            "x_offset": 20,
+                            "absolute": true
+                        }
+                    },
+                    "inputPlaceholder": {
+                        "type": "Image",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "texture": "keypad_placeholderText",
+                            "anchor": [
+                                0,
+                                0
+                            ],
+                            "scale": 0.75
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "y_offset": 80,
+                            "x_offset": 27,
+                            "absolute": true
+                        }
+                    },
+                    "back": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "scale": 0.75
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "keypad_back"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "bottom",
+                            "y_offset": 85,
+                            "x_offset": 60,
+                            "absolute": true
+                        }
+                    },
+                    "next": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "scale": 0.75
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "keypad_next"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "right",
+                            "y_anchor": "bottom",
+                            "y_offset": 85,
+                            "x_offset": -150,
+                            "absolute": true
+                        }
+                    },
+                    "b1": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                1
+                            ],
+                            "scale": 0.85
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "keypad_1"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "top",
+                            "y_offset": -50,
+                            "x_offset": 100,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "b2": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                1
+                            ],
+                            "scale": 0.85
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "keypad_2"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "top",
+                            "y_offset": -50,
+                            "x_offset": 250,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "b3": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                1
+                            ],
+                            "scale": 0.85
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "keypad_3"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "top",
+                            "y_offset": -50,
+                            "x_offset": 400,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "b4": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                1
+                            ],
+                            "scale": 0.85
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "keypad_4"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "top",
+                            "y_offset": -200,
+                            "x_offset": 100,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "b5": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                1
+                            ],
+                            "scale": 0.85
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "keypad_5"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "top",
+                            "y_offset": -200,
+                            "x_offset": 250,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "b6": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                1
+                            ],
+                            "scale": 0.85
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "keypad_6"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "top",
+                            "y_offset": -200,
+                            "x_offset": 400,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "b7": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                1
+                            ],
+                            "scale": 0.85
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "keypad_7"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "top",
+                            "y_offset": -350,
+                            "x_offset": 100,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "b8": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                1
+                            ],
+                            "scale": 0.85
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "keypad_8"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "top",
+                            "y_offset": -350,
+                            "x_offset": 250,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "b9": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                1
+                            ],
+                            "scale": 0.85
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "keypad_9"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "top",
+                            "y_offset": -350,
+                            "x_offset": 400,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "bc": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                1
+                            ],
+                            "scale": 0.85
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "keypad_c"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "top",
+                            "y_offset": -500,
+                            "x_offset": 100,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "b0": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                1
+                            ],
+                            "scale": 0.85
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "keypad_0"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "top",
+                            "y_offset": -500,
+                            "x_offset": 250,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "b-1": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                1
+                            ],
+                            "scale": 0.85
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "keypad_-1"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "top",
+                            "y_offset": -500,
+                            "x_offset": 400,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    }
+                }
             },
-            "data": {
-                "anchor": [
-                    0.5,
-                    0.5
-                ]
+            "host": {
+                "type": "Image",
+                "format": {
+                    "type": "Anchored"
+                },
+                "data": {
+                    "texture": "char_background"
+                },
+                "children": {
+                    "title": {
+                        "type": "Image",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "texture": "char_title",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ]
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "top",
+                            "y_offset": -100,
+                            "absolute": true
+                        }
+                    },
+                    "back": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.5
+                            ]
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "back_button"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "top",
+                            "y_offset": -100,
+                            "x_offset": 30,
+                            "absolute": true
+                        }
+                    },
+                    "box": {
+                        "type": "Image",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "texture": "char_box",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "scale": 0.7
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "absolute": true
+                        }
+                    },
+                    "red": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "downnode": "down",
+                            "visible": true,
+                            "pushsize": true,
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "scale": 0.7
+                        },
+                        "children": {
+                            "down": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "char_red"
+                                }
+                            },
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "char_red_inactive"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "x_offset": -370,
+                            "y_offset": 90,
+                            "padding": [
+                                10,
+                                10,
+                                10,
+                                10
+                            ],
+                            "absolute": true
+                        }
+                    },
+                    "green": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "downnode": "down",
+                            "visible": true,
+                            "pushsize": true,
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "scale": 0.7
+                        },
+                        "children": {
+                            "down": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "char_green"
+                                }
+                            },
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "char_green_inactive"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "x_offset": -370,
+                            "y_offset": -90,
+                            "padding": [
+                                10,
+                                10,
+                                10,
+                                10
+                            ],
+                            "absolute": true
+                        }
+                    },
+                    "blue": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "downnode": "down",
+                            "visible": true,
+                            "pushsize": true,
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "scale": 0.7
+                        },
+                        "children": {
+                            "down": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "char_blue"
+                                }
+                            },
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "char_blue_inactive"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "x_offset": 80,
+                            "y_offset": 90,
+                            "padding": [
+                                10,
+                                10,
+                                10,
+                                10
+                            ],
+                            "absolute": true
+                        }
+                    },
+                    "yellow": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "downnode": "down",
+                            "visible": true,
+                            "pushsize": true,
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "scale": 0.7
+                        },
+                        "children": {
+                            "down": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "char_yellow"
+                                }
+                            },
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "char_yellow_inactive"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "x_offset": 80,
+                            "y_offset": -90,
+                            "padding": [
+                                10,
+                                10,
+                                10,
+                                10
+                            ],
+                            "absolute": true
+                        }
+                    },
+                    "character_red": {
+                        "type": "Image",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "texture": "char_mushroom",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "visible": true,
+                            "scale": 0.7
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "x_offset": 450,
+                            "padding": [
+                                10,
+                                10,
+                                10,
+                                10
+                            ],
+                            "absolute": true
+                        }
+                    },
+                    "character_blue": {
+                        "type": "Image",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "texture": "char_frog",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "visible": false,
+                            "scale": 0.7
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "x_offset": 450,
+                            "padding": [
+                                10,
+                                10,
+                                10,
+                                10
+                            ],
+                            "absolute": true
+                        }
+                    },
+                    "character_green": {
+                        "type": "Image",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "texture": "char_chameleon",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "visible": false,
+                            "scale": 0.7
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "x_offset": 450,
+                            "padding": [
+                                10,
+                                10,
+                                10,
+                                10
+                            ],
+                            "absolute": true
+                        }
+                    },
+                    "character_yellow": {
+                        "type": "Image",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "texture": "char_flower",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "visible": false,
+                            "scale": 0.7
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "x_offset": 450,
+                            "padding": [
+                                10,
+                                10,
+                                10,
+                                10
+                            ],
+                            "absolute": true
+                        }
+                    },
+                    "bottom": {
+                        "type": "Node",
+                        "format": {
+                            "type": "Float",
+                            "orientation": "horizontal",
+                            "x_alignment": "left",
+                            "y_alignment": "bottom"
+                        },
+                        "data": {
+                            "anchor": [
+                                0.0,
+                                0.0
+                            ],
+                            "size": [
+                                1800,
+                                100
+                            ]
+                        },
+                        "children": {
+                            "game_label": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "font": "saira stencil oneRegular32",
+                                    "text": "Game ID:",
+                                    "padding": [
+                                        20,
+                                        20,
+                                        40,
+                                        20
+                                    ],
+                                    "halign": "left",
+                                    "valign": "middle",
+                                    "foreground": [ 255, 255, 255, 255 ]
+                                },
+                                "layout": {
+                                    "priority": 1
+                                }
+                            },
+                            "game_field": {
+                                "type": "Widget",
+                                "data": {
+                                    "key": "textfield",
+                                    "variables": {
+                                        "size": [
+                                            200,
+                                            100
+                                        ],
+                                        "text": "",
+                                        "halign": "center"
+                                    }
+                                },
+                                "layout": {
+                                    "priority": 2
+                                }
+                            },
+                            "players_label": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "font": "saira stencil oneRegular32",
+                                    "text": "Players:",
+                                    "padding": [
+                                        20,
+                                        20,
+                                        20,
+                                        20
+                                    ],
+                                    "halign": "left",
+                                    "valign": "middle",
+                                    "foreground": [ 255, 255, 255, 255 ]
+                                },
+                                "layout": {
+                                    "priority": 3
+                                }
+                            },
+                            "players_field": {
+                                "type": "Widget",
+                                "data": {
+                                    "key": "textfield",
+                                    "variables": {
+                                        "size": [
+                                            80,
+                                            100
+                                        ],
+                                        "text": "1",
+                                        "halign": "center"
+                                    }
+                                },
+                                "layout": {
+                                    "priority": 4
+                                }
+                            },
+                            "level_label": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "font": "saira stencil oneRegular32",
+                                    "text": "Level:",
+                                    "padding": [
+                                        20,
+                                        20,
+                                        20,
+                                        20
+                                    ],
+                                    "halign": "left",
+                                    "valign": "middle",
+                                    "foreground": [ 255, 255, 255, 255 ]
+                                },
+                                "layout": {
+                                    "priority": 5
+                                }
+                            },
+                            "level_field": {
+                                "type": "Widget",
+                                "data": {
+                                    "key": "textfield",
+                                    "variables": {
+                                        "size": [
+                                            80,
+                                            100
+                                        ],
+                                        "text": "1",
+                                        "halign": "center"
+                                    }
+                                },
+                                "layout": {
+                                    "priority": 6
+                                }
+                            }
+
+                        }
+                    },
+                    "start": {
+                        "type": "Widget",
+                        "data": {
+                            "key": "textbutton",
+                            "variables": {
+                                "size": [
+                                    300,
+                                    100
+                                ],
+                                "text": "Waiting",
+                                "color": "#000000"
+                            },
+                            "anchor": [
+                                1,
+                                1
+                            ]
+                        },
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "layout": {
+                            "x_anchor": "right",
+                            "y_anchor": "bottom",
+                            "absolute": true,
+                            "x_offset": -200,
+                            "y_offset": 75
+                        }
+                    }
+                },
+                "layout": {
+                    "x_anchor": "center",
+                    "y_anchor": "bottom"
+                }
             },
-            "children": {
-                "bluebar": {
-                    "type": "Progress",
-                    "data": {
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "background": "progress_bg",
-                        "foreground": "progress_fg_blue",
-                        "left_cap": "progress_fg_blue_leftcap",
-                        "right_cap": "progress_fg_blue_rightcap",
-                        "visible": false
-                    },
-                    "layout": {
-                        "y_offset": 265,
-                        "absolute": true
-                    }
+            "client": {
+                "type": "Image",
+                "format": {
+                    "type": "Anchored"
                 },
-                "greenbar": {
-                    "type": "Progress",
-                    "data": {
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "background": "progress_bg",
-                        "foreground": "progress_fg_green",
-                        "left_cap": "progress_fg_green_leftcap",
-                        "right_cap": "progress_fg_green_rightcap",
-                        "visible": false
-                    },
-                    "layout": {
-                        "y_offset": 265,
-                        "absolute": true
-                    }
+                "data": {
+                    "texture": "char_background"
                 },
-                "redbar": {
-                    "type": "Progress",
-                    "data": {
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "background": "progress_bg",
-                        "foreground": "progress_fg_red",
-                        "left_cap": "progress_fg_red_leftcap",
-                        "right_cap": "progress_fg_red_rightcap",
-                        "visible": false
+                "children": {
+                    "title": {
+                        "type": "Image",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "texture": "char_title",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ]
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "top",
+                            "y_offset": -100,
+                            "absolute": true
+                        }
                     },
-                    "layout": {
-                        "y_offset": 265,
-                        "absolute": true
-                    }
-                },
-                "yellowbar": {
-                    "type": "Progress",
-                    "data": {
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "background": "progress_bg",
-                        "foreground": "progress_fg_yellow",
-                        "left_cap": "progress_fg_yellow_leftcap",
-                        "right_cap": "progress_fg_yellow_rightcap",
-                        "visible": false
+                    "back": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.5
+                            ]
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "back_button"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "top",
+                            "y_offset": -100,
+                            "x_offset": 30,
+                            "absolute": true
+                        }
                     },
-                    "layout": {
-                        "y_offset": 265,
-                        "absolute": true
-                    }
-                },
-                "back": {
-                    "type": "Button",
-                    "format": {
-                        "type": "Float",
-                        "x_alignment": "left",
-                        "y_alignment": "top",
-                        "orientation": "horizontal"
+                    "box": {
+                        "type": "Image",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "texture": "char_box",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "scale": 0.7
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "absolute": true
+                        }
                     },
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.0,
-                            0.0
-                        ]
+                    "red": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "downnode": "down",
+                            "visible": true,
+                            "pushsize": true,
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "scale": 0.7
+                        },
+                        "children": {
+                            "down": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "char_red"
+                                }
+                            },
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "char_red_inactive"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "x_offset": -370,
+                            "y_offset": 90,
+                            "padding": [
+                                10,
+                                10,
+                                10,
+                                10
+                            ],
+                            "absolute": true
+                        }
                     },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "settings"
+                    "green": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "downnode": "down",
+                            "visible": true,
+                            "pushsize": true,
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "scale": 0.7
+                        },
+                        "children": {
+                            "down": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "char_green"
+                                }
+                            },
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "char_green_inactive"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "x_offset": -370,
+                            "y_offset": -90,
+                            "padding": [
+                                10,
+                                10,
+                                10,
+                                10
+                            ],
+                            "absolute": true
+                        }
+                    },
+                    "blue": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "downnode": "down",
+                            "visible": true,
+                            "pushsize": true,
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "scale": 0.7
+                        },
+                        "children": {
+                            "down": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "char_blue"
+                                }
+                            },
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "char_blue_inactive"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "x_offset": 80,
+                            "y_offset": 90,
+                            "padding": [
+                                10,
+                                10,
+                                10,
+                                10
+                            ],
+                            "absolute": true
+                        }
+                    },
+                    "yellow": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "downnode": "down",
+                            "visible": true,
+                            "pushsize": true,
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "scale": 0.7
+                        },
+                        "children": {
+                            "down": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "char_yellow"
+                                }
+                            },
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "char_yellow_inactive"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "x_offset": 80,
+                            "y_offset": -90,
+                            "padding": [
+                                10,
+                                10,
+                                10,
+                                10
+                            ],
+                            "absolute": true
+                        }
+                    },
+                    "character_red": {
+                        "type": "Image",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "texture": "char_mushroom",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "visible": true,
+                            "scale": 0.7
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "x_offset": 450,
+                            "padding": [
+                                10,
+                                10,
+                                10,
+                                10
+                            ],
+                            "absolute": true
+                        }
+                    },
+                    "character_blue": {
+                        "type": "Image",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "texture": "char_frog",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "visible": false,
+                            "scale": 0.7
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "x_offset": 450,
+                            "padding": [
+                                10,
+                                10,
+                                10,
+                                10
+                            ],
+                            "absolute": true
+                        }
+                    },
+                    "character_green": {
+                        "type": "Image",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "texture": "char_chameleon",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "visible": false,
+                            "scale": 0.7
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "x_offset": 450,
+                            "padding": [
+                                10,
+                                10,
+                                10,
+                                10
+                            ],
+                            "absolute": true
+                        }
+                    },
+                    "character_yellow": {
+                        "type": "Image",
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "data": {
+                            "texture": "char_flower",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "visible": false,
+                            "scale": 0.7
+                        },
+                        "layout": {
+                            "x_anchor": "center",
+                            "y_anchor": "middle",
+                            "x_offset": 450,
+                            "padding": [
+                                10,
+                                10,
+                                10,
+                                10
+                            ],
+                            "absolute": true
+                        }
+                    },
+                    "bottom": {
+                        "type": "Node",
+                        "format": {
+                            "type": "Float",
+                            "orientation": "horizontal",
+                            "x_alignment": "left",
+                            "y_alignment": "bottom"
+                        },
+                        "data": {
+                            "anchor": [
+                                0.0,
+                                0.0
+                            ],
+                            "size": [
+                                1800,
+                                100
+                            ]
+                        },
+                        "children": {
+                            "game_label": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "font": "saira stencil oneRegular32",
+                                    "text": "Game ID:",
+                                    "padding": [
+                                        20,
+                                        20,
+                                        40,
+                                        20
+                                    ],
+                                    "halign": "left",
+                                    "valign": "middle",
+                                    "foreground": [ 255, 255, 255, 255 ]
+                                },
+                                "layout": {
+                                    "priority": 1
+                                }
+                            },
+                            "game_field": {
+                                "type": "Widget",
+                                "data": {
+                                    "key": "textfield",
+                                    "variables": {
+                                        "size": [
+                                            200,
+                                            100
+                                        ],
+                                        "text": "",
+                                        "halign": "center"
+                                    }
+                                },
+                                "layout": {
+                                    "priority": 2
+                                }
+                            },
+                            "players_label": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "font": "saira stencil oneRegular32",
+                                    "text": "Players:",
+                                    "padding": [
+                                        20,
+                                        20,
+                                        20,
+                                        20
+                                    ],
+                                    "halign": "left",
+                                    "valign": "middle",
+                                    "foreground": [ 255, 255, 255, 255 ]
+                                },
+                                "layout": {
+                                    "priority": 3
+                                }
+                            },
+                            "players_field": {
+                                "type": "Widget",
+                                "data": {
+                                    "key": "textfield",
+                                    "variables": {
+                                        "size": [
+                                            80,
+                                            100
+                                        ],
+                                        "text": "1",
+                                        "halign": "center"
+                                    }
+                                },
+                                "layout": {
+                                    "priority": 4
+                                }
+                            },
+                            "level_label": {
+                                "type": "Label",
+                                "data": {
+                                    "anchor": [
+                                        0.5,
+                                        0.5
+                                    ],
+                                    "font": "saira stencil oneRegular32",
+                                    "text": "Level:",
+                                    "padding": [
+                                        20,
+                                        20,
+                                        20,
+                                        20
+                                    ],
+                                    "halign": "left",
+                                    "valign": "middle",
+                                    "foreground": [ 255, 255, 255, 255 ]
+                                },
+                                "layout": {
+                                    "priority": 5
+                                }
+                            },
+                            "level_field": {
+                                "type": "Widget",
+                                "data": {
+                                    "key": "textfield",
+                                    "variables": {
+                                        "size": [
+                                            80,
+                                            100
+                                        ],
+                                        "text": "1",
+                                        "halign": "center"
+                                    }
+                                },
+                                "layout": {
+                                    "priority": 6
+                                }
                             }
                         }
                     },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "absolute": false,
-                        "x_offset": 0.95,
-                        "y_offset": 0
+                    "start": {
+                        "type": "Widget",
+                        "data": {
+                            "key": "textbutton",
+                            "variables": {
+                                "size": [
+                                    300,
+                                    100
+                                ],
+                                "text": "Waiting",
+                                "color": "#000000"
+                            },
+                            "anchor": [
+                                1,
+                                1
+                            ]
+                        },
+                        "format": {
+                            "type": "Anchored"
+                        },
+                        "layout": {
+                            "x_anchor": "right",
+                            "y_anchor": "bottom",
+                            "absolute": true,
+                            "x_offset": -200,
+                            "y_offset": 75
+                        }
                     }
                 },
-                "throw": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "scale": 0.4
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "throwButton"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "right",
-                        "y_anchor": "middle",
-                        "y_offset": 0,
-                        "x_offset": 0,
-                        "priority": 1,
-                        "absolute": true
-                    }
+                "layout": {
+                    "x_anchor": "center",
+                    "y_anchor": "bottom"
+                }
+            },
+            "game": {
+                "type": "Node",
+                "format": {
+                    "type": "anchored"
                 },
-                "greenarc": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "scale": 1.5
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "throwArcGreen"
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "right",
-                        "y_anchor": "middle",
-                        "y_offset": 0,
-                        "x_offset": 0,
-                        "priority": 1,
-                        "absolute": true
-                    }
+                "data": {
+                    "anchor": [
+                        0.5,
+                        0.5
+                    ]
                 },
-                "redarc": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "scale": 1.0
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "throwArcRed"
-                            }
+                "children": {
+                    "bluebar": {
+                        "type": "Progress",
+                        "data": {
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "background": "progress_bg",
+                            "foreground": "progress_fg_blue",
+                            "left_cap": "progress_fg_blue_leftcap",
+                            "right_cap": "progress_fg_blue_rightcap",
+                            "visible": false
+                        },
+                        "layout": {
+                            "y_offset": 265,
+                            "absolute": true
                         }
                     },
-                    "layout": {
-                        "x_anchor": "right",
-                        "y_anchor": "middle",
-                        "y_offset": 0,
-                        "x_offset": 0,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "bluearc": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "scale": 1.0
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "throwArcBlue"
-                            }
+                    "greenbar": {
+                        "type": "Progress",
+                        "data": {
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "background": "progress_bg",
+                            "foreground": "progress_fg_green",
+                            "left_cap": "progress_fg_green_leftcap",
+                            "right_cap": "progress_fg_green_rightcap",
+                            "visible": false
+                        },
+                        "layout": {
+                            "y_offset": 265,
+                            "absolute": true
                         }
                     },
-                    "layout": {
-                        "x_anchor": "right",
-                        "y_anchor": "middle",
-                        "y_offset": 0,
-                        "x_offset": 0,
-                        "priority": 1,
-                        "absolute": true
-                    }
-                },
-                "yellowarc": {
-                    "type": "Button",
-                    "data": {
-                        "upnode": "up",
-                        "anchor": [
-                            0.5,
-                            0.5
-                        ],
-                        "scale": 1.0
-                    },
-                    "children": {
-                        "up": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "throwArcYellow"
-                            }
+                    "redbar": {
+                        "type": "Progress",
+                        "data": {
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "background": "progress_bg",
+                            "foreground": "progress_fg_red",
+                            "left_cap": "progress_fg_red_leftcap",
+                            "right_cap": "progress_fg_red_rightcap",
+                            "visible": false
+                        },
+                        "layout": {
+                            "y_offset": 265,
+                            "absolute": true
                         }
                     },
-                    "layout": {
-                        "x_anchor": "right",
-                        "y_anchor": "middle",
-                        "y_offset": 0,
-                        "x_offset": 0,
-                        "priority": 1,
-                        "absolute": true
+                    "yellowbar": {
+                        "type": "Progress",
+                        "data": {
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "background": "progress_bg",
+                            "foreground": "progress_fg_yellow",
+                            "left_cap": "progress_fg_yellow_leftcap",
+                            "right_cap": "progress_fg_yellow_rightcap",
+                            "visible": false
+                        },
+                        "layout": {
+                            "y_offset": 265,
+                            "absolute": true
+                        }
+                    },
+                    "back": {
+                        "type": "Button",
+                        "format": {
+                            "type": "Float",
+                            "x_alignment": "left",
+                            "y_alignment": "top",
+                            "orientation": "horizontal"
+                        },
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.0,
+                                0.0
+                            ]
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "settings"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "left",
+                            "y_anchor": "top",
+                            "absolute": false,
+                            "x_offset": 0.95,
+                            "y_offset": 0
+                        }
+                    },
+                    "throw": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "scale": 0.4
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "throwButton"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "right",
+                            "y_anchor": "middle",
+                            "y_offset": 0,
+                            "x_offset": 0,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "greenarc": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "scale": 1.5
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "throwArcGreen"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "right",
+                            "y_anchor": "middle",
+                            "y_offset": 0,
+                            "x_offset": 0,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "redarc": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "scale": 1.0
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "throwArcRed"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "right",
+                            "y_anchor": "middle",
+                            "y_offset": 0,
+                            "x_offset": 0,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "bluearc": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "scale": 1.0
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "throwArcBlue"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "right",
+                            "y_anchor": "middle",
+                            "y_offset": 0,
+                            "x_offset": 0,
+                            "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "yellowarc": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "scale": 1.0
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "throwArcYellow"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "right",
+                            "y_anchor": "middle",
+                            "y_offset": 0,
+                            "x_offset": 0,
+                            "priority": 1,
+                            "absolute": true
+                        }
                     }
                 }
             }
         }
     }
-}
+

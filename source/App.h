@@ -15,6 +15,7 @@
 #include "ClientJoinScene.h"
 #include "MenuScene.h"
 #include "AudioController.h"
+#include "TutorialController.h"
 
 /**
  * This class represents the application root for the ship demo.
@@ -30,6 +31,8 @@ protected:
         LOAD,
         /** The main menu scene */
         MENU,
+        /** The tutorial scene */
+        TUTORIAL,
         /** The level select scene*/
         LEVEL,
         /** The client joint scene*/
@@ -68,6 +71,9 @@ protected:
     
     /** The scene for hosting or joining a game */
     LobbyScene _lobby;
+
+    /** The primary controller for the tutorial world */
+    std::shared_ptr<GameplayController> _tutorialController;
     
     /** The scene for the game world */
     GameScene _gamescene;
@@ -246,6 +252,16 @@ private:
      * @param timestep  The amount of time (in seconds) since the last frame
      */
     void updateGameScene(float timestep);
+
+    /**
+     * Inidividualized update method for the tutorial scene.
+     *
+     * This method keeps the primary {@link #update} from being a mess of switch
+     * statements. It also handles the transition logic from the tutorial scene.
+     *
+     * @param timestep  The amount of time (in seconds) since the last frame
+     */
+    void updateTutorialScene(float timestep);
     
 };
 

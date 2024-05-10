@@ -65,6 +65,9 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _background->setWrapT(GL_CLAMP_TO_EDGE);
     _constants = _assets->get<JsonValue>("constants");
 
+    _textBubble = _assets->get<Texture>("text_bubble");
+    _mushroomPoint = _assets->get<Texture>("mushroom_point");
+
     // victory screen
 //    auto _victoryJson = _assets->get<JsonValue>("victory");
     _victory_UI = assets->get<scene2::SceneNode>("victory");
@@ -374,3 +377,30 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->end();
 }
 
+void GameScene::drawPrompt(std::string text, const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Vec2 location) {
+
+    Affine2 bubbleTrans = Affine2();
+    Vec2 bOrigin(_textBubble->getWidth() / 2, _textBubble->getHeight() / 2);
+    Vec2 bubbleLocation(location);
+    bubbleTrans.translate(bubbleLocation);
+    bubbleTrans.translate(Vec2(370, -450));
+    bubbleTrans.scale(0.2);
+
+    _textOnBubble = TextLayout::allocWithTextWidth("efhoiewhfioewhfiowehfioiwehfeiwofheowifhewifhewifihhiewfihhieowihfeihfewhiowefhiihfewhiofwehiofweihfewhioefwhiofewihhiefwhiofewhiofeihfewhifewhiohifhiefwhiofeiwhohioefwihoefwihoefwiohfew", _assets->get<Font>("pixel32"), _textBubble->getWidth() / 2);
+    _textOnBubble->setSpacing(1.5);
+    _textOnBubble->layout();
+
+    Affine2 mushroomPointTrans = Affine2();
+    Vec2 mOrigin(_mushroomPoint->getWidth() / 2, _mushroomPoint->getHeight() / 2);
+    Vec2 mushroomLocation(location);
+    mushroomPointTrans.translate(mushroomLocation);
+    mushroomPointTrans.translate(Vec2(370, -450));
+    mushroomPointTrans.scale(0.2);
+
+
+    batch->draw(_textBubble, bOrigin, bubbleTrans);
+    batch->draw(_mushroomPoint, mOrigin, bubbleTrans);
+    batch->setColor(Color4::BLACK);
+    batch->drawText(_textOnBubble, Vec2(bubbleTrans.getTranslation().x - _textBubble->getWidth() / 2, bubbleTrans.getTranslation().y + _textBubble->getHeight() / 6));
+
+}
