@@ -721,6 +721,9 @@
         "Backtohome": {
             "file": "textures/Backtohome.png"
         },
+        "TutorialTextBlank": {
+            "file": "textures/TutorialTextBlank.png"
+        },
         "window": {
             "file": "textures/GenericWindow.png"
         },

@@ -50,6 +50,11 @@ protected:
 
     int _currentTutorialStage = MOVE;
 
+    /** Blank white box (no instructions) */
+    std::shared_ptr<cugl::Texture> _TutorialTextBlank;
+    /** Instructions for tutorial */
+    std::vector<std::shared_ptr<cugl::Texture>> _TutorialTexts;
+
 
 public:
 #pragma mark -

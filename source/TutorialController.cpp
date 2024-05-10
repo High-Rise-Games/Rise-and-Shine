@@ -30,6 +30,8 @@ bool TutorialController::initLevel(int selected_level) {
     // Initialize the tutorial stage system to the first phase
     _currentTutorialStage = MOVE;
 
+    _TutorialTextBlank = _assets->get<Texture>("TutorialTextBlank");
+
     // TODO: update depending on level
     _birdActive = true;
 
@@ -497,4 +499,14 @@ void TutorialController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
             _bird.draw(batch, getSize(), _curBirdPos);
         }
     }
+    // draw tutorial instructions
+    Size screenSize = getSize();
+    Size textBoxSize = _TutorialTextBlank->getSize();
+    float textBoxScaleFactor = screenSize.getIWidth() / textBoxSize.getIWidth() * .5;
+    Affine2 textBoxTrans = Affine2();
+    textBoxTrans.translate(-.5 * textBoxSize.getIWidth(), 0);
+    textBoxTrans.scale(textBoxScaleFactor);
+    textBoxTrans.translate(player->getPosition());
+    textBoxTrans.translate(0, -1 * _windowVec[0]->getPaneHeight());
+    batch->draw(_TutorialTextBlank, Vec2(0, 0), textBoxTrans);
 }
