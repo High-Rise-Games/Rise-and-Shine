@@ -87,6 +87,9 @@ protected:
     /** After processing all the UUIDs to send messages to all clients to tell them what their
      game IDs are, this variable tells us the number of players that we assigned IDs to **/
     int _numAssignedPlayers;
+
+    /** Stores each player's current chosen character for unique character selection */
+    std::vector<std::string> _chosenChars;
     
     /** The asset manager  for main game scene to access server json file. */
     std::shared_ptr<cugl::AssetManager> _assets;
@@ -114,20 +117,14 @@ protected:
     std::shared_ptr<cugl::scene2::SceneNode> _character_field_blue;
     std::shared_ptr<cugl::scene2::SceneNode> _character_field_green;
     std::shared_ptr<cugl::scene2::SceneNode> _character_field_yellow;
+    std::shared_ptr<cugl::scene2::SceneNode> _p1;
+    std::shared_ptr<cugl::scene2::SceneNode> _p2;
+    std::shared_ptr<cugl::scene2::SceneNode> _p3;
+    std::shared_ptr<cugl::scene2::SceneNode> _p4;
 
     /** HOST ONLY. List of all client's character selections, default mushroom */
     std::vector<std::string> _all_characters;
     
-    /** HOST ONLY. 0 if not selected, 1 if selected.
-     *
-     * Mushroom = position 0
-     * Frog = position 1
-     * Chamelon = position 2
-     * Flower = position 3
-     *
-     **/
-    std::vector<int> _all_characters_select;
-
     /** The game id label (for updating) */
     std::shared_ptr<cugl::scene2::Label> _gameid_host;
     
