@@ -724,6 +724,33 @@
         "TutorialTextBlank": {
             "file": "textures/TutorialTextBlank.png"
         },
+        "TutorialText0": {
+            "file": "textures/TutorialText0.png"
+        },
+        "TutorialText1": {
+            "file": "textures/TutorialText1.png"
+        },
+        "TutorialText2": {
+            "file": "textures/TutorialText2.png"
+        },
+        "TutorialText3": {
+            "file": "textures/TutorialText3.png"
+        },
+        "TutorialText4": {
+            "file": "textures/TutorialText4.png"
+        },
+        "TutorialText5": {
+            "file": "textures/TutorialText5.png"
+        },
+        "TutorialText6": {
+            "file": "textures/TutorialText6.png"
+        },
+        "TutorialText7": {
+            "file": "textures/TutorialText7.png"
+        },
+        "TutorialText8": {
+            "file": "textures/TutorialText8.png"
+        },
         "window": {
             "file": "textures/GenericWindow.png"
         },
