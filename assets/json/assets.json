@@ -4467,33 +4467,6 @@
                             "y_offset": 0
                         }
                     },
-                    "throw": {
-                        "type": "Button",
-                        "data": {
-                            "upnode": "up",
-                            "anchor": [
-                                0.5,
-                                0.5
-                            ],
-                            "scale": 0.4
-                        },
-                        "children": {
-                            "up": {
-                                "type": "Image",
-                                "data": {
-                                    "texture": "throwButton"
-                                }
-                            }
-                        },
-                        "layout": {
-                            "x_anchor": "right",
-                            "y_anchor": "middle",
-                            "y_offset": 0,
-                            "x_offset": 0,
-                            "priority": 1,
-                            "absolute": true
-                        }
-                    },
                     "greenarc": {
                         "type": "Button",
                         "data": {
@@ -4599,6 +4572,33 @@
                             "y_offset": 0,
                             "x_offset": 0,
                             "priority": 1,
+                            "absolute": true
+                        }
+                    },
+                    "throw": {
+                        "type": "Button",
+                        "data": {
+                            "upnode": "up",
+                            "anchor": [
+                                0.5,
+                                0.5
+                            ],
+                            "scale": 0.4
+                        },
+                        "children": {
+                            "up": {
+                                "type": "Image",
+                                "data": {
+                                    "texture": "throwButton"
+                                }
+                            }
+                        },
+                        "layout": {
+                            "x_anchor": "right",
+                            "y_anchor": "middle",
+                            "y_offset": 0,
+                            "x_offset": 0,
+                            "priority": 0,
                             "absolute": true
                         }
                     }

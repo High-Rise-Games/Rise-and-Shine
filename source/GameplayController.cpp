@@ -1226,9 +1226,9 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         float arc_start = myCurBoard == 1 ? 270 : 90;
         float arc_rotate_angle = myCurBoard == 1 ? 0 : M_PI;
         cugl::Vec2 buttonPos(button_x, SCENE_HEIGHT / 2);
-        dirtThrowButton->setPosition(buttonPos);
         dirtThrowArc->setPosition(buttonPos);
         dirtThrowArc->setAngle(arc_rotate_angle);
+        dirtThrowButton->setPosition(buttonPos);
         if ((_input.getDir().x == 1) || (_input.getDir().x == -1)) {
             ifSwitch = true;
         }
