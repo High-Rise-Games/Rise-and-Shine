@@ -11,7 +11,6 @@
 #include "NetStructs.h"
 #include "GameplayController.h"
 
-
 using namespace cugl;
 using namespace std;
 
@@ -34,32 +33,30 @@ using namespace std;
  *
  * @return true if the controller is initialized properly, false otherwise.
  */
-bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps, cugl::Rect bounds, cugl::Size size) {
+bool GameplayController::init(const std::shared_ptr<cugl::AssetManager> &assets, int fps, cugl::Rect bounds, cugl::Size size)
+{
     // Initialize the scene to a locked width
-    
+
     // time of the game set to 120 seconds
     _gameTime = 120;
     _gameTimeLeft = _gameTime;
-    
 
-    _frame=0;
-    
+    _frame = 0;
 
     // we set game win and game over to false
-    _gameWin = false;
     _gameOver = false;
     _gameStart = false;
     _transitionToMenu = false;
     // each image lasts for 2 frames, 25 frames per number and 4 numbers in total
     _maxCountDownFrames = 2 * 4 * 25;
     _countDownFrames = 0;
-    
+
     // set this to zero, will be updated when game is over
-    _frameCountForWin=0;
+    _frameCountForWin = 0;
 
     // fps as established per App
     _fps = fps;
-    
+
     Size dimen = Application::get()->getDisplaySize();
     _rng.seed(std::time(nullptr));
     _dirtGenSpeed = 2;
@@ -67,21 +64,22 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _maxDirtAmount = 10;
     _size = size;
     _nativeSize = size;
-    
+
     _dirtSelected = false;
     _cleanInProgress = false;
     _dirtPath = Path2();
-    dimen *= SCENE_HEIGHT/dimen.height;
-    if (assets == nullptr) {
+    dimen *= SCENE_HEIGHT / dimen.height;
+    if (assets == nullptr)
+    {
         return false;
     }
-        
+
     // Start up the input handler
     _assets = assets;
-    
+
     _input.init();
     // _dirtThrowInput.init();
-    
+
     // Get the constant values
     _constants = _assets->get<JsonValue>("constants");
 
@@ -89,20 +87,23 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _arrowTexture = _assets->get<Texture>("arrow");
 
     // Initialize an empty playerVec that can hold up to 4 players
-    _playerVec = { nullptr, nullptr, nullptr, nullptr };
+    _playerVec = {nullptr, nullptr, nullptr, nullptr};
     // Initialize an empty windowVec that can hold up to 4 window grids
-    _windowVec = { nullptr, nullptr, nullptr, nullptr };
+    _windowVec = {nullptr, nullptr, nullptr, nullptr};
     // Initialize an empty projectileVec that can hold up to 4 projectile sets
-    _projectileVec = { nullptr, nullptr, nullptr, nullptr };
+    _projectileVec = {nullptr, nullptr, nullptr, nullptr};
 
     return true;
 }
 
-bool GameplayController::initLevel(int selected_level) {
-    if (_ishost) {
+bool GameplayController::initLevel(int selected_level)
+{
+    if (_ishost)
+    {
         hostReset();
     }
-    else {
+    else
+    {
         reset();
     }
 
@@ -112,73 +113,74 @@ bool GameplayController::initLevel(int selected_level) {
     _birdActive = true;
 
     // Initialize the window grids
-    switch (selected_level) {
-        case 1:
-            _levelJson = _assets->get<JsonValue>("level1");
-            _size = _nativeSize;
-            _size.height *= 2;
-            break;
-        case 2:
-            _levelJson = _assets->get<JsonValue>("level2");
-            _size = _nativeSize;
-            _size.height *= 3.5;
-            break;
-        case 3:
-            _levelJson = _assets->get<JsonValue>("level3");
-            _size = _nativeSize;
-            _size.height *= 3.5;
-            break;
-        case 4:
-            _levelJson = _assets->get<JsonValue>("nightlevel");
-            _size = _nativeSize;
-            _size.height *= 3.5;
-            break;
-        case 5:
-            _levelJson = _assets->get<JsonValue>("dreamylevel");
-            _size = _nativeSize;
-            _size.height *= 3.5;
-            break;
-        case 6:
-            _levelJson = _assets->get<JsonValue>("level6");
-            _size = _nativeSize;
-            _size.height *= 3.5;
-            break;
-        case 7:
-            _levelJson = _assets->get<JsonValue>("level7");
-            _size = _nativeSize;
-            _size.height *= 3.5;
-            break;
-        case 8:
-            _levelJson = _assets->get<JsonValue>("level8");
-            _size = _nativeSize;
-            _size.height *= 3.5;
-            break;
-        default:
-            _levelJson = _assets->get<JsonValue>("level1");
-            _size = _nativeSize;
-            _size.height *= 2;
-            break;
+    switch (selected_level)
+    {
+    case 1:
+        _levelJson = _assets->get<JsonValue>("level1");
+        _size = _nativeSize;
+        _size.height *= 2;
+        break;
+    case 2:
+        _levelJson = _assets->get<JsonValue>("level2");
+        _size = _nativeSize;
+        _size.height *= 3.5;
+        break;
+    case 3:
+        _levelJson = _assets->get<JsonValue>("level3");
+        _size = _nativeSize;
+        _size.height *= 3.5;
+        break;
+    case 4:
+        _levelJson = _assets->get<JsonValue>("nightlevel");
+        _size = _nativeSize;
+        _size.height *= 3.5;
+        break;
+    case 5:
+        _levelJson = _assets->get<JsonValue>("dreamylevel");
+        _size = _nativeSize;
+        _size.height *= 3.5;
+        break;
+    case 6:
+        _levelJson = _assets->get<JsonValue>("level6");
+        _size = _nativeSize;
+        _size.height *= 3.5;
+        break;
+    case 7:
+        _levelJson = _assets->get<JsonValue>("level7");
+        _size = _nativeSize;
+        _size.height *= 3.5;
+        break;
+    case 8:
+        _levelJson = _assets->get<JsonValue>("level8");
+        _size = _nativeSize;
+        _size.height *= 3.5;
+        break;
+    default:
+        _levelJson = _assets->get<JsonValue>("level1");
+        _size = _nativeSize;
+        _size.height *= 2;
+        break;
     }
-    
+
     // texture mappings for each level (update these from the python script)
-    
-    std::vector<string> texture_strings_level_1 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level1Window1", "level1Window2", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2", "down_blocked_2", "planter-brown1" };
-    std::vector<string> texture_strings_level_2 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level2Window1", "level2Window2", "down_blocked_2", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2" };
-    std::vector<string> texture_strings_level_3 = { "level3Window1", "level3Window2", "down_blocked_2", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
-    std::vector<string> texture_strings_level_4 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4", "left_blocked_1", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
-    std::vector<string> texture_strings_level_5 = { "dreamywin1", "dreamywin2", "dreamywin3", "dreamywin4", "dreamywin5", "down_blocked_2", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
-    std::vector<string> texture_strings_level_6 = { "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_1", "day6Building", "level6Window1", "level6Window2" };
-    std::vector<string> texture_strings_level_7 = { "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_1", "day7Building", "level7Window1", "level7Window2" };
-    std::vector<string> texture_strings_level_8 = { "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_1", "day8Building", "level8Window1", "level8Window2" };
+
+    std::vector<string> texture_strings_level_1 = {"day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level1Window1", "level1Window2", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2", "down_blocked_2", "planter-brown1"};
+    std::vector<string> texture_strings_level_2 = {"day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level2Window1", "level2Window2", "down_blocked_2", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2"};
+    std::vector<string> texture_strings_level_3 = {"level3Window1", "level3Window2", "down_blocked_2", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding"};
+    std::vector<string> texture_strings_level_4 = {"nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4", "left_blocked_1", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding"};
+    std::vector<string> texture_strings_level_5 = {"dreamywin1", "dreamywin2", "dreamywin3", "dreamywin4", "dreamywin5", "down_blocked_2", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding"};
+    std::vector<string> texture_strings_level_6 = {"down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_1", "day6Building", "level6Window1", "level6Window2"};
+    std::vector<string> texture_strings_level_7 = {"down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_1", "day7Building", "level7Window1", "level7Window2"};
+    std::vector<string> texture_strings_level_8 = {"down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_1", "day8Building", "level8Window1", "level8Window2"};
     std::vector<std::vector<string>> texture_strings_levels;
-    std::vector<int> texture_ids_level_1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
-    std::vector<int> texture_ids_level_2 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
-    std::vector<int> texture_ids_level_3 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
-    std::vector<int> texture_ids_level_4 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 };
-    std::vector<int> texture_ids_level_5 = { 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
-    std::vector<int> texture_ids_level_6 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-    std::vector<int> texture_ids_level_7 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-    std::vector<int> texture_ids_level_8 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    std::vector<int> texture_ids_level_1 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+    std::vector<int> texture_ids_level_2 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+    std::vector<int> texture_ids_level_3 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+    std::vector<int> texture_ids_level_4 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
+    std::vector<int> texture_ids_level_5 = {1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18};
+    std::vector<int> texture_ids_level_6 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    std::vector<int> texture_ids_level_7 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    std::vector<int> texture_ids_level_8 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     std::vector<std::vector<int>> texture_ids_levels;
     texture_strings_levels.push_back(texture_strings_level_1);
     texture_strings_levels.push_back(texture_strings_level_2);
@@ -197,34 +199,34 @@ bool GameplayController::initLevel(int selected_level) {
     texture_ids_levels.push_back(texture_ids_level_7);
     texture_ids_levels.push_back(texture_ids_level_8);
 
-    std::vector<string> background_strings = { "level1Background", "level2Background", "level3Background", "level4Background", "level5Background", "level6Background", "level7Background", "level8Background" };
-    std::vector<string> parallax_strings   = { "level1Parallax",   "level2Parallax",   "level3Parallax",   "level4Parallax",   "level5Parallax",   "level6Parallax",   "level7Parallax",   "level8Parallax"   };
+    std::vector<string> background_strings = {"level1Background", "level2Background", "level3Background", "level4Background", "level5Background", "level6Background", "level7Background", "level8Background"};
+    std::vector<string> parallax_strings = {"level1Parallax", "level2Parallax", "level3Parallax", "level4Parallax", "level5Parallax", "level6Parallax", "level7Parallax", "level8Parallax"};
 
-    std::vector<int>     dirt_counts = { 22, 50, 50, 60, 60, 20, 15, 20 };
-    std::vector<string>  dirt_texture_strings = { "level1dirt", "level1dirt", "level1dirt", "dirt2", "level1dirt", "level1dirt" , "level1dirt" , "level1dirt" };
+    std::vector<int> dirt_counts = {22, 50, 50, 60, 60, 20, 15, 20};
+    std::vector<string> dirt_texture_strings = {"level1dirt", "level1dirt", "level1dirt", "dirt2", "level1dirt", "level1dirt", "level1dirt", "level1dirt"};
     _dirtTextureString = dirt_texture_strings.at(selected_level - 1);
     // select the correct mapping for this level
     _texture_strings_selected = texture_strings_levels.at(selected_level - 1);
     _texture_ids_selected = texture_ids_levels.at(selected_level - 1);
-    
+
     _initDirtCount = dirt_counts.at(selected_level - 1);
-    
+
     background_string = background_strings.at(selected_level - 1);
     parallax_string = parallax_strings.at(selected_level - 1);
 
     // get the win background when game is win
-    _winBackground =  _assets->get<Texture>("win-background" );
-    
+    _winBackground = _assets->get<Texture>("win-background");
+
     // get the lose background when game is lose
     _loseBackground = _assets->get<Texture>("lose-background");
-    
+
     // get the asseets for countdown
     setCountdown1Texture(_assets->get<Texture>("C1"));
     setCountdown2Texture(_assets->get<Texture>("C2"));
     setCountdown3Texture(_assets->get<Texture>("C3"));
     setCountdownGoTexture(_assets->get<Texture>("Go"));
     setCountdownSparkleTexture(_assets->get<Texture>("Sparkle"));
-    
+
     // Initialize random dirt generation
     // TODO: decide if we still need?
     updateDirtGenTime();
@@ -234,21 +236,24 @@ bool GameplayController::initLevel(int selected_level) {
     // Get the bang sound
     _bang = _assets->get<Sound>("bang");
     _clean = _assets->get<Sound>("clean");
-    
+
     return true;
 }
 
-/** 
+/**
  * Initializes the player, window grid, and projectile set models for all clients
  */
-bool GameplayController::initClient(const std::shared_ptr<cugl::AssetManager>& assets) {
-    if (assets == nullptr) {
+bool GameplayController::initClient(const std::shared_ptr<cugl::AssetManager> &assets)
+{
+    if (assets == nullptr)
+    {
         return false;
     }
 
     // Initialize window grid for self
     _windowVec[_id - 1] = make_shared<WindowGrid>();
-    for (string thisWindow : _texture_strings_selected) {
+    for (string thisWindow : _texture_strings_selected)
+    {
         _windowVec[_id - 1]->addTexture(_assets->get<Texture>(thisWindow));
     }
     _windowVec[_id - 1]->setTextureIds(_texture_ids_selected);
@@ -267,16 +272,16 @@ bool GameplayController::initClient(const std::shared_ptr<cugl::AssetManager>& a
     changeCharTexture(_playerVec[_id - 1], ""); // empty string defaults to Mushroom
     _playerVec[_id - 1]->setChar("");
 
-
     // Initialize bird textures, but do not set a location yet. that is the host's job
-    if (_birdActive) {
+    if (_birdActive)
+    {
         int height = _windowVec[_id - 1]->getNVertical();
         int width = _windowVec[_id - 1]->getNHorizontal();
         cugl::Vec2 birdTopLeftPos = cugl::Vec2(0.4, height - 0.5);
         cugl::Vec2 birdTopRightPos = cugl::Vec2(width - 0.6, height - 0.5);
         cugl::Vec2 birdBotLeftPos = cugl::Vec2(0.4, height - 3.5);
         cugl::Vec2 birdBotRightPos = cugl::Vec2(width - 0.6, height - 3.5);
-        std::vector<cugl::Vec2> positions = { birdTopLeftPos, birdTopRightPos, birdBotLeftPos, birdBotRightPos };
+        std::vector<cugl::Vec2> positions = {birdTopLeftPos, birdTopRightPos, birdBotLeftPos, birdBotRightPos};
         _bird.init(positions, 0.01, 0.04, _windowVec[_id - 1]->getPaneHeight());
         _bird.setTexture(assets->get<Texture>("bird"));
     }
@@ -291,35 +296,40 @@ bool GameplayController::initClient(const std::shared_ptr<cugl::AssetManager>& a
 }
 
 /**
-* Initializes the extra controllers needed for the host of the game.
-*
-* The constructor does not allocate any objects or memory.  This allows
-* us to have a non-pointer reference to this controller, reducing our
-* memory allocation.  Instead, allocation happens in this method.
-* 
-* Assigns player ids clockwise with host at top
-* 
-*          host: 1
-* left: 4            right: 2
-*         across: 3
-*
-* @param assets    The (loaded) assets for this game mode
-* @param nPlayers  The number of players for this game
-*
-* @return true if the controller is initialized properly, false otherwise.
-*/
-bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& assets) {
-    if (assets == nullptr) {
+ * Initializes the extra controllers needed for the host of the game.
+ *
+ * The constructor does not allocate any objects or memory.  This allows
+ * us to have a non-pointer reference to this controller, reducing our
+ * memory allocation.  Instead, allocation happens in this method.
+ *
+ * Assigns player ids clockwise with host at top
+ *
+ *          host: 1
+ * left: 4            right: 2
+ *         across: 3
+ *
+ * @param assets    The (loaded) assets for this game mode
+ * @param nPlayers  The number of players for this game
+ *
+ * @return true if the controller is initialized properly, false otherwise.
+ */
+bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager> &assets)
+{
+    if (assets == nullptr)
+    {
         return false;
     }
 
-    if (_ishost) {
+    if (_ishost)
+    {
         _numPlayers = _network.getNumPlayers();
 
-        for (int i = 1; i <= _numPlayers; i++) {
+        for (int i = 1; i <= _numPlayers; i++)
+        {
             // Initialize window grids
             _windowVec[i - 1] = make_shared<WindowGrid>();
-            for (string thisWindow : _texture_strings_selected) {
+            for (string thisWindow : _texture_strings_selected)
+            {
                 _windowVec[i - 1]->addTexture(_assets->get<Texture>(thisWindow));
             }
             _windowVec[i - 1]->setTextureIds(_texture_ids_selected);
@@ -327,34 +337,34 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
             _windowVec[i - 1]->setInitDirtNum(_initDirtCount);
             _windowVec[i - 1]->setDirtTexture(assets->get<Texture>(_dirtTextureString));
             _windowVec[i - 1]->setFadedDirtTexture(assets->get<Texture>("faded-dirt"));
-            _windowVec[i-1]->generateInitialBoard(_windowVec[i - 1]->getInitDirtNum());
+            _windowVec[i - 1]->generateInitialBoard(_windowVec[i - 1]->getInitDirtNum());
 
             // Initialize player characters
             Vec2 startingPos = Vec2(_windowVec[i - 1]->sideGap + (_windowVec[i - 1]->getPaneWidth() / 2), _windowVec[i - 1]->getPaneHeight() / 2);
             _playerVec[i - 1] = make_shared<Player>(i, startingPos, _windowVec[i - 1]->getPaneHeight(), _windowVec[i - 1]->getPaneWidth());
             _playerVec[i - 1]->setPosition(startingPos);
-            
+
             _playerVec[i - 1]->setVelocity(Vec2::ZERO);
             _playerVec[i - 1]->setAnimationState(Player::AnimStatus::IDLE);
 
             // Initialize projectiles
             _projectileVec[i - 1] = make_shared<ProjectileSet>();
-            _projectileVec[i-1]->setDirtTexture(assets->get<Texture>(_dirtTextureString));
+            _projectileVec[i - 1]->setDirtTexture(assets->get<Texture>(_dirtTextureString));
             _projectileVec[i - 1]->setPoopTexture(assets->get<Texture>("poop"));
             _projectileVec[i - 1]->setTextureScales(_windowVec[i - 1]->getPaneHeight(), _windowVec[i - 1]->getPaneWidth());
-            
         }
     }
 
     // Initialize bird textures, but do not set a location yet. that is the host's job
-    if (_birdActive) {
+    if (_birdActive)
+    {
         int height = _windowVec[_id - 1]->getNVertical();
         int width = _windowVec[_id - 1]->getNHorizontal();
         cugl::Vec2 birdTopLeftPos = cugl::Vec2(0.4, height - 0.5);
         cugl::Vec2 birdTopRightPos = cugl::Vec2(width - 0.6, height - 0.5);
         cugl::Vec2 birdBotLeftPos = cugl::Vec2(0.4, height - 3.5);
         cugl::Vec2 birdBotRightPos = cugl::Vec2(width - 0.6, height - 3.5);
-        std::vector<cugl::Vec2> positions = { birdTopLeftPos, birdTopRightPos, birdBotLeftPos, birdBotRightPos };
+        std::vector<cugl::Vec2> positions = {birdTopLeftPos, birdTopRightPos, birdBotLeftPos, birdBotRightPos};
         _bird.init(positions, 0.01, 0.04, _windowVec[_id - 1]->getPaneHeight());
         _bird.setTexture(_assets->get<Texture>("bird"));
         // randomly place bird on a player's board
@@ -364,58 +374,63 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
     return true;
 }
 
-
 #pragma mark Graphics
 
 /**
  * Sets the texture for countdown 3.
  */
-void GameplayController::setCountdown3Texture(const std::shared_ptr<cugl::Texture>& texture) {
+void GameplayController::setCountdown3Texture(const std::shared_ptr<cugl::Texture> &texture)
+{
     _countdown3Sprite = SpriteSheet::alloc(texture, 5, 5, 25);
     _countdown3Sprite->setFrame(0);
 }
 /**
  * Sets the texture for countdown 2.
  */
-void GameplayController::setCountdown2Texture(const std::shared_ptr<cugl::Texture>& texture) {
+void GameplayController::setCountdown2Texture(const std::shared_ptr<cugl::Texture> &texture)
+{
     _countdown2Sprite = SpriteSheet::alloc(texture, 5, 5, 25);
     _countdown2Sprite->setFrame(0);
 }
 /**
  * Sets the texture for countdown 1.
  */
-void GameplayController::setCountdown1Texture(const std::shared_ptr<cugl::Texture>& texture) {
+void GameplayController::setCountdown1Texture(const std::shared_ptr<cugl::Texture> &texture)
+{
     _countdown1Sprite = SpriteSheet::alloc(texture, 5, 5, 25);
     _countdown1Sprite->setFrame(0);
 }
 /**
  * Sets the texture for countdown Go.
  */
-void GameplayController::setCountdownGoTexture(const std::shared_ptr<cugl::Texture>& texture) {
+void GameplayController::setCountdownGoTexture(const std::shared_ptr<cugl::Texture> &texture)
+{
     _countdownGoSprite = SpriteSheet::alloc(texture, 5, 5, 25);
     _countdownGoSprite->setFrame(0);
 }
 /**
  * Sets the texture for countdown sparkles.
  */
-void GameplayController::setCountdownSparkleTexture(const std::shared_ptr<cugl::Texture>& texture) {
+void GameplayController::setCountdownSparkleTexture(const std::shared_ptr<cugl::Texture> &texture)
+{
     _countdownSparkleSprite = SpriteSheet::alloc(texture, 7, 5, 35);
     _countdownSparkleSprite->setFrame(0);
 }
 
 #pragma mark Gameplay Handling
-void GameplayController::reset() {
-    _playerVec = { nullptr, nullptr, nullptr, nullptr };
-    _windowVec = { nullptr, nullptr, nullptr, nullptr };
-    _projectileVec = { nullptr, nullptr, nullptr, nullptr };
+void GameplayController::reset()
+{
+    _playerVec = {nullptr, nullptr, nullptr, nullptr};
+    _windowVec = {nullptr, nullptr, nullptr, nullptr};
+    _projectileVec = {nullptr, nullptr, nullptr, nullptr};
 
     // Reset existence of enemies
     _birdLeaving = false;
 
     // Reset all starting current boards
-    _allCurBoards = { 0, 0, 0, 0 };
+    _allCurBoards = {0, 0, 0, 0};
     // Reset all progress trackers
-    _progressVec = { 0, 0, 0, 0 };
+    _progressVec = {0, 0, 0, 0};
 
     _dirtThrowTimer = 0;
     _projectileGenChance = 0.1;
@@ -424,35 +439,39 @@ void GameplayController::reset() {
 
     _gameOver = false;
     _gameStart = false;
-    _gameWin = false;
+    _hasWon = {false, false, false, false};
 }
 
 /**
  * Resets the status of the game for all players so that we can play again.
  */
-void GameplayController::hostReset() {
+void GameplayController::hostReset()
+{
     reset();
 
-    _allDirtAmounts = { 0, 0, 0, 0 };
-    _hasWon = { false, false, false, false };
+    _allDirtAmounts = {0, 0, 0, 0};
 }
 
 /**
-* HOST ONLY. Sets the character of the player given player's id.
-* Possible values: "Mushroom", "Frog", "Flower", "Chameleon"
-*/
-void GameplayController::setCharacters(std::vector<std::string>& chars) {
-    for (int i = 0; i < _numPlayers; i++) {
+ * HOST ONLY. Sets the character of the player given player's id.
+ * Possible values: "Mushroom", "Frog", "Flower", "Chameleon"
+ */
+void GameplayController::setCharacters(std::vector<std::string> &chars)
+{
+    for (int i = 0; i < _numPlayers; i++)
+    {
         auto player = _playerVec[i];
         changeCharTexture(player, chars[i]);
         CULog("character: %a", chars[i].c_str());
     }
 }
 
-void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std::string charChoice) {
+void GameplayController::changeCharTexture(std::shared_ptr<Player> &player, std::string charChoice)
+{
     player->setChar(charChoice);
     player->setColor();
-    if (charChoice == "Frog") {
+    if (charChoice == "Frog")
+    {
         player->setIdleTexture(_assets->get<Texture>("idle_frog"));
         player->setWipeTexture(_assets->get<Texture>("wipe_frog"));
         player->setShooTexture(_assets->get<Texture>("shoo_frog"));
@@ -460,49 +479,55 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
         player->setProfileTexture(_assets->get<Texture>("profile_frog"));
         player->setWarnTexture(_assets->get<Texture>("warn_frog"));
     }
-    else if (charChoice == "Flower") {
+    else if (charChoice == "Flower")
+    {
         player->setIdleTexture(_assets->get<Texture>("idle_flower"));
         player->setWipeTexture(_assets->get<Texture>("wipe_flower"));
         player->setShooTexture(_assets->get<Texture>("shoo_flower"));
         player->setThrowTexture(_assets->get<Texture>("throw_flower"));
         player->setProfileTexture(_assets->get<Texture>("profile_flower"));
         player->setWarnTexture(_assets->get<Texture>("warn_flower"));
-
     }
-    else if (charChoice == "Chameleon") {
+    else if (charChoice == "Chameleon")
+    {
         player->setIdleTexture(_assets->get<Texture>("idle_chameleon"));
         player->setWipeTexture(_assets->get<Texture>("wipe_chameleon"));
         player->setShooTexture(_assets->get<Texture>("shoo_chameleon"));
         player->setThrowTexture(_assets->get<Texture>("throw_chameleon"));
         player->setProfileTexture(_assets->get<Texture>("profile_chameleon"));
         player->setWarnTexture(_assets->get<Texture>("warn_chameleon"));
-
     }
-    else {
+    else
+    {
         player->setIdleTexture(_assets->get<Texture>("idle_mushroom"));
         player->setWipeTexture(_assets->get<Texture>("wipe_mushroom"));
         player->setShooTexture(_assets->get<Texture>("shoo_mushroom"));
         player->setThrowTexture(_assets->get<Texture>("throw_mushroom"));
         player->setProfileTexture(_assets->get<Texture>("profile_mushroom"));
         player->setWarnTexture(_assets->get<Texture>("warn_mushroom"));
-
     }
 }
 
-int GameplayController::calculateNeighborId(int myId, int dir, std::vector<std::shared_ptr<Player>> playerVec) {
+int GameplayController::calculateNeighborId(int myId, int dir, std::vector<std::shared_ptr<Player>> playerVec)
+{
     int nbrId = myId + dir;
-    if (nbrId <= 0) {
+    if (nbrId <= 0)
+    {
         nbrId = 4;
     }
-    if (nbrId > 4) {
+    if (nbrId > 4)
+    {
         nbrId = 1;
     }
-    while (playerVec[nbrId - 1] == nullptr) {
+    while (playerVec[nbrId - 1] == nullptr)
+    {
         nbrId += dir;
-        if (nbrId <= 0) {
+        if (nbrId <= 0)
+        {
             nbrId = 4;
         }
-        else if (nbrId > 4) {
+        else if (nbrId > 4)
+        {
             nbrId = 1;
         }
     }
@@ -510,51 +535,67 @@ int GameplayController::calculateNeighborId(int myId, int dir, std::vector<std::
 }
 
 /**
-* Given the world positions, convert it to the board position
-* based off of grid coordinates. Ex. [2, 3] or [2.3, 3] if the
-* player is in the process of moving in between x = 2 and x = 3.
-*/
-cugl::Vec2 GameplayController::getBoardPosition(cugl::Vec2 worldPos) {
-    float x_coor = (worldPos.x - _windowVec[_id-1]->sideGap) / _windowVec[_id-1]->getPaneWidth();
-    float y_coor = worldPos.y / _windowVec[_id-1]->getPaneHeight();
-    
+ * Given the world positions, convert it to the board position
+ * based off of grid coordinates. Ex. [2, 3] or [2.3, 3] if the
+ * player is in the process of moving in between x = 2 and x = 3.
+ */
+cugl::Vec2 GameplayController::getBoardPosition(cugl::Vec2 worldPos)
+{
+    float x_coor = (worldPos.x - _windowVec[_id - 1]->sideGap) / _windowVec[_id - 1]->getPaneWidth();
+    float y_coor = worldPos.y / _windowVec[_id - 1]->getPaneHeight();
+
     return Vec2(x_coor, y_coor);
 }
 
 /**
-* Given the board positions, convert it to the world position.
-*/
-cugl::Vec2 GameplayController::getWorldPosition(cugl::Vec2 boardPos) {
+ * Given the board positions, convert it to the world position.
+ */
+cugl::Vec2 GameplayController::getWorldPosition(cugl::Vec2 boardPos)
+{
     float x_coor = boardPos.x * _windowVec[_id - 1]->getPaneWidth() + _windowVec[_id - 1]->sideGap;
     float y_coor = boardPos.y * _windowVec[_id - 1]->getPaneHeight();
     return Vec2(x_coor, y_coor);
 }
 
-void GameplayController::advanceCountDownAnim(bool ishost) {
-    if (_countDownFrames < _maxCountDownFrames) {
+void GameplayController::advanceCountDownAnim(bool ishost)
+{
+    if (_countDownFrames < _maxCountDownFrames)
+    {
         // frame timer for next frame
-        if (_countDownFrames % 2 == 0) {
-            getCurrentCountdownSprite()->setFrame((int) _countDownFrames / 2 % 25);
-            _countdownSparkleSprite->setFrame((int) _countDownFrames / 2 % 35);
+        if (_countDownFrames % 2 == 0)
+        {
+            getCurrentCountdownSprite()->setFrame((int)_countDownFrames / 2 % 25);
+            _countdownSparkleSprite->setFrame((int)_countDownFrames / 2 % 35);
         }
-        //only host steps forward animation and it sends frame number to clients
-        if (ishost) {
+        // only host steps forward animation and it sends frame number to clients
+        if (ishost)
+        {
             _countDownFrames += 1;
         }
-    } else {
+    }
+    else
+    {
         _gameStart = true;
     }
 }
 
-std::shared_ptr<cugl::SpriteSheet> GameplayController::getCurrentCountdownSprite() {
+std::shared_ptr<cugl::SpriteSheet> GameplayController::getCurrentCountdownSprite()
+{
     int curFrame = _countDownFrames / (25 * 2);
-    if (curFrame == 0) {
+    if (curFrame == 0)
+    {
         return _countdown3Sprite;
-    } else if (curFrame == 1) {
+    }
+    else if (curFrame == 1)
+    {
         return _countdown2Sprite;
-    } else if (curFrame == 2) {
+    }
+    else if (curFrame == 2)
+    {
         return _countdown1Sprite;
-    } else {
+    }
+    else
+    {
         return _countdownGoSprite;
     }
 }
@@ -562,42 +603,54 @@ std::shared_ptr<cugl::SpriteSheet> GameplayController::getCurrentCountdownSprite
 /**
  * Method for the return to board button listener used in GameScene
  */
-void GameplayController::switchScene() {
-    if (_allCurBoards[_id-1] != 0) {
-        if (_ishost) {
+void GameplayController::switchScene()
+{
+    if (_allCurBoards[_id - 1] != 0)
+    {
+        if (_ishost)
+        {
             _allCurBoards[_id - 1] = 0;
         }
-        else {
+        else
+        {
             // TODO: unused?
             _network.sendToHost(*netStructs.serializeSwitchState(getSwitchState(true)));
         }
-        
+
         _playerVec[_id - 1]->setAnimationState(Player::IDLE);
     }
 }
 
-/** 
+/**
  * Host Only. Converts game state into a JSON value for sending over the network.
  * Only called by the host, as only the host transmits board states over the network.
- * 
+ *
  * @param id    the id of the player of the board state to get
  * @returns JSON value representing game board state
  */
-std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getBoardState(int id, bool isPartial) {
-        
-    std::shared_ptr<Player> player = _playerVec[id-1];
+std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getBoardState(int id, bool isPartial)
+{
+
+    std::shared_ptr<Player> player = _playerVec[id - 1];
     std::shared_ptr<WindowGrid> windows = _windowVec[id - 1];
-    std::shared_ptr<ProjectileSet> projectiles = _projectileVec[id-1];
-    
+    std::shared_ptr<ProjectileSet> projectiles = _projectileVec[id - 1];
+
     std::shared_ptr<NetStructs::BOARD_STATE> boardState = std::make_shared<NetStructs::BOARD_STATE>();
     boardState->playerId = float(id);
-    if (player->getChar() == "Frog") {
+    if (player->getChar() == "Frog")
+    {
         boardState->playerChar = float(1);
-    } else if (player->getChar() == "Flower") {
+    }
+    else if (player->getChar() == "Flower")
+    {
         boardState->playerChar = float(2);
-    } else if (player->getChar() == "Chameleon") {
+    }
+    else if (player->getChar() == "Chameleon")
+    {
         boardState->playerChar = float(3);
-    } else if (player->getChar() == "Mushroom") {
+    }
+    else if (player->getChar() == "Mushroom")
+    {
         boardState->playerChar = float(4);
     }
 
@@ -605,44 +658,56 @@ std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getBoardState(int i
 
     boardState->numDirt = float(_allDirtAmounts[id - 1]);
     boardState->currBoard = float(_allCurBoards[id - 1]);
-    boardState->progress = float(_progressVec[id-1]);
+    boardState->progress = float(_progressVec[id - 1]);
     boardState->optional = bool(isPartial);
-    
-    if (player->getAnimationState() == Player::IDLE) {
+
+    if (player->getAnimationState() == Player::IDLE)
+    {
         boardState->animState = float(1);
-    } else if (player->getAnimationState() == Player::WIPING) {
+    }
+    else if (player->getAnimationState() == Player::WIPING)
+    {
         boardState->animState = float(2);
-    } else if (player->getAnimationState() == Player::SHOOING) {
+    }
+    else if (player->getAnimationState() == Player::SHOOING)
+    {
         boardState->animState = float(3);
-    } else if (player->getAnimationState() == Player::STUNNED) {
+    }
+    else if (player->getAnimationState() == Player::STUNNED)
+    {
         boardState->animState = float(4);
     }
-    
-    if (!_gameStart) {
+
+    if (!_gameStart)
+    {
         boardState->countdownFrames = float(_countDownFrames);
     }
     cugl::Vec2 playerBoardPos = getBoardPosition(player->getPosition());
-    if (!isPartial) {
+    if (!isPartial)
+    {
         boardState->playerX = float(playerBoardPos.x);
     };
     boardState->playerY = float(playerBoardPos.y);
-//    boardState->animState = player->animStatustoString(player->getAnimationState());
+    //    boardState->animState = player->animStatustoString(player->getAnimationState());
     boardState->timer = float(_gameTimeLeft);
-    
+
     boardState->currBoardBird = _curBirdBoard == id;
 
     boardState->numProjectile = float(projectiles->current.size());
-    
-    if (!isPartial) {
-        if (_curBirdBoard == id) {
+
+    if (!isPartial)
+    {
+        if (_curBirdBoard == id)
+        {
             boardState->birdPosX = float(_bird.birdPosition.x);
             boardState->birdPosY = float(_bird.birdPosition.y);
             boardState->birdFacingRight = _bird.isFacingRight();
         };
-        
+
         const std::shared_ptr<std::vector<NetStructs::PROJECTILE>> projArray = std::make_shared<std::vector<NetStructs::PROJECTILE>>();
-        
-        for (shared_ptr<ProjectileSet::Projectile> projectile : projectiles->current) {
+
+        for (shared_ptr<ProjectileSet::Projectile> projectile : projectiles->current)
+        {
             NetStructs::PROJECTILE projStruct;
 
             cugl::Vec2 projBoardPos = getBoardPosition(projectile->position);
@@ -653,10 +718,13 @@ std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getBoardState(int i
             projStruct.velY = float(projectile->velocity.y);
             projStruct.destX = float(projDestBoardPos.x);
             projStruct.destY = float(projDestBoardPos.y);
-            
-            if (projectile->type == ProjectileSet::Projectile::ProjectileType::DIRT) {
+
+            if (projectile->type == ProjectileSet::Projectile::ProjectileType::DIRT)
+            {
                 projStruct.type = NetStructs::Dirt;
-            } else {
+            }
+            else
+            {
                 projStruct.type = NetStructs::Poop;
             }
             projArray->push_back(projStruct);
@@ -666,38 +734,41 @@ std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getBoardState(int i
     return boardState;
 }
 
-std::shared_ptr<NetStructs::DIRT_STATE> GameplayController::getDirtState(int id) {
-    
-    std::shared_ptr<Player> player = _playerVec[id-1];
+std::shared_ptr<NetStructs::DIRT_STATE> GameplayController::getDirtState(int id)
+{
+
+    std::shared_ptr<Player> player = _playerVec[id - 1];
     std::shared_ptr<WindowGrid> windows = _windowVec[id - 1];
     std::shared_ptr<NetStructs::DIRT_STATE> dirtState = std::make_shared<NetStructs::DIRT_STATE>();
-    
+
     dirtState->playerId = id;
-        
+
     const std::shared_ptr<std::vector<NetStructs::WINDOW_DIRT>> dirtArray = std::make_shared<std::vector<NetStructs::WINDOW_DIRT>>();
-            dirtState->numWindowDirt = _windowVec[id-1]->getTotalDirt();
-            for (int col = 0; col < windows->getNHorizontal(); ++col) {
-                for (int row = 0; row < windows->getNVertical(); ++row) {
-                    bool hasDirt = windows->getWindowState(row, col);
-                    if (hasDirt) {
-                        std::shared_ptr<NetStructs::WINDOW_DIRT> dirt = std::make_shared<NetStructs::WINDOW_DIRT>();
-                        dirt->posX = row;
-                        dirt->posY = col;
-                        dirtArray->push_back(*dirt);
-                    }
-                }
+    dirtState->numWindowDirt = _windowVec[id - 1]->getTotalDirt();
+    for (int col = 0; col < windows->getNHorizontal(); ++col)
+    {
+        for (int row = 0; row < windows->getNVertical(); ++row)
+        {
+            bool hasDirt = windows->getWindowState(row, col);
+            if (hasDirt)
+            {
+                std::shared_ptr<NetStructs::WINDOW_DIRT> dirt = std::make_shared<NetStructs::WINDOW_DIRT>();
+                dirt->posX = row;
+                dirt->posY = col;
+                dirtArray->push_back(*dirt);
             }
-    
+        }
+    }
+
     dirtState->dirtVector = *dirtArray;
-    
+
     return dirtState;
 }
-
 
 /**
 * Updates a neighboring or own board given the JSON value representing its game state.
 * Called by CLIENT ONLY.
-* 
+*
 * * Example board state (full message):
  * {
     "player_id":  "1",
@@ -713,7 +784,7 @@ std::shared_ptr<NetStructs::DIRT_STATE> GameplayController::getDirtState(int id)
     "bird_facing_right": true,
     "dirts": [ ["0", "1"], ["2", "2"], ["0", "2"] ],
     "projectiles": [
-            { 
+            {
                 "pos": ["3.0", "1.45"],
                 "vel": ["2", "3"],
                 "dest": ["12.23", "23.5"],
@@ -727,7 +798,7 @@ std::shared_ptr<NetStructs::DIRT_STATE> GameplayController::getDirtState(int id)
             }
         ]
  * }
- * 
+ *
  * Example board state (partial message):
  * {
     "player_id":  "1",
@@ -743,120 +814,147 @@ std::shared_ptr<NetStructs::DIRT_STATE> GameplayController::getDirtState(int id)
 *
 * @params data     The data to update
 */
-void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> data) {
-    
+void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> data)
+{
+
     int playerId = data->playerId;
-    
+
     std::string playerChar;
-    if (data->playerChar == 1) {
+    if (data->playerChar == 1)
+    {
         playerChar = "Frog";
-    } else if (data->playerChar == 2) {
+    }
+    else if (data->playerChar == 2)
+    {
         playerChar = "Flower";
-    } else if (data->playerChar == 3) {
+    }
+    else if (data->playerChar == 3)
+    {
         playerChar = "Chameleon";
-    } else if (data->playerChar == 4 || data->playerChar == 0) {
+    }
+    else if (data->playerChar == 4 || data->playerChar == 0)
+    {
         playerChar = "Mushroom";
     }
-    
-    if (data->hasWon == 1 && !_gameOver) {
+
+    if (data->hasWon == 1 && !_gameOver)
+    {
         _gameOver = true;
-        setWin(playerId == _id);
+        setWin(playerId);
         return;
     }
 
     // set to some random default high value indicating count down is over
-    if (!_gameStart) {
+    if (!_gameStart)
+    {
         _countDownFrames = static_cast<int>(data->countdownFrames);
         advanceCountDownAnim(false);
-    } 
+    }
 
     Vec2 playerBoardPos(data->playerX, data->playerY);
 
     _progressVec[playerId - 1] = data->progress;
-    
-    if (playerId == _id && playerChar != _playerVec[_id - 1]->getChar()) {
-            // first time this client is receiving message about their chosen character
+
+    if (playerId == _id && playerChar != _playerVec[_id - 1]->getChar())
+    {
+        // first time this client is receiving message about their chosen character
         _playerVec[_id - 1]->setChar(playerChar);
         changeCharTexture(_playerVec[_id - 1], playerChar);
-        
     }
-    
-    if (_playerVec[playerId - 1] == nullptr) {
-            // first time this client is receiving message on another player
-            // instantiate this player's window grid in this client's game instance
-            _windowVec[playerId - 1] = make_shared<WindowGrid>();
-            for (string thisWindow : _texture_strings_selected) {
-                _windowVec[playerId - 1]->addTexture(_assets->get<Texture>(thisWindow));
-            }
-            _windowVec[playerId - 1]->setTextureIds(_texture_ids_selected);
-            _windowVec[playerId - 1]->init(_levelJson, _size); // init depends on texture
-            _windowVec[playerId - 1]->setInitDirtNum(_initDirtCount);
-            _windowVec[playerId - 1]->setDirtTexture(_assets->get<Texture>(_dirtTextureString));
-            _windowVec[playerId - 1]->setFadedDirtTexture(_assets->get<Texture>("faded-dirt"));
-    
-            // instantiate this player in this client's game instance
-            _playerVec[playerId - 1] = std::make_shared<Player>(playerId, getWorldPosition(playerBoardPos), _windowVec[_id - 1]->getPaneWidth(), _windowVec[_id - 1]->getPaneHeight());
-            // set the player's character textures
-            _playerVec[playerId - 1]->setChar(playerChar);
-            changeCharTexture(_playerVec[playerId - 1], playerChar);
-    
-            // instantiate this player's projectile set in this client's game instance
-            _projectileVec[playerId - 1] = make_shared<ProjectileSet>();
-            _projectileVec[playerId - 1]->setDirtTexture(_assets->get<Texture>(_dirtTextureString));
-            _projectileVec[playerId - 1]->setPoopTexture(_assets->get<Texture>("poop"));
-            _projectileVec[playerId - 1]->setTextureScales(_windowVec[_id - 1]->getPaneHeight(), _windowVec[_id - 1]->getPaneWidth());
+
+    if (_playerVec[playerId - 1] == nullptr)
+    {
+        // first time this client is receiving message on another player
+        // instantiate this player's window grid in this client's game instance
+        _windowVec[playerId - 1] = make_shared<WindowGrid>();
+        for (string thisWindow : _texture_strings_selected)
+        {
+            _windowVec[playerId - 1]->addTexture(_assets->get<Texture>(thisWindow));
+        }
+        _windowVec[playerId - 1]->setTextureIds(_texture_ids_selected);
+        _windowVec[playerId - 1]->init(_levelJson, _size); // init depends on texture
+        _windowVec[playerId - 1]->setInitDirtNum(_initDirtCount);
+        _windowVec[playerId - 1]->setDirtTexture(_assets->get<Texture>(_dirtTextureString));
+        _windowVec[playerId - 1]->setFadedDirtTexture(_assets->get<Texture>("faded-dirt"));
+
+        // instantiate this player in this client's game instance
+        _playerVec[playerId - 1] = std::make_shared<Player>(playerId, getWorldPosition(playerBoardPos), _windowVec[_id - 1]->getPaneWidth(), _windowVec[_id - 1]->getPaneHeight());
+        // set the player's character textures
+        _playerVec[playerId - 1]->setChar(playerChar);
+        changeCharTexture(_playerVec[playerId - 1], playerChar);
+
+        // instantiate this player's projectile set in this client's game instance
+        _projectileVec[playerId - 1] = make_shared<ProjectileSet>();
+        _projectileVec[playerId - 1]->setDirtTexture(_assets->get<Texture>(_dirtTextureString));
+        _projectileVec[playerId - 1]->setPoopTexture(_assets->get<Texture>("poop"));
+        _projectileVec[playerId - 1]->setTextureScales(_windowVec[_id - 1]->getPaneHeight(), _windowVec[_id - 1]->getPaneWidth());
     }
-    
+
     auto player = _playerVec[playerId - 1];
     player->setPosition(getWorldPosition(playerBoardPos));
 
-    if (data->animState == 1) {
+    if (data->animState == 1)
+    {
         player->setAnimationState(Player::IDLE);
-    } else if (data->animState == 2) {
-        if (!(player->getAnimationState() == Player::WIPING)) {
+    }
+    else if (data->animState == 2)
+    {
+        if (!(player->getAnimationState() == Player::WIPING))
+        {
             _audioController->playCleanSoundClient();
         }
         player->setAnimationState(Player::WIPING);
-    } else if (data->animState == 3) {
+    }
+    else if (data->animState == 3)
+    {
         player->setAnimationState(Player::SHOOING);
-    } else if (data->animState == 4) {
-        if (!(player->getAnimationState() == Player::STUNNED)) {
+    }
+    else if (data->animState == 4)
+    {
+        if (!(player->getAnimationState() == Player::STUNNED))
+        {
             _audioController->playBangSoundClient();
         }
         player->setAnimationState(Player::STUNNED);
     }
-    
 
     auto windows = _windowVec[playerId - 1];
-    auto projectiles = _projectileVec[playerId-1];
+    auto projectiles = _projectileVec[playerId - 1];
 
-    if (playerId == _id) {
+    if (playerId == _id)
+    {
         // update own board info
         _gameTimeLeft = data->timer;
         _currentDirtAmount = data->numDirt;
     }
-    
+
     _allCurBoards[playerId - 1] = static_cast<int>(data->currBoard);
-    
-    if (data->currBoardBird) {
+
+    if (data->currBoardBird)
+    {
         _curBirdBoard = playerId;
-        if (data->birdPosX && data->birdPosY) {
+        if (data->birdPosX && data->birdPosY)
+        {
             _curBirdPos = getWorldPosition(Vec2(data->birdPosX, data->birdPosY));
             _bird.setFacingRight(data->birdFacingRight);
         }
-        if (playerId == _id) _birdLeaving = false;
+        if (playerId == _id)
+            _birdLeaving = false;
     }
-    else if (playerId == _id && _curBirdBoard == _id) {
+    else if (playerId == _id && _curBirdBoard == _id)
+    {
         _birdLeaving = true;
         // set to arbitrary value to represent bird not on board
         // this value should be updated upon a later message from the host
         _curBirdBoard = 0;
     }
 
-    if (data->numProjectile > 0 && !data->optional) {
+    if (data->numProjectile > 0 && !data->optional)
+    {
         //     populate player's projectile set
         projectiles->clearCurrentSet(); // clear current set to rewrite
-        for (NetStructs::PROJECTILE projNode : data->projectileVector) {
+        for (NetStructs::PROJECTILE projNode : data->projectileVector)
+        {
             // get projectile position
 
             Vec2 pos(projNode.PosX, projNode.PosY);
@@ -868,43 +966,40 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
             Vec2 dest(projNode.destX, projNode.destY);
 
             auto type = ProjectileSet::Projectile::ProjectileType::POOP;
-            if (projNode.type == NetStructs::Dirt) {
+            if (projNode.type == NetStructs::Dirt)
+            {
                 type = ProjectileSet::Projectile::ProjectileType::DIRT;
             }
 
             // add the projectile to neighbor's projectile set
             projectiles->spawnProjectileClient(getWorldPosition(pos), vel, getWorldPosition(dest), type);
         }
-        
     }
-
 }
 
+void GameplayController::updateWindowDirt(std::shared_ptr<NetStructs::DIRT_STATE> data)
+{
 
-void GameplayController::updateWindowDirt(std::shared_ptr<NetStructs::DIRT_STATE> data) {
-    
-    
     int playerId = data->playerId;
     auto windows = _windowVec[playerId - 1];
 
-    if (data->numWindowDirt> 0) {
-        
+    if (data->numWindowDirt > 0)
+    {
+
         windows->clearBoard();
-        for (NetStructs::WINDOW_DIRT windowDirt : data->dirtVector) {
-            
+        for (NetStructs::WINDOW_DIRT windowDirt : data->dirtVector)
+        {
+
             windows->addDirt(windowDirt.posX, windowDirt.posY);
-            
         }
     }
-        
 }
 
+std::shared_ptr<NetStructs::MOVE_STATE> GameplayController::getMoveState(const cugl::Vec2 move)
+{
 
-std::shared_ptr<NetStructs::MOVE_STATE> GameplayController::getMoveState(const cugl::Vec2 move) {
-    
-    
     const std::shared_ptr<NetStructs::MOVE_STATE> moveState = std::make_shared<NetStructs::MOVE_STATE>();
-    
+
     moveState->type = NetStructs::MoveStateType;
     moveState->playerId = _id;
     moveState->moveX = move.x;
@@ -914,100 +1009,104 @@ std::shared_ptr<NetStructs::MOVE_STATE> GameplayController::getMoveState(const c
 }
 
 /**
-* Called by the host only. Updates a client player's board for player at player_id
-* based on the movement or other action data stored in the MOVE_STATE value.
-*
-* Player ids assigned clockwise with host at top
-*
-*          host: 1
-* left: 4            right: 2
-*         across: 3
-*
+ * Called by the host only. Updates a client player's board for player at player_id
+ * based on the movement or other action data stored in the MOVE_STATE value.
+ *
+ * Player ids assigned clockwise with host at top
+ *
+ *          host: 1
+ * left: 4            right: 2
+ *         across: 3
+ *
  * Example movement message:
  * {
  *    "player_id":  1,
  *    "vel": [0.42, 0.66]
  * }
-*
-* @params data     The data to update
-*/
-void GameplayController::processMovementRequest(std::shared_ptr<NetStructs::MOVE_STATE> data) {
+ *
+ * @params data     The data to update
+ */
+void GameplayController::processMovementRequest(std::shared_ptr<NetStructs::MOVE_STATE> data)
+{
 
     int playerId = data->playerId;
     Vec2 moveVec(data->moveX, data->moveY);
-    
-    std::shared_ptr<Player> player = _playerVec[playerId-1];
-    std::shared_ptr<WindowGrid> windows = _windowVec[playerId-1];
+
+    std::shared_ptr<Player> player = _playerVec[playerId - 1];
+    std::shared_ptr<WindowGrid> windows = _windowVec[playerId - 1];
 
     // Check if player is stunned for this frame
 
-    if (player->getAnimationState() == Player::IDLE) {
+    if (player->getAnimationState() == Player::IDLE)
+    {
         // Move the player, ignoring collisions
         int moveResult = player->move(moveVec, getSize(), windows);
-        if (moveResult == -1 || moveResult == 1) {
+        if (moveResult == -1 || moveResult == 1)
+        {
             // Request to switch to neighbor's board
             _allCurBoards[playerId - 1] = moveResult;
         }
     }
 }
 
-
 /**
-* Called by the client only. Returns a SCENE_SWITCH_STATE value representing a return to board request
-* for sending over the network.
-*
-* pre-condition: if not returning, guarantee that the player is on an edge
-*
-* Player ids assigned clockwise with host at top
-*
-*          host: 1
-* left: 4            right: 2
-*         across: 3
-*
-* Example Scene Switch Request Message:
-* {
-*    "player_id":  1,
-*    "switch_destination": 1
-* }
-*
-* @param returning  whether the player is returning to their board
-* @returns SCENE_SWITCH_STATE value representing a scene switch
-*/
-std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> GameplayController::getSwitchState(bool returning) {
+ * Called by the client only. Returns a SCENE_SWITCH_STATE value representing a return to board request
+ * for sending over the network.
+ *
+ * pre-condition: if not returning, guarantee that the player is on an edge
+ *
+ * Player ids assigned clockwise with host at top
+ *
+ *          host: 1
+ * left: 4            right: 2
+ *         across: 3
+ *
+ * Example Scene Switch Request Message:
+ * {
+ *    "player_id":  1,
+ *    "switch_destination": 1
+ * }
+ *
+ * @param returning  whether the player is returning to their board
+ * @returns SCENE_SWITCH_STATE value representing a scene switch
+ */
+std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> GameplayController::getSwitchState(bool returning)
+{
     const std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> switchState = std::make_shared<NetStructs::SCENE_SWITCH_STATE>();
-    
+
     switchState->playerId = _id;
     switchState->type = NetStructs::SceneSwitchType;
 
-    if (returning) {
+    if (returning)
+    {
         switchState->switchDestination = 0;
     }
-    else {
+    else
+    {
         // pre-condition: if not returning, guarantee that the player is on an edge
-        int edge = _playerVec[_id-1]->getEdge(_windowVec[_id - 1]->sideGap, getSize());
+        int edge = _playerVec[_id - 1]->getEdge(_windowVec[_id - 1]->sideGap, getSize());
         switchState->switchDestination = edge;
     }
     return switchState;
 }
 
+void GameplayController::processSceneSwitchRequest(std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> data)
+{
 
-
-void GameplayController::processSceneSwitchRequest(std::shared_ptr<NetStructs::SCENE_SWITCH_STATE> data) {
-    
     int playerId = data->playerId;
-    
+
     int switchDestination = data->switchDestination;
-    
 
     // update the board of the player to their switch destination
-    if (switchDestination == 0) {
+    if (switchDestination == 0)
+    {
         _allCurBoards[playerId - 1] = switchDestination;
     }
 }
 
 /**
 * Called by client only. Represents a dirt throw action as a JSON value for sending over the network.
-* 
+*
 * Example Dirt Throw Message
 * {
     "player_id_source":  1,
@@ -1025,8 +1124,9 @@ void GameplayController::processSceneSwitchRequest(std::shared_ptr<NetStructs::S
 *
 * @returns JSON value representing a dirt throw action
 */
-const std::shared_ptr<std::vector<std::byte>> GameplayController::getDirtThrowRequest(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest, const int amt) {
-    
+const std::shared_ptr<std::vector<std::byte>> GameplayController::getDirtThrowRequest(const int target, const cugl::Vec2 pos, const cugl::Vec2 vel, const cugl::Vec2 dest, const int amt)
+{
+
     cugl::Vec2 boardPos = getBoardPosition(pos);
     cugl::Vec2 boardDest = getBoardPosition(dest);
     std::shared_ptr<NetStructs::DIRT_REQUEST> dirtRequest = std::make_shared<NetStructs::DIRT_REQUEST>();
@@ -1041,16 +1141,16 @@ const std::shared_ptr<std::vector<std::byte>> GameplayController::getDirtThrowRe
     dirtRequest->dirtAmount = amt;
     dirtRequest->type = NetStructs::DirtRequestType;
     return netStructs.serializeDirtRequest(dirtRequest);
-
 }
 
 /**
-* Called by host only. Updates the boards of both the dirt thrower and the player
-* receiving the dirt projectile given the information stored in the JSON value.
-*
-* @params data     The data to update
-*/
-void GameplayController::processDirtThrowRequest(std::shared_ptr<NetStructs::DIRT_REQUEST> dirtRequest) {    
+ * Called by host only. Updates the boards of both the dirt thrower and the player
+ * receiving the dirt projectile given the information stored in the JSON value.
+ *
+ * @params data     The data to update
+ */
+void GameplayController::processDirtThrowRequest(std::shared_ptr<NetStructs::DIRT_REQUEST> dirtRequest)
+{
     int source_id = dirtRequest->playerIdSource;
     int target_id = dirtRequest->playerIdTarget;
     _playerVec[source_id - 1]->setAnimationState(Player::THROWING);
@@ -1063,15 +1163,14 @@ void GameplayController::processDirtThrowRequest(std::shared_ptr<NetStructs::DIR
     _allDirtAmounts[source_id - 1] = max(0, _allDirtAmounts[source_id - 1] - amount);
     _currentDirtAmount = _allDirtAmounts[0];
 
-    _projectileVec[target_id-1]->spawnProjectile(getWorldPosition(dirt_pos), dirt_vel, getWorldPosition(dirt_dest), ProjectileSet::Projectile::ProjectileType::DIRT, amount);
-
+    _projectileVec[target_id - 1]->spawnProjectile(getWorldPosition(dirt_pos), dirt_vel, getWorldPosition(dirt_dest), ProjectileSet::Projectile::ProjectileType::DIRT, amount);
 }
 
 /**
  * The method called to update the game mode.
  *
  * This method contains any gameplay code that is not an OpenGL call.
- * 
+ *
  * We need to update this method to constantly talk to the server.
  *
  * @param timestep  The amount of time (in seconds) since the last frame
@@ -1079,15 +1178,17 @@ void GameplayController::processDirtThrowRequest(std::shared_ptr<NetStructs::DIR
  * @param dirtCon   The dirt throw input controller used by the game scene
  * @param dirtThrowButton   The dirt throw button from the game scene
  */
-void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton, std::shared_ptr<cugl::scene2::SceneNode> dirtThrowArc) {
-    
+void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputController &dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton, std::shared_ptr<cugl::scene2::SceneNode> dirtThrowArc)
+{
+
     _input.update();
 
-
     // get or transmit board states over network
-    if (_network.getConnection()) {
+    if (_network.getConnection())
+    {
         _network.getConnection()->receive([this](const std::string source,
-            const std::vector<std::byte>& data) {
+                                                 const std::vector<std::byte> &data)
+                                          {
                 if (!_ishost) {
                     if (netStructs.deserializeBoardState(data)->type == NetStructs::BoardStateType) {
                         // CULog("got board state message");
@@ -1111,28 +1212,34 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                         // CULog("got switch scene request message");
                         processSceneSwitchRequest(netStructs.deserializeSwitchState(data));
                     }
-                }
-            });
+                } });
         _network.checkConnection();
     }
-    
+
     // host steps all boards forward
-    if (_ishost) {
+    if (_ishost)
+    {
         // update time
-        if (_gameTimeLeft >= 1 && _gameStart) {
+        if (_gameTimeLeft >= 1 && _gameStart)
+        {
             _frame = _frame + 1;
-        } if (_frame == _fps) {
+        }
+        if (_frame == _fps)
+        {
             _gameTimeLeft = max(0, _gameTimeLeft - 1);
             _projectileGenChance = 0.95 / (1 + exp(-0.05 * (100 - _gameTimeLeft / 2)));
             _frame = 0;
         }
 
         // check if game is over when timer hits 0
-        if (_gameTimeLeft == 0 && !_gameOver) {
+        if (_gameTimeLeft == 0 && !_gameOver)
+        {
             _gameOver = true;
             vector<int> v;
-            for (auto window : _windowVec) {
-                if (window == nullptr) continue;
+            for (auto window : _windowVec)
+            {
+                if (window == nullptr)
+                    continue;
                 v.push_back(window->getTotalDirt());
             }
             auto min_idx = std::distance(v.begin(), std::min_element(v.begin(), v.end()));
@@ -1140,45 +1247,58 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         }
 
         // update bird if active
-        if (_birdActive && _gameStart) {
+        if (_birdActive && _gameStart)
+        {
             _bird.move();
             std::shared_ptr<WindowGrid> windows = _windowVec[_curBirdBoard - 1];
             std::shared_ptr<ProjectileSet> projectiles = _projectileVec[_curBirdBoard - 1];
 
-            if (!_birdLeaving && _bird.atColCenter(windows->getNHorizontal(), windows->getPaneWidth(), windows->sideGap) >= 0) {
+            if (!_birdLeaving && _bird.atColCenter(windows->getNHorizontal(), windows->getPaneWidth(), windows->sideGap) >= 0)
+            {
                 std::bernoulli_distribution dist(_projectileGenChance);
-                if (dist(_rng)) {
+                if (dist(_rng))
+                {
                     // random chance to generate bird poo at column center
                     generatePoo(projectiles);
                 }
             }
         }
-        
-        if (!_gameStart) {
+
+        if (!_gameStart)
+        {
             advanceCountDownAnim();
-        } else {
-            for (int i = 0; i < _numPlayers; i++) {
+        }
+        else
+        {
+            for (int i = 0; i < _numPlayers; i++)
+            {
                 stepForward(_playerVec[i], _windowVec[i], _projectileVec[i]);
             }
         }
-        
+
         std::string host_uuid = _network.getConnection()->getUUID();
-        for (auto peer_uuid : _network.getConnection()->getPlayers()) {
-            if (peer_uuid == host_uuid) continue; // can skip transmitting information to self
+        for (auto peer_uuid : _network.getConnection()->getPlayers())
+        {
+            if (peer_uuid == host_uuid)
+                continue; // can skip transmitting information to self
             int id = _UUIDmap[peer_uuid];
             int curBoardId = id; // the id of the board this player is currently viewing
             // calculate which board this current player is on, then transmit necessary information
-            if (_allCurBoards[id - 1] != 0) {
+            if (_allCurBoards[id - 1] != 0)
+            {
                 curBoardId = calculateNeighborId(id, _allCurBoards[id - 1], _playerVec);
             }
             // CULog("transmitting board state for player %d", i);
-            for (int boardToTransmit = 1; boardToTransmit <= _numPlayers; boardToTransmit++) {
-                if (curBoardId == boardToTransmit) {
+            for (int boardToTransmit = 1; boardToTransmit <= _numPlayers; boardToTransmit++)
+            {
+                if (curBoardId == boardToTransmit)
+                {
                     // transmit full board state
                     _network.transmitMessage(peer_uuid, *netStructs.serializeBoardState(getBoardState(boardToTransmit, false)));
                     _network.transmitMessage(peer_uuid, *netStructs.serializeDirtStateMessage(getDirtState(boardToTransmit)));
                 }
-                else {
+                else
+                {
                     // transmit partial board state
                     _network.transmitMessage(peer_uuid, *netStructs.serializeBoardState(getBoardState(boardToTransmit, true)));
                     _network.transmitMessage(peer_uuid, *netStructs.serializeDirtStateMessage(getDirtState(boardToTransmit)));
@@ -1186,31 +1306,32 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             }
         }
         // _input.update();
-        if (_input.didPressReset()) {
+        if (_input.didPressReset())
+        {
             // host resets game for all players
             hostReset();
         }
         // update the game state for self (host). Updates for the rest of the players are done in processMovementRequest(),
         // called whenever the host recieves a movement or other action message.
         _currentDirtAmount = _allDirtAmounts[0];
-        _gameWin = _hasWon[0];
         _curBirdPos = getWorldPosition(_bird.birdPosition);
-
     }
-    else {
+    else
+    {
         // not host - step forward for player that they are currently viewing
         // optimistic synchronization - do not have to wait for host to send update, go ahead and update board based on
         // current saved board state
         auto player = _playerVec[_id - 1];
         auto windows = _windowVec[_id - 1];
         auto projectiles = _projectileVec[_id - 1];
-        if (_allCurBoards[_id - 1] != 0) {
+        if (_allCurBoards[_id - 1] != 0)
+        {
             int nbrIdx = calculateNeighborId(_id, _allCurBoards[_id - 1], _playerVec);
             player = _playerVec[nbrIdx - 1];
             windows = _windowVec[nbrIdx - 1];
             projectiles = _projectileVec[nbrIdx - 1];
         }
-        if(player != nullptr && windows != nullptr && projectiles != nullptr && _gameStart) // can be null on initial update calls
+        if (player != nullptr && windows != nullptr && projectiles != nullptr && _gameStart) // can be null on initial update calls
             clientStepForward(player, windows, projectiles);
         /** for (auto player : _playerVec) {
             if (player == nullptr) continue;
@@ -1220,36 +1341,46 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
 
     // When the player is on other's board and are able to throw dirt
     int myCurBoard = _allCurBoards[_id - 1];
-    if (myCurBoard != 0) {
+    if (myCurBoard != 0)
+    {
         bool ifSwitch = false;
-        float button_x = myCurBoard == 1 ? getSize().width - _windowVec[_id-1]->sideGap + 150 : _windowVec[_id - 1]->sideGap - 150;
+        float button_x = myCurBoard == 1 ? getSize().width - _windowVec[_id - 1]->sideGap + 150 : _windowVec[_id - 1]->sideGap - 150;
         float arc_start = myCurBoard == 1 ? 270 : 90;
         float arc_rotate_angle = myCurBoard == 1 ? 0 : M_PI;
         cugl::Vec2 buttonPos(button_x, SCENE_HEIGHT / 2);
         dirtThrowButton->setPosition(buttonPos);
         dirtThrowArc->setPosition(buttonPos);
         dirtThrowArc->setAngle(arc_rotate_angle);
-        if ((myCurBoard == 1 && _input.getDir().x == 1) || (myCurBoard == -1 && _input.getDir().x == -1)) {
+        if ((myCurBoard == 1 && _input.getDir().x == 1) || (myCurBoard == -1 && _input.getDir().x == -1))
+        {
             ifSwitch = true;
         }
-        if (_currentDirtAmount > 0) {
+        if (_currentDirtAmount > 0)
+        {
             // _dirtThrowInput.update();
             float player_x = myCurBoard == 1 ? getSize().width - _windowVec[_id - 1]->sideGap : _windowVec[_id - 1]->sideGap;
-            cugl::Vec2 playerPos(player_x, _playerVec[_id-1]->getPosition().y);
-            if (!_dirtSelected) {
-                if (dirtCon.didPress() && dirtThrowButton->isDown()) {
+            cugl::Vec2 playerPos(player_x, _playerVec[_id - 1]->getPosition().y);
+            if (!_dirtSelected)
+            {
+                if (dirtCon.didPress() && dirtThrowButton->isDown())
+                {
                     _dirtSelected = true;
                     _prevInputPos = worldPos;
                 }
-            } else {
+            }
+            else
+            {
                 ifSwitch = false;
-                if (dirtCon.didRelease()) {
+                if (dirtCon.didRelease())
+                {
                     _dirtSelected = false;
                     Vec2 diff = worldPos - _prevInputPos;
-                    if ((myCurBoard == -1 && diff.x > 0) || (myCurBoard == 1 && diff.x < 0)) {
+                    if ((myCurBoard == -1 && diff.x > 0) || (myCurBoard == 1 && diff.x < 0))
+                    {
                         diff.x = 0;
                     }
-                    if (diff.length() > dirtThrowArc->getWidth() / 2) {
+                    if (diff.length() > dirtThrowArc->getWidth() / 2)
+                    {
                         diff = diff.getNormalization() * dirtThrowArc->getWidth() / 2;
                     }
                     Vec2 destination = playerPos - diff * 7;
@@ -1260,22 +1391,28 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     Vec2 velocity = (snapped_dest - playerPos).getNormalization() * 8;
                     int targetId = calculateNeighborId(_id, myCurBoard, _playerVec);
 
-                    if (_ishost) {
+                    if (_ishost)
+                    {
                         processDirtThrowRequest(netStructs.deserializeDirtRequest(*getDirtThrowRequest(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount)));
                     }
-                    else {
+                    else
+                    {
                         _network.sendToHost(*getDirtThrowRequest(targetId, playerPos, velocity, snapped_dest, _currentDirtAmount));
                     }
                     dirtThrowButton->setPosition(buttonPos);
-                } else if (dirtCon.isDown()) {
+                }
+                else if (dirtCon.isDown())
+                {
                     // cugl::Vec2 buttonPos(button_x, dirtThrowButton->getPositionY());
                     std::vector<Vec2> vertices;
                     vertices.push_back(playerPos);
                     Vec2 diff = worldPos - _prevInputPos;
-                    if ((myCurBoard == -1 && diff.x > 0) || (myCurBoard == 1 && diff.x < 0)) {
+                    if ((myCurBoard == -1 && diff.x > 0) || (myCurBoard == 1 && diff.x < 0))
+                    {
                         diff.x = 0;
                     }
-                    if (diff.length() > dirtThrowArc->getWidth() / 2) {
+                    if (diff.length() > dirtThrowArc->getWidth() / 2)
+                    {
                         diff = diff.getNormalization() * dirtThrowArc->getWidth() / 2;
                     }
                     Vec2 destination = playerPos - diff * 7;
@@ -1291,19 +1428,24 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 }
             }
         }
-        if (ifSwitch) {
+        if (ifSwitch)
+        {
             switchScene();
         }
     }
     // When a player is on their own board
-    else if (myCurBoard == 0 && _gameStart) {
-        if (!_ishost) {
+    else if (myCurBoard == 0 && _gameStart)
+    {
+        if (!_ishost)
+        {
             // Read the keyboard for each controller.
-//            _input.update();
+            //            _input.update();
             // pass movement over network for host to process
-            if (_network.getConnection()) {
+            if (_network.getConnection())
+            {
                 _network.checkConnection();
-                if (_input.getDir().length() > 0) {
+                if (_input.getDir().length() > 0)
+                {
                     // CULog("transmitting movement message over network for player %d", _id);
                     std::shared_ptr<NetStructs::MOVE_STATE> m = getMoveState(_input.getDir());
                     _network.sendToHost(*netStructs.serializeMoveState(m));
@@ -1311,14 +1453,17 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 // send over scene switch requests are handled by button listener
             }
         }
-        if (_ishost) {
+        if (_ishost)
+        {
             // Check if player is stunned for this frame
-            if (_playerVec[_id-1]->getAnimationState() == Player::IDLE) {
+            if (_playerVec[_id - 1]->getAnimationState() == Player::IDLE)
+            {
                 // Move the player, ignoring collisions
                 int moveResult = _playerVec[_id - 1]->move(_input.getDir(), getSize(), _windowVec[_id - 1]);
-                if (_numPlayers > 1 && (moveResult == -1 || moveResult == 1)) {
+                if (_numPlayers > 1 && (moveResult == -1 || moveResult == 1))
+                {
                     _allCurBoards[0] = moveResult;
-                } 
+                }
             }
         }
     }
@@ -1331,13 +1476,15 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     // we will call setRequestForMenu
     // to let app know that we should
     // switch to the main menu
-    if (_gameOver) {
-        _frameCountForWin = _frameCountForWin +1;
+    if (_gameOver)
+    {
+        _frameCountForWin = _frameCountForWin + 1;
     }
-    
-    if (_frameCountForWin>4*_fps && _gameOver) {
+
+    if (_frameCountForWin > 4 * _fps && _gameOver)
+    {
         setRequestForMenu(true);
-    };  
+    };
 }
 
 /**
@@ -1349,60 +1496,71 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
  * close to the edge of the grid, all the extra dirt that would have landed out of bounds
  * is pushed inside.
  */
-std::vector<cugl::Vec2> GameplayController::calculateLandedDirtPositions(const int width, const int height, Vec2 centerCoords, int amount) {
+std::vector<cugl::Vec2> GameplayController::calculateLandedDirtPositions(const int width, const int height, Vec2 centerCoords, int amount)
+{
     // CULog("center: %f, %f", centerCoords.x, centerCoords.y);
     std::vector<cugl::Vec2> dirtPositions;
 
-    if (amount <= 0) {
+    if (amount <= 0)
+    {
         // No dirt to spawn, return empty vector
         return dirtPositions;
     }
 
     dirtPositions.emplace_back(centerCoords); // Start with one dirt at the center
-    amount--; // Decrement the amount of dirt left to spawn
+    amount--;                                 // Decrement the amount of dirt left to spawn
 
     int layer = 1;
 
-    while (amount > 0) {
+    while (amount > 0)
+    {
         // start at top corner of diamond
         int currX = centerCoords.x;
         int currY = centerCoords.y + layer;
 
         // move down and right until at right corner of diamond
-        while (amount > 0 && currY != centerCoords.y) {
+        while (amount > 0 && currY != centerCoords.y)
+        {
             currX += 1;
             currY -= 1;
-            if (currX >= 0 && currX < height && currY >= 0 && currY < width) {
+            if (currX >= 0 && currX < height && currY >= 0 && currY < width)
+            {
                 dirtPositions.emplace_back(Vec2(currX, currY));
                 // CULog("dirt spawned at %d, %d", currX, currY);
                 amount--;
             }
         }
         // move down and left until at bottom corner of diamond
-        while (amount > 0 && currX != centerCoords.x) {
+        while (amount > 0 && currX != centerCoords.x)
+        {
             currX -= 1;
             currY -= 1;
-            if (currX >= 0 && currX < height && currY >= 0 && currY < width) {
+            if (currX >= 0 && currX < height && currY >= 0 && currY < width)
+            {
                 dirtPositions.emplace_back(Vec2(currX, currY));
                 // CULog("dirt spawned at %d, %d", currX, currY);
                 amount--;
             }
         }
         // move up and left until at right corner of diamond
-        while (amount > 0 && currY != centerCoords.y) {
+        while (amount > 0 && currY != centerCoords.y)
+        {
             currX -= 1;
             currY += 1;
-            if (currX >= 0 && currX < height && currY >= 0 && currY < width) {
+            if (currX >= 0 && currX < height && currY >= 0 && currY < width)
+            {
                 dirtPositions.emplace_back(Vec2(currX, currY));
                 // CULog("dirt spawned at %d, %d", currX, currY);
                 amount--;
             }
         }
         // move up and right until back at the top corner of diamond
-        while (amount > 0 && currX != centerCoords.x) {
+        while (amount > 0 && currX != centerCoords.x)
+        {
             currX += 1;
             currY += 1;
-            if (currX >= 0 && currX < height && currY >= 0 && currY < width) {
+            if (currX >= 0 && currX < height && currY >= 0 && currY < width)
+            {
                 dirtPositions.emplace_back(Vec2(currX, currY));
                 // CULog("dirt spawned at %d, %d", currX, currY);
                 amount--;
@@ -1415,15 +1573,17 @@ std::vector<cugl::Vec2> GameplayController::calculateLandedDirtPositions(const i
 }
 
 /**
-* This method does some of the same actions as host's stepForward, for optimistic synchronization on the client end.
-* The client steps forward the given game state, given references to the player, board, and projectile set.
-*/
-void GameplayController::clientStepForward(std::shared_ptr<Player>& player, std::shared_ptr<WindowGrid>& windows, std::shared_ptr<ProjectileSet>& projectiles) {
+ * This method does some of the same actions as host's stepForward, for optimistic synchronization on the client end.
+ * The client steps forward the given game state, given references to the player, board, and projectile set.
+ */
+void GameplayController::clientStepForward(std::shared_ptr<Player> &player, std::shared_ptr<WindowGrid> &windows, std::shared_ptr<ProjectileSet> &projectiles)
+{
     int player_id = player->getId();
 
     std::vector<std::pair<cugl::Vec2, int>> landedDirts;
 
-    if (_allCurBoards[player_id - 1] == 0) {
+    if (_allCurBoards[player_id - 1] == 0)
+    {
         player->move();
 
         // remove any dirt the player collides with
@@ -1433,16 +1593,20 @@ void GameplayController::clientStepForward(std::shared_ptr<Player>& player, std:
         int clamped_y = std::clamp(static_cast<int>(grid_coors.y), 0, windows->getNVertical() - 1);
         int clamped_x = std::clamp(static_cast<int>(grid_coors.x), 0, windows->getNHorizontal() - 1);
         bool dirtExists = windows->hasDirt(clamped_y, clamped_x);
-        if (dirtExists) {
+        if (dirtExists)
+        {
             // filling up dirty bucket
             // set amount of frames player is frozen for for cleaning dirt
-            if (_cleanInProgress && player->getAnimationState() == Player::IDLE) {
+            if (_cleanInProgress && player->getAnimationState() == Player::IDLE)
+            {
                 windows->removeDirt(clamped_y, clamped_x);
                 _cleanInProgress = false;
             }
-            else if (player->getAnimationState() == Player::IDLE) {
+            else if (player->getAnimationState() == Player::IDLE)
+            {
                 // TODO: also move sound logic into update board for client
-                if (player_id == _id) {
+                if (player_id == _id)
+                {
                     _audioController->playCleanSoundHost();
                 };
                 player->setAnimationState(Player::AnimStatus::WIPING);
@@ -1452,21 +1616,26 @@ void GameplayController::clientStepForward(std::shared_ptr<Player>& player, std:
 
         // Check for collisions and play sound
         auto collision_result = _collisions.resolveCollision(player, projectiles);
-        if (collision_result.first) { // if collision occurred
-            if (player_id == _id) {
+        if (collision_result.first)
+        { // if collision occurred
+            if (player_id == _id)
+            {
                 // TODO: also move sound logic into update board for client
                 _audioController->playBangSoundHost();
             };
             player->setAnimationState(Player::STUNNED);
-            if (collision_result.second.has_value()) {
+            if (collision_result.second.has_value())
+            {
                 landedDirts.push_back(collision_result.second.value());
             }
         }
         player->advanceAnimation();
 
-        if (!_birdLeaving && _curBirdBoard == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.5)) {
+        if (!_birdLeaving && _curBirdBoard == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.5))
+        {
             // set amount of frames plaer is frozen for for shooing bird
-            if (player->getAnimationState() == Player::AnimStatus::IDLE) {
+            if (player->getAnimationState() == Player::AnimStatus::IDLE)
+            {
                 player->setAnimationState(Player::AnimStatus::SHOOING);
                 _bird.resetBirdPathToExit(windows->getNHorizontal());
                 _birdLeaving = true;
@@ -1475,10 +1644,12 @@ void GameplayController::clientStepForward(std::shared_ptr<Player>& player, std:
     }
 
     // Move the projectiles, get the center destination and amount of landed dirts
-    auto landedProjs = projectiles->update(getSize());;
+    auto landedProjs = projectiles->update(getSize());
+    ;
     landedDirts.insert(landedDirts.end(), landedProjs.begin(), landedProjs.end());
     // Add any landed dirts
-    for (auto landedDirt : landedDirts) {
+    for (auto landedDirt : landedDirts)
+    {
         cugl::Vec2 center = landedDirt.first;
         int x_coor = (int)((center.x - windows->sideGap) / windows->getPaneWidth());
         int y_coor = (int)(center.y / windows->getPaneHeight());
@@ -1487,20 +1658,23 @@ void GameplayController::clientStepForward(std::shared_ptr<Player>& player, std:
 
         int amount = landedDirt.second;
         std::vector<cugl::Vec2> landedCoords = calculateLandedDirtPositions(windows->getNVertical(), windows->getNHorizontal(), Vec2(x_coor, y_coor), amount);
-        for (cugl::Vec2 dirtPos : landedCoords) {
+        for (cugl::Vec2 dirtPos : landedCoords)
+        {
             windows->addDirt(dirtPos.y, dirtPos.x);
         }
     }
 }
 
 /**
-* FOR HOST ONLY. This method does all the heavy lifting work for update.
-* The host steps forward each player's game state, given references to the player, board, and projectile set.
-*/
-void GameplayController::stepForward(std::shared_ptr<Player>& player, std::shared_ptr<WindowGrid>& windows, std::shared_ptr<ProjectileSet>& projectiles) {
+ * FOR HOST ONLY. This method does all the heavy lifting work for update.
+ * The host steps forward each player's game state, given references to the player, board, and projectile set.
+ */
+void GameplayController::stepForward(std::shared_ptr<Player> &player, std::shared_ptr<WindowGrid> &windows, std::shared_ptr<ProjectileSet> &projectiles)
+{
     int player_id = player->getId();
-    
-    if (windows->getTotalDirt() == 0 && !_gameOver) {
+
+    if (windows->getTotalDirt() == 0 && !_gameOver)
+    {
         _gameOver = true;
         _hasWon[player_id - 1] = true;
         _curBirdBoard = rand() % _numPlayers + 1;
@@ -1513,9 +1687,10 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
 
     std::vector<std::pair<cugl::Vec2, int>> landedDirts;
 
-    if (_allCurBoards[player_id - 1] == 0) {
+    if (_allCurBoards[player_id - 1] == 0)
+    {
         player->move();
-        
+
         // remove any dirt the player collides with
         Vec2 grid_coors = player->getCoorsFromPos(windows->getPaneHeight(), windows->getPaneWidth(), windows->sideGap);
         player->setCoors(grid_coors);
@@ -1523,16 +1698,20 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
         int clamped_y = std::clamp(static_cast<int>(grid_coors.y), 0, windows->getNVertical() - 1);
         int clamped_x = std::clamp(static_cast<int>(grid_coors.x), 0, windows->getNHorizontal() - 1);
         bool dirtExists = windows->hasDirt(clamped_y, clamped_x);
-        if (dirtExists) {
+        if (dirtExists)
+        {
             // filling up dirty bucket
             // set amount of frames plaer is frozen for for cleaning dirt
-            if (_cleanInProgress && player->getAnimationState() == Player::IDLE) {
+            if (_cleanInProgress && player->getAnimationState() == Player::IDLE)
+            {
                 windows->removeDirt(clamped_y, clamped_x);
                 _allDirtAmounts[player_id - 1] = min(_maxDirtAmount, _allDirtAmounts[player_id - 1] + 1);
                 _cleanInProgress = false;
             }
-            else if (player->getAnimationState() == Player::IDLE) {
-                if (player_id == _id) {
+            else if (player->getAnimationState() == Player::IDLE)
+            {
+                if (player_id == _id)
+                {
                     _audioController->playCleanSoundHost();
                 };
                 player->setAnimationState(Player::AnimStatus::WIPING);
@@ -1542,37 +1721,45 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
 
         // Check for collisions and play sound
         auto collision_result = _collisions.resolveCollision(player, projectiles);
-        if (collision_result.first) { // if collision occurred
-            if (player_id == _id) {
+        if (collision_result.first)
+        { // if collision occurred
+            if (player_id == _id)
+            {
                 _audioController->playBangSoundHost();
             };
             player->setAnimationState(Player::STUNNED);
-            if (collision_result.second.has_value()) {
+            if (collision_result.second.has_value())
+            {
                 landedDirts.push_back(collision_result.second.value());
             }
         }
         player->advanceAnimation();
-        
-        if (!_birdLeaving && _curBirdBoard == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.5)) {
+
+        if (!_birdLeaving && _curBirdBoard == player_id && _collisions.resolveBirdCollision(player, _bird, getWorldPosition(_bird.birdPosition), 0.5))
+        {
             // set amount of frames plaer is frozen for for shooing bird
-            if (player->getAnimationState() == Player::AnimStatus::IDLE) {
+            if (player->getAnimationState() == Player::AnimStatus::IDLE)
+            {
                 player->setAnimationState(Player::AnimStatus::SHOOING);
                 _bird.resetBirdPathToExit(windows->getNHorizontal());
                 _birdLeaving = true;
             }
         }
-        
-        //if (_birdLeaving && player->getAnimationState() != Player::SHOOING) {
-          //  // send bird away after shooing
-          //  _bird.resetBirdPathToExit(windows->getNHorizontal());
-       // }
-        
-        if (_birdLeaving && _bird.birdReachesExit()) {
+
+        // if (_birdLeaving && player->getAnimationState() != Player::SHOOING) {
+        //   // send bird away after shooing
+        //   _bird.resetBirdPathToExit(windows->getNHorizontal());
+        // }
+
+        if (_birdLeaving && _bird.birdReachesExit())
+        {
             int maxIndex = 0, secondMaxIndex = 0;
 
             // First pass to find the index of the maximum element
-            for (int i = 0; i < _progressVec.size(); ++i) {
-                if (_progressVec[i] > _progressVec[maxIndex]) {
+            for (int i = 0; i < _progressVec.size(); ++i)
+            {
+                if (_progressVec[i] > _progressVec[maxIndex])
+                {
                     maxIndex = i;
                 }
             }
@@ -1580,34 +1767,42 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
             // Second pass to find the index of the second maximum element
             int highestValue = _progressVec[maxIndex];
             float secondHighestValue = -1.f; // Use the limits header to set to minimum int
-            for (int i = 0; i < _progressVec.size(); ++i) {
-                if (i != maxIndex && _progressVec[i] > secondHighestValue) {
+            for (int i = 0; i < _progressVec.size(); ++i)
+            {
+                if (i != maxIndex && _progressVec[i] > secondHighestValue)
+                {
                     secondHighestValue = _progressVec[i];
                     secondMaxIndex = i;
                 }
             }
-            
-            if (_numPlayers != 1) {
-                if (_curBirdBoard == maxIndex +1) {
-                    _curBirdBoard = secondMaxIndex +1;
-                } else {
-                    _curBirdBoard = maxIndex +1;
+
+            if (_numPlayers != 1)
+            {
+                if (_curBirdBoard == maxIndex + 1)
+                {
+                    _curBirdBoard = secondMaxIndex + 1;
+                }
+                else
+                {
+                    _curBirdBoard = maxIndex + 1;
                 }
             }
-            
+
             std::uniform_int_distribution<> distr(0, windows->getNVertical() - 1);
             int spawnRow = distr(_rng);
-//            CULog("bird spawn at row %d", spawnRow);
+            //            CULog("bird spawn at row %d", spawnRow);
             _bird.resetBirdPath(windows->getNVertical(), windows->getNHorizontal(), spawnRow);
             _birdLeaving = false;
         }
     }
 
     // Move the projectiles, get the center destination and amount of landed dirts
-    auto landedProjs = projectiles->update(getSize());;
+    auto landedProjs = projectiles->update(getSize());
+    ;
     landedDirts.insert(landedDirts.end(), landedProjs.begin(), landedProjs.end());
     // Add any landed dirts
-    for (auto landedDirt : landedDirts) {
+    for (auto landedDirt : landedDirts)
+    {
         cugl::Vec2 center = landedDirt.first;
         int x_coor = (int)((center.x - windows->sideGap) / windows->getPaneWidth());
         int y_coor = (int)(center.y / windows->getPaneHeight());
@@ -1616,66 +1811,73 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
 
         int amount = landedDirt.second;
         std::vector<cugl::Vec2> landedCoords = calculateLandedDirtPositions(windows->getNVertical(), windows->getNHorizontal(), Vec2(x_coor, y_coor), amount);
-        for (cugl::Vec2 dirtPos : landedCoords) {
+        for (cugl::Vec2 dirtPos : landedCoords)
+        {
             windows->addDirt(dirtPos.y, dirtPos.x);
         }
-        
     }
 }
 
-
-
 /** update when dirt is generated */
-void GameplayController::updateDirtGenTime() {
+void GameplayController::updateDirtGenTime()
+{
     _dirtGenTimes.clear();
     std::uniform_int_distribution<> distr(0, _fixedDirtUpdateThreshold);
-    for(int n=0; n<_dirtGenSpeed; ++n) {
+    for (int n = 0; n < _dirtGenSpeed; ++n)
+    {
         _dirtGenTimes.insert(distr(_rng));
     }
 }
 
 /** handles dirt generation */
-void GameplayController::generateDirt() {
-    std::uniform_int_distribution<int> rowDist(0, _windowVec[_id-1]->getNVertical() - 1);
+void GameplayController::generateDirt()
+{
+    std::uniform_int_distribution<int> rowDist(0, _windowVec[_id - 1]->getNVertical() - 1);
     std::uniform_int_distribution<int> colDist(0, _windowVec[_id - 1]->getNHorizontal() - 1);
     int rand_row = rowDist(_rng);
     int rand_col = colDist(_rng);
-//    CULog("player at: (%f, %f)", _player->getCoors().y, _player->getCoors().x);
-//    CULog("generate at: (%d, %d)", (int)rand_row, (int) rand_col);
+    //    CULog("player at: (%f, %f)", _player->getCoors().y, _player->getCoors().x);
+    //    CULog("generate at: (%d, %d)", (int)rand_row, (int) rand_col);
 
     // if add dirt already exists at location or player at location and board is not full, repeat
-    while (Vec2((int)_playerVec[_id - 1]->getCoors().y, (int)_playerVec[_id - 1]->getCoors().x) == Vec2((int)rand_row, (int)rand_col) || !_windowVec[_id - 1]->addDirt(rand_row, rand_col)) {
+    while (Vec2((int)_playerVec[_id - 1]->getCoors().y, (int)_playerVec[_id - 1]->getCoors().x) == Vec2((int)rand_row, (int)rand_col) || !_windowVec[_id - 1]->addDirt(rand_row, rand_col))
+    {
         rand_row = rowDist(_rng);
         rand_col = colDist(_rng);
     }
 }
 
 /** handles poo generation */
-void GameplayController::generatePoo(std::shared_ptr<ProjectileSet> projectiles) {
-//    CULog("player at: (%f, %f)", _player->getCoors().y, _player->getCoors().x);
-//    CULog("generate at: %d", (int)rand_row);
+void GameplayController::generatePoo(std::shared_ptr<ProjectileSet> projectiles)
+{
+    //    CULog("player at: (%f, %f)", _player->getCoors().y, _player->getCoors().x);
+    //    CULog("generate at: %d", (int)rand_row);
 
-// if add dirt already exists at location or player at location and board is not full, repeat
+    // if add dirt already exists at location or player at location and board is not full, repeat
     cugl::Vec2 birdWorldPos = getWorldPosition(_bird.birdPosition);
     // randomize the destination of bird poo, any window pane below the current bird position
     std::uniform_int_distribution<int> rowDist(0, floor(_bird.birdPosition.y));
     int rand_row_center = rowDist(_rng);
     cugl::Vec2 birdPooDest = getWorldPosition(Vec2(_bird.birdPosition.x, rand_row_center));
-    projectiles->spawnProjectile(Vec2(birdWorldPos.x, birdWorldPos.y - _windowVec[_id - 1]->getPaneHeight()/2), Vec2(0, min(-2.4f,-2-_projectileGenChance)), birdPooDest, ProjectileSet::Projectile::ProjectileType::POOP);
-    
+    projectiles->spawnProjectile(Vec2(birdWorldPos.x, birdWorldPos.y - _windowVec[_id - 1]->getPaneHeight() / 2), Vec2(0, min(-2.4f, -2 - _projectileGenChance)), birdPooDest, ProjectileSet::Projectile::ProjectileType::POOP);
 }
 
 /** Checks whether board is full except player current location*/
-const bool GameplayController::checkBoardFull() {
-    for (int x = 0; x < _windowVec[_id - 1]->getNHorizontal(); x++) {
-        for (int y = 0; y < _windowVec[_id - 1]->getNVertical(); y++) {
-                if (_windowVec[_id - 1]->getWindowState(y, x) == 0) {
-                    if (Vec2((int)_playerVec[_id - 1]->getCoors().y, (int)_playerVec[_id - 1]->getCoors().x) == Vec2(y, x)) {
-                        // consider current place occupied
-                        continue;
-                    }
-                    return false;
+const bool GameplayController::checkBoardFull()
+{
+    for (int x = 0; x < _windowVec[_id - 1]->getNHorizontal(); x++)
+    {
+        for (int y = 0; y < _windowVec[_id - 1]->getNVertical(); y++)
+        {
+            if (_windowVec[_id - 1]->getWindowState(y, x) == 0)
+            {
+                if (Vec2((int)_playerVec[_id - 1]->getCoors().y, (int)_playerVec[_id - 1]->getCoors().x) == Vec2(y, x))
+                {
+                    // consider current place occupied
+                    continue;
                 }
+                return false;
+            }
         }
     }
     return true; // No 0s found, all dirty spots
@@ -1690,14 +1892,16 @@ const bool GameplayController::checkBoardFull() {
  *
  * @param batch     The SpriteBatch to draw with.
  */
-void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {    
+void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch> &batch)
+{
     auto player = _playerVec[_id - 1];
     int leftId = calculateNeighborId(_id, -1, _playerVec);
     int rightId = calculateNeighborId(_id, 1, _playerVec);
     auto playerLeft = _playerVec[leftId - 1];
     auto playerRight = _playerVec[rightId - 1];
-    if (_allCurBoards[_id-1] == 0) {
-        _windowVec[_id-1]->draw(batch, getSize(), Color4(255, 255, 255, 255));
+    if (_allCurBoards[_id - 1] == 0)
+    {
+        _windowVec[_id - 1]->draw(batch, getSize(), Color4(255, 255, 255, 255));
         player->draw(batch, getSize());
 
         // character indicators drawing start
@@ -1710,21 +1914,24 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         auto rightPlayerTexture = playerRight->getProfileTexture();
         bool isAttackingOnScreen = false; // when true, ignore indicator drawing
 
-        if (_allCurBoards[leftId - 1] == 1) {
+        if (_allCurBoards[leftId - 1] == 1)
+        {
             // left neighbor is on this player's board
             playerLeft->drawPeeking(batch, getSize(), _allCurBoards[leftId - 1], _windowVec[_id - 1]->sideGap);
             leftPlayerTexture = playerLeft->getWarnTexture();
             isAttackingOnScreen = yTransLeft < screenMaxY && yTransLeft > screenMinY;
         }
-        if (_allCurBoards[rightId - 1] == -1) {
+        if (_allCurBoards[rightId - 1] == -1)
+        {
             // right neighbor is on this player's board
             playerRight->drawPeeking(batch, getSize(), _allCurBoards[rightId - 1], _windowVec[_id - 1]->sideGap);
             rightPlayerTexture = playerRight->getWarnTexture();
             isAttackingOnScreen = yTransRight < screenMaxY && yTransRight > screenMinY;
         }
 
-        if (leftId != _id && rightId != _id && !isAttackingOnScreen) {
-            
+        if (leftId != _id && rightId != _id && !isAttackingOnScreen)
+        {
+
             Affine2 leftTrans = Affine2();
             leftTrans.translate(leftPlayerTexture->getSize() * -0.5);
             leftTrans.scale(0.35);
@@ -1740,60 +1947,70 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
             rightTransArrow.translate(_arrowTexture->getSize() * -0.5);
             rightTransArrow.scale(0.75);
 
-            if (yTransLeft > screenMaxY) {
+            if (yTransLeft > screenMaxY)
+            {
                 yTransLeft = screenMaxY;
                 leftTransArrow.rotate(M_PI / 2.0);
                 leftTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransLeft + 60);
             }
-            else if (yTransLeft < screenMinY) {
+            else if (yTransLeft < screenMinY)
+            {
                 yTransLeft = screenMinY;
                 leftTransArrow.rotate(3.0 * M_PI / 2.0);
                 leftTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransLeft - 60);
             }
-            else {
+            else
+            {
                 leftTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransLeft);
             }
 
-            if (yTransRight > screenMaxY) {
+            if (yTransRight > screenMaxY)
+            {
                 yTransRight = screenMaxY;
                 rightTransArrow.rotate(3.0 * M_PI / 2.0);
                 rightTransArrow.translate(_windowVec[_id - 1]->sideGap - 50, yTransRight + 60);
             }
-            else if (yTransRight < screenMinY) {
+            else if (yTransRight < screenMinY)
+            {
                 yTransRight = screenMinY;
                 rightTransArrow.rotate(M_PI / 2.0);
                 rightTransArrow.translate(_windowVec[_id - 1]->sideGap - 50, yTransRight - 60);
             }
-            else {
+            else
+            {
                 rightTransArrow.translate(_windowVec[_id - 1]->sideGap - 50, yTransRight);
             }
-            
+
             batch->draw(_arrowTexture, Vec2(), leftTransArrow);
             batch->draw(_arrowTexture, Vec2(), rightTransArrow);
 
             leftTrans.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransLeft);
             batch->draw(leftPlayerTexture, Vec2(), leftTrans);
-            
+
             rightTrans.translate(_windowVec[_id - 1]->sideGap - 50, yTransRight);
             batch->draw(rightPlayerTexture, Vec2(), rightTrans);
         }
         // character indicators drawing end
 
-        _projectileVec[_id-1]->draw(batch, getSize(), _windowVec[_id - 1]->getPaneWidth(), _windowVec[_id - 1]->getPaneHeight());
-        if (_curBirdBoard == _id) {
+        _projectileVec[_id - 1]->draw(batch, getSize(), _windowVec[_id - 1]->getPaneWidth(), _windowVec[_id - 1]->getPaneHeight());
+        if (_curBirdBoard == _id)
+        {
             _bird.draw(batch, getSize(), _curBirdPos);
         }
     }
-    else if (_allCurBoards[_id-1] == -1 && leftId != _id) {
+    else if (_allCurBoards[_id - 1] == -1 && leftId != _id)
+    {
         _windowVec[leftId - 1]->draw(batch, getSize(), playerLeft->getColor());
-        if (_allCurBoards[leftId - 1] == 0) {
+        if (_allCurBoards[leftId - 1] == 0)
+        {
             playerLeft->draw(batch, getSize());
         }
         player->drawPeeking(batch, getSize(), _allCurBoards[_id - 1], _windowVec[_id - 1]->sideGap);
-        _projectileVec[leftId-1]->draw(batch, getSize(), _windowVec[leftId - 1]->getPaneWidth(), _windowVec[leftId - 1]->getPaneHeight());
+        _projectileVec[leftId - 1]->draw(batch, getSize(), _windowVec[leftId - 1]->getPaneWidth(), _windowVec[leftId - 1]->getPaneHeight());
 
         vector<Vec2> potentialDirts;
-        if (_dirtSelected && _dirtPath.size() != 0) {
+        if (_dirtSelected && _dirtPath.size() != 0)
+        {
             batch->setColor(Color4::BLACK);
             batch->fill(_dirtPath);
             Vec2 dirtDest = _dirtPath.getVertices().back() - Vec2(0.5, 0.5);
@@ -1802,24 +2019,29 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
             landedDirtCoords.x = std::clamp(static_cast<int>(landedDirtCoords.x), 0, _windowVec[leftId - 1]->getNHorizontal() - 1);
             potentialDirts = calculateLandedDirtPositions(_windowVec[leftId - 1]->getNVertical(), _windowVec[leftId - 1]->getNHorizontal(), landedDirtCoords, _currentDirtAmount);
         }
-        if (potentialDirts.size() > 0) {
+        if (potentialDirts.size() > 0)
+        {
             _windowVec[leftId - 1]->drawPotentialDirt(batch, getSize(), potentialDirts);
         }
 
-        if (_curBirdBoard == leftId) {
+        if (_curBirdBoard == leftId)
+        {
             _bird.draw(batch, getSize(), _curBirdPos);
         }
     }
-    else if (_allCurBoards[_id - 1] == 1 && rightId != _id) {
+    else if (_allCurBoards[_id - 1] == 1 && rightId != _id)
+    {
         _windowVec[rightId - 1]->draw(batch, getSize(), playerRight->getColor());
-        if (_allCurBoards[rightId - 1] == 0) {
+        if (_allCurBoards[rightId - 1] == 0)
+        {
             playerRight->draw(batch, getSize());
         }
         player->drawPeeking(batch, getSize(), _allCurBoards[_id - 1], _windowVec[_id - 1]->sideGap);
-        _projectileVec[rightId-1]->draw(batch, getSize(), _windowVec[rightId - 1]->getPaneWidth(), _windowVec[rightId - 1]->getPaneHeight());
+        _projectileVec[rightId - 1]->draw(batch, getSize(), _windowVec[rightId - 1]->getPaneWidth(), _windowVec[rightId - 1]->getPaneHeight());
 
         vector<Vec2> potentialDirts;
-        if (_dirtSelected && _dirtPath.size() != 0) {
+        if (_dirtSelected && _dirtPath.size() != 0)
+        {
             batch->setColor(Color4::BLACK);
             batch->fill(_dirtPath);
             Vec2 dirtDest = _dirtPath.getVertices().back();
@@ -1828,25 +2050,30 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
             landedDirtCoords.x = std::clamp(static_cast<int>(landedDirtCoords.x), 0, _windowVec[rightId - 1]->getNHorizontal() - 1);
             potentialDirts = calculateLandedDirtPositions(_windowVec[rightId - 1]->getNVertical(), _windowVec[rightId - 1]->getNHorizontal(), landedDirtCoords, _currentDirtAmount);
         }
-        if (potentialDirts.size() > 0) {
+        if (potentialDirts.size() > 0)
+        {
             _windowVec[rightId - 1]->drawPotentialDirt(batch, getSize(), potentialDirts);
         }
-        if (_curBirdBoard == rightId) {
+        if (_curBirdBoard == rightId)
+        {
             _bird.draw(batch, getSize(), _curBirdPos);
         }
     }
 }
 
-
-void GameplayController::setActive(bool f) {
+void GameplayController::setActive(bool f)
+{
     // yes this code is bad and needs to be reworked
-    if (!f) {
-        _isActive=false;
+    if (!f)
+    {
+        _isActive = false;
         setRequestForMenu(false);
         setGameOver(false);
         setGameStart(false);
         setWin(false);
-    } else {
+    }
+    else
+    {
         _isActive = true;
         _audioController->playGameplayMusic();
         setRequestForMenu(false);
@@ -1859,19 +2086,21 @@ void GameplayController::setActive(bool f) {
     _gameTimeLeft = _gameTime;
 }
 
-void GameplayController::drawCountdown(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Vec3 campos, cugl::Size s) {
-    if (!_gameStart) {
+void GameplayController::drawCountdown(const std::shared_ptr<cugl::SpriteBatch> &batch, cugl::Vec3 campos, cugl::Size s)
+{
+    if (!_gameStart)
+    {
         Affine2 countdownTrans;
         Affine2 sparkleTrans;
         double countdownScale;
         double sparkleHScale;
         double sparkleWScale;
         std::shared_ptr<cugl::SpriteSheet> currentCountdownSprite = getCurrentCountdownSprite();
-        currentCountdownSprite->setOrigin(Vec2(currentCountdownSprite->getFrameSize().width/2, currentCountdownSprite->getFrameSize().height/2));
-        _countdownSparkleSprite->setOrigin(Vec2(_countdownSparkleSprite->getFrameSize().width/2, _countdownSparkleSprite->getFrameSize().height/2));
-        countdownScale = (float)_windowVec[_id - 1]->getPaneHeight() / currentCountdownSprite->getFrameSize().height *4;
-        sparkleHScale = (float)_windowVec[_id - 1]->getPaneHeight() / _countdownSparkleSprite->getFrameSize().height *4;
-        sparkleWScale = (float)_windowVec[_id - 1]->getPaneWidth() / _countdownSparkleSprite->getFrameSize().width * 1.4 *4;
+        currentCountdownSprite->setOrigin(Vec2(currentCountdownSprite->getFrameSize().width / 2, currentCountdownSprite->getFrameSize().height / 2));
+        _countdownSparkleSprite->setOrigin(Vec2(_countdownSparkleSprite->getFrameSize().width / 2, _countdownSparkleSprite->getFrameSize().height / 2));
+        countdownScale = (float)_windowVec[_id - 1]->getPaneHeight() / currentCountdownSprite->getFrameSize().height * 4;
+        sparkleHScale = (float)_windowVec[_id - 1]->getPaneHeight() / _countdownSparkleSprite->getFrameSize().height * 4;
+        sparkleWScale = (float)_windowVec[_id - 1]->getPaneWidth() / _countdownSparkleSprite->getFrameSize().width * 1.4 * 4;
         countdownTrans.scale(countdownScale);
         sparkleTrans.scale(Vec2(sparkleWScale, sparkleHScale));
         countdownTrans.translate(campos);
