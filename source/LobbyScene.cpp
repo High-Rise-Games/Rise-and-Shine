@@ -428,7 +428,7 @@ void LobbyScene::update(float timestep) {
             std::shared_ptr<JsonValue> jsonData = _network.processMessage(source, data);
             processData(source, data);
             if (isHost() && jsonData->has("id request")) {
-                _STUNmap[jsonData->getString("id request")] = true;
+                _UUIDmap[jsonData->getString("id request")] = -1;
             }
             if (jsonData->has("char")) {
                 _chosenChars[stoi(jsonData->getString("id"))-1] = jsonData->getString("char");
@@ -440,13 +440,12 @@ void LobbyScene::update(float timestep) {
         _player_field->setText(std::to_string(_network.getNumPlayers()));
     
         if (isHost()) {
-            for (auto peer : _network.getConnection()->getPlayers()) {
-                if (_STUNmap[peer] && peer!="") {
-                    const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
-                    json->init(JsonValue::Type::ObjectType);
-                    json->appendValue("level", std::to_string(_level));
-                    _network.transmitMessage(peer, json);
-                }
+            for (auto& pair : _UUIDmap) {
+                const auto& peer = pair.first;
+                const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+                json->init(JsonValue::Type::ObjectType);
+                json->appendValue("level", std::to_string(_level));
+                _network.transmitMessage(peer, json);
             }
         }
             
@@ -463,17 +462,18 @@ void LobbyScene::update(float timestep) {
         
         if (_network.getConnection()->isOpen()) {
             if (isHost()) {
-                int i=0;
-                for (auto peer : _network.getConnection()->getPlayers()) {
+                int i=1;
+                for (auto& pair : _UUIDmap) {
+                    const auto& peer = pair.first;
                     i++;
-                    if (_UUIDmap[peer] != i && _STUNmap[peer] && peer!="") {
+                    if (_network.getConnection()->isPlayerActive(peer)) {
                         const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
                         json->init(JsonValue::Type::ObjectType);
                         json->appendValue(peer, std::to_string(i));
                         _network.transmitMessage(json);
                         _UUIDmap[peer] = i;
                     }
-                    if (!_network.getConnection()->isPlayerActive(peer)) {
+                    else {
                         _UUIDmap.erase(peer);
                     }
                 }
