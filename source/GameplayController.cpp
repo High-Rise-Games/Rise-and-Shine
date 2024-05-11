@@ -1229,7 +1229,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         dirtThrowButton->setPosition(buttonPos);
         dirtThrowArc->setPosition(buttonPos);
         dirtThrowArc->setAngle(arc_rotate_angle);
-        if ((myCurBoard == 1 && _input.getDir().x == 1) || (myCurBoard == -1 && _input.getDir().x == -1)) {
+        if ((_input.getDir().x == 1) || (_input.getDir().x == -1)) {
             ifSwitch = true;
         }
         if (_currentDirtAmount > 0) {
@@ -1503,7 +1503,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
     if (windows->getTotalDirt() == 0 && !_gameOver) {
         _gameOver = true;
         _hasWon[player_id - 1] = true;
-        _curBirdBoard = rand() % _numPlayers + 1;
+        //_curBirdBoard = rand() % _numPlayers + 1;
     }
 
     // calculate progress
