@@ -52,7 +52,7 @@ void App::onStartup() {
     // Queue up the other assets
     _assets->loadDirectoryAsync("json/assets.json",nullptr);
     
-    net::NetworkLayer::start(net::NetworkLayer::Log::INFO);
+    net::NetworkLayer::start(net::NetworkLayer::Log::VERBOSE);
     AudioEngine::start();
     Application::onStartup(); // YOU MUST END with call to parent
 }

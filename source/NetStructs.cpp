@@ -79,20 +79,17 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeBoardState(st
     _serializer.writeFloat(message->timer);
     _serializer.writeFloat(message->numDirt);
     _serializer.writeFloat(message->progress);
-    _serializer.writeFloat(message->currBoardBird);
+    _serializer.writeBool(message->currBoardBird);
     
     // check if message is optional. If not, write more data
-    _serializer.writeFloat(message->optional);
-    if (message->optional == 0) {
+    if (!message->optional) {
         
         _serializer.writeFloat(message->playerX);
-        if (message->currBoardBird==1) {
+        if (message->currBoardBird) {
             _serializer.writeFloat(message->birdPosX);
             _serializer.writeFloat(message->birdPosY);
-            _serializer.writeFloat(message->birdFacingRight);
+            _serializer.writeBool(message->birdFacingRight);
         }
-        
-        
         
         
         // loop through every projectile in the projectile vector
@@ -111,6 +108,7 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeBoardState(st
         }
     }
     
+    _serializer.writeBool(message->optional);
     
 
     std::shared_ptr<std::vector<std::byte>> buffer = std::make_shared<std::vector<std::byte>>(_serializer.serialize());
@@ -141,17 +139,14 @@ const std::shared_ptr<NetStructs::BOARD_STATE> NetStructs::deserializeBoardState
     receivedMessage->timer = _deserializer.readFloat();
     receivedMessage->numDirt = _deserializer.readFloat();
     receivedMessage->progress = _deserializer.readFloat();
-    receivedMessage->currBoardBird = _deserializer.readFloat();
-    receivedMessage->optional = _deserializer.readFloat();
-    if (receivedMessage->optional==0) {
+    receivedMessage->currBoardBird = _deserializer.readBool();
+    if (!receivedMessage->optional) {
         receivedMessage->playerX = _deserializer.readFloat();
         if (receivedMessage->currBoardBird) {
             receivedMessage->birdPosX = _deserializer.readFloat();
             receivedMessage->birdPosY = _deserializer.readFloat();
-            receivedMessage->birdFacingRight = _deserializer.readFloat();
+            receivedMessage->birdFacingRight = _deserializer.readBool();
         }
-        
-        
         std::vector<PROJECTILE> projectileVector;
         for (int i=0; i<receivedMessage->numProjectile; i++) {
             PROJECTILE projectile;
@@ -166,6 +161,8 @@ const std::shared_ptr<NetStructs::BOARD_STATE> NetStructs::deserializeBoardState
         }
         receivedMessage->projectileVector = projectileVector;
     }
+    
+    receivedMessage->optional = _deserializer.readBool();
     
     
     return receivedMessage;

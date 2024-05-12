@@ -199,9 +199,7 @@ void NetworkController::transmitMessage(const std::string uuid, const std::share
         NetcodeSerializer netSerializer;
         netSerializer.writeJson(msg);
         const std::vector<std::byte>& byteState = netSerializer.serialize();
-        if (_network->isPlayerActive(uuid)) {
-            _network->sendTo(uuid, byteState);
-        }
+        _network->sendTo(uuid, byteState);
         netSerializer.reset();
     }
 }

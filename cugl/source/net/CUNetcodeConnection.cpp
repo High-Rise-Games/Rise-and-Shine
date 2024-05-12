@@ -227,7 +227,6 @@ bool NetcodeConnection::init(const NetcodeConfig& config) {
 		config2rtc(_config,_rtcconfig);
 	
 		// Get the UUID 
-        _UUIDmap = std::make_shared<std::map<std::string, int>>();
         _uuid = genuuid();
 		_ishost = true;
 		_host = _uuid;
@@ -640,7 +639,6 @@ void NetcodeConnection::handleSession(const std::shared_ptr<JsonValue>&  json) {
 				std::string player = json->getString("player");
 				_players.erase(player);
                 _peers.erase(player);
-                _UUIDmap->erase(player);
 				if (_onDisconnect) {
 					callback = [=]() {
 						_onDisconnect(player);				
