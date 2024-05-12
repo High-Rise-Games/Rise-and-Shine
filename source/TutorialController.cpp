@@ -293,7 +293,7 @@ void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         dirtThrowButton->setPosition(buttonPos);
         dirtThrowArc->setPosition(buttonPos);
         dirtThrowArc->setAngle(arc_rotate_angle);
-        if ((_input.getDir().x == 1) || (_input.getDir().x == -1)) {
+        if ((myCurBoard == 1 && _input.getDir().x == 1) || (myCurBoard == -1 && _input.getDir().x == -1)) {
             if (_currentTutorialStage != THROW) { // don't allow returning to own board before player has thrown dirt for the first time
                 ifSwitch = true;
                 if (_currentTutorialStage == RETURN) { _currentTutorialStage = ALL_DIRT; } // player has returned to their board after throwing dirt
