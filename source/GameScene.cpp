@@ -105,6 +105,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
 
     reset();
 
+    // Acquire the scene built by the asset loader and resize it the scene
+    assets->loadDirectory(assets->get<JsonValue>("gamescene"));
     _gameplay_elem = _assets->get<scene2::SceneNode>("game");
 
     _gameplay_elem->setContentSize(dimen);
@@ -128,14 +130,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _char_to_barIdx["Flower"] = 3;
     
 
-    // Acquire the scene built by the asset loader and resize it the scene
-
     _scene_UI = _assets->get<scene2::SceneNode>("gamescene");
-
-//    ["gamescene"]["children"]["Leftgroup"]["children"]["TimerUI"]["children"]["UITimer"]["children"]["timerbg"]["children"]["time"];
-
-    
-//    _scene_UI->addChild(_dirtThrowArc);
     _scene_UI->setContentSize(dimen);
     _scene_UI->doLayout(); // Repositions the HUD
     

@@ -1,0 +1,166 @@
+{
+    "textures": {
+        "menu_background": {
+            "file": "textures/HomeBG.jpg",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "menu_title": {
+            "file": "textures/RiseAndShine.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "menu_host": {
+            "file": "textures/HostButton.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "menu_join": {
+            "file": "textures/JoinGameButton.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "menu_tutorial": {
+            "file": "textures/TutorialButton.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        }
+    },
+    "widgets": {
+        "colorbutton": "widgets/colorbutton.json",
+        "textbutton": "widgets/textbutton.json",
+        "textfield": "widgets/textfield.json",
+        "labelbox": "widgets/labelbox.json"
+    },
+    "scene2s": {
+        "menu": {
+            "type": "Image",
+            "format": {
+                "type": "Anchored"
+            },
+            "data": {
+                "texture": "menu_background"
+            },
+            "children": {
+                "logo": {
+                    "type": "Image",
+                    "format": {
+                        "type": "Anchored"
+                    },
+                    "data": {
+                        "texture": "menu_title",
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ]
+                    },
+                    "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "middle",
+                        "y_offset": 150,
+                        "absolute": true
+                    }
+                },
+                "host": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "downnode": [
+                            0,
+                            0,
+                            0,
+                            0
+                        ],
+                        
+                        "visible": true,
+                        "pushsize": true,
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ]
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "menu_host"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "middle",
+                        "y_offset": -15,
+                        "absolute": true
+                    }
+                },
+                "join": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        
+                        "visible": true,
+                        "pushsize": true,
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ]
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "menu_join"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "middle",
+                        "y_offset": -115,
+                        "absolute": true
+                    }
+                },
+                "tutorial": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        
+                        "visible": true,
+                        "pushsize": true,
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ]
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "menu_tutorial"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "middle",
+                        "y_offset": -215,
+                        "absolute": true
+                    }
+                }
+            }
+        }
+    }
+}
+
+

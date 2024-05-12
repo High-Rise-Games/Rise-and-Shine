@@ -52,6 +52,7 @@ bool LevelScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _input = std::make_shared<DirtThrowInputController>();
     _input->init();
     
+    assets->loadDirectory(assets->get<JsonValue>("level"));
     _scene = assets->get<scene2::SceneNode>("level");
     dimen = _scene->getContentSize() * dimen.height / _scene->getContentSize().height;
     _scene->setContentSize(dimen);

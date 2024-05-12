@@ -1,28 +1,257 @@
 {
-    "textures": {
-        "timerbg": {
-            "file": "textures/timerbg.png"
+    "scene2s": {
+        "game": {
+            "type": "Node",
+            "format": {
+                "type": "anchored"
+            },
+            "data": {
+                "anchor": [
+                    0.5,
+                    0.5
+                ]
+            },
+            "children": {
+                "bluebar": {
+                    "type": "Progress",
+                    "data": {
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
+                        "background": "progress_bg",
+                        "foreground": "progress_fg_blue",
+                        "left_cap": "progress_fg_blue_leftcap",
+                        "right_cap": "progress_fg_blue_rightcap",
+                        "visible": false
+                    },
+                    "layout": {
+                        "y_offset": 200,
+                        "absolute": true
+                    }
+                },
+                "greenbar": {
+                    "type": "Progress",
+                    "data": {
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
+                        "background": "progress_bg",
+                        "foreground": "progress_fg_green",
+                        "left_cap": "progress_fg_green_leftcap",
+                        "right_cap": "progress_fg_green_rightcap",
+                        "visible": false
+                    },
+                    "layout": {
+                        "y_offset": 200,
+                        "absolute": true
+                    }
+                },
+                "redbar": {
+                    "type": "Progress",
+                    "data": {
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
+                        "background": "progress_bg",
+                        "foreground": "progress_fg_red",
+                        "left_cap": "progress_fg_red_leftcap",
+                        "right_cap": "progress_fg_red_rightcap",
+                        "visible": false
+                    },
+                    "layout": {
+                        "y_offset": 200,
+                        "absolute": true
+                    }
+                },
+                "yellowbar": {
+                    "type": "Progress",
+                    "data": {
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
+                        "background": "progress_bg",
+                        "foreground": "progress_fg_yellow",
+                        "left_cap": "progress_fg_yellow_leftcap",
+                        "right_cap": "progress_fg_yellow_rightcap",
+                        "visible": false
+                    },
+                    "layout": {
+                        "y_offset": 200,
+                        "absolute": true
+                    }
+                },
+                "back": {
+                    "type": "Button",
+                    "format": {
+                        "type": "Float",
+                        "x_alignment": "left",
+                        "y_alignment": "top",
+                        "orientation": "horizontal"
+                    },
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "settings"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "absolute": false,
+                        "x_offset": 0.95,
+                        "y_offset": 0
+                    }
+                },
+                "throw": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
+                        "scale": 0.4
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "throwButton"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "greenarc": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
+                        "scale": 1.5
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "throwArcGreen"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "redarc": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
+                        "scale": 1.0
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "throwArcRed"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "bluearc": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
+                        "scale": 1.0
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "throwArcBlue"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "yellowarc": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
+                        "scale": 1.0
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "throwArcYellow"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "middle",
+                        "y_offset": 0,
+                        "x_offset": 0,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                }
+            }
         },
-        "time": {
-            "file": "textures/time.png"
-        },
-        "dirt": {
-            "file": "textures/dirt.png"
-        },
-        "bucket": {
-            "file": "textures/bucket.png"
-        },
-        "Settings": {
-            "file": "textures/Settings.png"
-        },
-        "textbox": {
-            "file": "textures/textbox.png"
-        },
-        "mushroomtalk": {
-            "file": "textures/mushroomtalk.png"
-        }
-    },
-    "scene2s" : {
         "gamescene": {
             "type": "Node",
             "format": {
@@ -34,38 +263,38 @@
                     0
                 ],
                 "size": [
-                    932,
-                    430
+                    1280,
+                    720
                 ],
-                "angle": -1.5308806722812968e-22,
+                "angle": 0,
                 "position": [
-                    6998,
-                    189
+                    2921,
+                    2014
                 ],
                 "visible": true
             },
             "children": {
-                "leftgroup": {
+                "Leftgroup": {
                     "type": "Node",
                     "format": {
                         "type": "Float",
-                        "x_alignment": "left",
+                        "x_alignment": "center",
                         "y_alignment": "top",
-                        "orientation": "horizontal"
+                        "orientation": "vertical"
                     },
                     "data": {
                         "anchor": [
-                            0,
-                            1
+                            0.5,
+                            0.5
                         ],
                         "size": [
-                            196.84,
-                            104
+                            233,
+                            292
                         ],
-                        "angle": 0,
+                        "angle": -1.5308806722812968e-22,
                         "position": [
                             0,
-                            326
+                            428
                         ],
                         "visible": true
                     },
@@ -84,13 +313,13 @@
                                     0.5
                                 ],
                                 "size": [
-                                    134,
-                                    104
+                                    201,
+                                    140
                                 ],
                                 "angle": 0,
                                 "position": [
-                                    67,
-                                    52
+                                    116.5,
+                                    70
                                 ],
                                 "visible": true
                             },
@@ -106,13 +335,13 @@
                                             0.5
                                         ],
                                         "size": [
-                                            134,
-                                            72
+                                            201,
+                                            108
                                         ],
                                         "angle": 0,
                                         "position": [
-                                            67,
-                                            52
+                                            100.5,
+                                            70
                                         ],
                                         "visible": true
                                     },
@@ -126,13 +355,13 @@
                                                     0.5
                                                 ],
                                                 "size": [
-                                                    134,
-                                                    72
+                                                    201,
+                                                    109
                                                 ],
                                                 "angle": 1.5308806722812968e-22,
                                                 "position": [
                                                     0,
-                                                    0
+                                                    -1
                                                 ],
                                                 "visible": true
                                             },
@@ -158,13 +387,13 @@
                                                     1
                                                 ],
                                                 "size": [
-                                                    85,
-                                                    48
+                                                    122,
+                                                    66
                                                 ],
                                                 "angle": 0,
                                                 "position": [
-                                                    24,
-                                                    14
+                                                    39,
+                                                    24
                                                 ],
                                                 "visible": true
                                             },
@@ -178,13 +407,13 @@
                                                             0.5
                                                         ],
                                                         "size": [
-                                                            32,
-                                                            32
+                                                            48,
+                                                            48
                                                         ],
                                                         "angle": 1.5308806722812968e-22,
                                                         "position": [
-                                                            24,
-                                                            24
+                                                            32,
+                                                            33
                                                         ],
                                                         "visible": true
                                                     },
@@ -206,16 +435,16 @@
                                                             0.5
                                                         ],
                                                         "size": [
-                                                            35,
-                                                            31
+                                                            56,
+                                                            50
                                                         ],
                                                         "position": [
-                                                            59.5,
-                                                            24
+                                                            86,
+                                                            33
                                                         ],
                                                         "angle": 1.5308806722812968e-22,
                                                         "visible": true,
-                                                        "font": "saira stencil oneRegular20",
+                                                        "font": "saira stencil oneRegular32",
                                                         "text": "109",
                                                         "foreground": "#000000ff",
                                                         "background": "#00000000",
@@ -244,8 +473,8 @@
                                                 "x_anchor": "left",
                                                 "y_anchor": "top",
                                                 "absolute": false,
-                                                "x_offset": 0.18,
-                                                "y_offset": -0.14
+                                                "x_offset": 0.19,
+                                                "y_offset": -0.17
                                             }
                                         }
                                     },
@@ -263,9 +492,9 @@
                             "layout": {
                                 "priority": 0,
                                 "padding": [
-                                    0,
-                                    0,
-                                    0,
+                                    16,
+                                    16,
+                                    16,
                                     0
                                 ]
                             }
@@ -284,13 +513,13 @@
                                     0.5
                                 ],
                                 "size": [
-                                    62.84,
-                                    100
+                                    119,
+                                    136
                                 ],
                                 "angle": 0,
                                 "position": [
-                                    165.41772079467773,
-                                    50
+                                    116.5,
+                                    224
                                 ],
                                 "visible": true
                             },
@@ -306,13 +535,13 @@
                                             0.5
                                         ],
                                         "size": [
-                                            62.84,
-                                            68
+                                            119,
+                                            136
                                         ],
                                         "angle": 0,
                                         "position": [
-                                            31.417720794677734,
-                                            50
+                                            59.5,
+                                            68
                                         ],
                                         "visible": true
                                     },
@@ -326,13 +555,13 @@
                                                     0.5
                                                 ],
                                                 "size": [
-                                                    62.84,
-                                                    62.84
+                                                    119,
+                                                    113
                                                 ],
                                                 "angle": 1.5308806722812968e-22,
                                                 "position": [
                                                     0,
-                                                    5.16
+                                                    5
                                                 ],
                                                 "visible": true
                                             },
@@ -341,7 +570,7 @@
                                                 "y_anchor": "bottom",
                                                 "absolute": false,
                                                 "x_offset": 0.5,
-                                                "y_offset": 0.54
+                                                "y_offset": 0.45
                                             }
                                         },
                                         "bucket": {
@@ -353,12 +582,12 @@
                                                     0.5
                                                 ],
                                                 "size": [
-                                                    34.43,
-                                                    39.59
+                                                    60,
+                                                    68
                                                 ],
                                                 "angle": 1.5308806722812968e-22,
                                                 "position": [
-                                                    12.05,
+                                                    25,
                                                     0
                                                 ],
                                                 "visible": true
@@ -367,8 +596,8 @@
                                                 "x_anchor": "left",
                                                 "y_anchor": "bottom",
                                                 "absolute": false,
-                                                "x_offset": 0.47,
-                                                "y_offset": 0.29
+                                                "x_offset": 0.46,
+                                                "y_offset": 0.25
                                             }
                                         },
                                         "number": {
@@ -379,16 +608,16 @@
                                                     0.5
                                                 ],
                                                 "size": [
-                                                    26,
-                                                    27
+                                                    35,
+                                                    42
                                                 ],
                                                 "position": [
-                                                    16,
-                                                    33
+                                                    38,
+                                                    52
                                                 ],
                                                 "angle": 1.5308806722812968e-22,
                                                 "visible": true,
-                                                "font": "saira stencil oneRegular24",
+                                                "font": "saira stencil oneRegular32",
                                                 "text": "10",
                                                 "foreground": "#ffffffff",
                                                 "background": "#00000000",
@@ -406,8 +635,8 @@
                                                 "x_anchor": "left",
                                                 "y_anchor": "bottom",
                                                 "absolute": false,
-                                                "x_offset": 0.46,
-                                                "y_offset": 0.68
+                                                "x_offset": 0.47,
+                                                "y_offset": 0.54
                                             }
                                         }
                                     },
@@ -415,9 +644,9 @@
                                         "priority": 0,
                                         "padding": [
                                             0,
-                                            16,
+                                            0,
                                             8,
-                                            16
+                                            0
                                         ]
                                     }
                                 }
@@ -425,9 +654,9 @@
                             "layout": {
                                 "priority": 1,
                                 "padding": [
+                                    16,
                                     0,
-                                    0,
-                                    0,
+                                    16,
                                     0
                                 ]
                             }
@@ -437,8 +666,8 @@
                         "x_anchor": "left",
                         "y_anchor": "top",
                         "absolute": false,
-                        "x_offset": 0,
-                        "y_offset": 0
+                        "x_offset": 0.09,
+                        "y_offset": -0.2
                     }
                 },
                 "SettingUI": {
@@ -451,17 +680,17 @@
                     },
                     "data": {
                         "anchor": [
-                            0,
-                            1
+                            0.5,
+                            0.5
                         ],
                         "size": [
-                            32,
-                            65.42
+                            56,
+                            90.49
                         ],
-                        "angle": 0,
+                        "angle": -1.5308806722812968e-22,
                         "position": [
-                            884,
-                            364.58
+                            1208,
+                            629.51
                         ],
                         "visible": true
                     },
@@ -469,19 +698,19 @@
                         "Settings": {
                             "type": "Image",
                             "data": {
-                                "texture": "Settings",
+                                "texture": "settings",
                                 "anchor": [
                                     0.5,
                                     0.5
                                 ],
                                 "size": [
-                                    32,
-                                    33.42
+                                    56,
+                                    58.49
                                 ],
                                 "angle": 1.5308806722812968e-22,
                                 "position": [
-                                    16,
-                                    32.711111068725586
+                                    28,
+                                    45.24444389343262
                                 ],
                                 "visible": true
                             },
@@ -500,134 +729,11 @@
                         "x_anchor": "left",
                         "y_anchor": "top",
                         "absolute": false,
-                        "x_offset": 0.95,
-                        "y_offset": 0
-                    }
-                },
-                "tutorial": {
-                    "type": "Node",
-                    "format": {
-                        "type": "Anchored"
-                    },
-                    "data": {
-                        "anchor": [
-                            0,
-                            1
-                        ],
-                        "size": [
-                            300,
-                            197
-                        ],
-                        "angle": 0,
-                        "position": [
-                            -4,
-                            -66
-                        ],
-                        "visible": true
-                    },
-                    "children": {
-                        "dialog": {
-                            "type": "Node",
-                            "format": {
-                                "type": "Float",
-                                "x_alignment": "left",
-                                "y_alignment": "top",
-                                "orientation": "vertical"
-                            },
-                            "data": {
-                                "anchor": [
-                                    0.5,
-                                    0.5
-                                ],
-                                "size": [
-                                    246,
-                                    131
-                                ],
-                                "angle": 1.5308806722812968e-22,
-                                "position": [
-                                    54,
-                                    66
-                                ],
-                                "visible": true
-                            },
-                            "children": {
-                                "textbox": {
-                                    "type": "Image",
-                                    "data": {
-                                        "texture": "textbox",
-                                        "anchor": [
-                                            0.5,
-                                            0.5
-                                        ],
-                                        "size": [
-                                            246,
-                                            131
-                                        ],
-                                        "angle": 0,
-                                        "position": [
-                                            123,
-                                            65.5
-                                        ],
-                                        "visible": true
-                                    },
-                                    "layout": {
-                                        "priority": 0,
-                                        "padding": [
-                                            0,
-                                            8,
-                                            0,
-                                            0
-                                        ]
-                                    }
-                                }
-                            },
-                            "layout": {
-                                "x_anchor": "left",
-                                "y_anchor": "top",
-                                "absolute": false,
-                                "x_offset": 0.59,
-                                "y_offset": -0.33
-                            }
-                        },
-                        "mushroomtalk": {
-                            "type": "Image",
-                            "data": {
-                                "texture": "mushroomtalk",
-                                "anchor": [
-                                    0.5,
-                                    0.5
-                                ],
-                                "size": [
-                                    87,
-                                    176
-                                ],
-                                "angle": 1.5308806722812968e-22,
-                                "position": [
-                                    0,
-                                    0
-                                ],
-                                "visible": true
-                            },
-                            "layout": {
-                                "x_anchor": "left",
-                                "y_anchor": "top",
-                                "absolute": false,
-                                "x_offset": 0.14,
-                                "y_offset": -0.55
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "absolute": false,
-                        "x_offset": 0,
-                        "y_offset": -0.7
+                        "x_offset": 0.97,
+                        "y_offset": -0.06
                     }
                 }
             }
         }
     }
-        
-    
 }

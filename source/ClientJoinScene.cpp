@@ -36,11 +36,12 @@ bool ClientJoinScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     if (assets == nullptr) {
         return false;
     } else if (!Scene2::init(dimen)) {
-        return false;
+        return false; 
     }
     
     // Acquire the scene built by the asset loader and resize it the scene
     _assets = assets;
+    assets->loadDirectory(assets->get<JsonValue>("clientjoin"));
     
     std::shared_ptr<scene2::SceneNode> scene = assets->get<scene2::SceneNode>("client_join");
     scene->setContentSize(dimen);

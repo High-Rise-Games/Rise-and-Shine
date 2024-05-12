@@ -1,0 +1,499 @@
+{
+    "scene2s": {
+        "client_join": {
+            "type": "Image",
+            "format": {
+                "type": "Anchored"
+            },
+            "data": {
+                "texture": "keypad_background"
+            },
+            "children": {
+                "title": {
+                    "type": "Image",
+                    "format": {
+                        "type": "Anchored"
+                    },
+                    "data": {
+                        "texture": "keypad_title",
+                        "anchor": [
+                            0,
+                            0
+                        ],
+                        "scale": 0.75
+                    },
+                    "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "top",
+                        "y_offset": -130,
+                        "x_offset": -10,
+                        "absolute": true
+                    }
+                },
+                "subtitle": {
+                    "type": "Image",
+                    "format": {
+                        "type": "Anchored"
+                    },
+                    "data": {
+                        "texture": "keypad_subtitle",
+                        "anchor": [
+                            0,
+                            0
+                        ],
+                        "scale": 0.75
+                    },
+                    "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "top",
+                        "y_offset": -175,
+                        "x_offset": -10,
+                        "absolute": true
+                    }
+                },
+                "inputUI": {
+                    "type": "Image",
+                    "format": {
+                        "type": "Anchored"
+                    },
+                    "data": {
+                        "texture": "keypad_inputfield",
+                        "anchor": [
+                            0,
+                            0
+                        ],
+                        "scale": 0.72
+                    },
+                    "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "middle",
+                        "y_offset": 60,
+                        "x_offset": -10,
+                        "absolute": true
+                    }
+                },
+                "client_id_field": {
+                    "type": "Textfield",
+                    "format": {
+                        "type": "Anchored"
+                    },
+                    "data": {
+                        "anchor": [
+                            0,
+                            0
+                        ],
+                        "text": "123456",
+                        "font": "saira stencil oneRegular32",
+                        "halign": "left",
+                        "valign": "middle",
+                        "cursor": false
+                    },
+                    "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "middle",
+                        "y_offset": 60,
+                        "x_offset": 20,
+                        "absolute": true
+                    }
+                },
+                "inputPlaceholder": {
+                    "type": "Image",
+                    "format": {
+                        "type": "Anchored"
+                    },
+                    "data": {
+                        "texture": "keypad_placeholderText",
+                        "anchor": [
+                            0,
+                            0
+                        ],
+                        "scale": 0.75
+                    },
+                    "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "middle",
+                        "y_offset": 80,
+                        "x_offset": 27,
+                        "absolute": true
+                    }
+                },
+                "back": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
+                        "scale": 0.75
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_back"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "center",
+                        "y_anchor": "bottom",
+                        "y_offset": 85,
+                        "x_offset": 60,
+                        "absolute": true
+                    }
+                },
+                "next": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.5,
+                            0.5
+                        ],
+                        "scale": 0.75
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_next"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "right",
+                        "y_anchor": "bottom",
+                        "y_offset": 85,
+                        "x_offset": -150,
+                        "absolute": true
+                    }
+                },
+                "b1": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_1"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -50,
+                        "x_offset": 100,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b2": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_2"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -50,
+                        "x_offset": 250,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b3": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_3"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -50,
+                        "x_offset": 400,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b4": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_4"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -200,
+                        "x_offset": 100,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b5": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_5"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -200,
+                        "x_offset": 250,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b6": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_6"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -200,
+                        "x_offset": 400,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b7": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_7"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -350,
+                        "x_offset": 100,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b8": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_8"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -350,
+                        "x_offset": 250,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b9": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_9"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -350,
+                        "x_offset": 400,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "bc": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_c"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -500,
+                        "x_offset": 100,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b0": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_0"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -500,
+                        "x_offset": 250,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                },
+                "b-1": {
+                    "type": "Button",
+                    "data": {
+                        "upnode": "up",
+                        "anchor": [
+                            0.0,
+                            1
+                        ],
+                        "scale": 0.85
+                    },
+                    "children": {
+                        "up": {
+                            "type": "Image",
+                            "data": {
+                                "texture": "keypad_-1"
+                            }
+                        }
+                    },
+                    "layout": {
+                        "x_anchor": "left",
+                        "y_anchor": "top",
+                        "y_offset": -500,
+                        "x_offset": 400,
+                        "priority": 1,
+                        "absolute": true
+                    }
+                }
+            }
+        }
+    }
+}

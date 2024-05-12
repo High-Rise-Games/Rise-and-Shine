@@ -116,6 +116,7 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     
     // Start up the input handler
     _assets = assets;
+    assets->loadDirectory(assets->get<JsonValue>("lobby"));
     
     std::shared_ptr<scene2::SceneNode> scene;
     

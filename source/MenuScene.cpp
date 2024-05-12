@@ -53,6 +53,7 @@ bool MenuScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     
     // Acquire the scene built by the asset loader and resize it the scene
     _assets = assets;
+    assets->loadDirectory(assets->get<JsonValue>("menu"));
     
     std::shared_ptr<scene2::SceneNode> scene = assets->get<scene2::SceneNode>("menu");
     scene->setContentSize(dimen);
