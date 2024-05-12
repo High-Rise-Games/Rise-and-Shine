@@ -943,16 +943,16 @@
         "progress_bg": {
             "file": "textures/ProgressBars/Bg.png"
         },
-        "progress_medal_blue": {
+        "medal_blue": {
             "file": "textures/ProgressBars/MedalBlue.png"
         },
-        "progress_medal_green": {
+        "medal_green": {
             "file": "textures/ProgressBars/MedalGreen.png"
         },
-        "progress_medal_red": {
+        "medal_red": {
             "file": "textures/ProgressBars/MedalRed.png"
         },
-        "progress_medal_yellow": {
+        "medal_yellow": {
             "file": "textures/ProgressBars/MedalYellow.png"
         },
         "progress_fg_blue": {

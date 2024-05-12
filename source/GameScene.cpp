@@ -328,11 +328,23 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 //         CULog("character t: %s", player->getChar().c_str());
         _player_bars[barIdx]->setPositionX(getSize().width - _gameController->getPlayerWindow(_gameController->getId())->sideGap + (offset_ct + 2) * 50);
         _player_bars[barIdx]->setVisible(true);
+
+        Affine2 medalTrans = Affine2();
+        medalTrans.scale(0.5);
+        medalTrans.translate((idk - getSize().operator Vec2() / 2) + _player_bars[barIdx]->getPosition());
+        // translate medal up to top of bar
+        medalTrans.translate(0, _player_bars[barIdx]->getHeight() / 2);
+        batch->draw(player->getMedalTexture(), player->getMedalTexture()->getSize().operator Vec2() / 2, medalTrans);
+
         Affine2 profileTrans = Affine2();
-        profileTrans.scale(0.2);
+        profileTrans.scale(0.6);
         profileTrans.translate((idk - getSize().operator Vec2() / 2) + _player_bars[barIdx]->getPosition());
+        // translate profile down to bottom of bar
         profileTrans.translate(0, _player_bars[barIdx]->getHeight() / -2);
+        // translate profile to top of filled bar based on current progress
+        profileTrans.translate(0, _player_bars[barIdx]->getHeight() * _player_bars[barIdx]->getProgress());
         batch->draw(player->getProfileTexture(), player->getProfileTexture()->getSize().operator Vec2() / 2, profileTrans);
+
         offset_ct += 1;
     }
     

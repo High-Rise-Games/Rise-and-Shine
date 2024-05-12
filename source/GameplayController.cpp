@@ -458,6 +458,7 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
         player->setShooTexture(_assets->get<Texture>("shoo_frog"));
         player->setThrowTexture(_assets->get<Texture>("throw_frog"));
         player->setProfileTexture(_assets->get<Texture>("profile_frog"));
+        player->setMedalTexture(_assets->get<Texture>("medal_blue"));
         player->setWarnTexture(_assets->get<Texture>("warn_frog"));
     }
     else if (charChoice == "Flower") {
@@ -466,6 +467,7 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
         player->setShooTexture(_assets->get<Texture>("shoo_flower"));
         player->setThrowTexture(_assets->get<Texture>("throw_flower"));
         player->setProfileTexture(_assets->get<Texture>("profile_flower"));
+        player->setMedalTexture(_assets->get<Texture>("medal_yellow"));
         player->setWarnTexture(_assets->get<Texture>("warn_flower"));
 
     }
@@ -475,6 +477,7 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
         player->setShooTexture(_assets->get<Texture>("shoo_chameleon"));
         player->setThrowTexture(_assets->get<Texture>("throw_chameleon"));
         player->setProfileTexture(_assets->get<Texture>("profile_chameleon"));
+        player->setMedalTexture(_assets->get<Texture>("medal_green"));
         player->setWarnTexture(_assets->get<Texture>("warn_chameleon"));
 
     }
@@ -484,6 +487,7 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
         player->setShooTexture(_assets->get<Texture>("shoo_mushroom"));
         player->setThrowTexture(_assets->get<Texture>("throw_mushroom"));
         player->setProfileTexture(_assets->get<Texture>("profile_mushroom"));
+        player->setMedalTexture(_assets->get<Texture>("medal_red"));
         player->setWarnTexture(_assets->get<Texture>("warn_mushroom"));
 
     }
@@ -1703,8 +1707,8 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         // character indicators drawing start
         auto yTransLeft = playerLeft->getPosition().y;
         auto yTransRight = playerRight->getPosition().y;
-        auto screenMinY = player->getPosition().y - SCENE_HEIGHT / 2.0 + 90;
-        auto screenMaxY = player->getPosition().y + SCENE_HEIGHT / 2.0 - 90;
+        auto screenMinY = player->getPosition().y - SCENE_HEIGHT / 2.0 + 100;
+        auto screenMaxY = player->getPosition().y + SCENE_HEIGHT / 2.0 - 100;
 
         auto leftPlayerTexture = playerLeft->getProfileTexture();
         auto rightPlayerTexture = playerRight->getProfileTexture();

@@ -23,7 +23,8 @@
                         "foreground": "progress_fg_blue",
                         "left_cap": "progress_fg_blue_leftcap",
                         "right_cap": "progress_fg_blue_rightcap",
-                        "visible": false
+                        "visible": false,
+                        "scale": 2.0
                     },
                     "layout": {
                         "y_offset": 200,
@@ -41,7 +42,8 @@
                         "foreground": "progress_fg_green",
                         "left_cap": "progress_fg_green_leftcap",
                         "right_cap": "progress_fg_green_rightcap",
-                        "visible": false
+                        "visible": false,
+                        "scale": 2.0
                     },
                     "layout": {
                         "y_offset": 200,
@@ -59,7 +61,8 @@
                         "foreground": "progress_fg_red",
                         "left_cap": "progress_fg_red_leftcap",
                         "right_cap": "progress_fg_red_rightcap",
-                        "visible": false
+                        "visible": false,
+                        "scale": 2.0
                     },
                     "layout": {
                         "y_offset": 200,
@@ -77,7 +80,8 @@
                         "foreground": "progress_fg_yellow",
                         "left_cap": "progress_fg_yellow_leftcap",
                         "right_cap": "progress_fg_yellow_rightcap",
-                        "visible": false
+                        "visible": false,
+                        "scale": 2.0
                     },
                     "layout": {
                         "y_offset": 200,

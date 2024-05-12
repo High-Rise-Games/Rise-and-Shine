@@ -106,6 +106,8 @@ private:
 
     /** player profile texture */
     std::shared_ptr<cugl::Texture> _profileTexture;
+    /** player medal texture */
+    std::shared_ptr<cugl::Texture> _medalTexture;
     /** player warning sign texture */
     std::shared_ptr<cugl::Texture> _warnTexture;
     /** player idle sprite sheet */
@@ -179,6 +181,12 @@ public:
     
     /** Gets the profile texture of the player */
     std::shared_ptr<cugl::Texture> getProfileTexture() { return _profileTexture; }
+
+    /** Sets the medal texture of the player */
+    void setMedalTexture(std::shared_ptr<cugl::Texture> t) { _medalTexture = t; }
+
+    /** Gets the medal texture of the player */
+    std::shared_ptr<cugl::Texture> getMedalTexture() { return _medalTexture; }
 
     /** Sets the warning sign texture of the player when they are peeking */
     void setWarnTexture(std::shared_ptr<cugl::Texture> t) { _warnTexture = t; }
