@@ -133,7 +133,7 @@ public:
         STRUCT_TYPE type = BoardStateType;
         
         /* Determines whether some of the fields are optional */
-        bool optional;
+        float optional;
         
         /* The number of projectiles in the board state */
         float numProjectile;
@@ -152,7 +152,7 @@ public:
         float hasWon;
         
         /* Bool value of whether there is a bird on the board by owner of this board state message */
-        bool currBoardBird;
+        float currBoardBird;
         
         /* The number of dirt that the player has collected in thier bucket*/
         float numDirt;
@@ -179,7 +179,7 @@ public:
         float birdPosY=0;
         
         /** Whether the bird is facing right, needed for bird animation on client side */
-        bool birdFacingRight;
+        float birdFacingRight;
         
         /* The vector of PROJECTILE objects */
         std::vector<PROJECTILE> projectileVector;

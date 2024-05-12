@@ -125,6 +125,12 @@ class NetcodePeer;
  */
 class NetcodeConnection : public std::enable_shared_from_this<NetcodeConnection> {
 public:
+    
+    
+    /** UUID mappings to player ids */
+    std::shared_ptr<std::map<std::string, int>> _UUIDmap;
+    
+    
     /**
      * An enum representing the current connection state.
      * 
@@ -459,6 +465,22 @@ public:
      * Deletes this websocket connection, disposing all resources
      */
     ~NetcodeConnection();
+    
+#pragma mark getters and setters
+    
+
+    
+//    std::shared_ptr<std::map<std::string, int>> getUUIDmap() {
+//        return _UUIDmap;
+//    }
+    
+    void setUUIDmapValue(std::string value, int num) {
+        (*_UUIDmap)[value] = num;
+    }
+    
+    std::map<std::string, int> getUUIDmap() {
+        return *_UUIDmap;
+    }
     
 private:
     /**
