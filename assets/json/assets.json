@@ -1,5 +1,40 @@
 {
     "textures": {
+        "menu_background": {
+            "file": "textures/HomeBG.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "menu_title": {
+            "file": "textures/RiseAndShine.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "menu_host": {
+            "file": "textures/HostButton.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "menu_join": {
+            "file": "textures/JoinGameButton.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "menu_tutorial": {
+            "file": "textures/TutorialButton.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
         "progress": {
             "file": "textures/progress.png",
             "wrapS": "clamp",

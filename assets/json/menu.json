@@ -1,47 +1,4 @@
 {
-    "textures": {
-        "menu_background": {
-            "file": "textures/HomeBG.jpg",
-            "wrapS": "clamp",
-            "wrapT": "clamp",
-            "minfilter": "linear",
-            "magfilter": "linear"
-        },
-        "menu_title": {
-            "file": "textures/RiseAndShine.png",
-            "wrapS": "clamp",
-            "wrapT": "clamp",
-            "minfilter": "linear",
-            "magfilter": "linear"
-        },
-        "menu_host": {
-            "file": "textures/HostButton.png",
-            "wrapS": "clamp",
-            "wrapT": "clamp",
-            "minfilter": "linear",
-            "magfilter": "linear"
-        },
-        "menu_join": {
-            "file": "textures/JoinGameButton.png",
-            "wrapS": "clamp",
-            "wrapT": "clamp",
-            "minfilter": "linear",
-            "magfilter": "linear"
-        },
-        "menu_tutorial": {
-            "file": "textures/TutorialButton.png",
-            "wrapS": "clamp",
-            "wrapT": "clamp",
-            "minfilter": "linear",
-            "magfilter": "linear"
-        }
-    },
-    "widgets": {
-        "colorbutton": "widgets/colorbutton.json",
-        "textbutton": "widgets/textbutton.json",
-        "textfield": "widgets/textfield.json",
-        "labelbox": "widgets/labelbox.json"
-    },
     "scene2s": {
         "menu": {
             "type": "Image",
@@ -67,7 +24,7 @@
                     "layout": {
                         "x_anchor": "center",
                         "y_anchor": "middle",
-                        "y_offset": 150,
+                        "y_offset": 100,
                         "absolute": true
                     }
                 },
@@ -81,7 +38,6 @@
                             0,
                             0
                         ],
-                        
                         "visible": true,
                         "pushsize": true,
                         "anchor": [
@@ -100,7 +56,7 @@
                     "layout": {
                         "x_anchor": "center",
                         "y_anchor": "middle",
-                        "y_offset": -15,
+                        "y_offset": -65,
                         "absolute": true
                     }
                 },
@@ -108,7 +64,6 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        
                         "visible": true,
                         "pushsize": true,
                         "anchor": [
@@ -127,7 +82,7 @@
                     "layout": {
                         "x_anchor": "center",
                         "y_anchor": "middle",
-                        "y_offset": -115,
+                        "y_offset": -140,
                         "absolute": true
                     }
                 },
@@ -135,7 +90,6 @@
                     "type": "Button",
                     "data": {
                         "upnode": "up",
-                        
                         "visible": true,
                         "pushsize": true,
                         "anchor": [
