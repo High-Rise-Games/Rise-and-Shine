@@ -7,6 +7,13 @@
             "minfilter": "linear",
             "magfilter": "linear"
         },
+        "slider": {
+            "file": "textures/slider.png",
+            "wrapS": "repeat",
+            "wrapT": "repeat",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
         "menu_title": {
             "file": "textures/RiseAndShine.png",
             "wrapS": "clamp",

@@ -205,7 +205,8 @@ void App::draw() {
     }
     
     if (_displaySettings) {
-        _settings.render(_batch);
+        _settings._settingsUI->setVisible(true);
+        _settings._settingsUI->render(_batch);
         CULog("Rendering Settings: %b", _displaySettings);
     }
     

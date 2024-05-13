@@ -45,13 +45,13 @@ bool SettingsScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Acquire the scene built by the asset loader and resize it the scene
     _assets->loadDirectory(assets->get<JsonValue>("settings"));
     
-    std::shared_ptr<scene2::SceneNode> scene = assets->get<scene2::SceneNode>("settingsUI");
-    scene->setContentSize(dimen);
-    scene->doLayout(); // Repositions the HUD
+    _settingsUI = assets->get<scene2::SceneNode>("settingsUI");
+    _settingsUI->setContentSize(dimen);
+    _settingsUI->doLayout(); // Repositions the HUD
     
 
 
-    addChild(scene);
+    addChild(_settingsUI);
     setActive(false);
     return true;
 }

@@ -14,6 +14,8 @@
 #include <vector>
 #include "AudioController.h"
 
+using namespace cugl;
+using namespace std;
 
 /**
  * This class presents the client join scene to the player.
@@ -30,12 +32,17 @@ protected:
     /** The asset manager for this scene. */
     std::shared_ptr<cugl::AssetManager> _assets;
     
-    std::shared_ptr<cugl::scene2::Slider> _music_slider;
+    
     
     
 
 
 public:
+    
+    /** The scene UI */
+    std::shared_ptr<cugl::scene2::SceneNode> _settingsUI;
+    
+    
     /**
      * Creates a new SettingsScene scene with the default values.
      *
