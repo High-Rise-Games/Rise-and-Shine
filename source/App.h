@@ -16,6 +16,7 @@
 #include "MenuScene.h"
 #include "AudioController.h"
 #include "TutorialController.h"
+#include "SettingsScene.h"
 
 /**
  * This class represents the application root for the ship demo.
@@ -44,6 +45,9 @@ protected:
         GAME
     };
     
+    /* Whether settings is displayed or not*/
+    bool _displaySettings;
+    
 
     /** The audio controller initiated by the app */
     std::shared_ptr<AudioController> _audioController;
@@ -71,6 +75,9 @@ protected:
     
     /** The scene for hosting or joining a game */
     LobbyScene _lobby;
+    
+    /** The scene for settings */
+    SettingsScene _settings;
 
     /** The primary controller for the tutorial world */
     std::shared_ptr<GameplayController> _tutorialController;

@@ -35,6 +35,13 @@
             "minfilter": "linear",
             "magfilter": "linear"
         },
+        "menu_settings": {
+            "file": "textures/TutorialButton.png",
+            "wrapS": "clamp",
+            "wrapT": "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
         "progress": {
             "file": "textures/progress.png",
             "wrapS": "clamp",
@@ -1134,7 +1141,8 @@
         "dreamylevel": "json/dreamylevel.json",
         "level6": "json/level6.json",
         "level7": "json/level7.json",
-        "level8": "json/level8.json"
+        "level8": "json/level8.json",
+        "settings": "json/settings.json"
     },
     "widgets": {
         "colorbutton": "widgets/colorbutton.json",

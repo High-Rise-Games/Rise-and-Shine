@@ -327,6 +327,7 @@ EarclipTriangulator::~EarclipTriangulator() {
  * @param points    The vertices to triangulate
  */
 void EarclipTriangulator::set(const std::vector<Vec2>& points) {
+    
     CUAssertLog(Path2::orientation(points) == -1, "Path orientiation is not CCW");
     reset();
     _exterior = points.size();

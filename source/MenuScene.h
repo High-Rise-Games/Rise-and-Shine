@@ -38,7 +38,9 @@ public:
         /** User wants to join a game */
         JOIN,
         /** User wants to play the tutorial */
-        TUTORIAL
+        TUTORIAL,
+        /** User wants the settings page */
+        SETTINGS
     };
 
 protected:
@@ -52,6 +54,8 @@ protected:
     std::shared_ptr<cugl::scene2::Button> _joinbutton;
     /** The menu button for opening the tutorial level */
     std::shared_ptr<cugl::scene2::Button> _tutorialbutton;
+    /* The menu button for opening the settings page*/
+    std::shared_ptr<cugl::scene2::Button> _settingsbutton;
     /** The player menu choice */
     Choice _choice;
     

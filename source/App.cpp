@@ -52,6 +52,8 @@ void App::onStartup() {
     // Queue up the other assets
     _assets->loadDirectoryAsync("json/assets.json",nullptr);
     
+    _displaySettings = false;
+    
     net::NetworkLayer::start(net::NetworkLayer::Log::VERBOSE);
     AudioEngine::start();
     Application::onStartup(); // YOU MUST END with call to parent
@@ -129,19 +131,6 @@ void App::onResume() {
  */
 void App::update(float timestep) {
     
-// OLD CODE IN CASE THINGS BREAK
-//    if (!_loaded && _loading.isActive()) {
-//        _loading.update(0.01f);
-//    } else if (!_loaded) {
-//        _loading.dispose(); // Disables the input listeners in this mode
-//        _gameplay.init(_assets);
-//        _loaded = true;
-//    } else {
-//        _gameplay.update(timestep);
-//    }
-    
-
-// NEW CODE
     
     switch (_scene) {
         case LOAD:
@@ -183,15 +172,10 @@ void App::update(float timestep) {
  */
 void App::draw() {
     
-// OLD CODE IN CASE THINGS BREAK
-//    if (!_loaded) {
-//        _loading.render(_batch);
-//    } else {
-//        _gameplay.render(_batch);
-//    }
-    
-    
+
 // NEW CODE
+    
+    
     
     switch (_scene) {
         case LOAD:
@@ -218,6 +202,11 @@ void App::draw() {
         case TUTORIAL:
             _gamescene.render(_batch);
             break;
+    }
+    
+    if (_displaySettings) {
+        _settings.render(_batch);
+        CULog("Rendering Settings: %b", _displaySettings);
     }
     
 }
@@ -249,6 +238,7 @@ void App::updateLoadingScene(float timestep) {
         _client_join_scene.init(_assets);
         _lobby_host.init_host(_assets);
         _lobby_client.init_client(_assets);
+        _settings.init(_assets);
 
 
         // audio controller
@@ -305,6 +295,10 @@ void App::updateMenuScene(float timestep) {
         break;
     case MenuScene::Choice::NONE:
         // DO NOTHING
+        break;
+    case MenuScene::Choice::SETTINGS:
+        _displaySettings = true;
+        _settings.cugl::Scene2::setActive(true);
         break;
     }
 }
