@@ -441,10 +441,11 @@ void LobbyScene::update(float timestep) {
         _player_field->setText(std::to_string(_network.getNumPlayers()));
     
         if (isHost()) {
+            int i = 1;
             for (auto it = _UUIDmap.begin(); it != _UUIDmap.end();) {
                 auto& pair = *it;
                 const auto& peer = pair.first;
-
+                i++;
                 if (_network.getConnection()->isPlayerActive(peer) && _network.getConnection()->getPeers().count(peer) > 0) {
                     const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
                     json->init(JsonValue::Type::ObjectType);
@@ -453,6 +454,7 @@ void LobbyScene::update(float timestep) {
                     ++it;
                 } else {
                     it = _UUIDmap.erase(it);
+                    _chosenChars[i-1] = "";
                 }
             }
         }
