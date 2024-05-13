@@ -151,6 +151,10 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     _backout->addListener([this](const std::string& name, bool down) {
         if (down) {
             _audioController->playBackPress();
+            const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
+            json->init(JsonValue::Type::ObjectType);
+            json->appendValue("host quit", "host quit");
+            _network.transmitMessage(json);
             _network.disconnect();
             _status = Status::ABORT;
             _quit = true;
@@ -549,22 +553,30 @@ void LobbyScene::processData(const std::string source,
     
     std::shared_ptr<JsonValue> jsonData = _network.processMessage(source, data);
     
-    if (isHost() && _status == START) {
-        return;
-    }
-    if (!isHost() && jsonData->has("start") && _status != START) {
-        // read game start message sent from host
-        _status = START;
-        return;
-    }
+    if (_network.getConnection()) {
+        if (isHost() && _status == START) {
+            return;
+        }
+        if (!isHost() && jsonData->has("start") && _status != START) {
+            // read game start message sent from host
+            _status = START;
+            return;
+        }
 
-    if (jsonData->has("level") && !isHost()) {
-        // read level message sent from host and update level
-        _level = std::stoi(jsonData->getString("level"));
-    }
+        if (jsonData->has("level") && !isHost()) {
+            // read level message sent from host and update level
+            _level = std::stoi(jsonData->getString("level"));
+        }
 
-    if (jsonData->has(_network.getConnection()->getUUID()) && !isHost()) {
-        _id = std::stoi(jsonData->getString(_network.getConnection()->getUUID()));
+        if (jsonData->has(_network.getConnection()->getUUID()) && !isHost()) {
+            _id = std::stoi(jsonData->getString(_network.getConnection()->getUUID()));
+        }
+    }
+    
+    
+    if (!_network.getConnection() || jsonData->has("host quit")) {
+        _status = Status::ABORT;
+        _quit = true;
     }
     
 
