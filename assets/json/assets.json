@@ -958,68 +958,92 @@
         "progress_fg_blue": {
             "file": "textures/ProgressBars/FgBlue.png",
             "atlas": {
+                "foreground": [
+                    2,
+                    0,
+                    97,
+                    12
+                ],
                 "leftcap": [
                     0,
                     0,
                     2,
-                    18
+                    12
                 ],
                 "rightcap": [
-                    81,
+                    97,
                     0,
-                    83,
-                    18
+                    99,
+                    12
                 ]
             }
         },
         "progress_fg_green": {
             "file": "textures/ProgressBars/FgGreen.png",
             "atlas": {
+                "foreground": [
+                    2,
+                    0,
+                    97,
+                    12
+                ],
                 "leftcap": [
                     0,
                     0,
                     2,
-                    18
+                    12
                 ],
                 "rightcap": [
-                    81,
+                    97,
                     0,
-                    83,
-                    18
+                    99,
+                    12
                 ]
             }
         },
         "progress_fg_red": {
             "file": "textures/ProgressBars/FgRed.png",
             "atlas": {
+                "foreground": [
+                    2,
+                    0,
+                    97,
+                    12
+                ],
                 "leftcap": [
                     0,
                     0,
                     2,
-                    18
+                    12
                 ],
                 "rightcap": [
-                    81,
+                    97,
                     0,
-                    83,
-                    18
+                    99,
+                    12
                 ]
             }
         },
         "progress_fg_yellow": {
             "file": "textures/ProgressBars/FgYellow.png",
             "atlas": {
+                "foreground": [
+                    2,
+                    0,
+                    97,
+                    12
+                ],
                 "leftcap": [
                     0,
                     0,
                     2,
-                    18
+                    12
                 ],
                 "rightcap": [
-                    81,
+                    97,
                     0,
-                    83,
-                    18
+                    99,
+                    12
                 ]
             }
         },

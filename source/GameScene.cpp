@@ -321,7 +321,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
             
             _projectile_line->setPolygon(Rect(0, 0, (p2 - p1).length(), 10));
             _projectile_line->setPositionX(p1.x);
-            _projectile_line->setPositionY(SCENE_HEIGHT / 2);
+            _projectile_line->setPositionY(getSize().height / 2);
             double deltaX = p2.x - p1.x;
             double deltaY = p2.y - p1.y;
 
@@ -354,21 +354,21 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         if (player == nullptr) continue;
         int barIdx = _char_to_barIdx[player->getChar()];
 //         CULog("character t: %s", player->getChar().c_str());
-        _player_bars[barIdx]->setPositionX(getSize().width - _gameController->getPlayerWindow(_gameController->getId())->sideGap + (offset_ct + 2) * 50);
+        _player_bars[barIdx]->setPositionX(getSize().width - _gameController->getPlayerWindow(_gameController->getId())->sideGap + (offset_ct + 2) * 60);
         _player_bars[barIdx]->setVisible(true);
 
         Affine2 medalTrans = Affine2();
-        medalTrans.scale(0.5);
+        medalTrans.scale(0.4);
         medalTrans.translate((cameraPos - getSize().operator Vec2() / 2) + _player_bars[barIdx]->getPosition());
         // translate medal up to top of bar
-        medalTrans.translate(0, _player_bars[barIdx]->getHeight() / 2);
+        // medalTrans.translate(0, _player_bars[barIdx]->getHeight() / 2);
         batch->draw(player->getMedalTexture(), player->getMedalTexture()->getSize().operator Vec2() / 2, medalTrans);
 
         Affine2 profileTrans = Affine2();
-        profileTrans.scale(0.6);
+        profileTrans.scale(0.5);
         profileTrans.translate((cameraPos - getSize().operator Vec2() / 2) + _player_bars[barIdx]->getPosition());
         // translate profile down to bottom of bar
-        profileTrans.translate(0, _player_bars[barIdx]->getHeight() / -2);
+        profileTrans.translate(0, _player_bars[barIdx]->getHeight() * -1);
         // translate profile to top of filled bar based on current progress
         profileTrans.translate(0, _player_bars[barIdx]->getHeight() * _player_bars[barIdx]->getProgress());
         batch->draw(player->getProfileTexture(), player->getProfileTexture()->getSize().operator Vec2() / 2, profileTrans);
