@@ -68,6 +68,7 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeBoardState(st
     
     // Writes the data in a specific order
     _serializer.writeFloat(message->type);
+    _serializer.writeBool(message->optional);
     _serializer.writeFloat(message->hasWon);
     _serializer.writeFloat(message->numProjectile);
     _serializer.writeFloat(message->playerChar);
@@ -108,7 +109,7 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeBoardState(st
         }
     }
     
-    _serializer.writeBool(message->optional);
+    
     
 
     std::shared_ptr<std::vector<std::byte>> buffer = std::make_shared<std::vector<std::byte>>(_serializer.serialize());
@@ -128,6 +129,7 @@ const std::shared_ptr<NetStructs::BOARD_STATE> NetStructs::deserializeBoardState
     
     // Deserialize the data in the order it was serialized
     receivedMessage->type = static_cast<STRUCT_TYPE>(_deserializer.readFloat());
+    receivedMessage->optional = _deserializer.readBool();
     receivedMessage->hasWon = _deserializer.readFloat();
     receivedMessage->numProjectile = _deserializer.readFloat();
     receivedMessage->playerChar = _deserializer.readFloat();
@@ -162,7 +164,7 @@ const std::shared_ptr<NetStructs::BOARD_STATE> NetStructs::deserializeBoardState
         receivedMessage->projectileVector = projectileVector;
     }
     
-    receivedMessage->optional = _deserializer.readBool();
+    
     
     
     return receivedMessage;
