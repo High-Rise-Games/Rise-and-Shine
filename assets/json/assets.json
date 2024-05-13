@@ -81,7 +81,7 @@
             "file": "textures/bucket.png"
         },
         "settings": {
-            "file": "textures/Settings.png"
+            "file": "textures/settings.png"
         },
         "textbox": {
             "file": "textures/textbox.png"
@@ -1022,6 +1022,12 @@
                     18
                 ]
             }
+        },
+        "projectile_line": {
+            "file": "textures/projectile-line.png"
+        },
+        "white_circle": {
+            "file": "textures/white-circle.png"
         }
     },
     "fonts": {

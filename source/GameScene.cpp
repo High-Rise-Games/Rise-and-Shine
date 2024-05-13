@@ -129,6 +129,8 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _char_to_barIdx["Frog"] = 2;
     _char_to_barIdx["Flower"] = 3;
     
+    _projectile_line = std::dynamic_pointer_cast<scene2::PolygonNode>(assets->get<scene2::SceneNode>("game_projectile_line"));
+    _projectile_circle = _assets->get<Texture>("white_circle");
 
     _scene_UI = _assets->get<scene2::SceneNode>("gamescene");
     _scene_UI->setContentSize(dimen);
@@ -286,31 +288,57 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     // CULog("current board: %d", _curBoard);
     
     
-    Vec3 idk = Vec3(getCamera()->getPosition().x, _gameController->getPlayer(_gameController->getId())->getPosition().y, 1);
-    getCamera()->setPosition(idk);
+    Vec3 cameraPos = Vec3(getCamera()->getPosition().x, _gameController->getPlayer(_gameController->getId())->getPosition().y, 1);
+    getCamera()->setPosition(cameraPos);
     getCamera()->update();
     batch->begin(getCamera()->getCombined());
-    _scene_UI->setPosition(idk-getSize().operator Vec2()/2);
-    _gameplay_elem->setPosition(idk - getSize().operator Vec2() / 2);
+    _scene_UI->setPosition(cameraPos -getSize().operator Vec2()/2);
+    _gameplay_elem->setPosition(cameraPos - getSize().operator Vec2() / 2);
     
 //    batch->draw(_background,Rect(Vec2::ZERO));
-    //batch->draw(_background, (idk - getSize().operator Vec2() / 2) - Vec2(0, idk.y - 400)); // revert next line to this to disable parallax
-    batch->draw(_background,(idk-getSize().operator Vec2()/2)-Vec2(0,idk.y/3-0));
-    batch->draw(_parallax, (idk-getSize().operator Vec2()/2)-Vec2(0,idk.y));
+    //batch->draw(_background, (cameraPos - getSize().operator Vec2() / 2) - Vec2(0, cameraPos.y - 400)); // revert next line to this to disable parallax
+    batch->draw(_background,(cameraPos -getSize().operator Vec2()/2)-Vec2(0, cameraPos.y/3-0));
+    batch->draw(_parallax, (cameraPos -getSize().operator Vec2()/2)-Vec2(0, cameraPos.y));
     
 
     _gameController->draw(batch);
     _gameController->drawCountdown(batch, getCamera()->getPosition(), getSize());
     
     batch->setColor(Color4::WHITE);
-
-
     
     if (_gameController->getCurBoard() != 0) {
         _dirtThrowButton->setVisible(true);
         _dirtThrowButton->activate();
         _dirtThrowButton->setDown(false);
         _dirtThrowArc->setVisible(true);
+
+        Path2 dirtPath = _gameController->getDirtThrowVector();
+        if (dirtPath.getVertices().size() > 0 && _gameController->isDirtSelected()) {
+            _projectile_line->setVisible(true);
+
+            auto p1 = dirtPath.getVertices().front();
+            auto p2 = dirtPath.getVertices().back();
+            
+            _projectile_line->setPolygon(Rect(0, 0, (p2 - p1).length(), 10));
+            _projectile_line->setPositionX(p1.x);
+            _projectile_line->setPositionY(SCENE_HEIGHT / 2);
+            double deltaX = p2.x - p1.x;
+            double deltaY = p2.y - p1.y;
+
+            // Calculate the angle using atan2
+            double angle = std::atan2(deltaY, deltaX);
+
+            // Ensure the angle is between 0 and 2*pi (radians)
+            if (angle < 0)
+                angle += 2 * M_PI;
+            _projectile_line->setAngle(angle);
+            Affine2 trans = Affine2();
+            trans.translate(p2);
+            batch->draw(_projectile_circle, _projectile_circle->getSize().operator Vec2() / 2, trans);
+        }
+        else {
+            _projectile_line->setVisible(false);
+        }
     }
     else {
         _dirtThrowButton->setVisible(false);
@@ -331,14 +359,14 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 
         Affine2 medalTrans = Affine2();
         medalTrans.scale(0.5);
-        medalTrans.translate((idk - getSize().operator Vec2() / 2) + _player_bars[barIdx]->getPosition());
+        medalTrans.translate((cameraPos - getSize().operator Vec2() / 2) + _player_bars[barIdx]->getPosition());
         // translate medal up to top of bar
         medalTrans.translate(0, _player_bars[barIdx]->getHeight() / 2);
         batch->draw(player->getMedalTexture(), player->getMedalTexture()->getSize().operator Vec2() / 2, medalTrans);
 
         Affine2 profileTrans = Affine2();
         profileTrans.scale(0.6);
-        profileTrans.translate((idk - getSize().operator Vec2() / 2) + _player_bars[barIdx]->getPosition());
+        profileTrans.translate((cameraPos - getSize().operator Vec2() / 2) + _player_bars[barIdx]->getPosition());
         // translate profile down to bottom of bar
         profileTrans.translate(0, _player_bars[barIdx]->getHeight() / -2);
         // translate profile to top of filled bar based on current progress
@@ -352,7 +380,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 //        std::shared_ptr<Player> p = _gameController->getPlayer(_id);
         int barIdx = 0;
 //        CULog("%s", p->getChar().c_str());
-        _victory_UI->setPosition(idk-getSize().operator Vec2()/2);
+        _victory_UI->setPosition(cameraPos -getSize().operator Vec2()/2);
         _victory_UI->getChildByName("victorybg1")->setVisible(true);
         _victory_UI->getChildByName("victorybg2")->setVisible(true);
         switch (barIdx) {
@@ -376,7 +404,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _backout->deactivate();
         _victory_UI->render(batch);
     } else if (_gameController->isGameOver() && !_gameController->isGameWin()) {
-        _loseBackground->setPosition(idk-getSize().operator Vec2()/2);
+        _loseBackground->setPosition(cameraPos -getSize().operator Vec2()/2);
         _loseBackground->setVisible(true);
         _loseBackground->render(batch);
     }

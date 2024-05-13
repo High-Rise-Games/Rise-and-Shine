@@ -71,6 +71,10 @@ protected:
     std::vector<std::shared_ptr<cugl::scene2::ProgressBar>>  _player_bars;
     std::map<std::string, int> _char_to_barIdx;
 
+    /** Scene node and circle to draw the dirt throw line */
+    std::shared_ptr<cugl::scene2::PolygonNode> _projectile_line;
+    std::shared_ptr<cugl::Texture> _projectile_circle;
+
     std::shared_ptr<cugl::scene2::SceneNode> _profilePlayer;
     std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerLeft;
     std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerRight;

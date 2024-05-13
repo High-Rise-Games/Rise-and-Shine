@@ -12,6 +12,21 @@
                 ]
             },
             "children": {
+                "projectile_line": {
+                    "type": "Polygon",
+                    "data": {
+                        "anchor": [
+                            0.0,
+                            0.0
+                        ],
+                        "texture": "projectile_line",
+                        "polygon": [ 0, 0, 400, 0, 400, 10, 0, 10 ],
+                        "visible": false
+                    },
+                    "layout": {
+                        "absolute": true
+                    }
+                },
                 "bluebar": {
                     "type": "Progress",
                     "data": {
@@ -27,7 +42,7 @@
                         "scale": 2.0
                     },
                     "layout": {
-                        "y_offset": 200,
+                        "y_offset": 150,
                         "absolute": true
                     }
                 },
@@ -46,7 +61,7 @@
                         "scale": 2.0
                     },
                     "layout": {
-                        "y_offset": 200,
+                        "y_offset": 150,
                         "absolute": true
                     }
                 },
@@ -65,7 +80,7 @@
                         "scale": 2.0
                     },
                     "layout": {
-                        "y_offset": 200,
+                        "y_offset": 150,
                         "absolute": true
                     }
                 },
@@ -84,7 +99,7 @@
                         "scale": 2.0
                     },
                     "layout": {
-                        "y_offset": 200,
+                        "y_offset": 150,
                         "absolute": true
                     }
                 },

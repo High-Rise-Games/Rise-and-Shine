@@ -122,7 +122,7 @@ protected:
     /** Whether the dirt is selected, ONLY active when currently on others board*/
     bool _dirtSelected;
     /** The path from player to the dirt throw destination, ONLY active when currently on player's own board*/
-    cugl::Poly2 _dirtPath;
+    cugl::Path2 _dirtPath;
     /** The position of the dirt when it is selected*/
     cugl::Vec2 _prevInputPos;
     
@@ -366,6 +366,12 @@ public:
 
     /** Returns the player's current board */
     int getCurBoard() { return _allCurBoards[_id-1]; }
+
+    /** Returns the path of the dirt throw projectile line */
+    cugl::Path2 getDirtThrowVector() { return _dirtPath; }
+
+    /** Returns whether the throw dirt button is currently being held, determining whether to draw the line */
+    bool isDirtSelected() { return _dirtSelected; }
 
     /**
      * Given the world positions, convert it to the board position

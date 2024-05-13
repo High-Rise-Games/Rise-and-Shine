@@ -1288,10 +1288,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     snapped_dest.x = clamp(round(snapped_dest.x), 0.0f, (float)_windowVec[_id - 1]->getNHorizontal()) + 0.5;
                     snapped_dest.y = clamp(round(snapped_dest.y), 0.0f, (float)_windowVec[_id - 1]->getNVertical()) + 0.5;
                     vertices.push_back(getWorldPosition(snapped_dest));
-                    SimpleExtruder se;
-                    se.set(Path2(vertices));
-                    se.calculate(10);
-                    _dirtPath = se.getPolygon();
+                    _dirtPath = Path2(vertices);
                 }
             }
         }
@@ -1707,8 +1704,8 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         // character indicators drawing start
         auto yTransLeft = playerLeft->getPosition().y;
         auto yTransRight = playerRight->getPosition().y;
-        auto screenMinY = player->getPosition().y - SCENE_HEIGHT / 2.0 + 100;
-        auto screenMaxY = player->getPosition().y + SCENE_HEIGHT / 2.0 - 100;
+        auto screenMinY = player->getPosition().y - SCENE_HEIGHT / 2.0 + 150;
+        auto screenMaxY = player->getPosition().y + SCENE_HEIGHT / 2.0 - 150;
 
         auto leftPlayerTexture = playerLeft->getProfileTexture();
         auto rightPlayerTexture = playerRight->getProfileTexture();
@@ -1731,11 +1728,9 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
             
             Affine2 leftTrans = Affine2();
             leftTrans.translate(leftPlayerTexture->getSize() * -0.5);
-            leftTrans.scale(0.35);
 
             Affine2 rightTrans = Affine2();
             rightTrans.translate(rightPlayerTexture->getSize() * -0.5);
-            rightTrans.scale(0.35);
 
             Affine2 leftTransArrow = Affine2();
             leftTransArrow.translate(_arrowTexture->getSize() * -0.5);
@@ -1748,33 +1743,28 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
                 yTransLeft = screenMaxY;
                 leftTransArrow.rotate(M_PI / 2.0);
                 leftTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransLeft + 60);
+                batch->draw(_arrowTexture, Vec2(), leftTransArrow);
             }
             else if (yTransLeft < screenMinY) {
                 yTransLeft = screenMinY;
                 leftTransArrow.rotate(3.0 * M_PI / 2.0);
                 leftTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransLeft - 60);
-            }
-            else {
-                leftTransArrow.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransLeft);
+                batch->draw(_arrowTexture, Vec2(), leftTransArrow);
             }
 
             if (yTransRight > screenMaxY) {
                 yTransRight = screenMaxY;
                 rightTransArrow.rotate(3.0 * M_PI / 2.0);
                 rightTransArrow.translate(_windowVec[_id - 1]->sideGap - 50, yTransRight + 60);
+                batch->draw(_arrowTexture, Vec2(), rightTransArrow);
             }
             else if (yTransRight < screenMinY) {
                 yTransRight = screenMinY;
                 rightTransArrow.rotate(M_PI / 2.0);
                 rightTransArrow.translate(_windowVec[_id - 1]->sideGap - 50, yTransRight - 60);
-            }
-            else {
-                rightTransArrow.translate(_windowVec[_id - 1]->sideGap - 50, yTransRight);
-            }
+                batch->draw(_arrowTexture, Vec2(), rightTransArrow);
+            }            
             
-            batch->draw(_arrowTexture, Vec2(), leftTransArrow);
-            batch->draw(_arrowTexture, Vec2(), rightTransArrow);
-
             leftTrans.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransLeft);
             batch->draw(leftPlayerTexture, Vec2(), leftTrans);
             
@@ -1798,8 +1788,6 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 
         vector<Vec2> potentialDirts;
         if (_dirtSelected && _dirtPath.size() != 0) {
-            batch->setColor(Color4::BLACK);
-            batch->fill(_dirtPath);
             Vec2 dirtDest = _dirtPath.getVertices().back() - Vec2(0.5, 0.5);
             Vec2 landedDirtCoords = getBoardPosition(dirtDest);
             landedDirtCoords.y = std::clamp(static_cast<int>(landedDirtCoords.y), 0, _windowVec[leftId - 1]->getNVertical() - 1);
@@ -1824,8 +1812,6 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 
         vector<Vec2> potentialDirts;
         if (_dirtSelected && _dirtPath.size() != 0) {
-            batch->setColor(Color4::BLACK);
-            batch->fill(_dirtPath);
             Vec2 dirtDest = _dirtPath.getVertices().back();
             Vec2 landedDirtCoords = getBoardPosition(dirtDest);
             landedDirtCoords.y = std::clamp(static_cast<int>(landedDirtCoords.y), 0, _windowVec[rightId - 1]->getNVertical() - 1);
