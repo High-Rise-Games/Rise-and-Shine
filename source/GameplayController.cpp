@@ -1046,6 +1046,12 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         _network.checkConnection();
     }
     
+    // in case of disconnection, we want to transition to menu
+    if (((!_network.getConnection()->isPlayerActive(_network.getConnection()->getHost())) ||  (_network.getConnection()->getHost() == "")) && (!_ishost)) {
+        setGameOver(true);
+        setRequestForMenu(true);
+    };
+    
     // host steps all boards forward
     if (_ishost) {
         // update time
