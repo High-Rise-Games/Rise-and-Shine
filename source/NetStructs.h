@@ -88,6 +88,10 @@ public:
         
         /* The y-coordinate of the window dirt */
         float posY=0;
+        
+        /* Robert's bird poo thingy */
+        
+        float birdPoo;
     };
     
     

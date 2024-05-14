@@ -189,7 +189,9 @@ bool WindowGrid::addDirt(const int row, const int col, const bool isPoo) {
 //        CULog("adding dirt");
         if (isPoo) {
             filth->setStaticTexture(_poo);
+            filth->setBrdPoo(true);
         } else {
+            filth->setBrdPoo(false);
             filth->setStaticTexture(_dirt);
         }
         _boardFilth[row][col] = filth;

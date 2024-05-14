@@ -181,6 +181,7 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeDirtStateMess
     for (WINDOW_DIRT dirt : message->dirtVector) {
         _serializer.writeFloat(dirt.posX);
         _serializer.writeFloat(dirt.posY);
+        _serializer.writeFloat(dirt.birdPoo);
     }
     
 
@@ -208,6 +209,7 @@ const std::shared_ptr<NetStructs::DIRT_STATE> NetStructs::deserializeDirtStateMe
         WINDOW_DIRT dirt;
         dirt.posX = _deserializer.readFloat();
         dirt.posY = _deserializer.readFloat();
+        dirt.birdPoo = _deserializer.readFloat();
         dirtVector.push_back(dirt);
     }
     

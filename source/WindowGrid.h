@@ -122,6 +122,13 @@ public:
     bool getWindowState(const int row, const int col) {
         return _boardFilth[row][col] != nullptr ;
     }
+    
+    /**
+     * Get window state at row and col
+     */
+    std::shared_ptr<StaticFilth> getBoardFilth(const int row, const int col) {
+        return _boardFilth[row][col];
+    }
 	
 	/** Returns total amount of dirt on board */
 	int getTotalDirt() {

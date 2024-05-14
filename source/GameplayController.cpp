@@ -690,9 +690,11 @@ std::shared_ptr<NetStructs::DIRT_STATE> GameplayController::getDirtState(int id)
                 for (int row = 0; row < windows->getNVertical(); ++row) {
                     bool hasDirt = windows->getWindowState(row, col);
                     if (hasDirt) {
+                        std::shared_ptr<StaticFilth> filth = windows->getBoardFilth(row, col);
                         std::shared_ptr<NetStructs::WINDOW_DIRT> dirt = std::make_shared<NetStructs::WINDOW_DIRT>();
                         dirt->posX = row;
                         dirt->posY = col;
+                        dirt->birdPoo = filth->getBirdPoo();
                         dirtArray->push_back(*dirt);
                     }
                 }
@@ -906,7 +908,7 @@ void GameplayController::updateWindowDirt(std::shared_ptr<NetStructs::DIRT_STATE
         windows->clearBoard();
         for (NetStructs::WINDOW_DIRT windowDirt : data->dirtVector) {
             
-            windows->addDirt(windowDirt.posX, windowDirt.posY, 0);
+            windows->addDirt(windowDirt.posX, windowDirt.posY, windowDirt.birdPoo);
             
         }
     }
