@@ -181,16 +181,34 @@ void WindowGrid::clearBoard() {
     }
 }
 
-bool WindowGrid::addDirt(const int row, const int col) {
+bool WindowGrid::addDirt(const int row, const int col, const bool isPoo) {
     bool dirtExisted = _boardFilth[row][col] != nullptr;
     bool isTileDirtiable = getCanBeDirtied(col, row);
     if (!dirtExisted && isTileDirtiable) {
         std::shared_ptr<StaticFilth> filth = std::make_shared<StaticFilth>(cugl::Vec2(row, col));
-        filth->setStaticTexture(_dirt);
+//        CULog("adding dirt");
+        if (isPoo) {
+            filth->setStaticTexture(_poo);
+        } else {
+            filth->setStaticTexture(_dirt);
+        }
         _boardFilth[row][col] = filth;
     }
     return !dirtExisted && isTileDirtiable;
 }
+
+//bool WindowGrid::addPoop(const int row, const int col) {
+//    bool dirtExisted = _boardFilth[row][col] != nullptr;
+//    bool isTileDirtiable = getCanBeDirtied(col, row);
+//    if (!dirtExisted && isTileDirtiable) {
+//        std::shared_ptr<StaticFilth> filth = std::make_shared<StaticFilth>(cugl::Vec2(row, col));
+////        CULog("adding dirt");
+//        filth->setStaticTexture(_poop);
+//        _boardFilth[row][col] = filth;
+//    }
+//    return !dirtExisted && isTileDirtiable;
+//}
+
 
 /**
 * Clears grid-related texture variables for a fresh start every time we reuse the window grid for a new level

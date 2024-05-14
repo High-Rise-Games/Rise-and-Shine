@@ -29,10 +29,12 @@ public:
         STUNNED,
         /** Character in throwing state */
         THROWING,
+        /** Character in wiggle state */
+        WIGGLE,
     };
     
     
-    const std::vector<AnimStatus> animStatusNames = { IDLE, WIPING, SHOOING, STUNNED, THROWING };
+    const std::vector<AnimStatus> animStatusNames = { IDLE, WIPING, SHOOING, STUNNED, THROWING, WIGGLE };
     std::map<AnimStatus, int> statusToInt;
     
 private:
@@ -64,9 +66,14 @@ private:
     
     /** The amount of time in frames for the player to be stunned */
     int _stunFrames;
+    /** The amount of time in frames for the player to wiggle while blocked */
+    int _wiggleFrames;
+    /** maximum time spent wiggling */
+    int _maxwiggleFrame;
     
     /** A property to adjust the rotation of the player when player colides. Resets to zero when stun frames is zero. */
     float _stunRotate;
+    float _wiggleRotate;
     
     /** The shadow offset in pixels */
     float _shadows;
@@ -280,6 +287,7 @@ public:
         _wipeFrames = 0;
         _shooFrames = 0;
         _stunFrames = 60;
+        _wiggleFrames = 0;
         _throwFrames = 0;
     }
     
@@ -300,6 +308,12 @@ public:
      * .Used when player throws projectile
      */
     void advanceThrowFrame();
+    
+    /**
+     * Sets the player's movement freeze time to the given time in frames
+     * .Used when player wiggles
+     */
+    void advanceWiggleFrame();
     
     /**
      * Advance animation for player idle

@@ -36,6 +36,7 @@ Player::Player(const int id, const cugl::Vec2& pos, const float windowWidth, con
     statusToInt[AnimStatus::SHOOING] = 2;
     statusToInt[AnimStatus::STUNNED] = 3;
     statusToInt[AnimStatus::THROWING] = 4;
+    statusToInt[AnimStatus::WIGGLE] = 5;
     
     // height of a window pane of the game board
     _windowWidth = windowWidth;
@@ -45,6 +46,10 @@ Player::Player(const int id, const cugl::Vec2& pos, const float windowWidth, con
 
     // number of frames the player is unable to move due to taking a hit
     _stunFrames = 0;
+    
+    // number of frames the player wiggles while blocked
+    _wiggleFrames = 0;
+    _maxwiggleFrame = 8;
     
     // number of frames the player is frozen for because wiping dirt
     _wipeFrames = 4;
@@ -69,6 +74,8 @@ Player::Player(const int id, const cugl::Vec2& pos, const float windowWidth, con
     
     // rotation property of player when player is stunned
     _stunRotate = 0;
+    // rotation of player when hit obstacles
+    _wiggleRotate = 0;
 
     // radius of player for collisions
     _radius = _windowHeight / 2;
@@ -212,6 +219,14 @@ void Player::decreaseStunFrames() {
     }
 }
 
+void Player::advanceWiggleFrame() {
+    _wiggleFrames = _wiggleFrames + 1;
+    if (_wiggleFrames == _maxwiggleFrame * 3) {
+        _wiggleFrames = 0;
+        setAnimationState(IDLE);
+    }
+}
+
 void Player::advanceAnimation() {
     switch (_animState) {
     case IDLE:
@@ -229,6 +244,8 @@ void Player::advanceAnimation() {
     case THROWING:
         advanceThrowFrame();
         break;
+    case WIGGLE:
+        advanceWiggleFrame();
     default:
         advanceIdleFrame();
         break;
@@ -259,6 +276,7 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
     std::shared_ptr<cugl::Texture> curSubTexture;
     std::shared_ptr<cugl::Texture> nextSubTexture;
     std::pair<int,float> animProgress;
+    float wiggleProgress;
     switch (_animState) {
         case IDLE:
             animProgress = getTextureIdxWithEase(cugl::EasingFunction::Type::SINE_IN_OUT, _maxidleFrame, _idleFrames, _idleframesize);
@@ -288,6 +306,26 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
             _stunRotate += 0.1;
             player_trans.rotate(_stunRotate * M_PI);
             break;
+        case WIGGLE:
+            animProgress = getTextureIdxWithEase(cugl::EasingFunction::Type::SINE_IN_OUT, _maxidleFrame, _idleFrames, _idleframesize);
+//            CULog("frame: %d, progress: %f", animProgress.first, animProgress.second);
+            curSubTexture = Player::getSubTexture(_idleSprite, 8, 4, animProgress.first);
+            nextSubTexture = Player::getSubTexture(_idleSprite, 8, 4, (animProgress.first + 1) % _idleframesize);
+            player_trans.translate( -(int)(curSubTexture->getWidth())/2 , -(int)(curSubTexture->getHeight()) / 2);
+            player_scale = _windowHeight / curSubTexture->getHeight();
+            player_trans.scale(player_scale);
+            wiggleProgress = (float) (_wiggleFrames % _maxwiggleFrame) / _maxwiggleFrame;
+//            CULog("progress: %f", wiggleProgress);
+            if (wiggleProgress <= 0.25) {
+                _wiggleRotate += 0.03;
+            } else if (0.25 < wiggleProgress && wiggleProgress <= 0.75) {
+                _wiggleRotate -= 0.03;
+            } else {
+                _wiggleRotate += 0.03;
+            }
+//            CULog("rotate: %f", _wiggleRotate);
+            player_trans.rotate(_wiggleRotate * M_PI);
+            break;
         case SHOOING:
             player_trans.translate( -(int)(_shooSprite->getFrameSize().width)/2 , -(int)(_shooSprite->getFrameSize().height) / 2);
             player_scale = _windowHeight / _shooSprite->getFrameSize().height;
@@ -303,9 +341,10 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
             player_trans.scale(player_scale);
             break;
     }
-    // Don't draw if texture not set
-    if (_animState != STUNNED) {
+    
+    if (_animState != STUNNED && _animState != WIGGLE) {
         _stunRotate = 0;
+        _wiggleRotate = 0;
         player_trans.rotate(0);
     }
 
@@ -348,7 +387,7 @@ void Player::draw(const std::shared_ptr<cugl::SpriteBatch>& batch, Size bounds) 
             _shooSprite->draw(batch, shadow, shadtrans);
             _shooSprite->draw(batch, player_trans);
             break;
-        default: // STUNNED
+        default: // STUNNED OR WIGGLING
             batch->draw(curSubTexture, shadow, Vec2(), shadtrans);
             transition.a = 1.f; // Alpha for current sub-texture
             batch->draw(curSubTexture, transition, Vec2(), player_trans);
@@ -437,6 +476,8 @@ int Player::move(Vec2 dir, Size size, std::shared_ptr<WindowGrid> windows) {
                 else if (targetIndices.x >= windows->getNHorizontal()) {
                     return 1;
                 }
+//                CULog("blocked hor");
+                setAnimationState(WIGGLE);
                 return 2;
             }
             _vel = dir * _speed;
@@ -447,6 +488,8 @@ int Player::move(Vec2 dir, Size size, std::shared_ptr<WindowGrid> windows) {
             Vec2 targetIndices = windows->getGridIndices(targetPosition, size);
             if (!windows->getCanMoveBetween(originIndices.x, originIndices.y, targetIndices.x, targetIndices.y)) {
                 _targetDist.setZero();
+//                CULog("blocked ver");
+                setAnimationState(WIGGLE);
                 return 2;
             }
             _vel = dir * _speed;

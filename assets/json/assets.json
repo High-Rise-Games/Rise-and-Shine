@@ -1028,6 +1028,15 @@
         },
         "white_circle": {
             "file": "textures/white-circle.png"
+        },
+        "pooTerm": {
+            "file": "textures/pooTerm.png"
+        },
+        "pooMiddle": {
+            "file": "textures/pooMiddle.png"
+        },
+        "birdPoop": {
+            "file": "textures/BirdPoop.png"
         }
     },
     "fonts": {

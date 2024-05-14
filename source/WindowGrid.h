@@ -57,6 +57,7 @@ private:
 
 	/** Dirt texture image */
 	std::shared_ptr<cugl::Texture> _dirt;
+    std::shared_ptr<cugl::Texture> _poo;
 	/** Faded dirt texture image for potential dirts when aiming */
 	std::shared_ptr<cugl::Texture> _fadedDirtTexture;
 
@@ -93,6 +94,7 @@ public:
 
     /** sets dirt texture */
     void setDirtTexture(const std::shared_ptr<cugl::Texture>& value) { _dirt = value; }
+    void setPooTexture(const std::shared_ptr<cugl::Texture>& value) { _poo = value; }
 
     /** sets the faded dirt texture */
     void setFadedDirtTexture(const std::shared_ptr<cugl::Texture>& value) { _fadedDirtTexture = value; }
@@ -162,7 +164,7 @@ public:
      * Add dirt to board at specified location.
      * Returns true if the dirt was successfully added, and false if there is already dirt at the location or the location is inaccessible.
      */
-    bool addDirt(const int row, const int col);
+    bool addDirt(const int row, const int col, const bool isDirt);
 
     /**
      * Check dirt exists from board at specified location
