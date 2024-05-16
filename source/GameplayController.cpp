@@ -1844,6 +1844,7 @@ void GameplayController::setActive(bool f) {
         setGameOver(false);
         setGameStart(false);
         setWin(false);
+        _countDown = false;
     } else {
         _isActive = true;
         _audioController->playGameplayMusic();

@@ -217,6 +217,7 @@ void GameScene::setActive(bool value) {
             // If any were pressed, reset them
             _backout->setDown(false);
             _dirtThrowButton->setDown(false);
+            _scroll = 0;
             for (auto bar : _player_bars) {
                 bar->setVisible(false);
             }
