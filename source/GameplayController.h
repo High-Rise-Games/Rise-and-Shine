@@ -52,11 +52,12 @@ protected:
     /** game starts after countdown timer completes */
     bool _gameStart;
     
+    
+    
     /** Whether the game has ended */
     bool _gameOver;
     
-    /** ID of the player to distinguish in multiplayer */
-    int _id;
+    
     
     /** Length of a game session*/
     int _gameTime;
@@ -230,6 +231,12 @@ public:
     /** Background texture names */
     std::string background_string;
     std::string parallax_string;
+    
+    /** Whether countdown is active or not*/
+    bool _countDown;
+    
+    /** ID of the player to distinguish in multiplayer */
+    int _id;
 
     /**
      * Creates a new game mode with the default values.

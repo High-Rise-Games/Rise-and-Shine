@@ -37,6 +37,9 @@ using namespace std;
 bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps) {
     
     
+    _scroll = 0;
+    
+    
     // Get the current display size of the device
     Size displaySize = Application::get()->getDisplaySize();
 
@@ -287,8 +290,19 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     // DO NOT DO THIS IN YOUR FINAL GAME
     // CULog("current board: %d", _curBoard);
     
+
+    Vec3 cameraPos;
+    if (!_gameController->_countDown) {
+        cameraPos = Vec3(getCamera()->getPosition().x, _gameController->getPlayerWindow(_gameController->_id)->_windowHeight * _gameController->getPlayerWindow(_gameController->_id)->_nVertical + _scroll, 1);
+        if (cameraPos.y > _gameController->getPlayer(_gameController->getId())->getPosition().y) {
+            _scroll=_scroll-15;
+        } else {
+            _gameController->_countDown = true;
+        }
+    } else {
+        cameraPos = Vec3(getCamera()->getPosition().x, _gameController->getPlayer(_gameController->getId())->getPosition().y, 1);
+    }
     
-    Vec3 cameraPos = Vec3(getCamera()->getPosition().x, _gameController->getPlayer(_gameController->getId())->getPosition().y, 1);
     getCamera()->setPosition(cameraPos);
     getCamera()->update();
     batch->begin(getCamera()->getCombined());
@@ -301,8 +315,17 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->draw(_parallax, (cameraPos -getSize().operator Vec2()/2)-Vec2(0, cameraPos.y));
     
 
+        
+    
     _gameController->draw(batch);
+    
+    
+    
     _gameController->drawCountdown(batch, getCamera()->getPosition(), getSize());
+    
+    
+    
+    
     
     batch->setColor(Color4::WHITE);
     

@@ -41,6 +41,8 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _gameTime = 120;
     _gameTimeLeft = _gameTime;
     
+    _countDown = false;
+    
 
     _frame=0;
     
@@ -1164,7 +1166,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             }
         }
         
-        if (!_gameStart) {
+        if (!_gameStart && _countDown) {
             advanceCountDownAnim();
         } else {
             for (int i = 0; i < _numPlayers; i++) {
