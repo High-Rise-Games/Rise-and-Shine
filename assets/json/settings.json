@@ -1,24 +1,6 @@
 {
-    "fonts": {
-        "saira stencil oneRegular56": {
-            "file": "fonts/SairaStencilOne-Regular.ttf",
-            "size": 56
-        },
-        "saira stencil oneRegular48": {
-            "file": "fonts/SairaStencilOne-Regular.ttf",
-            "size": 48
-        },
-        "orbitronBlack56": {
-            "file": "fonts/SairaStencilOne-Regular.ttf",
-            "size": 56
-        },
-        "orbitronBlack32": {
-            "file": "fonts/SairaStencilOne-Regular.ttf",
-            "size": 32
-        }
-    },
     "scene2s": {
-        "settingsUI": {
+        "settings": {
             "type": "Node",
             "format": {
                 "type": "Anchored"
@@ -34,8 +16,8 @@
                 ],
                 "angle": 0,
                 "position": [
-                    1816,
-                    -14918
+                    0,
+                    0
                 ],
                 "visible": true
             },
@@ -597,7 +579,7 @@
                                     601,
                                     28
                                 ],
-                                "angle": 0,
+                                "angle": 351.35,
                                 "position": [
                                     343,
                                     340
@@ -605,31 +587,25 @@
                                 "visible": true
                             },
                             "children": {
-                                "slider": {
-                                    "type": "Image",
-                                    "data": {
-                                        "texture": "slider",
-                                        "anchor": [
-                                            0,
-                                            1
-                                        ],
-                                        "size": [
-                                            601,
-                                            28
-                                        ],
-                                        "angle": 0,
-                                        "position": [
-                                            0,
-                                            0
-                                        ],
-                                        "visible": true
+                                "action"  : {
+                                    "type"   : "Slider",
+                                    "format"    : {
+                                        "type" : "Anchored"
                                     },
-                                    "layout": {
-                                        "x_anchor": "left",
-                                        "y_anchor": "top",
-                                        "absolute": false,
-                                        "x_offset": 0,
-                                        "y_offset": 0
+                                    "data"   : {
+                                        "anchor" : [0.5,0.5],
+                                        "size"   : [800,140],
+                                        "bounds" : [0,40,645,100],
+                                        "range"  : [20,400],
+                                        "value"  : 200,
+                                        "tick"   : 40,
+                                        "snap"   : true
+                                    },
+                                    "layout" : {
+                                        "x_anchor" : "center",
+                                        "y_anchor" : "middle",
+                                        "y_offset" : 1.4,
+                                        "x_offset": 0.16
                                     }
                                 }
                             },
@@ -663,31 +639,25 @@
                                 "visible": true
                             },
                             "children": {
-                                "slider": {
-                                    "type": "Image",
-                                    "data": {
-                                        "texture": "slider",
-                                        "anchor": [
-                                            0,
-                                            1
-                                        ],
-                                        "size": [
-                                            601,
-                                            28
-                                        ],
-                                        "angle": 0,
-                                        "position": [
-                                            0,
-                                            0
-                                        ],
-                                        "visible": true
+                                "action"  : {
+                                    "type"   : "Slider",
+                                    "format"    : {
+                                        "type" : "Anchored"
                                     },
-                                    "layout": {
-                                        "x_anchor": "left",
-                                        "y_anchor": "top",
-                                        "absolute": false,
-                                        "x_offset": 0,
-                                        "y_offset": 0
+                                    "data"   : {
+                                        "anchor" : [0.5,0.5],
+                                        "size"   : [800,140],
+                                        "bounds" : [0,40,645,100],
+                                        "range"  : [20,400],
+                                        "value"  : 200,
+                                        "tick"   : 40,
+                                        "snap"   : true
+                                    },
+                                    "layout" : {
+                                        "x_anchor" : "center",
+                                        "y_anchor" : "middle",
+                                        "y_offset" : 1.4,
+                                        "x_offset": 0.16
                                     }
                                 }
                             },

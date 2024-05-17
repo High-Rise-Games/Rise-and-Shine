@@ -34,7 +34,13 @@ protected:
     
     
     
+    std::shared_ptr<scene2::Slider> _musicSlider;
     
+    
+    std::shared_ptr<scene2::Slider> _soundSlider;
+    
+    float _value;
+    float _value1;
 
 
 public:

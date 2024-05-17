@@ -45,14 +45,32 @@ bool SettingsScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Acquire the scene built by the asset loader and resize it the scene
     _assets->loadDirectory(assets->get<JsonValue>("settings"));
     
-    _settingsUI = assets->get<scene2::SceneNode>("settingsUI");
+    _settingsUI = assets->get<scene2::SceneNode>("settings");
     _settingsUI->setContentSize(dimen);
     _settingsUI->doLayout(); // Repositions the HUD
+    addChild(_settingsUI);
     
 
+    _musicSlider = std::dynamic_pointer_cast<scene2::Slider>(_settingsUI->getChildByName("Backdrop")->getChildByName("slider")->getChildByName("action"));
+    _value  = _musicSlider->getValue();
+    
+    _soundSlider = std::dynamic_pointer_cast<scene2::Slider>(_settingsUI->getChildByName("Backdrop")->getChildByName("slider_7")->getChildByName("action"));
+    _value1  = _soundSlider->getValue();
+    
+    
+    _musicSlider->addListener([this](const std::string& name, float value) {
+        _value = value;
+    });
+    
+    _soundSlider->addListener([this](const std::string& name, float value) {
+        _value1 = value;
+    });
+    
+    if (_active) {
+        _musicSlider->activate();
+        _soundSlider->activate();
+    }
 
-    addChild(_settingsUI);
-    setActive(false);
     return true;
 }
 
@@ -63,6 +81,9 @@ void SettingsScene::dispose() {
     if (_active) {
         removeAllChildren();
         _active = false;
+        _musicSlider = nullptr;
+        _soundSlider = nullptr;
+        _assets = nullptr;
     }
 }
 
@@ -76,7 +97,10 @@ void SettingsScene::dispose() {
  * @param value whether the scene is currently active
  */
 void SettingsScene::setActive(bool value) {
-    if (isActive() != value) {
-        Scene2::setActive(value);
+    _active = value;
+    if (_active) {
+        _musicSlider->activate();
+        _soundSlider->activate();
     }
+    
 }

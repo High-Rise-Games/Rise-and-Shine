@@ -42,7 +42,8 @@ protected:
         LOBBY_CLIENT,
         LOBBY_HOST,
         /** The scene to play the game */
-        GAME
+        GAME,
+        SETTINGS
     };
     
     /* Whether settings is displayed or not*/

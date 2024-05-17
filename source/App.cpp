@@ -32,10 +32,12 @@ void App::onStartup() {
     // Start-up basic input (DESKTOP ONLY)
     
     Input::activate<Mouse>();
+    Input::get<Mouse>()->setPointerAwareness(Mouse::PointerAwareness::DRAG);
     
 #endif
     Input::activate<Keyboard>();
     Input::activate<TextInput>();
+
 
     _assets->attach<Font>(FontLoader::alloc()->getHook());
     _assets->attach<Texture>(TextureLoader::alloc()->getHook());
@@ -202,13 +204,12 @@ void App::draw() {
         case TUTORIAL:
             _gamescene.render(_batch);
             break;
+        case SETTINGS:
+            _mainmenu.render(_batch);
+            _settings.render(_batch);
+            
     }
     
-    if (_displaySettings) {
-        _settings._settingsUI->setVisible(true);
-        _settings._settingsUI->render(_batch);
-        CULog("Rendering Settings: %b", _displaySettings);
-    }
     
 }
 
@@ -298,8 +299,9 @@ void App::updateMenuScene(float timestep) {
         // DO NOTHING
         break;
     case MenuScene::Choice::SETTINGS:
-        _displaySettings = true;
-        _settings.cugl::Scene2::setActive(true);
+        _scene = SETTINGS;
+        _settings.setActive(true);
+        _mainmenu.setActive(false);
         break;
     }
 }
