@@ -145,6 +145,8 @@ public:
      */
     void dispose() override;
 
+    bool isTutorial = false;
+
     /**
      * Sets whether the scene is currently active
      *

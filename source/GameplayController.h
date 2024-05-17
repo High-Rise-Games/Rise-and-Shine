@@ -577,6 +577,13 @@ public:
      * @param batch     The SpriteBatch to draw with.
      */
     virtual void draw(const std::shared_ptr<cugl::SpriteBatch>& batch);
+
+    /**
+     * Draws the pointing finger for dirt throwing tutorial.
+     *
+     * @param batch     The SpriteBatch to draw with.
+     */
+    virtual void drawTutorialFinger(const std::shared_ptr<cugl::SpriteBatch>& batch);
     
     /**
      * Sets whether the player is host.
