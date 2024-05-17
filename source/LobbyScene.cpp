@@ -553,7 +553,7 @@ void LobbyScene::processData(const std::string source,
     
     std::shared_ptr<JsonValue> jsonData = _network.processMessage(source, data);
     
-    if (_network.getConnection()) {
+    if (_network.getConnection()){
         if (isHost() && _status == START) {
             return;
         }
