@@ -247,9 +247,10 @@ void GameScene::update(float timestep) {
     
     _gameController->update(timestep, worldPos, _dirtThrowInput, _dirtThrowButton, _dirtThrowArc);
     
-    _scene_UI->getChild(0)->getChild(0)->getChild(0)->getChild(1)->getChild<scene2::Label>(1)->setText(std::to_string(_gameController->getTime()));
+
+    _scene_UI->getChildByName("TimerUI")->getChildByName("UITimer")->getChildByName("time")->getChildByName<scene2::Label>("number")->setText(std::to_string(_gameController->getTime()));
     
-    _scene_UI->getChildByName("Leftgroup")->getChildByName("BucketUI")->getChildByName("BucketUI")->getChildByName<scene2::Label>("number")->setText(std::to_string(_gameController->getCurDirtAmount()));
+    _scene_UI->getChildByName("BucketUI")->getChildByName("BucketUI")->getChildByName<scene2::Label>("number")->setText(std::to_string(_gameController->getCurDirtAmount()));
     
     for (auto bar : _player_bars) {
         bar->setVisible(false);
