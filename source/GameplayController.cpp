@@ -1836,6 +1836,11 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 }
 
 
+void GameplayController::drawTutorialFinger(const std::shared_ptr<cugl::SpriteBatch>& batch) {
+    // for use in tutorial controller
+}
+
+
 void GameplayController::setActive(bool f) {
     // yes this code is bad and needs to be reworked
     if (!f) {

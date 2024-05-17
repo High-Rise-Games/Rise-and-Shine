@@ -36,6 +36,7 @@ bool TutorialController::initLevel(int selected_level) {
     for (string tutorialTextImage : tutorialTextStrings) {
         _TutorialTexts.push_back(_assets->get<Texture>(tutorialTextImage));
     }
+    _TutorialDragFinger = _assets->get<Texture>("TutorialDragFinger");
 
     // TODO: update depending on level
     _birdActive = true;
@@ -361,6 +362,7 @@ void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         if (ifSwitch) {
             switchScene();
         }
+        _lastDirtThrowButtonLocation = buttonPos;
     }
 
     // When a player is on their own board
@@ -549,5 +551,30 @@ void TutorialController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     textBoxTrans.scale(textBoxScaleFactor);
     textBoxTrans.translate(player->getPosition());
     textBoxTrans.translate(0, -1 * _windowVec[0]->getPaneHeight());
+    if (_currentTutorialStage == THROW) {
+        textBoxTrans.translate(0, -.5 * _windowVec[0]->getPaneHeight());
+    }
     batch->draw(textTexture, Vec2(0, 0), textBoxTrans);
+  
+}
+
+void TutorialController::drawTutorialFinger(const std::shared_ptr<cugl::SpriteBatch>& batch) {
+    if (_currentTutorialStage != THROW) {
+        return;
+    }
+    fingerT += .015;
+    if (fingerT > 1) {
+        fingerT = 0;
+    }
+    auto player = _playerVec[_id - 1];
+    Affine2 dragFingerTrans = Affine2();
+    dragFingerTrans.translate(-.3 * _TutorialDragFinger->getSize().getIWidth(), -.9 * _TutorialDragFinger->getSize().getIHeight());
+    float fingerScaleFactor = .1;
+    dragFingerTrans.scale(fingerScaleFactor);
+    dragFingerTrans.translate(_lastDirtThrowButtonLocation + Vec2(0, player->getPosition().y - 350));
+    Vec2 animationTarget = (player->getCoors().x == 0) ? Vec2(-_fingerTargetDelta.x, _fingerTargetDelta.y) : _fingerTargetDelta;
+    Vec2 animationTranslation = animationTarget.scale(fingerT, fingerT);
+    dragFingerTrans.translate(animationTranslation);
+    batch->draw(_TutorialDragFinger, Vec2(), dragFingerTrans);
+    CULog("%f\n", fingerT);
 }

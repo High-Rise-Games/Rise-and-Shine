@@ -399,6 +399,10 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 
         offset_ct += 1;
     }
+
+    if (true) {
+        _gameController->drawTutorialFinger(batch);
+    }
     
     if (_gameController->isGameWin()) {
 //        std::shared_ptr<Player> p = _gameController->getPlayer(_id);
