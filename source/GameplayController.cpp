@@ -1234,10 +1234,10 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     int myCurBoard = _allCurBoards[_id - 1];
     if (myCurBoard != 0) {
         bool ifSwitch = false;
-        float button_x = myCurBoard == 1 ? getSize().width - _windowVec[_id-1]->sideGap + 150 : _windowVec[_id - 1]->sideGap - 150;
+        float button_x = myCurBoard == 1 ? getSize().width - _windowVec[_id-1]->sideGap + 100 : _windowVec[_id - 1]->sideGap - 100;
         float arc_start = myCurBoard == 1 ? 270 : 90;
         float arc_rotate_angle = myCurBoard == 1 ? 0 : M_PI;
-        cugl::Vec2 buttonPos(button_x, SCENE_HEIGHT / 2);
+        cugl::Vec2 buttonPos(button_x, SCENE_HEIGHT / 2 - 100);
         dirtThrowButton->setPosition(buttonPos);
         dirtThrowArc->setPosition(buttonPos);
         dirtThrowArc->setAngle(arc_rotate_angle);

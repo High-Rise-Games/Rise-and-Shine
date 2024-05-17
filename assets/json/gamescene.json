@@ -39,12 +39,12 @@
                         "left_cap": "progress_fg_blue_leftcap",
                         "right_cap": "progress_fg_blue_rightcap",
                         "visible": false,
-                        "scale": 2.5
+                        "scale": 2.0
                     },
                     "layout": {
                         "x_anchor": "right",
                         "y_anchor": "top",
-                        "y_offset": -0.05
+                        "y_offset": -0.15
                     }
                 },
                 "greenbar": {
@@ -59,12 +59,12 @@
                         "left_cap": "progress_fg_green_leftcap",
                         "right_cap": "progress_fg_green_rightcap",
                         "visible": false,
-                        "scale": 2.5
+                        "scale": 2.0
                     },
                     "layout": {
                         "x_anchor": "right",
                         "y_anchor": "top",
-                        "y_offset": -0.05
+                        "y_offset": -0.15
                     }
                 },
                 "redbar": {
@@ -79,12 +79,12 @@
                         "left_cap": "progress_fg_red_leftcap",
                         "right_cap": "progress_fg_red_rightcap",
                         "visible": false,
-                        "scale": 2.5
+                        "scale": 2.0
                     },
                     "layout": {
                         "x_anchor": "right",
                         "y_anchor": "top",
-                        "y_offset": -0.05
+                        "y_offset": -0.15
                     }
                 },
                 "yellowbar": {
@@ -99,12 +99,12 @@
                         "left_cap": "progress_fg_yellow_leftcap",
                         "right_cap": "progress_fg_yellow_rightcap",
                         "visible": false,
-                        "scale": 2.5
+                        "scale": 2.0
                     },
                     "layout": {
                         "x_anchor": "right",
                         "y_anchor": "top",
-                        "y_offset": -0.05
+                        "y_offset": -0.15
                     }
                 },
                 "back": {
@@ -146,7 +146,7 @@
                             0.5,
                             0.5
                         ],
-                        "scale": 0.4
+                        "scale": 0.3
                     },
                     "children": {
                         "up": {
