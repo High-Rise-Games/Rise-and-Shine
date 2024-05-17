@@ -733,6 +733,9 @@
         "Backtohome": {
             "file": "textures/Backtohome.png"
         },
+        "TutorialDragFinger": {
+            "file": "textures/TutorialDragFinger.png"
+        },
         "TutorialTextBlank": {
             "file": "textures/TutorialTextBlank.png"
         },

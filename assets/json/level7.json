@@ -20,14 +20,14 @@
                 {
                  "gid":8,
                  "height":4096,
-                 "id":25,
+                 "id":26,
                  "name":"",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":939,
-                 "x":-100.266284523189,
-                 "y":2960.19176654508
+                 "width":1220,
+                 "x":-125.424,
+                 "y":3806.36
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -36,27 +36,27 @@
          "y":0
         }, 
         {
-         "data":[9, 9, 9, 10,
+         "data":[10, 9, 10, 10,
             9, 10, 9, 9,
-            10, 10, 9, 9,
             9, 9, 9, 9,
+            9, 9, 9, 10,
             10, 9, 9, 9,
-            10, 9, 9, 9,
+            9, 9, 9, 9,
+            9, 9, 10, 10,
+            9, 9, 9, 9,
             10, 9, 10, 9,
+            9, 9, 10, 10,
             9, 9, 9, 9,
-            9, 10, 10, 10,
             9, 10, 9, 9,
             9, 9, 9, 9,
-            10, 10, 10, 9,
-            10, 10, 9, 9,
-            10, 10, 9, 9,
-            10, 9, 9, 10],
+            9, 9, 10, 9,
+            10, 10, 10, 9],
          "height":15,
          "id":1,
          "name":"Windows",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":4,
          "x":0,
          "y":0
@@ -141,7 +141,7 @@
          "y":0
         }],
  "nextlayerid":12,
- "nextobjectid":26,
+ "nextobjectid":27,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -151,7 +151,7 @@
         }],
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
- "tileheight":183,
+ "tileheight":236,
  "tilesets":[
         {
          "firstgid":1,
@@ -169,7 +169,7 @@
          "firstgid":8,
          "source":"Tilesets\/level7.tsx"
         }],
- "tilewidth":185,
+ "tilewidth":240,
  "type":"map",
  "version":"1.10",
  "width":4

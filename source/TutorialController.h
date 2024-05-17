@@ -49,11 +49,19 @@ protected:
     };
 
     int _currentTutorialStage = MOVE;
+    /** Used to help draw dragging finger in tutorial */
+    cugl::Vec2 _lastDirtThrowButtonLocation = Vec2();
+    /** how far the finger drag prompt moves (mirrored if peeking left) */
+    cugl::Vec2 _fingerTargetDelta = Vec2(200, 50);
+    /** how far the finger is along its animation path (between 0 and 1) */
+    float fingerT = 0;
 
     /** Blank white box (no instructions) */
     std::shared_ptr<cugl::Texture> _TutorialTextBlank;
     /** Instructions for tutorial */
     std::vector<std::shared_ptr<cugl::Texture>> _TutorialTexts;
+    /** Texture to show how to drag to throw dirt */
+    std::shared_ptr<cugl::Texture> _TutorialDragFinger;
 
 
 public:
@@ -123,6 +131,13 @@ public:
      * @param batch     The SpriteBatch to draw with.
      */
     void draw(const std::shared_ptr<cugl::SpriteBatch>& batch) override;
+
+    /**
+    * Draws the pointing finger for dirt throwing tutorial.
+    *
+    * @param batch     The SpriteBatch to draw with.
+    */
+    void drawTutorialFinger(const std::shared_ptr<cugl::SpriteBatch>& batch) override;
 
     /**
      * Resets the status of the game so that we can play again.

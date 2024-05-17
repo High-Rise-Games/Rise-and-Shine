@@ -41,6 +41,8 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _gameTime = 120;
     _gameTimeLeft = _gameTime;
     
+    _countDown = false;
+    
 
     _frame=0;
     
@@ -1164,7 +1166,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             }
         }
         
-        if (!_gameStart) {
+        if (!_gameStart && _countDown) {
             advanceCountDownAnim();
         } else {
             for (int i = 0; i < _numPlayers; i++) {
@@ -1838,6 +1840,11 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 }
 
 
+void GameplayController::drawTutorialFinger(const std::shared_ptr<cugl::SpriteBatch>& batch) {
+    // for use in tutorial controller
+}
+
+
 void GameplayController::setActive(bool f) {
     // yes this code is bad and needs to be reworked
     if (!f) {
@@ -1846,6 +1853,7 @@ void GameplayController::setActive(bool f) {
         setGameOver(false);
         setGameStart(false);
         setWin(false);
+        _countDown = false;
     } else {
         _isActive = true;
         _audioController->playGameplayMusic();
