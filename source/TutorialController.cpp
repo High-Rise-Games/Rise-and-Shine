@@ -545,7 +545,7 @@ void TutorialController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     Size screenSize = getSize();
     shared_ptr<Texture> textTexture = _TutorialTexts.at(_currentTutorialStage);
     Size textBoxSize = textTexture->getSize();
-    float textBoxScaleFactor = screenSize.getIWidth() / textBoxSize.getIWidth() * .5;
+    float textBoxScaleFactor = .3;
     Affine2 textBoxTrans = Affine2();
     textBoxTrans.translate(-.5 * textBoxSize.getIWidth(), 0);
     textBoxTrans.scale(textBoxScaleFactor);
