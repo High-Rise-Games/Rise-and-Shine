@@ -859,7 +859,7 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
         _curBirdBoard = 0;
     }
 
-    if (data->numProjectile > 0 && !data->optional) {
+    if (!data->optional) {
         //     populate player's projectile set
         projectiles->clearCurrentSet(); // clear current set to rewrite
         for (NetStructs::PROJECTILE projNode : data->projectileVector) {
@@ -1088,18 +1088,18 @@ void GameplayController::processDirtThrowRequest(std::shared_ptr<NetStructs::DIR
 void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton, std::shared_ptr<cugl::scene2::SceneNode> dirtThrowArc) {
     
     _input.update();
-
+    // Used on client side only to determine whether  to self update or use updated state from host
+    bool gotHostUpdate = false;
 
     // get or transmit board states over network
     if (_network.getConnection()) {
-        _network.getConnection()->receive([this](const std::string source,
+        _network.getConnection()->receive([this, &gotHostUpdate](const std::string source,
             const std::vector<std::byte>& data) {
                 if (!_ishost) {
                     if (netStructs.deserializeBoardState(data)->type == NetStructs::BoardStateType) {
-                        // CULog("got board state message");
                         updateBoard(netStructs.deserializeBoardState(data));
+                        gotHostUpdate = true;
                     } if (netStructs.deserializeBoardState(data)->type == NetStructs::DirtStateType) {
-                        // CULog("got board state message");
                         updateWindowDirt(netStructs.deserializeDirtStateMessage(data));
                     }
                 }
@@ -1209,7 +1209,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         _curBirdPos = getWorldPosition(_bird.birdPosition);
 
     }
-    else {
+    else if (!_ishost && !gotHostUpdate && _gameStart) {
         // not host - step forward for player that they are currently viewing
         // optimistic synchronization - do not have to wait for host to send update, go ahead and update board based on
         // current saved board state
@@ -1222,12 +1222,17 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             windows = _windowVec[nbrIdx - 1];
             projectiles = _projectileVec[nbrIdx - 1];
         }
-        if(player != nullptr && windows != nullptr && projectiles != nullptr && _gameStart) // can be null on initial update calls
-            clientStepForward(player, windows, projectiles);
-        /** for (auto player : _playerVec) {
+
+        for (int i = 0; i < 4; i++) {
+            if (_playerVec[i] == nullptr) continue;
+            clientStepForward(_playerVec[i], _windowVec[i], _projectileVec[i]);
+        }
+    }
+    else if (!_ishost && gotHostUpdate) {
+        for (auto player : _playerVec) {
             if (player == nullptr) continue;
             player->advanceAnimation();
-        } */
+        }
     }
 
     // When the player is on other's board and are able to throw dirt
@@ -1317,10 +1322,9 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     std::shared_ptr<NetStructs::MOVE_STATE> m = getMoveState(_input.getDir());
                     _network.sendToHost(*netStructs.serializeMoveState(m));
                 }
-                // send over scene switch requests are handled by button listener
             }
         }
-        if (_ishost) {
+        if (_ishost || !gotHostUpdate) {
             // Check if player is stunned for this frame
             if (_playerVec[_id-1]->getAnimationState() == Player::IDLE) {
                 // Move the player, ignoring collisions
