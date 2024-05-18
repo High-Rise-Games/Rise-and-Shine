@@ -55,6 +55,10 @@ bool VictoryScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _assets = assets;
     
     _building = assets->get<Texture>("victory_building");
+    _winnerRedText = _assets->get<Texture>("redwinnertext");
+    _winnerBlueText = _assets->get<Texture>("bluewinnertext");
+    _winnerYellowText = _assets->get<Texture>("yellowwinnertext");
+    _winnerGreenText = _assets->get<Texture>("redwinnertext");
     _winnerMushroom = SpriteSheet::alloc(_assets->get<Texture>("redwinner"), 2, 2, 4);
     _winnerMushroom->setFrame(0);
     _winnerFrog = SpriteSheet::alloc(_assets->get<Texture>("bluewinner"), 2, 2, 4);
@@ -163,20 +167,31 @@ void VictoryScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     buildingTrans.translate(getSize().width / 2, 0);
     batch->draw(_building, Vec2(), buildingTrans);
     std::shared_ptr<cugl::SpriteSheet> winnerTexture;
+    std::shared_ptr<cugl::Texture> textTexture;
     if (_winnerChar == "Mushroom") {
         winnerTexture = _winnerMushroom;
+        textTexture = _winnerRedText;
     } else if (_winnerChar == "Flower") {
         winnerTexture = _winnerFlower;
+        textTexture = _winnerYellowText;
     } else if (_winnerChar == "Frog") {
         winnerTexture = _winnerFrog;
+        textTexture = _winnerBlueText;
     } else {
         winnerTexture = _winnerChameleon;
+        textTexture = _winnerGreenText;
     }
     Affine2 winnerTrans;
     winnerTrans.translate(winnerTexture->getFrameSize().width * -0.5, winnerTexture->getFrameSize().height * -0.5);
     winnerTrans.scale(0.2);
-    winnerTrans.translate(getSize().width * 0.6, _building->getSize().height / 3.0);
+    winnerTrans.translate(getSize().width * 0.6, _building->getSize().height);
     winnerTexture->draw(batch, winnerTrans);
+    
+    Affine2 textTrans;
+    textTrans.translate(textTexture->getSize().width * -0.5, textTexture->getSize().height * -0.5);
+    textTrans.translate(getSize().width * 0.6, getSize().height * 0.8);
+    batch->draw(textTexture, Vec2(), textTrans);
+    
     for (int i = 0; i < _otherChars.size(); i++) {
         string loser = _otherChars[i];
         std::shared_ptr<cugl::SpriteSheet> loserTexture;
@@ -200,7 +215,7 @@ void VictoryScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         Affine2 loserTrans;
         loserTrans.translate(loserTexture->getFrameSize().width * -0.5, loserTexture->getFrameSize().height * -0.5);
         loserTrans.scale(0.2);
-        loserTrans.translate(getSize().width * ratio, _building->getSize().height / 3.0);
+        loserTrans.translate(getSize().width * ratio, _building->getSize().height);
         loserTexture->draw(batch, loserTrans);
     }
     batch->end();

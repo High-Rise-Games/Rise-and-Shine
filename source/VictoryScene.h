@@ -22,6 +22,13 @@ public:
     std::shared_ptr<cugl::scene2::Button> _backbutton;
     /** The building image */
     std::shared_ptr<cugl::Texture> _building;
+    
+    /** Winner text textures */
+    std::shared_ptr<cugl::Texture> _winnerRedText;
+    std::shared_ptr<cugl::Texture> _winnerBlueText;
+    std::shared_ptr<cugl::Texture> _winnerYellowText;
+    std::shared_ptr<cugl::Texture> _winnerGreenText;
+    
     /** The mushroom image as winner*/
     std::shared_ptr<cugl::SpriteSheet> _winnerMushroom;
     /** The frog image as winner*/

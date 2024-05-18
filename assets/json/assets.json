@@ -730,6 +730,18 @@
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
+        "bluewinnertext": {
+            "file": "textures/WinnerBlue.png"
+        },
+        "redwinnertext": {
+            "file": "textures/WinnerRed.png"
+        },
+        "greenwinnertext": {
+            "file": "textures/WinnerGreen.png"
+        },
+        "yellowwinnertext": {
+            "file": "textures/WinnerYellow.png"
+        },
         "bluewinner": {
             "file": "textures/win-fr-4096.png"
         },
