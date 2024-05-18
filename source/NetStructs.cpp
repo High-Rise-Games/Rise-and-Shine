@@ -100,6 +100,8 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeBoardState(st
             _serializer.writeFloat(projectile.PosY);
             _serializer.writeFloat(projectile.velX);
             _serializer.writeFloat(projectile.velY);
+            _serializer.writeFloat(projectile.SourceX);
+            _serializer.writeFloat(projectile.SourceY);
             _serializer.writeFloat(projectile.destX);
             _serializer.writeFloat(projectile.destY);
             _serializer.writeFloat(projectile.type);
@@ -156,6 +158,8 @@ const std::shared_ptr<NetStructs::BOARD_STATE> NetStructs::deserializeBoardState
             projectile.PosY = _deserializer.readFloat();
             projectile.velX = _deserializer.readFloat();
             projectile.velY = _deserializer.readFloat();
+            projectile.SourceX = _deserializer.readFloat();
+            projectile.SourceY = _deserializer.readFloat();
             projectile.destX = _deserializer.readFloat();
             projectile.destY = _deserializer.readFloat();
             projectile.type = static_cast<PROJECTILE_TYPE>(_deserializer.readFloat());
@@ -183,6 +187,7 @@ const std::shared_ptr<std::vector<std::byte>> NetStructs::serializeDirtStateMess
     for (WINDOW_DIRT dirt : message->dirtVector) {
         _serializer.writeFloat(dirt.posX);
         _serializer.writeFloat(dirt.posY);
+        _serializer.writeFloat(dirt.birdPoo);
     }
     
 
@@ -210,6 +215,7 @@ const std::shared_ptr<NetStructs::DIRT_STATE> NetStructs::deserializeDirtStateMe
         WINDOW_DIRT dirt;
         dirt.posX = _deserializer.readFloat();
         dirt.posY = _deserializer.readFloat();
+        dirt.birdPoo = _deserializer.readFloat();
         dirtVector.push_back(dirt);
     }
     
