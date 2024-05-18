@@ -71,7 +71,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _nativeSize = size;
     
     _dirtSelected = false;
-    _cleanInProgress = false;
+    _cleanInProgress = {false, false, false, false};
     _dirtPath = Path2();
     dimen *= SCENE_HEIGHT/dimen.height;
     if (assets == nullptr) {
@@ -842,7 +842,7 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
             _audioController->playBangSoundClient();
         }
         player->setAnimationState(Player::STUNNED);
-        _cleanInProgress = false;
+        _cleanInProgress[playerId-1] = false;
     } else if (data->animState == 5) {
         player->setAnimationState(Player::WIGGLE);
     }
@@ -1479,9 +1479,9 @@ void GameplayController::clientStepForward(std::shared_ptr<Player>& player, std:
         if (dirtExists) {
             // filling up dirty bucket
             // set amount of frames player is frozen for for cleaning dirt
-            if (_cleanInProgress && player->getAnimationState() == Player::IDLE) {
+            if (_cleanInProgress[player_id-1] && player->getAnimationState() == Player::IDLE) {
                 windows->removeDirt(clamped_y, clamped_x);
-                _cleanInProgress = false;
+                _cleanInProgress[player_id-1] = false;
             }
             else if (player->getAnimationState() == Player::IDLE) {
                 // TODO: also move sound logic into update board for client
@@ -1489,7 +1489,7 @@ void GameplayController::clientStepForward(std::shared_ptr<Player>& player, std:
 //                    _audioController->playCleanSoundHost();
 //                };
                 player->setAnimationState(Player::AnimStatus::WIPING);
-                _cleanInProgress = true;
+                _cleanInProgress[player_id-1] = true;
             }
         }
 
@@ -1500,7 +1500,7 @@ void GameplayController::clientStepForward(std::shared_ptr<Player>& player, std:
 //                _audioController->playBangSoundHost();
 //            };
             player->setAnimationState(Player::STUNNED);
-            _cleanInProgress = false;
+            _cleanInProgress[player_id-1] = false;
             if (collision_result.second.has_value()) {
                 landedDirts.push_back(collision_result.second.value());
             }
@@ -1569,17 +1569,17 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
         if (dirtExists) {
             // filling up dirty bucket
             // set amount of frames plaer is frozen for for cleaning dirt
-            if (_cleanInProgress && player->getAnimationState() == Player::IDLE) {
+            if (_cleanInProgress[player_id - 1] && player->getAnimationState() == Player::IDLE) {
                 windows->removeDirt(clamped_y, clamped_x);
                 _allDirtAmounts[player_id - 1] = min(_maxDirtAmount, _allDirtAmounts[player_id - 1] + 1);
-                _cleanInProgress = false;
+                _cleanInProgress[player_id - 1] = false;
             }
             else if (player->getAnimationState() == Player::IDLE) {
                 if (player_id == _id) {
                     _audioController->playCleanSoundHost();
                 };
                 player->setAnimationState(Player::AnimStatus::WIPING);
-                _cleanInProgress = true;
+                _cleanInProgress[player_id - 1] = true;
             }
         }
 
@@ -1590,7 +1590,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
                 _audioController->playBangSoundHost();
             };
             player->setAnimationState(Player::STUNNED);
-            _cleanInProgress = false;
+            _cleanInProgress[player_id - 1] = false;
             if (collision_result.second.has_value()) {
                 landedDirts.push_back(collision_result.second.value());
             }

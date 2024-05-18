@@ -177,7 +177,7 @@ protected:
     /** True if the is shooed and is leaving the current board */
     bool _birdLeaving;
     /** True if the player is wiping, only remove dirt after player finishes wiping */
-    bool _cleanInProgress;
+    std::vector<bool> _cleanInProgress;
     
     cugl::scheduable t;
     

@@ -120,6 +120,7 @@ void VictoryScene::setActive(bool value) {
             _quit = false;
             _backbutton->activate();
         } else {
+            _otherChars.clear();
             _backbutton->deactivate();
             _backbutton->setDown(false);
         }

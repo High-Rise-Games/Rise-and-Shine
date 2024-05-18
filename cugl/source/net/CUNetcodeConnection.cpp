@@ -75,7 +75,7 @@ using namespace std;
 using namespace rtc;
 
 /** The buffer size for message envelopes */
-#define DEFAULT_BUFFER 512
+#define DEFAULT_BUFFER 64
 
 /**
  * Copies information from a CUGL configuration to an RTC configuration
