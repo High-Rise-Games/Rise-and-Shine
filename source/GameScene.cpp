@@ -129,7 +129,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
 //
     
 
-    _backout = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("game_back"));
+    _backout = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("gamescene_settings"));
     _backout->addListener([=](const std::string& name, bool down) {
         if (down) {
             CULog("quitting game");

@@ -74,67 +74,6 @@
                         "visible": true
                     },
                     "children": {
-                        "settings": {
-                            "type": "Button",
-                            "format": {
-                                "type": "Anchored"
-                            },
-                            "data": {
-                                "anchor": [
-                                    0.5,
-                                    0.5
-                                ],
-                                "size": [
-                                    56,
-                                    56.88
-                                ],
-                                "angle": 0,
-                                "position": [
-                                    28,
-                                    40
-                                ],
-                                "visible": true,
-                                "upnode": "settings"
-                            },
-                            "children": {
-                                "settings": {
-                                    "type": "Image",
-                                    "data": {
-                                        "texture": "settings",
-                                        "anchor": [
-                                            0,
-                                            1
-                                        ],
-                                        "size": [
-                                            56,
-                                            56.88
-                                        ],
-                                        "angle": 0,
-                                        "position": [
-                                            0,
-                                            0
-                                        ],
-                                        "visible": true
-                                    },
-                                    "layout": {
-                                        "x_anchor": "left",
-                                        "y_anchor": "top",
-                                        "absolute": false,
-                                        "x_offset": 0,
-                                        "y_offset": 0
-                                    }
-                                }
-                            },
-                            "layout": {
-                                "priority": 0,
-                                "padding": [
-                                    0,
-                                    0,
-                                    1031,
-                                    0
-                                ]
-                            }
-                        },
                         "backtohome": {
                             "type": "Button",
                             "format": {
