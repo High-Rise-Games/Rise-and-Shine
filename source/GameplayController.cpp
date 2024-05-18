@@ -38,7 +38,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     // Initialize the scene to a locked width
     
     // time of the game set to 120 seconds
-    _gameTime = 2;
+    _gameTime = 60;
     _gameTimeLeft = _gameTime;
     
     _countDown = false;

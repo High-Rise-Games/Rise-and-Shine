@@ -132,6 +132,9 @@ void LoadingScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         //CULog("anim 2 playing frame %f", std::round((_frame_size-1) * ((_progress - 0.5) * 2)));
         _loading_animation_1->setFrame(31);
         _loading_animation_2->setFrame(_curFrame % 32);
+        if (_curFrame>=60) {
+            _loading_animation_2->setFrame(31);
+        }
     }
     Affine2 trans1;
     trans1.scale(0.5);
