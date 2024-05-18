@@ -804,15 +804,12 @@ void LobbyScene::setActive(bool value) {
 void LobbyScene::requestID() {
 
     
-    if (_status == WAIT) {
+    if (_status == WAIT && !_network.didQuit()) {
         const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
         json->init(JsonValue::Type::ObjectType);
         json->appendValue("id request", _network.getConnection()->getUUID());
-        try {
-            _network.transmitMessage(json);
-        } catch (exception e) {
-            
-        }
+        _network.transmitMessage(json);
+        
     }
 
     
