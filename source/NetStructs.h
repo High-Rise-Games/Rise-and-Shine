@@ -71,6 +71,12 @@ public:
         /* The y velocity of the projectile */
         float velY;
         
+        /* The x location of the projectile source */
+        float SourceX;
+        
+        /* The y location of the projectile source */
+        float SourceY;
+        
         /* The x-coordinate of the destination of the projectile */
         float destX;
         

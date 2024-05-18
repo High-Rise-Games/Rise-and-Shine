@@ -660,9 +660,12 @@ std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getBoardState(int i
             NetStructs::PROJECTILE projStruct;
 
             cugl::Vec2 projBoardPos = getBoardPosition(projectile->position);
+            cugl::Vec2 projStartPos = getBoardPosition(projectile->startPos);
             cugl::Vec2 projDestBoardPos = getBoardPosition(projectile->destination);
             projStruct.PosX = projBoardPos.x;
             projStruct.PosY = projBoardPos.y;
+            projStruct.SourceX = float(projStartPos.x);
+            projStruct.SourceY = float(projStartPos.x);
             projStruct.velX = float(projectile->velocity.x);
             projStruct.velY = float(projectile->velocity.y);
             projStruct.destX = float(projDestBoardPos.x);
@@ -883,6 +886,9 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
 
             // get projectile velocity
             Vec2 vel(projNode.velX, projNode.velY);
+            
+            // get projectile source position
+            Vec2 source(projNode.SourceX, projNode.SourceY);
 
             // get projectile destination
             Vec2 dest(projNode.destX, projNode.destY);
@@ -893,7 +899,7 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
             }
 
             // add the projectile to neighbor's projectile set
-            projectiles->spawnProjectileClient(getWorldPosition(pos), vel, getWorldPosition(dest), type);
+            projectiles->spawnProjectileClient(getWorldPosition(pos), getWorldPosition(source), vel, getWorldPosition(dest), type);
         }
         
     }

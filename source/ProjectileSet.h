@@ -69,7 +69,7 @@ public:
         /** Use this constructor to generate a specialized projectile
          * @param t     type of projectile
         */
-        Projectile(const cugl::Vec2 p, const cugl::Vec2 v, const cugl::Vec2 dest, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t, int s);
+        Projectile(const cugl::Vec2 p, const cugl::Vec2 source, const cugl::Vec2 v, const cugl::Vec2 dest, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t, int s);
 
         /** sets projectile scale for drawing */
         void setScale(float s) { _scaleFactor = s; }
@@ -243,7 +243,7 @@ public:
      * @param dest  The projectile's destination.
      * @param t     The projectile type.
      */
-    void spawnProjectileClient(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2 dest, Projectile::ProjectileType t);
+    void spawnProjectileClient(cugl::Vec2 p, cugl::Vec2 source, cugl::Vec2 v, cugl::Vec2 dest, Projectile::ProjectileType t);
 
     /**
      * Moves all the projectiles in the active set.

@@ -44,7 +44,7 @@ std::pair<bool, std::optional<std::tuple<cugl::Vec2, int, int>>> CollisionContro
 
         // finds the NEAREST collision
         Vec2 pos = proj->position;
-        if (proj->_inMiddle) {
+        if (true) {
             Vec2 topBound = Vec2(proj->position.x, proj->position.y - 100.f);
             Vec2 bottomBound = Vec2(proj->position.x, proj->position.y - 100.f);
             
