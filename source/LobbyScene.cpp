@@ -808,7 +808,11 @@ void LobbyScene::requestID() {
         const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
         json->init(JsonValue::Type::ObjectType);
         json->appendValue("id request", _network.getConnection()->getUUID());
-        _network.transmitMessage(json);
+        try {
+            _network.transmitMessage(json);
+        } catch (exception e) {
+            
+        }
     }
 
     
