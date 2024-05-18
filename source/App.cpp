@@ -133,6 +133,20 @@ void App::onResume() {
  */
 void App::update(float timestep) {
     
+    if (_settings.isActive()) {
+        if (_settings._music->isDown()) {
+            _audioController->allowMusic();
+        }
+        
+        if (_settings._sound->isDown()) {
+            _audioController->allowSounds();
+        }
+        
+        if (_settings._exit->isDown()) {
+            _settings.setActive(false);
+        }
+    }
+    
     
     switch (_scene) {
         case LOAD:
@@ -177,7 +191,7 @@ void App::draw() {
 
 // NEW CODE
     
-    
+
     
     switch (_scene) {
         case LOAD:
@@ -204,10 +218,13 @@ void App::draw() {
         case TUTORIAL:
             _gamescene.render(_batch);
             break;
-        case SETTINGS:
-            _mainmenu.render(_batch);
-            _settings.render(_batch);
             
+        
+            
+    }
+    
+    if (_settings.isActive()) {
+        _settings.render(_batch);
     }
     
     
@@ -270,39 +287,41 @@ void App::updateMenuScene(float timestep) {
     _mainmenu.update(timestep);
     std::vector<std::string> h;
     switch (_mainmenu.getChoice()) {
-    case MenuScene::Choice::HOST:
-        // play the click soud
-        _mainmenu.setActive(false);
-        _levelscene.setActive(true);
-        _gamescene.setController(_gameplay);
-        _scene = State::LEVEL;
-        break;
-    case MenuScene::Choice::JOIN:
-        _mainmenu.setActive(false);
-        _client_join_scene.setActive(true);
-        _gamescene.setController(_gameplay);
-        _scene = State::CLIENT_JOIN;
-        break;
-    case MenuScene::Choice::TUTORIAL:
-        CULog("update menu scene to tutorial");
-        _mainmenu.setActive(false);
-        _gamescene.setActive(true);
-        _gamescene.setController(_tutorialController);
-        _tutorialController->initLevel(1);
-        _tutorialController->setActive(true);
-        _tutorialController->setId(1);
-        _tutorialController->initHost(_assets);
-        _tutorialController->setCharacters(h);
-        _scene = State::TUTORIAL;
-        break;
-    case MenuScene::Choice::NONE:
-        // DO NOTHING
-        break;
-    case MenuScene::Choice::SETTINGS:
-        _scene = SETTINGS;
-        _settings.setActive(true);
-        _mainmenu.setActive(false);
-        break;
+        case MenuScene::Choice::HOST:
+            // play the click soud
+            _mainmenu.setActive(false);
+            _levelscene.setActive(true);
+            _gamescene.setController(_gameplay);
+            _scene = State::LEVEL;
+            break;
+        case MenuScene::Choice::JOIN:
+            _mainmenu.setActive(false);
+            _client_join_scene.setActive(true);
+            _gamescene.setController(_gameplay);
+            _scene = State::CLIENT_JOIN;
+            break;
+        case MenuScene::Choice::TUTORIAL:
+            CULog("update menu scene to tutorial");
+            _mainmenu.setActive(false);
+            _gamescene.setActive(true);
+            _gamescene.setController(_tutorialController);
+            _tutorialController->initLevel(1);
+            _tutorialController->setActive(true);
+            _tutorialController->setId(1);
+            _tutorialController->initHost(_assets);
+            _tutorialController->setCharacters(h);
+            _scene = State::TUTORIAL;
+            break;
+        case MenuScene::Choice::NONE:
+            // DO NOTHING
+            if (_mainmenu._settingsbutton->isDown()) {
+                _settings.setActive(true);
+                _mainmenu.setActive(false);
+            } else if (!_settings.isActive()) {
+                _settings.setActive(false);
+                _mainmenu.setActive(true);
+            }
+            
     }
 }
 
@@ -450,6 +469,11 @@ void App::updateLobbyScene(float timestep) {
  */
 void App::updateGameScene(float timestep) {
     _gamescene.update(timestep);
+    if (_gamescene._settingsButton->isDown()) {
+        _settings.setActive(true);
+    } else if (_settings._exit->isDown()) {
+        _settings.setActive(false);
+    }
     if (_gamescene.didQuit() || _gameplay->isThereARequestForMenu()) {
 
         _gamescene.setActive(false);
@@ -458,6 +482,7 @@ void App::updateGameScene(float timestep) {
         _mainmenu.setActive(true);
         _scene = State::MENU;
     }
+    
 }
 
 

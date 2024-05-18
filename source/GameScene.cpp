@@ -64,7 +64,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _background->setWrapS(GL_CLAMP_TO_EDGE);
     _background->setWrapT(GL_CLAMP_TO_EDGE);
     _constants = _assets->get<JsonValue>("constants");
-
+   
     _textBubble = _assets->get<Texture>("text_bubble");
     _mushroomPoint = _assets->get<Texture>("mushroom_point");
 
@@ -77,6 +77,9 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
             _quit = true;
         }
     });
+    
+    
+    
     _victory_UI->setContentSize(dimen);
     _victory_UI->doLayout(); // This rearranges the children to fit the screen
     addChild(_victory_UI);
@@ -111,6 +114,16 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
 
     _gameplay_elem->setContentSize(dimen);
     _gameplay_elem->doLayout();
+    
+    _settingsButton = std::dynamic_pointer_cast<scene2::Button>(_gameplay_elem->getChildByName("back"));
+    _settingsButton->addListener([=](const std::string& name, bool down) {
+        if (down) {
+            
+        }
+    });
+    
+    _settingsButton->activate();
+
     
     // progress bars for player
     auto greenBar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("game_greenbar"));

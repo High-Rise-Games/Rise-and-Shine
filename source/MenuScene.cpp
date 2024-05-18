@@ -54,6 +54,7 @@ bool MenuScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     // Acquire the scene built by the asset loader and resize it the scene
     _assets = assets;
     assets->loadDirectory(assets->get<JsonValue>("menu"));
+    _displaySettings=false;
     
     std::shared_ptr<scene2::SceneNode> scene = assets->get<scene2::SceneNode>("menu");
     scene->setContentSize(dimen);
@@ -88,7 +89,11 @@ bool MenuScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     
     _settingsbutton->addListener([this](const std::string& name, bool down) {
         if (down) {
-            _choice = Choice::SETTINGS;
+            if (_displaySettings) {
+                _displaySettings = false;
+            } else {
+                _displaySettings = true;
+            }
             _audioController->playMovePress();
         }
     });
@@ -132,10 +137,12 @@ void MenuScene::setActive(bool value) {
             _hostbutton->deactivate();
             _joinbutton->deactivate();
             _tutorialbutton->deactivate();
+            _settingsbutton->deactivate();
             // If any were pressed, reset them
             _hostbutton->setDown(false);
             _joinbutton->setDown(false);
             _tutorialbutton->setDown(false);
+            _settingsbutton->setDown(false);
         }
     }
 }

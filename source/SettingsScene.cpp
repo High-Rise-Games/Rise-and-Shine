@@ -53,8 +53,10 @@ bool SettingsScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _settingsUI->doLayout(); // Repositions the HUD
     addChild(_settingsUI);
     
-    _sound = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("Backdrop_sound_check"));
-    _music =  std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("Backdrop_music_check"));
+    _sound = std::dynamic_pointer_cast<scene2::Button>(_settingsUI->getChildByName("Backdrop")->getChildByName("sound")->getChildByName("check"));
+    _music =  std::dynamic_pointer_cast<scene2::Button>(_settingsUI->getChildByName("Backdrop")->getChildByName("music")->getChildByName("check"));
+    _quit =  std::dynamic_pointer_cast<scene2::Button>(_settingsUI->getChildByName("Backdrop")->getChildByName("quit"));
+    _exit =  std::dynamic_pointer_cast<scene2::Button>(_settingsUI->getChildByName("Backdrop")->getChildByName("exit"));
     
     // Program the buttons
     _music->addListener([this](const std::string& name, bool down) {
@@ -75,8 +77,18 @@ bool SettingsScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
             }
         }
     });
+    _exit->addListener([this](const std::string& name, bool down) {
+        if (down) {
+            
+        }
+    });
+    _quit->addListener([this](const std::string& name, bool down) {
+        if (down) {
+            
+        }
+    });
     
-
+    setActive(false);
 
     return true;
 }
@@ -89,6 +101,8 @@ void SettingsScene::dispose() {
         removeAllChildren();
         _active = false;
         _assets = nullptr;
+        _sound = nullptr;
+        _music = nullptr;
     }
 }
 
@@ -103,6 +117,14 @@ void SettingsScene::dispose() {
  */
 void SettingsScene::setActive(bool value) {
     _active = value;
-
+    if (_active) {
+        _sound->activate();
+        _music->activate();
+        _exit->activate();
+    } else {
+        _sound->deactivate();
+        _music->deactivate();
+        _exit->deactivate();
+    }
     
 }

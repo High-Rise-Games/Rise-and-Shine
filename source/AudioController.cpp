@@ -23,6 +23,8 @@ bool AudioController::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _movePress = _assets->get<cugl::Sound>("UI_move");;
     _bang = _assets->get<cugl::Sound>("bang");
     _clean = _assets->get<cugl::Sound>("clean");
+    _allowMusic = true;
+    _allowSounds = true;
     
     
     return true;
@@ -65,11 +67,21 @@ void AudioController::playMovePress() {
 
 
 void AudioController::playBangSoundHost() {
-    AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
+    if (!_allowSounds) {
+        AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
+    } else {
+        AudioEngine::get()->play("bang", _bang, false, 0, true);
+    }
+    
 }
 
 void AudioController::playCleanSoundHost() {
-    AudioEngine::get()->play("clean", _clean, false, _clean->getVolume(), true);
+    if (!_allowSounds) {
+        AudioEngine::get()->play("clean", _clean, false, 0, true);
+    } else {
+        AudioEngine::get()->play("clean", _clean, false, _clean->getVolume(), true);
+    }
+    
 }
 
 void AudioController::playCleanSoundClient() {
@@ -77,7 +89,12 @@ void AudioController::playCleanSoundClient() {
 //    _cleanEffectIsActive = _soundQueue->isActive("clean");
     if (!_cleanEffectIsActive) {
 //        AudioEngine::get()->play("clean", _clean, false, _clean->getVolume(), true);
-        _soundQueue->play(_clean);
+        if (!_allowSounds) {
+            _soundQueue->play(_clean, false, 0, false);
+        } else {
+            _soundQueue->play(_clean, false, _clean->getVolume(), false);
+        }
+        
     }
 }
 
@@ -86,7 +103,11 @@ void AudioController::playBangSoundClient() {
     _bangEffectIsActive = AudioEngine::get()->isActive("bang");
     if (!_bangEffectIsActive) {
 //        AudioEngine::get()->play("bang", _bang, false, _bang->getVolume(), true);
-        _soundQueue->play(_bang);
+        if (!_allowSounds) {
+            _soundQueue->play(_bang, false, 0, false);
+        } else {
+            _soundQueue->play(_bang, false, _bang->getVolume(), false);
+        }
     }
 }
 
@@ -97,7 +118,22 @@ void AudioController::stopMusic() {
     _gameplayMusicIsActive = false;
 };
 
+void AudioController::allowMusic() {
+    if (_allowMusic) {
+        AudioEngine::get()->getMusicQueue()->setVolume(0);
+        _allowMusic = false;
+    } else {
+        AudioEngine::get()->getMusicQueue()->setVolume(0.25);
+        _allowMusic=true;
+    }
+};
 
-
+void AudioController::allowSounds() {
+    if (_allowSounds) {
+        _allowSounds=false;
+    } else {
+        _allowSounds = true;
+    }
+};
 
 

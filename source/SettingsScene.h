@@ -33,14 +33,19 @@ protected:
     std::shared_ptr<cugl::AssetManager> _assets;
     
     
-    std::shared_ptr<cugl::scene2::Button> _music;
-    std::shared_ptr<cugl::scene2::Button> _sound;
+   
     
-    bool _musicActive;
-    bool _soundActive;
 
 
 public:
+    
+    std::shared_ptr<cugl::scene2::Button> _music;
+    std::shared_ptr<cugl::scene2::Button> _sound;
+    std::shared_ptr<cugl::scene2::Button> _quit;
+    std::shared_ptr<cugl::scene2::Button> _exit;
+    
+    bool _musicActive;
+    bool _soundActive;
     
     /** The scene UI */
     std::shared_ptr<cugl::scene2::SceneNode> _settingsUI;

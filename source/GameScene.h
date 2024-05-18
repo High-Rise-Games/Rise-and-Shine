@@ -85,6 +85,8 @@ protected:
     /** back button for victory screen */
     std::shared_ptr<cugl::scene2::Button> _victoryBackout;
     
+
+    
     // VIEW items are going to be individual variables
     // In the future, we will replace this with the scene graph
     /** The text bubble image */
@@ -124,6 +126,10 @@ protected:
 public:
 #pragma mark -
 #pragma mark Constructors
+    
+    std::shared_ptr<cugl::scene2::Button> _settingsButton;
+    
+    
     /**
      * Creates a new game mode with the default values.
      *

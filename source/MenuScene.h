@@ -39,9 +39,10 @@ public:
         JOIN,
         /** User wants to play the tutorial */
         TUTORIAL,
-        /** User wants the settings page */
-        SETTINGS
     };
+    
+    /** Whether to display settings */
+    bool _displaySettings;
 
 protected:
     /** The asset manager for this scene. */
@@ -54,14 +55,16 @@ protected:
     std::shared_ptr<cugl::scene2::Button> _joinbutton;
     /** The menu button for opening the tutorial level */
     std::shared_ptr<cugl::scene2::Button> _tutorialbutton;
-    /* The menu button for opening the settings page*/
-    std::shared_ptr<cugl::scene2::Button> _settingsbutton;
     /** The player menu choice */
     Choice _choice;
     
 public:
 #pragma mark -
 #pragma mark Constructors
+    
+    /* The menu button for opening the settings page*/
+    std::shared_ptr<cugl::scene2::Button> _settingsbutton;
+    
     /**
      * Creates a new  menu scene with the default values.
      *

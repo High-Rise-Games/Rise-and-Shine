@@ -40,6 +40,9 @@ private:
     /** The bird poop collision sound effect */
     std::shared_ptr<cugl::Sound> _bang;
     
+    bool _allowMusic;
+    bool _allowSounds;
+    
     /** Whether gameplay music is playing */
     bool _gameplayMusicIsActive;
     
@@ -96,6 +99,12 @@ public:
     
     /** Updates the audio controller, letting us know ot stop all music if the game is no longer active */
     void update(bool f);
+    
+    /** Toggle music */
+    void allowMusic();
+    
+    /** Toggle sounds */
+    void allowSounds();
     
 };
 
