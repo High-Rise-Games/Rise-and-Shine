@@ -375,8 +375,15 @@ bool SctpTransport::send(message_ptr message) {
 		throw std::invalid_argument("Message is too large");
 
 	// Flush the queue, and if nothing is pending, try to send directly
-	if (trySendQueue() && trySendMessage(message))
-		return true;
+//	if (trySendQueue() && trySendMessage(message))
+//		return true;
+    try {
+        if (trySendQueue() && trySendMessage(message)) {
+            return true;
+        }
+    } catch (std::exception e) {
+
+    }
 
 	mSendQueue.push(message);
 	updateBufferedAmount(to_uint16(message->stream), ptrdiff_t(message_size_func(message)));

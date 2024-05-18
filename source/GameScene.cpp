@@ -37,6 +37,9 @@ using namespace std;
 bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps) {
     
     
+    _scroll = 0;
+    
+    
     // Get the current display size of the device
     Size displaySize = Application::get()->getDisplaySize();
 
@@ -214,6 +217,7 @@ void GameScene::setActive(bool value) {
             // If any were pressed, reset them
             _backout->setDown(false);
             _dirtThrowButton->setDown(false);
+            _scroll = 0;
             for (auto bar : _player_bars) {
                 bar->setVisible(false);
             }
@@ -243,9 +247,10 @@ void GameScene::update(float timestep) {
     
     _gameController->update(timestep, worldPos, _dirtThrowInput, _dirtThrowButton, _dirtThrowArc);
     
-    _scene_UI->getChild(0)->getChild(0)->getChild(0)->getChild(1)->getChild<scene2::Label>(1)->setText(std::to_string(_gameController->getTime()));
+
+    _scene_UI->getChildByName("TimerUI")->getChildByName("UITimer")->getChildByName("time")->getChildByName<scene2::Label>("number")->setText(std::to_string(_gameController->getTime()));
     
-    _scene_UI->getChildByName("Leftgroup")->getChildByName("BucketUI")->getChildByName("BucketUI")->getChildByName<scene2::Label>("number")->setText(std::to_string(_gameController->getCurDirtAmount()));
+    _scene_UI->getChildByName("BucketUI")->getChildByName("BucketUI")->getChildByName<scene2::Label>("number")->setText(std::to_string(_gameController->getCurDirtAmount()));
     
     for (auto bar : _player_bars) {
         bar->setVisible(false);
@@ -287,8 +292,19 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     // DO NOT DO THIS IN YOUR FINAL GAME
     // CULog("current board: %d", _curBoard);
     
+
+    Vec3 cameraPos;
+    if (!_gameController->_countDown) {
+        cameraPos = Vec3(getCamera()->getPosition().x, _gameController->getPlayerWindow(_gameController->_id)->_windowHeight * _gameController->getPlayerWindow(_gameController->_id)->_nVertical + _scroll, 1);
+        if (cameraPos.y > _gameController->getPlayer(_gameController->getId())->getPosition().y) {
+            _scroll=_scroll-15;
+        } else {
+            _gameController->_countDown = true;
+        }
+    } else {
+        cameraPos = Vec3(getCamera()->getPosition().x, _gameController->getPlayer(_gameController->getId())->getPosition().y, 1);
+    }
     
-    Vec3 cameraPos = Vec3(getCamera()->getPosition().x, _gameController->getPlayer(_gameController->getId())->getPosition().y, 1);
     getCamera()->setPosition(cameraPos);
     getCamera()->update();
     batch->begin(getCamera()->getCombined());
@@ -301,8 +317,17 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->draw(_parallax, (cameraPos -getSize().operator Vec2()/2)-Vec2(0, cameraPos.y));
     
 
+        
+    
     _gameController->draw(batch);
+    
+    
+    
     _gameController->drawCountdown(batch, getCamera()->getPosition(), getSize());
+    
+    
+    
+    
     
     batch->setColor(Color4::WHITE);
     
@@ -321,7 +346,7 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
             
             _projectile_line->setPolygon(Rect(0, 0, (p2 - p1).length(), 10));
             _projectile_line->setPositionX(p1.x);
-            _projectile_line->setPositionY(SCENE_HEIGHT / 2);
+            _projectile_line->setPositionY(getSize().height / 2);
             double deltaX = p2.x - p1.x;
             double deltaY = p2.y - p1.y;
 
@@ -354,26 +379,30 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         if (player == nullptr) continue;
         int barIdx = _char_to_barIdx[player->getChar()];
 //         CULog("character t: %s", player->getChar().c_str());
-        _player_bars[barIdx]->setPositionX(getSize().width - _gameController->getPlayerWindow(_gameController->getId())->sideGap + (offset_ct + 2) * 50);
+        _player_bars[barIdx]->setPositionX(getSize().width - _gameController->getPlayerWindow(_gameController->getId())->sideGap + (offset_ct + 2.5) * 45);
         _player_bars[barIdx]->setVisible(true);
 
         Affine2 medalTrans = Affine2();
-        medalTrans.scale(0.5);
+        medalTrans.scale(0.4);
         medalTrans.translate((cameraPos - getSize().operator Vec2() / 2) + _player_bars[barIdx]->getPosition());
         // translate medal up to top of bar
-        medalTrans.translate(0, _player_bars[barIdx]->getHeight() / 2);
+        // medalTrans.translate(0, _player_bars[barIdx]->getHeight() / 2);
         batch->draw(player->getMedalTexture(), player->getMedalTexture()->getSize().operator Vec2() / 2, medalTrans);
 
         Affine2 profileTrans = Affine2();
-        profileTrans.scale(0.6);
+        profileTrans.scale(0.5);
         profileTrans.translate((cameraPos - getSize().operator Vec2() / 2) + _player_bars[barIdx]->getPosition());
         // translate profile down to bottom of bar
-        profileTrans.translate(0, _player_bars[barIdx]->getHeight() / -2);
+        profileTrans.translate(0, _player_bars[barIdx]->getHeight() * -1);
         // translate profile to top of filled bar based on current progress
         profileTrans.translate(0, _player_bars[barIdx]->getHeight() * _player_bars[barIdx]->getProgress());
         batch->draw(player->getProfileTexture(), player->getProfileTexture()->getSize().operator Vec2() / 2, profileTrans);
 
         offset_ct += 1;
+    }
+
+    if (true) {
+        _gameController->drawTutorialFinger(batch);
     }
     
     if (_gameController->isGameWin()) {

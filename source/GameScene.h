@@ -42,6 +42,9 @@ protected:
     
     /** The current frame incremeted by 1 every frame (resets to 0 every time we reach 60 frames) */
     int _frame;
+    
+    /** the int for scrol l*/
+    int _scroll;
 
     int _countdownFrame;
     
@@ -144,6 +147,8 @@ public:
      * Disposes of all (non-static) resources allocated to this mode.
      */
     void dispose() override;
+
+    bool isTutorial = false;
 
     /**
      * Sets whether the scene is currently active

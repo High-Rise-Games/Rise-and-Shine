@@ -56,7 +56,7 @@
                     "layout": {
                         "x_anchor": "center",
                         "y_anchor": "middle",
-                        "y_offset": -65,
+                        "y_offset": -45,
                         "absolute": true
                     }
                 },
@@ -108,7 +108,7 @@
                     "layout": {
                         "x_anchor": "center",
                         "y_anchor": "middle",
-                        "y_offset": -215,
+                        "y_offset": -235,
                         "absolute": true
                     }
                 }

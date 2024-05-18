@@ -745,6 +745,9 @@
         "Backtohome": {
             "file": "textures/Backtohome.png"
         },
+        "TutorialDragFinger": {
+            "file": "textures/TutorialDragFinger.png"
+        },
         "TutorialTextBlank": {
             "file": "textures/TutorialTextBlank.png"
         },
@@ -820,11 +823,17 @@
         "down_blocked_2": {
             "file": "textures/down_blocked_2.png"
         },
+        "down_blocked_3": {
+            "file": "textures/down_blocked_3.png"
+        },
         "left_blocked_1": {
             "file": "textures/left_blocked_1.png"
         },
         "left_blocked_2": {
             "file": "textures/left_blocked_2.png"
+        },
+        "left_blocked_3": {
+            "file": "textures/left_blocked_3.png"
         },
         "fully_blocked_1": {
             "file": "textures/fully_blocked_1.png"
@@ -840,6 +849,9 @@
         },
         "fully_blocked_5": {
             "file": "textures/fully_blocked_5.png"
+        },
+        "fully_blocked_6": {
+            "file": "textures/fully_blocked_6.png"
         },
         "nightWindow1": {
             "file": "textures/nightWindow1.png"
@@ -970,68 +982,92 @@
         "progress_fg_blue": {
             "file": "textures/ProgressBars/FgBlue.png",
             "atlas": {
+                "foreground": [
+                    2,
+                    0,
+                    97,
+                    12
+                ],
                 "leftcap": [
                     0,
                     0,
                     2,
-                    18
+                    12
                 ],
                 "rightcap": [
-                    81,
+                    97,
                     0,
-                    83,
-                    18
+                    99,
+                    12
                 ]
             }
         },
         "progress_fg_green": {
             "file": "textures/ProgressBars/FgGreen.png",
             "atlas": {
+                "foreground": [
+                    2,
+                    0,
+                    97,
+                    12
+                ],
                 "leftcap": [
                     0,
                     0,
                     2,
-                    18
+                    12
                 ],
                 "rightcap": [
-                    81,
+                    97,
                     0,
-                    83,
-                    18
+                    99,
+                    12
                 ]
             }
         },
         "progress_fg_red": {
             "file": "textures/ProgressBars/FgRed.png",
             "atlas": {
+                "foreground": [
+                    2,
+                    0,
+                    97,
+                    12
+                ],
                 "leftcap": [
                     0,
                     0,
                     2,
-                    18
+                    12
                 ],
                 "rightcap": [
-                    81,
+                    97,
                     0,
-                    83,
-                    18
+                    99,
+                    12
                 ]
             }
         },
         "progress_fg_yellow": {
             "file": "textures/ProgressBars/FgYellow.png",
             "atlas": {
+                "foreground": [
+                    2,
+                    0,
+                    97,
+                    12
+                ],
                 "leftcap": [
                     0,
                     0,
                     2,
-                    18
+                    12
                 ],
                 "rightcap": [
-                    81,
+                    97,
                     0,
-                    83,
-                    18
+                    99,
+                    12
                 ]
             }
         },

@@ -13,14 +13,13 @@ with the desired number of rows and columns.
 class WindowGrid {
 private:
     int _nHorizontal; // number of columns
-    int _nVertical;   // number of rows
+
     /** initial dirt number */
     int _initDirtNum;
     float _scaleFactor;
-    float _windowHeight;
+    
     float _windowWidth;
     float _buildingWidth;
-    float _buildingHeight;
 	cugl::Vec2 _buildingTexturePosition;
 	/** Map of window tile layer, for drawing only */
 	std::vector<int> _window_map;
@@ -63,6 +62,9 @@ private:
 
 
 public:
+    float _buildingHeight;
+    float _windowHeight;
+    int _nVertical;   // number of rows
     const int MAX_HEIGHT = 15; // TODO change to 4 once scrolling is complete
     // accessors
 //    void setWindowWidth(int width)        { _windowWidth = width;       };

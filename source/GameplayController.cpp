@@ -41,6 +41,8 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _gameTime = 120;
     _gameTimeLeft = _gameTime;
     
+    _countDown = false;
+    
 
     _frame=0;
     
@@ -165,7 +167,7 @@ bool GameplayController::initLevel(int selected_level) {
     std::vector<string> texture_strings_level_1 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level1Window1", "level1Window2", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2", "down_blocked_2", "planter-brown1" };
     std::vector<string> texture_strings_level_2 = { "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding", "level2Window1", "level2Window2", "down_blocked_2", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2" };
     std::vector<string> texture_strings_level_3 = { "level3Window1", "level3Window2", "down_blocked_2", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
-    std::vector<string> texture_strings_level_4 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_4", "left_blocked_1", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
+    std::vector<string> texture_strings_level_4 = { "nightWindow1", "nightWindow2", "nightWindow3", "nightWindow4", "nightWindow5", "down_blocked_3", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_6", "left_blocked_3", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
     std::vector<string> texture_strings_level_5 = { "dreamywin1", "dreamywin2", "dreamywin3", "dreamywin4", "dreamywin5", "down_blocked_2", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_2", "day1Building", "day2Building", "day3Building", "dreamyBuilding", "nightBuilding" };
     std::vector<string> texture_strings_level_6 = { "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_1", "day6Building", "level6Window1", "level6Window2" };
     std::vector<string> texture_strings_level_7 = { "down_blocked_1", "planter-brown1", "fully_blocked_1", "fully_blocked_2", "fully_blocked_3", "fully_blocked_5", "left_blocked_1", "day7Building", "level7Window1", "level7Window2" };
@@ -871,7 +873,7 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
         _curBirdBoard = 0;
     }
 
-    if (data->numProjectile > 0 && !data->optional) {
+    if (!data->optional) {
         //     populate player's projectile set
         projectiles->clearCurrentSet(); // clear current set to rewrite
         for (NetStructs::PROJECTILE projNode : data->projectileVector) {
@@ -1106,18 +1108,18 @@ void GameplayController::processDirtThrowRequest(std::shared_ptr<NetStructs::DIR
 void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputController& dirtCon, std::shared_ptr<cugl::scene2::Button> dirtThrowButton, std::shared_ptr<cugl::scene2::SceneNode> dirtThrowArc) {
     
     _input.update();
-
+    // Used on client side only to determine whether  to self update or use updated state from host
+    bool gotHostUpdate = false;
 
     // get or transmit board states over network
     if (_network.getConnection()) {
-        _network.getConnection()->receive([this](const std::string source,
+        _network.getConnection()->receive([this, &gotHostUpdate](const std::string source,
             const std::vector<std::byte>& data) {
                 if (!_ishost) {
                     if (netStructs.deserializeBoardState(data)->type == NetStructs::BoardStateType) {
-                        // CULog("got board state message");
                         updateBoard(netStructs.deserializeBoardState(data));
+                        gotHostUpdate = true;
                     } if (netStructs.deserializeBoardState(data)->type == NetStructs::DirtStateType) {
-                        // CULog("got board state message");
                         updateWindowDirt(netStructs.deserializeDirtStateMessage(data));
                     }
                 }
@@ -1139,6 +1141,12 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             });
         _network.checkConnection();
     }
+    
+    // in case of disconnection, we want to transition to menu
+    if (((!_network.getConnection()->isPlayerActive(_network.getConnection()->getHost())) ||  (_network.getConnection()->getHost() == "")) && (!_ishost)) {
+        setGameOver(true);
+        setRequestForMenu(true);
+    };
     
     // host steps all boards forward
     if (_ishost) {
@@ -1182,7 +1190,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             }
         }
         
-        if (!_gameStart) {
+        if (!_gameStart && _countDown) {
             advanceCountDownAnim();
         } else {
             for (int i = 0; i < _numPlayers; i++) {
@@ -1225,7 +1233,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         _curBirdPos = getWorldPosition(_bird.birdPosition);
 
     }
-    else {
+    else if (!_ishost && !gotHostUpdate && _gameStart) {
         // not host - step forward for player that they are currently viewing
         // optimistic synchronization - do not have to wait for host to send update, go ahead and update board based on
         // current saved board state
@@ -1238,22 +1246,27 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             windows = _windowVec[nbrIdx - 1];
             projectiles = _projectileVec[nbrIdx - 1];
         }
-        if(player != nullptr && windows != nullptr && projectiles != nullptr && _gameStart) // can be null on initial update calls
-            clientStepForward(player, windows, projectiles);
-        /** for (auto player : _playerVec) {
+
+        for (int i = 0; i < 4; i++) {
+            if (_playerVec[i] == nullptr) continue;
+            clientStepForward(_playerVec[i], _windowVec[i], _projectileVec[i]);
+        }
+    }
+    else if (!_ishost && gotHostUpdate) {
+        for (auto player : _playerVec) {
             if (player == nullptr) continue;
             player->advanceAnimation();
-        } */
+        }
     }
 
     // When the player is on other's board and are able to throw dirt
     int myCurBoard = _allCurBoards[_id - 1];
     if (myCurBoard != 0) {
         bool ifSwitch = false;
-        float button_x = myCurBoard == 1 ? getSize().width - _windowVec[_id-1]->sideGap + 150 : _windowVec[_id - 1]->sideGap - 150;
+        float button_x = myCurBoard == 1 ? getSize().width - _windowVec[_id-1]->sideGap + 100 : _windowVec[_id - 1]->sideGap - 100;
         float arc_start = myCurBoard == 1 ? 270 : 90;
         float arc_rotate_angle = myCurBoard == 1 ? 0 : M_PI;
-        cugl::Vec2 buttonPos(button_x, SCENE_HEIGHT / 2);
+        cugl::Vec2 buttonPos(button_x, SCENE_HEIGHT / 2 - 100);
         dirtThrowButton->setPosition(buttonPos);
         dirtThrowArc->setPosition(buttonPos);
         dirtThrowArc->setAngle(arc_rotate_angle);
@@ -1333,10 +1346,9 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     std::shared_ptr<NetStructs::MOVE_STATE> m = getMoveState(_input.getDir());
                     _network.sendToHost(*netStructs.serializeMoveState(m));
                 }
-                // send over scene switch requests are handled by button listener
             }
         }
-        if (_ishost) {
+        if (_ishost || !gotHostUpdate) {
             // Check if player is stunned for this frame
             if (_playerVec[_id-1]->getAnimationState() == Player::IDLE || _playerVec[_id-1]->getAnimationState() == Player::WIGGLE) {
                 // Move the player, ignoring collisions
@@ -1864,6 +1876,11 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 }
 
 
+void GameplayController::drawTutorialFinger(const std::shared_ptr<cugl::SpriteBatch>& batch) {
+    // for use in tutorial controller
+}
+
+
 void GameplayController::setActive(bool f) {
     // yes this code is bad and needs to be reworked
     if (!f) {
@@ -1872,6 +1889,7 @@ void GameplayController::setActive(bool f) {
         setGameOver(false);
         setGameStart(false);
         setWin(false);
+        _countDown = false;
     } else {
         _isActive = true;
         _audioController->playGameplayMusic();

@@ -283,12 +283,14 @@ void App::updateMenuScene(float timestep) {
         _mainmenu.setActive(false);
         _levelscene.setActive(true);
         _gamescene.setController(_gameplay);
+        _gamescene.isTutorial = false;
         _scene = State::LEVEL;
         break;
     case MenuScene::Choice::JOIN:
         _mainmenu.setActive(false);
         _client_join_scene.setActive(true);
         _gamescene.setController(_gameplay);
+        _gamescene.isTutorial = false;
         _scene = State::CLIENT_JOIN;
         break;
     case MenuScene::Choice::TUTORIAL:
@@ -296,6 +298,7 @@ void App::updateMenuScene(float timestep) {
         _mainmenu.setActive(false);
         _gamescene.setActive(true);
         _gamescene.setController(_tutorialController);
+        _gamescene.isTutorial = true;
         _tutorialController->initLevel(1);
         _tutorialController->setActive(true);
         _tutorialController->setId(1);
