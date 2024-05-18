@@ -144,8 +144,6 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _quit = false;
     addChild(_scene_UI);
     addChild(_gameplay_elem);
-//    _loseBackground->setVisible(false);
-//    _winBackground->setVisible(false);
     setActive(false);
     return true;
 }

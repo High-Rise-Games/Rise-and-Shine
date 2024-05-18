@@ -89,13 +89,6 @@
         "mushroomtalk": {
             "file": "textures/mushroomtalk.png"
         },
-        "invalid": {
-            "file": "textures/invalid.png",
-            "wrapS": "clamp",
-            "wrapT": "clamp",
-            "minfilter": "linear",
-            "magfilter": "linear"
-        },
         "mushroom_point": {
             "file": "textures/mushroomPoint.png",
             "wrapS": "clamp",
@@ -605,13 +598,6 @@
         },
         "Sparkle": {
             "file": "textures/CountDown/Sparkle.png"
-        },
-        "start_game": {
-            "file": "textures/StartButton.png",
-            "wrapS": "clamp",
-            "wrapT": "clamp",
-            "minfilter": "linear",
-            "magfilter": "linear"
         },
         "back_button": {
             "file": "textures/BackButton.png",

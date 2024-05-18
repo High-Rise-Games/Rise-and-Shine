@@ -581,13 +581,6 @@ void LobbyScene::processData(const std::string source,
     
 
    
-    
-
-//    if (jsonData->has("invalid") == (std::stoi(jsonData->getString("invalid"))) && !isHost()) {
-//        // read level message sent from host and update level
-//        setInvalidCharacterChoice(true);
-//    }
-//    
     if (jsonData->has("char") && isHost()) {
         // read character selection message sent from clients and update internal state
         std::string char_selection = jsonData->getString("char");
