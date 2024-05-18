@@ -86,9 +86,6 @@
         "textbox": {
             "file": "textures/textbox.png"
         },
-        "mushroomtalk": {
-            "file": "textures/mushroomtalk.png"
-        },
         "invalid": {
             "file": "textures/invalid.png",
             "wrapS": "clamp",
@@ -651,22 +648,22 @@
             "wrapT": "repeat"
         },
         "level2Background": {
-            "file": "textures/level2Background.png",
+            "file": "textures/level7Background.png",
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
         "level2Parallax": {
-            "file": "textures/level2Parallax.png",
+            "file": "textures/level7Parallax.png",
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
         "level3Background": {
-            "file": "textures/level3Background.png",
+            "file": "textures/level8Background.png",
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
         "level3Parallax": {
-            "file": "textures/level3Parallax.png",
+            "file": "textures/level8Parallax.png",
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
@@ -691,12 +688,12 @@
             "wrapT": "repeat"
         },
         "level6Background": {
-            "file": "textures/level6Background.png",
+            "file": "textures/level8Background.png",
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
         "level6Parallax": {
-            "file": "textures/level6Parallax.png",
+            "file": "textures/level8Parallax.png",
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
@@ -720,16 +717,6 @@
             "wrapS": "repeat",
             "wrapT": "repeat"
         },
-        "win-background": {
-            "file": "textures/win-screen.png",
-            "wrapS": "repeat",
-            "wrapT": "repeat"
-        },
-        "lose-background": {
-            "file": "textures/lose-screen.png",
-            "wrapS": "repeat",
-            "wrapT": "repeat"
-        },
         "bluewinnertext": {
             "file": "textures/WinnerBlue.png"
         },
@@ -743,16 +730,16 @@
             "file": "textures/WinnerYellow.png"
         },
         "bluewinner": {
-            "file": "textures/win-fr-4096.png"
+            "file": "textures/2.png"
         },
         "redwinner": {
-            "file": "textures/win-m-4096.png"
+            "file": "textures/3.png"
         },
         "greenwinner": {
-            "file": "textures/win-c-4096.png"
+            "file": "textures/1.png"
         },
         "yellowwinner": {
-            "file": "textures/win-fl-4096.png"
+            "file": "textures/4.png"
         },
         "blueloser": {
             "file": "textures/losewhite-fr-4096.png"
@@ -815,19 +802,19 @@
             "file": "textures/level2Window1.png"
         },
         "level2Window2": {
-            "file": "textures/level2Window2.png"
+            "file": "textures/level7Window2.png"
         },
         "level3Window1": {
-            "file": "textures/level3Window1.png"
+            "file": "textures/level8Window1.png"
         },
         "level3Window2": {
-            "file": "textures/level3Window2.png"
+            "file": "textures/level8Window2.png"
         },
         "level6Window1": {
-            "file": "textures/level6Window1.png"
+            "file": "textures/level8Window1.png"
         },
         "level6Window2": {
-            "file": "textures/level6Window2.png"
+            "file": "textures/level8Window2.png"
         },
         "level7Window1": {
             "file": "textures/level7Window1.png"
@@ -976,17 +963,8 @@
         "switchSceneButton": {
             "file": "textures/switchSceneButton.png"
         },
-        "returnSceneButton": {
-            "file": "textures/returnSceneButton.png"
-        },
         "bird": {
             "file": "textures/bird-flying-4096.png"
-        },
-        "poop": {
-            "file": "textures/bird_poop.png"
-        },
-        "countdown1": {
-            "file": "textures/countdown1.png"
         },
         "progress_bg": {
             "file": "textures/ProgressBars/Bg.png"
@@ -1117,10 +1095,6 @@
             "file": "fonts/LightPixel7.ttf",
             "size": 32
         },
-        "saira stencil oneRegular20": {
-            "file": "fonts/sairastenciloneRegular20.ttf",
-            "size": 20
-        },
         "saira stencil oneRegular32": {
             "file": "fonts/sairastenciloneRegular20.ttf",
             "size": 32
@@ -1129,29 +1103,12 @@
             "file": "fonts/sairastenciloneRegular20.ttf",
             "size": 48
         },
-        "saira stencil oneRegular24": {
-            "file": "fonts/sairastenciloneRegular20.ttf",
-            "size": 24
-        },
         "retrogame": {
             "file": "fonts/RetroGame.ttf",
             "size": 24
         }
     },
     "sounds": {
-        "fusion": {
-            "type": "sample",
-            "file": "sounds/fusion.ogg"
-        },
-        "laser": {
-            "type": "sample",
-            "file": "sounds/laser.ogg",
-            "volume": 0.5
-        },
-        "blast": {
-            "type": "sample",
-            "file": "sounds/explode.ogg"
-        },
         "bang": {
             "type": "sample",
             "file": "sounds/bang.wav",
@@ -1202,9 +1159,6 @@
         "gamescene": "json/gamescene.json",
         "server": "json/server.json",
         "victory": "json/victory.json",
-        "templatelevel": "json/templatelevel.json",
-        "templatelevel2": "json/templatelevel2.json",
-        "templatelevel3": "json/templatelevel3.json",
         "level1": "json/level1.json",
         "level2": "json/level2.json",
         "level3": "json/level3.json",

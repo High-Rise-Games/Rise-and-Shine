@@ -29,14 +29,17 @@ public:
     std::shared_ptr<cugl::Texture> _winnerYellowText;
     std::shared_ptr<cugl::Texture> _winnerGreenText;
     
+    
+    std::shared_ptr<cugl::SpriteSheet> winnerTexture;
+//    std::shared_ptr<cugl::SpriteSheet> loserTexture;
     /** The mushroom image as winner*/
-    std::shared_ptr<cugl::SpriteSheet> _winnerMushroom;
-    /** The frog image as winner*/
-    std::shared_ptr<cugl::SpriteSheet> _winnerFrog;
-    /** The charmeleon image as winner*/
-    std::shared_ptr<cugl::SpriteSheet> _winnerChameleon;
-    /** The flower image as winner*/
-    std::shared_ptr<cugl::SpriteSheet> _winnerFlower;
+//    std::shared_ptr<cugl::SpriteSheet> _winnerMushroom;
+//    /** The frog image as winner*/
+//    std::shared_ptr<cugl::SpriteSheet> _winnerFrog;
+//    /** The charmeleon image as winner*/
+//    std::shared_ptr<cugl::SpriteSheet> _winnerChameleon;
+//    /** The flower image as winner*/
+//    std::shared_ptr<cugl::SpriteSheet> _winnerFlower;
     /** The mushroom image as loser*/
     std::shared_ptr<cugl::SpriteSheet> _loserMushroom;
     /** The frog image as loser*/

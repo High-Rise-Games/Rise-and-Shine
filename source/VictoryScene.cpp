@@ -59,14 +59,14 @@ bool VictoryScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _winnerBlueText = _assets->get<Texture>("bluewinnertext");
     _winnerYellowText = _assets->get<Texture>("yellowwinnertext");
     _winnerGreenText = _assets->get<Texture>("redwinnertext");
-    _winnerMushroom = SpriteSheet::alloc(_assets->get<Texture>("redwinner"), 2, 2, 4);
-    _winnerMushroom->setFrame(0);
-    _winnerFrog = SpriteSheet::alloc(_assets->get<Texture>("bluewinner"), 2, 2, 4);
-    _winnerFrog->setFrame(0);
-    _winnerFlower = SpriteSheet::alloc(_assets->get<Texture>("yellowwinner"), 2, 2, 4);
-    _winnerFlower->setFrame(0);
-    _winnerChameleon = SpriteSheet::alloc(_assets->get<Texture>("greenwinner"), 2, 2, 4);
-    _winnerChameleon->setFrame(0);
+//    _winnerMushroom = SpriteSheet::alloc(_assets->get<Texture>("redwinner"), 2, 2, 4);
+//    _winnerMushroom->setFrame(0);
+//    _winnerFrog = SpriteSheet::alloc(_assets->get<Texture>("bluewinner"), 2, 2, 4);
+//    _winnerFrog->setFrame(0);
+//    _winnerFlower = SpriteSheet::alloc(_assets->get<Texture>("yellowwinner"), 2, 2, 4);
+//    _winnerFlower->setFrame(0);
+//    _winnerChameleon = SpriteSheet::alloc(_assets->get<Texture>("greenwinner"), 2, 2, 4);
+//    _winnerChameleon->setFrame(0);
     _loserMushroom = SpriteSheet::alloc(_assets->get<Texture>("redloser"), 1, 3, 3);
     _loserMushroom->setFrame(0);
     _loserFrog = SpriteSheet::alloc(_assets->get<Texture>("blueloser"), 1, 3, 3);
@@ -146,18 +146,16 @@ void VictoryScene::setCharacters(std::shared_ptr<GameplayController> gameplay) {
 void VictoryScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     int step = 40 / 4;
     int loseStep = 30/3;
-    if (animFrameCounter < 40) {
-        if (animFrameCounter % step == 0) {
-            _winnerMushroom->setFrame((int)animFrameCounter / step);
-            _winnerFrog->setFrame((int)animFrameCounter / step);
-            _winnerFlower->setFrame((int)animFrameCounter / step);
-            _winnerChameleon->setFrame((int)animFrameCounter / step);
+    if (loseFrameCounter < 30) {
+        if (loseFrameCounter % loseStep == 0 && winnerTexture != nullptr) {
+//            winnerTexture->setFrame((int)animFrameCounter / step);
+            winnerTexture->setFrame((int)loseFrameCounter / loseStep);
         }
-        animFrameCounter += 1;
+        loseFrameCounter += 1;
 //        CULog("victory Frame %d", animFrameCounter);
     }
     else {
-        animFrameCounter = 0;
+        loseFrameCounter = 0;
     }
     if (loseFrameCounter < 30) {
         if (loseFrameCounter % step == 0) {
@@ -176,19 +174,30 @@ void VictoryScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     buildingTrans.translate(_building->getSize().width / -2.0, _building->getSize().height / -2.0);
     buildingTrans.translate(getSize().width / 2, 0);
     batch->draw(_building, Vec2(), buildingTrans);
-    std::shared_ptr<cugl::SpriteSheet> winnerTexture;
     std::shared_ptr<cugl::Texture> textTexture;
     if (_winnerChar == "Mushroom") {
-        winnerTexture = _winnerMushroom;
+        if (winnerTexture == nullptr) {
+            winnerTexture = SpriteSheet::alloc(_assets->get<Texture>("redwinner"), 1, 3, 3);
+            winnerTexture->setFrame(0);
+        }
         textTexture = _winnerRedText;
     } else if (_winnerChar == "Flower") {
-        winnerTexture = _winnerFlower;
+        if (winnerTexture == nullptr) {
+            winnerTexture = SpriteSheet::alloc(_assets->get<Texture>("yellowwinner"), 1, 3, 3);
+            winnerTexture->setFrame(0);
+        }
         textTexture = _winnerYellowText;
     } else if (_winnerChar == "Frog") {
-        winnerTexture = _winnerFrog;
+        if (winnerTexture == nullptr) {
+            winnerTexture = SpriteSheet::alloc(_assets->get<Texture>("bluewinner"), 1, 3, 3);
+            winnerTexture->setFrame(0);
+        }
         textTexture = _winnerBlueText;
     } else {
-        winnerTexture = _winnerChameleon;
+        if (winnerTexture == nullptr) {
+            winnerTexture = SpriteSheet::alloc(_assets->get<Texture>("greenwinner"), 1, 3, 3);
+            winnerTexture->setFrame(0);
+        }
         textTexture = _winnerGreenText;
     }
     Affine2 winnerTrans;

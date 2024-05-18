@@ -38,7 +38,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     // Initialize the scene to a locked width
     
     // time of the game set to 120 seconds
-    _gameTime = 60;
+    _gameTime = 120;
     _gameTimeLeft = _gameTime;
     
     _countDown = false;
@@ -215,10 +215,10 @@ bool GameplayController::initLevel(int selected_level) {
     parallax_string = parallax_strings.at(selected_level - 1);
 
     // get the win background when game is win
-    _winBackground =  _assets->get<Texture>("win-background" );
-    
-    // get the lose background when game is lose
-    _loseBackground = _assets->get<Texture>("lose-background");
+//    _winBackground =  _assets->get<Texture>("win-background" );
+//    
+//    // get the lose background when game is lose
+//    _loseBackground = _assets->get<Texture>("lose-background");
     
     // get the asseets for countdown
     setCountdown1Texture(_assets->get<Texture>("C1"));
@@ -1186,7 +1186,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
 
             if (!_birdLeaving && _bird.atColCenter(windows->getNHorizontal(), windows->getPaneWidth(), windows->sideGap) >= 0) {
                 std::bernoulli_distribution dist(_projectileGenChance);
-                if (true && _bird._cooldown < 0) {
+                if (dist(_rng) && _bird._cooldown < 0) {
                     // random chance to generate bird poo at column center
                     generatePoo(projectiles, windows);
                     _bird._cooldown = 20;

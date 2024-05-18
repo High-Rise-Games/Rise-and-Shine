@@ -56,10 +56,10 @@ bool TutorialController::initLevel(int selected_level) {
     _initDirtCount = selected_level * 5;
 
     // get the win background when game is win
-    _winBackground = _assets->get<Texture>("win-background");
-
-    // get the lose background when game is lose
-    _loseBackground = _assets->get<Texture>("lose-background");
+//    _winBackground = _assets->get<Texture>("win-background");
+//
+//    // get the lose background when game is lose
+//    _loseBackground = _assets->get<Texture>("lose-background");
 
     // get the asseets for countdown
     setCountdown1Texture(_assets->get<Texture>("C1"));

@@ -186,9 +186,9 @@ protected:
     /** The backgrounnd image */
     std::shared_ptr<cugl::Texture> _background;
     /** The win screen image */
-    std::shared_ptr<cugl::Texture> _winBackground;
-    /** The win screen image */
-    std::shared_ptr<cugl::Texture> _loseBackground;
+//    std::shared_ptr<cugl::Texture> _winBackground;
+//    /** The win screen image */
+//    std::shared_ptr<cugl::Texture> _loseBackground;
     /** The text with the current health */
     std::shared_ptr<cugl::TextLayout> _healthText;
     /** The text with the current time */
