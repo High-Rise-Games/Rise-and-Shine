@@ -550,7 +550,7 @@ void TutorialController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     textBoxTrans.translate(-.5 * textBoxSize.getIWidth(), 0);
     textBoxTrans.scale(textBoxScaleFactor);
     textBoxTrans.translate(player->getPosition());
-    textBoxTrans.translate(0, -1 * _windowVec[0]->getPaneHeight());
+    textBoxTrans.translate(0, -1.5 * _windowVec[0]->getPaneHeight());
     if (_currentTutorialStage == THROW) {
         textBoxTrans.translate(0, -.5 * _windowVec[0]->getPaneHeight());
     }
