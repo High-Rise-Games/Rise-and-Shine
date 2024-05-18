@@ -33,14 +33,11 @@ protected:
     std::shared_ptr<cugl::AssetManager> _assets;
     
     
+    std::shared_ptr<cugl::scene2::Button> _music;
+    std::shared_ptr<cugl::scene2::Button> _sound;
     
-    std::shared_ptr<scene2::Slider> _musicSlider;
-    
-    
-    std::shared_ptr<scene2::Slider> _soundSlider;
-    
-    float _value;
-    float _value1;
+    bool _musicActive;
+    bool _soundActive;
 
 
 public:
