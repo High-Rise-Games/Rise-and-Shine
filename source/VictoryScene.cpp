@@ -67,15 +67,16 @@ bool VictoryScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _winnerFlower->setFrame(0);
     _winnerChameleon = SpriteSheet::alloc(_assets->get<Texture>("greenwinner"), 2, 2, 4);
     _winnerChameleon->setFrame(0);
-    _loserMushroom = SpriteSheet::alloc(_assets->get<Texture>("redloser"), 2, 2, 4);
+    _loserMushroom = SpriteSheet::alloc(_assets->get<Texture>("redloser"), 1, 3, 3);
     _loserMushroom->setFrame(0);
-    _loserFrog = SpriteSheet::alloc(_assets->get<Texture>("blueloser"), 2, 2, 4);
+    _loserFrog = SpriteSheet::alloc(_assets->get<Texture>("blueloser"), 1, 3, 3);
     _loserFrog->setFrame(0);
-    _loserFlower = SpriteSheet::alloc(_assets->get<Texture>("yellowloser"), 2, 2, 4);
+    _loserFlower = SpriteSheet::alloc(_assets->get<Texture>("yellowloser"), 1, 3, 3);
     _loserFlower->setFrame(0);
-    _loserChameleon = SpriteSheet::alloc(_assets->get<Texture>("greenloser"), 2, 2, 4);
+    _loserChameleon = SpriteSheet::alloc(_assets->get<Texture>("greenloser"), 1, 3, 3);
     _loserChameleon->setFrame(0);
     animFrameCounter = 0;
+    loseFrameCounter = 0;
     
     // Acquire the scene built by the asset loader and resize it the scene
     assets->loadDirectory(assets->get<JsonValue>("victory"));
@@ -143,22 +144,30 @@ void VictoryScene::setCharacters(std::shared_ptr<GameplayController> gameplay) {
 
 void VictoryScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     int step = 40 / 4;
+    int loseStep = 30/3;
     if (animFrameCounter < 40) {
         if (animFrameCounter % step == 0) {
             _winnerMushroom->setFrame((int)animFrameCounter / step);
             _winnerFrog->setFrame((int)animFrameCounter / step);
             _winnerFlower->setFrame((int)animFrameCounter / step);
             _winnerChameleon->setFrame((int)animFrameCounter / step);
-            _loserMushroom->setFrame((int)animFrameCounter / step);
-            _loserFrog->setFrame((int)animFrameCounter / step);
-            _loserFlower->setFrame((int)animFrameCounter / step);
-            _loserChameleon->setFrame((int)animFrameCounter / step);
         }
         animFrameCounter += 1;
 //        CULog("victory Frame %d", animFrameCounter);
     }
     else {
         animFrameCounter = 0;
+    }
+    if (loseFrameCounter < 30) {
+        if (loseFrameCounter % step == 0) {
+            _loserMushroom->setFrame((int)loseFrameCounter / loseStep);
+            _loserFrog->setFrame((int)loseFrameCounter / loseStep);
+            _loserFlower->setFrame((int)loseFrameCounter / loseStep);
+            _loserChameleon->setFrame((int)loseFrameCounter / loseStep);
+        }
+        loseFrameCounter += 1;
+    } else {
+        loseFrameCounter = 0;
     }
     batch->begin(getCamera()->getCombined());
     _scene->render(batch);
