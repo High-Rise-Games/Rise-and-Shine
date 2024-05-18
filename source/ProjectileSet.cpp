@@ -6,13 +6,15 @@
 using namespace cugl;
 
 /** Use this constructor to generate a specific projectile */
-ProjectileSet::Projectile::Projectile(const cugl::Vec2 p, const cugl::Vec2 v, const cugl::Vec2 dest, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t, int s = 1, std::shared_ptr<cugl::SpriteSheet> textureSF=NULL, float sfSF=0) {
+ProjectileSet::Projectile::Projectile(const cugl::Vec2 p, const cugl::Vec2 v, const cugl::Vec2 dest, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t, int s = 1) {
     position = p;
     startPos = p;
     velocity = v;
+    velocity.y = 0;
     destination = dest;
     type = t;
     spawnAmount = s;
+    _inMiddle = false;
 
     _projectileTexture = texture;
     _radius = std::min(texture->getSize().height, texture->getSize().width) / 2;
@@ -20,12 +22,13 @@ ProjectileSet::Projectile::Projectile(const cugl::Vec2 p, const cugl::Vec2 v, co
         _scaleFactor = sf;
     }
     else if(type == ProjectileType::POOP) {
-        _projectileSFTexture = textureSF;
-        _scaleFactor = sf;
-        _SFScaleFactor = sfSF;
-        _maxPooSFFrame = 18;
-        _pooSFFrames = 0;
+        _projectileSFTexture = cugl::SpriteSheet::alloc(texture, 2,5, 10);
+        _projectileSFTexture->setFrame(0);
+        _scaleFactor = sf / _projectileSFTexture->getFrameSize().height * 2;
     }
+    _maxPooSFFrame = 4;
+    _pooSFFrames = 0;
+    _progress = 0;
 }
 
 /**
@@ -35,12 +38,27 @@ ProjectileSet::Projectile::Projectile(const cugl::Vec2 p, const cugl::Vec2 v, co
 * Collisions are resolved afterwards.
 */
 bool ProjectileSet::Projectile::update(Size size) {
+    _progress = fmin(1.0f, _progress + 2.5f /startPos.distance(destination));
+//    CULog("progress: %f", _progress);
+    if (_progress <= 0.05f) {
+        // start
+        velocity.y = -2.5f  * (_progress / 0.05f);
+    } else if (_progress >= 0.95f) {
+        // end
+        float p = (1.0f - _progress) / 0.05f;
+        velocity.y = - 2.5f * p;
+    } else {
+        // middle
+        velocity.y = -2.5f;
+    }
+//    CULog("progress velocity: %f", velocity.y);
+//    CULog("drawing proj progress: %f", 1 - progress);
     Vec2 newPosition = position + velocity;
     // when the new position is over the destination, remove it
     if (type == ProjectileType::DIRT && std::min(position.x, newPosition.x) <= destination.x && destination.x <= std::max(position.x, newPosition.x)) {
         return true;
     }
-    if (type == ProjectileType::POOP && std::min(position.y, newPosition.y) <= destination.y && destination.y <= std::max(position.y, newPosition.y)) {
+    if (type == ProjectileType::POOP && (int) _progress == 1) {
 //        CULog("reached destination");
         return true;
     }
@@ -77,9 +95,8 @@ bool ProjectileSet::init(std::shared_ptr<cugl::JsonValue> data) {
 */
 void ProjectileSet::setTextureScales(const float windowHeight, const float windowWidth) {
     _dirtScaleFactor = std::min(windowWidth / _dirtTexture->getWidth(), windowHeight / _dirtTexture->getHeight()) / 1.5;
-    _poopTransScaleFactor =  windowHeight / _poopTransTexture->getFrameSize().height;
-    _poopInFlightScaleFactor =  windowHeight / _poopInFlightTexture->getHeight();
-    _poopRadius = windowHeight / 2;
+//    _poopFlightScaleFactor = windowHeight / _poopFlightTexture->getFrameSize().height * 2;
+    _poopInFlightScaleFactor =  windowHeight;
 }
 
 
@@ -90,7 +107,7 @@ void ProjectileSet::spawnProjectile(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2 dest,
     float scale = _dirtScaleFactor;
     std::shared_ptr<Projectile> proj;
     if (t == Projectile::ProjectileType::POOP) {
-        proj = std::make_shared<Projectile>(p, v, dest, _poopInFlightTexture, _poopInFlightScaleFactor, t, amt, _poopTransTexture, _poopTransScaleFactor);
+        proj = std::make_shared<Projectile>(p, v, dest, _poopInFlightTexture, _poopInFlightScaleFactor, t, amt);
     } else {
         proj = std::make_shared<Projectile>(p, v, dest, texture, scale, t, amt);
     }
@@ -103,7 +120,7 @@ void ProjectileSet::spawnProjectileClient(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2
     float scale = _dirtScaleFactor;
     std::shared_ptr<Projectile> proj;
     if (t == Projectile::ProjectileType::POOP) {
-        proj = std::make_shared<Projectile>(p, v, dest, _poopInFlightTexture, _poopInFlightScaleFactor, t, 1, _poopTransTexture, _poopTransScaleFactor);
+        proj = std::make_shared<Projectile>(p, v, dest, _poopInFlightTexture, _poopInFlightScaleFactor, t, 1);
     } else {
         proj = std::make_shared<Projectile>(p, v, dest, texture, scale, t);
     }
@@ -176,46 +193,46 @@ void ProjectileSet::draw(const std::shared_ptr<SpriteBatch>& batch, Size size, f
         // float r = proj->getRadius() * proj->getScale();
         Vec2 origin(0, 0);
 //        float progress = proj->position.distance(proj->destination) / proj->startPos.distance(proj->destination);
-//        CULog("proj progress: %f", progress);
-        bool pooInFlight = false;
+//        CULog("drawing proj distance: %f", proj->position.distance(proj->destination));
+//        CULog("drawing proj progress: %f", 1 - progress);
         if (proj->type == Projectile::ProjectileType::POOP) {
-            if (proj->startPos.distance(proj->destination) < 50) {
-                proj->getSFTexture()->setFrame((proj->_pooSFFrames % proj->_maxPooSFFrame) / 6);
+//            CULog("drawing poop frame: %d", proj->_pooSFFrames);
+            if (proj->startPos.distance(proj->destination) < 100) {
+                proj->getSFTexture()->setFrame(std::min((int)(proj->_pooSFFrames / 20) + 4, 9));
                 proj->_pooSFFrames += 1;
             } else {
-                if (proj->_pooSFFrames < proj->_maxPooSFFrame) {
-                    proj->getSFTexture()->setFrame(2 - (proj->_pooSFFrames % proj->_maxPooSFFrame) / 6);
-                    proj->_pooSFFrames += 1;
-                } else if (proj->position.distance(proj->destination) < 50) {
-                    proj->getSFTexture()->setFrame((proj->_pooSFFrames % proj->_maxPooSFFrame) / 6);
-                    proj->_pooSFFrames += 1;
+                if (proj->position.distance(proj->destination) > 100) {
+                    if (!proj->_inMiddle) {
+                        proj->getSFTexture()->setFrame(std::min((int)(proj->_pooSFFrames / 20), 3));
+                        proj->_pooSFFrames += 1;
+                    }
+                    if (proj->getSFTexture()->getFrame() == 3) {
+                        proj->_pooSFFrames = 0;
+                        proj->_inMiddle = true;
+                    }
                 } else {
-                    pooInFlight = true;
+                    if (proj->_inMiddle) {
+                        proj->_pooSFFrames = 0;
+                        proj->_inMiddle = false;
+                    }
+                    proj->getSFTexture()->setFrame(std::min((int)(proj->_pooSFFrames / 10) + 4, 9));
+                    proj->_pooSFFrames += 1;
                 }
             }
+//            CULog("drawing frame %d", proj->getSFTexture()->getFrame());
         }
         Affine2 trans = Affine2();
         // trans.translate(texture->getSize() / -2.0);
         if (proj->type == Projectile::ProjectileType::POOP) {
-            if (pooInFlight) {
-                trans.translate( -(int)(proj->getTexture()->getWidth())/2 , -(int)(proj->getTexture()->getHeight()) / 2);
-                trans.scale(proj->getScale());
-            } else {
-                trans.translate( -(int)(proj->getSFTexture()->getFrameSize().width)/2 , -(int)(proj->getSFTexture()->getFrameSize().height) / 2);
-                trans.scale(proj->getSFScale());
-            }
-            
+            trans.translate( -(int)(proj->getSFTexture()->getFrameSize().width)/2 , -(int)(proj->getSFTexture()->getFrameSize().height) / 2);
+            trans.scale(proj->getScale());
         } else {
             trans.scale(proj->getScale());
         }
         trans.translate(pos);
         
         if (proj->type == Projectile::ProjectileType::POOP) {
-            if (pooInFlight) {
-                batch->draw(proj->getTexture(), Vec2(), trans);
-            } else {
-                proj->getSFTexture()->draw(batch, trans);
-            }
+            proj->getSFTexture()->draw(batch, trans);
         } else {
             batch->draw(proj->getTexture(), Vec2(), trans);
         }

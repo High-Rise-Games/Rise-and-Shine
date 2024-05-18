@@ -184,7 +184,8 @@ void WindowGrid::clearBoard() {
 bool WindowGrid::addDirt(const int row, const int col, const bool isPoo) {
     bool dirtExisted = _boardFilth[row][col] != nullptr;
     bool isTileDirtiable = getCanBeDirtied(col, row);
-    if (!dirtExisted && isTileDirtiable) {
+    bool landable = (!dirtExisted || (dirtExisted && isPoo)) && isTileDirtiable;
+    if (landable) {
         std::shared_ptr<StaticFilth> filth = std::make_shared<StaticFilth>(cugl::Vec2(row, col));
 //        CULog("adding dirt");
         if (isPoo) {
@@ -196,7 +197,7 @@ bool WindowGrid::addDirt(const int row, const int col, const bool isPoo) {
         }
         _boardFilth[row][col] = filth;
     }
-    return !dirtExisted && isTileDirtiable;
+    return landable;
 }
 
 //bool WindowGrid::addPoop(const int row, const int col) {

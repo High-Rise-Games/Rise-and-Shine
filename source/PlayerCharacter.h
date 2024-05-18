@@ -64,15 +64,12 @@ private:
     // used to discretize movement
     float _windowWidth;
     
-    /** The amount of time in frames for the player to be stunned */
-    int _stunFrames;
     /** The amount of time in frames for the player to wiggle while blocked */
     int _wiggleFrames;
     /** maximum time spent wiggling */
     int _maxwiggleFrame;
     
     /** A property to adjust the rotation of the player when player colides. Resets to zero when stun frames is zero. */
-    float _stunRotate;
     float _wiggleRotate;
     
     /** The shadow offset in pixels */
@@ -102,6 +99,14 @@ private:
     int _maxshooFrame;
     // number of frames that the player is shooing
     int _shooFrames;
+    /** The amount of time in frames for the player to be stunned */
+    int _stunFrames;
+    /** The number of columns in the sprite sheet */
+    int _stunframecols;
+    /** The number of frames in the sprite sheet */
+    int _stunframesize;
+    /** total number of frames */
+    int _maxstunFrame;
     /** The number of columns in the throw sprite sheet */
     int _throwframecols;
     /** The number of frames in the throw sprite sheet */
@@ -123,6 +128,8 @@ private:
     std::shared_ptr<cugl::Texture> _wipeSprite;
     /** Reference to the player shooing animation sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _shooSprite;
+    /** Reference to the player stunned animation sprite sheet */
+    std::shared_ptr<cugl::SpriteSheet> _stunSprite;
     /** Reference to the player throwing animation sprite sheet */
     std::shared_ptr<cugl::SpriteSheet> _throwSprite;
     /** Radius of the ship in pixels (derived from sprite sheet) */
@@ -286,7 +293,7 @@ public:
     void resetAnimationFrames() {
         _wipeFrames = 0;
         _shooFrames = 0;
-        _stunFrames = 60;
+        _stunFrames = 0;
         _wiggleFrames = 0;
         _throwFrames = 0;
     }
@@ -316,14 +323,18 @@ public:
     void advanceWiggleFrame();
     
     /**
+     * Sets the player's movement freeze time to the given time in frames
+     * .Used when player wiggles
+     */
+    void advanceStunFrame();
+    
+    /**
      * Advance animation for player idle
      */
     void advanceIdleFrame();
     
     void advanceAnimation();
 
-    /** Decreases the stun frames by one, unless it is already at 0 then does nothing. */
-    void decreaseStunFrames();
 
     /**
      * Returns the radius of the ship.
@@ -404,6 +415,27 @@ public:
      * @param texture   The texture for the sprite sheet
      */
     void setShooTexture(const std::shared_ptr<cugl::Texture>& texture);
+    
+    /** Gets player stun sprite.
+     *
+     * The size and layout of the sprite sheet should already be specified
+     * in the initializing step.
+     * @return the sprite sheet for the ship
+     */
+    const std::shared_ptr<cugl::SpriteSheet>& getStunSprite() const {
+        return _stunSprite;
+    }
+    
+    /**
+     * Sets the player stun sprite.
+     *
+     * The texture should be formated as a sprite sheet, and the size and
+     * layout of the sprite sheet should already be specified in the
+     * initializing step. If so, this method will construct a sprite sheet
+     * from this texture.
+     * @param texture   The texture for the sprite sheet
+     */
+    void setStunTexture(const std::shared_ptr<cugl::Texture>& texture);
 
    /** Gets player dirt throwing sprite.
     *

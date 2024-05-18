@@ -136,7 +136,6 @@ bool TutorialController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
         // Initialize projectiles
         _projectileVec[i - 1] = make_shared<ProjectileSet>();
         _projectileVec[i - 1]->setDirtTexture(assets->get<Texture>(_dirtTextureString));
-        _projectileVec[i - 1]->setPoopTransTexture(assets->get<Texture>("pooTerm"));
         _projectileVec[i - 1]->setPoopInFlightTexture(assets->get<Texture>("pooMiddle"));
         _projectileVec[i - 1]->setTextureScales(_windowVec[i - 1]->getPaneHeight(), _windowVec[i - 1]->getPaneWidth());
     }
@@ -254,7 +253,7 @@ void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             std::bernoulli_distribution dist(_projectileGenChance);
             if (dist(_rng)) {
                 // random chance to generate bird poo at column center
-                generatePoo(projectiles);
+                generatePoo(projectiles, windows);
             }
         }
     }

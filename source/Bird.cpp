@@ -19,6 +19,7 @@ bool Bird::init(const std::vector<cugl::Vec2> positions, const float speed, cons
     _frameflat = 4;
     _frametimer = 3;
     _frameright = true;
+    _cooldown = 20;
     return true;
 }
 
@@ -159,7 +160,7 @@ int Bird::atColCenter(const int nHorizontal, const float windowWidth, const floa
         float xPos = i + 0.4;
         if ((_toRight) ? (birdPosition.x < xPos && birdPosition.x + _speed > xPos) :
             (birdPosition.x > xPos && birdPosition.x - _speed < xPos)) {
-             CULog("at column center %i", i);
+//             CULog("at column center %i", i);
             return i;
         }
     }

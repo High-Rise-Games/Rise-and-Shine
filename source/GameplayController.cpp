@@ -285,7 +285,6 @@ bool GameplayController::initClient(const std::shared_ptr<cugl::AssetManager>& a
     // Initialize projectiles  for self
     _projectileVec[_id - 1] = make_shared<ProjectileSet>();
     _projectileVec[_id - 1]->setDirtTexture(assets->get<Texture>(_dirtTextureString));
-    _projectileVec[_id - 1]->setPoopTransTexture(assets->get<Texture>("pooTerm"));
     _projectileVec[_id - 1]->setPoopInFlightTexture(assets->get<Texture>("pooMiddle"));
     _projectileVec[_id - 1]->setTextureScales(_windowVec[_id - 1]->getPaneHeight(), _windowVec[_id - 1]->getPaneWidth());
     _projectileVec[_id - 1]->init(_constants->get("projectiles"));
@@ -343,7 +342,6 @@ bool GameplayController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
             // Initialize projectiles
             _projectileVec[i - 1] = make_shared<ProjectileSet>();
             _projectileVec[i-1]->setDirtTexture(assets->get<Texture>(_dirtTextureString));
-            _projectileVec[i - 1]->setPoopTransTexture(assets->get<Texture>("pooTerm"));
             _projectileVec[i - 1]->setPoopInFlightTexture(assets->get<Texture>("pooMiddle"));
             _projectileVec[i - 1]->setTextureScales(_windowVec[i - 1]->getPaneHeight(), _windowVec[i - 1]->getPaneWidth());
             
@@ -460,6 +458,7 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
         player->setIdleTexture(_assets->get<Texture>("idle_frog"));
         player->setWipeTexture(_assets->get<Texture>("wipe_frog"));
         player->setShooTexture(_assets->get<Texture>("shoo_frog"));
+        player->setStunTexture(_assets->get<Texture>("stun_frog"));
         player->setThrowTexture(_assets->get<Texture>("throw_frog"));
         player->setProfileTexture(_assets->get<Texture>("profile_frog"));
         player->setMedalTexture(_assets->get<Texture>("medal_blue"));
@@ -469,6 +468,7 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
         player->setIdleTexture(_assets->get<Texture>("idle_flower"));
         player->setWipeTexture(_assets->get<Texture>("wipe_flower"));
         player->setShooTexture(_assets->get<Texture>("shoo_flower"));
+        player->setStunTexture(_assets->get<Texture>("stun_flower"));
         player->setThrowTexture(_assets->get<Texture>("throw_flower"));
         player->setProfileTexture(_assets->get<Texture>("profile_flower"));
         player->setMedalTexture(_assets->get<Texture>("medal_yellow"));
@@ -479,6 +479,7 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
         player->setIdleTexture(_assets->get<Texture>("idle_chameleon"));
         player->setWipeTexture(_assets->get<Texture>("wipe_chameleon"));
         player->setShooTexture(_assets->get<Texture>("shoo_chameleon"));
+        player->setStunTexture(_assets->get<Texture>("stun_chameleon"));
         player->setThrowTexture(_assets->get<Texture>("throw_chameleon"));
         player->setProfileTexture(_assets->get<Texture>("profile_chameleon"));
         player->setMedalTexture(_assets->get<Texture>("medal_green"));
@@ -489,6 +490,7 @@ void GameplayController::changeCharTexture(std::shared_ptr<Player>& player, std:
         player->setIdleTexture(_assets->get<Texture>("idle_mushroom"));
         player->setWipeTexture(_assets->get<Texture>("wipe_mushroom"));
         player->setShooTexture(_assets->get<Texture>("shoo_mushroom"));
+        player->setStunTexture(_assets->get<Texture>("stun_mushroom"));
         player->setThrowTexture(_assets->get<Texture>("throw_mushroom"));
         player->setProfileTexture(_assets->get<Texture>("profile_mushroom"));
         player->setMedalTexture(_assets->get<Texture>("medal_red"));
@@ -816,7 +818,6 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
             // instantiate this player's projectile set in this client's game instance
             _projectileVec[playerId - 1] = make_shared<ProjectileSet>();
             _projectileVec[playerId - 1]->setDirtTexture(_assets->get<Texture>(_dirtTextureString));
-            _projectileVec[playerId - 1]->setPoopTransTexture(_assets->get<Texture>("pooTerm"));
             _projectileVec[playerId - 1]->setPoopInFlightTexture(_assets->get<Texture>("pooMiddle"));
             _projectileVec[playerId - 1]->setTextureScales(_windowVec[_id - 1]->getPaneHeight(), _windowVec[_id - 1]->getPaneWidth());
     }
@@ -838,6 +839,7 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
             _audioController->playBangSoundClient();
         }
         player->setAnimationState(Player::STUNNED);
+        _cleanInProgress = false;
     } else if (data->animState == 5) {
         player->setAnimationState(Player::WIGGLE);
     }
@@ -1166,12 +1168,16 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             _bird.move();
             std::shared_ptr<WindowGrid> windows = _windowVec[_curBirdBoard - 1];
             std::shared_ptr<ProjectileSet> projectiles = _projectileVec[_curBirdBoard - 1];
+            if (_bird._cooldown >= 0) {
+                _bird._cooldown -= 1;
+            }
 
             if (!_birdLeaving && _bird.atColCenter(windows->getNHorizontal(), windows->getPaneWidth(), windows->sideGap) >= 0) {
                 std::bernoulli_distribution dist(_projectileGenChance);
-                if (dist(_rng)) {
+                if (true && _bird._cooldown < 0) {
                     // random chance to generate bird poo at column center
-                    generatePoo(projectiles);
+                    generatePoo(projectiles, windows);
+                    _bird._cooldown = 20;
                 }
             }
         }
@@ -1480,6 +1486,7 @@ void GameplayController::clientStepForward(std::shared_ptr<Player>& player, std:
                 _audioController->playBangSoundHost();
             };
             player->setAnimationState(Player::STUNNED);
+            _cleanInProgress = false;
             if (collision_result.second.has_value()) {
                 landedDirts.push_back(collision_result.second.value());
             }
@@ -1569,6 +1576,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
                 _audioController->playBangSoundHost();
             };
             player->setAnimationState(Player::STUNNED);
+            _cleanInProgress = false;
             if (collision_result.second.has_value()) {
                 landedDirts.push_back(collision_result.second.value());
             }
@@ -1673,7 +1681,7 @@ void GameplayController::generateDirt() {
 }
 
 /** handles poo generation */
-void GameplayController::generatePoo(std::shared_ptr<ProjectileSet> projectiles) {
+void GameplayController::generatePoo(std::shared_ptr<ProjectileSet> projectiles, std::shared_ptr<WindowGrid> wg) {
 //    CULog("player at: (%f, %f)", _player->getCoors().y, _player->getCoors().x);
 //    CULog("generate at: %d", (int)rand_row);
 
@@ -1682,9 +1690,15 @@ void GameplayController::generatePoo(std::shared_ptr<ProjectileSet> projectiles)
 //    CULog("location: %f, %f", _bird.birdPosition.x, _bird.birdPosition.y);
     // randomize the destination of bird poo, any window pane below the current bird position
     std::uniform_int_distribution<int> rowDist(0, floor(_bird.birdPosition.y));
-    int rand_row_center = rowDist(_rng);
-    cugl::Vec2 birdPooDest = getWorldPosition(Vec2(_bird.birdPosition.x, rand_row_center));
-    projectiles->spawnProjectile(Vec2(birdWorldPos.x, birdWorldPos.y - _windowVec[_id - 1]->getPaneHeight()/2), Vec2(0, min(-2.4f,-2-_projectileGenChance)), birdPooDest, ProjectileSet::Projectile::ProjectileType::POOP);
+    int rand_row_center;
+    int i =0;
+    rand_row_center = rowDist(_rng);
+    while (i < 5 && !wg->getCanBeDirtied((int)_bird.birdPosition.x, rand_row_center)) {
+        rand_row_center = rowDist(_rng);
+    }
+    cugl::Vec2 birdPooDest = getWorldPosition(Vec2(_bird.birdPosition.x, rand_row_center + 0.3));
+    cugl::Vec2 birdPooSouc;
+    projectiles->spawnProjectile(Vec2(birdWorldPos.x, birdWorldPos.y), Vec2(0, -2.5f), birdPooDest, ProjectileSet::Projectile::ProjectileType::POOP);
     
 }
 

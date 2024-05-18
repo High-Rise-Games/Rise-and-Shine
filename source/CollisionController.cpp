@@ -44,19 +44,36 @@ std::pair<bool, std::optional<std::tuple<cugl::Vec2, int, int>>> CollisionContro
 
         // finds the NEAREST collision
         Vec2 pos = proj->position;
-        pos = player->getPosition() - pos;
-        float dist = pos.length();
-        if (dist < distance) {
-            distance = dist;
-            norm = pos;
+        if (proj->_inMiddle) {
+            Vec2 topBound = Vec2(proj->position.x, proj->position.y - 100.f);
+            Vec2 bottomBound = Vec2(proj->position.x, proj->position.y - 100.f);
+            
+            // Calculate distances from player to the top and bottom bounds
+            float distToTop = (player->getPosition() - topBound).length();
+            float distToBottom = (player->getPosition() - bottomBound).length();
+            if (distToTop < distance) {
+                distance = distToTop;
+                norm = pos;
+            }
+            if (distToBottom < distance) {
+                distance = distToBottom;
+                norm = pos;
+            }
+        } else {
+            pos = player->getPosition() - pos;
+            float dist = pos.length();
+            if (dist < distance) {
+                distance = dist;
+                norm = pos;
+            }
         }
 
         // If this normal is too small, there was a collision
         if (distance < impactDistance) {
 
             // Damage and/or stun the player
-            if (player->getStunFrames() == 0) {
-                player->setStunFrames(100);
+            if (player->getAnimationState() != Player::STUNNED) {
+                player->setAnimationState(Player::STUNNED);
             }
 
             if ((*it)->type == ProjectileSet::Projectile::ProjectileType::DIRT) {

@@ -555,6 +555,18 @@
         "throw_mushroom": {
             "file": "textures/throw-m-4096.png"
         },
+        "stun_flower": {
+            "file": "textures/stun-fl-4096.png"
+        },
+        "stun_chameleon": {
+            "file": "textures/stun-c-4096.png"
+        },
+        "stun_frog": {
+            "file": "textures/stun-fr-4096.png"
+        },
+        "stun_mushroom": {
+            "file": "textures/stun-m-4096.png"
+        },
         "profile_flower": {
             "file": "textures/profile_fl.png"
         },
@@ -1028,9 +1040,6 @@
         },
         "white_circle": {
             "file": "textures/white-circle.png"
-        },
-        "pooTerm": {
-            "file": "textures/pooTerm.png"
         },
         "pooMiddle": {
             "file": "textures/pooMiddle.png"

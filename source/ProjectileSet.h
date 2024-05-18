@@ -46,12 +46,13 @@ public:
         int _maxPooSFFrame;
         // current poo SF frame
         int _pooSFFrames;
+        bool _inMiddle;
+        float _progress;
 
     
     private:
         /** The drawing scale factor for this projectile */
         float _scaleFactor;
-        float _SFScaleFactor;
         /** The amount of damage caused by a projectile */
         float _damage;
         /** The radius of the projectile */
@@ -68,14 +69,13 @@ public:
         /** Use this constructor to generate a specialized projectile
          * @param t     type of projectile
         */
-        Projectile(const cugl::Vec2 p, const cugl::Vec2 v, const cugl::Vec2 dest, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t, int s, std::shared_ptr<cugl::SpriteSheet> textureSF, float sfSF);
+        Projectile(const cugl::Vec2 p, const cugl::Vec2 v, const cugl::Vec2 dest, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t, int s);
 
         /** sets projectile scale for drawing */
         void setScale(float s) { _scaleFactor = s; }
 
         /** gets projectile scale for drawing */
         float getScale() { return _scaleFactor; }
-        float getSFScale() { return _SFScaleFactor; }
     
         /** get projectile texture */
         const std::shared_ptr<cugl::Texture>& getTexture() const { return _projectileTexture; }
@@ -112,17 +112,14 @@ private:
     std::unordered_set<std::shared_ptr<Projectile>> _pending;
     /** The texture for dirt projectiles */
     std::shared_ptr<cugl::Texture> _dirtTexture;
-    /** The texture for poop  start/end part  */
-    std::shared_ptr<cugl::SpriteSheet> _poopTransTexture;
     /** The texture for poop  middle part  */
     std::shared_ptr<cugl::Texture> _poopInFlightTexture;
+    /** The tecture for poop inflight */
+    std::shared_ptr<cugl::SpriteSheet> _poopFlightTexture;
     /** The scale factor for the dirt texture based on window grid size */
     float _dirtScaleFactor;
     /** The scale factor for the poop texture based on window grid size */
-    float _poopTransScaleFactor;
     float _poopInFlightScaleFactor;
-    float _poopRadius;
-
 
 public:
     /**
@@ -187,18 +184,6 @@ public:
     void setDirtTexture(const std::shared_ptr<cugl::Texture>& value) {
         _dirtTexture = value;
     }
-
-    /**
-     * Returns the image for a single poop projectile; reused by all poop projectiles.
-     *
-     * This value should be loaded by the GameScene and set there. However,
-     * we have to be prepared for this to be null at all times.
-     *
-     * @return the image for a single poop projectile; reused by all poop projectiles.
-     */
-    const std::shared_ptr<cugl::SpriteSheet>& getPoopTransTexture() const {
-        return _poopTransTexture;
-    }
     
     const std::shared_ptr<cugl::Texture>& getPoopInFlightTexture() const {
         return _poopInFlightTexture;
@@ -212,15 +197,11 @@ public:
      *
      * @param value the image for a poop projectile; reused by all poop projectiles.
      */
-    void setPoopTransTexture(const std::shared_ptr<cugl::Texture>& value) {
-        _poopTransTexture = cugl::SpriteSheet::alloc(value, 1, 3, 3);
-        _poopTransTexture->setFrame(0);
-    }
     
     void setPoopInFlightTexture(const std::shared_ptr<cugl::Texture>& value) {
         _poopInFlightTexture = value;
     }
-
+    
     /**
      * Sets the texture scale factors.
      *

@@ -442,7 +442,7 @@ public:
     void generateDirt();
 
     /** generates poo before bird is ready */
-    void generatePoo(std::shared_ptr<ProjectileSet> projectiles);
+    void generatePoo(std::shared_ptr<ProjectileSet> projectiles, std::shared_ptr<WindowGrid> wg);
 
     /**
      * Called by host only. Converts game state into a BOARD_STATE object for sending over the network
