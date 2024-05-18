@@ -44,17 +44,17 @@ std::pair<bool, std::optional<std::tuple<cugl::Vec2, int, int>>> CollisionContro
 
         // finds the NEAREST collision
         Vec2 pos = proj->position;
-        if (true) {
-            Vec2 topBound = Vec2(proj->position.x, proj->position.y - 100.f);
+        if (proj->type == ProjectileSet::Projectile::ProjectileType::POOP && proj->_inMiddle) {
+//            Vec2 topBound = Vec2(proj->position.x, proj->position.y - 100.f);
             Vec2 bottomBound = Vec2(proj->position.x, proj->position.y - 100.f);
             
             // Calculate distances from player to the top and bottom bounds
-            float distToTop = (player->getPosition() - topBound).length();
+//            float distToTop = (player->getPosition() - topBound).length();
             float distToBottom = (player->getPosition() - bottomBound).length();
-            if (distToTop < distance) {
-                distance = distToTop;
-                norm = pos;
-            }
+//            if (distToTop < distance) {
+//                distance = distToTop;
+//                norm = pos;
+//            }
             if (distToBottom < distance) {
                 distance = distToBottom;
                 norm = pos;

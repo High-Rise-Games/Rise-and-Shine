@@ -202,8 +202,10 @@ void ProjectileSet::draw(const std::shared_ptr<SpriteBatch>& batch, Size size, f
                 proj->getSFTexture()->setFrame(std::min((int)(startDist / (totalDist / 6)) + 4, 9));
             } else {
                 if (endDist >= 120 && startDist >= 60) {
+                    proj->_inMiddle = true;
                     proj->getSFTexture()->setFrame(3);
                 } else {
+                    proj->_inMiddle = false;
                     if (endDist > startDist) {
                         proj->getSFTexture()->setFrame(std::min((int)(startDist / 20), 3));
                     }

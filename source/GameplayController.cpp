@@ -664,10 +664,10 @@ std::shared_ptr<NetStructs::BOARD_STATE> GameplayController::getBoardState(int i
             cugl::Vec2 projDestBoardPos = getBoardPosition(projectile->destination);
             projStruct.PosX = projBoardPos.x;
             projStruct.PosY = projBoardPos.y;
-            projStruct.SourceX = float(projStartPos.x);
-            projStruct.SourceY = float(projStartPos.x);
             projStruct.velX = float(projectile->velocity.x);
             projStruct.velY = float(projectile->velocity.y);
+            projStruct.SourceX = float(projStartPos.x);
+            projStruct.SourceY = float(projStartPos.x);
             projStruct.destX = float(projDestBoardPos.x);
             projStruct.destY = float(projDestBoardPos.y);
             
