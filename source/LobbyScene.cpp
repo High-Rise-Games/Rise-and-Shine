@@ -100,6 +100,8 @@ bool LobbyScene::init_host(const std::shared_ptr<cugl::AssetManager>& assets) {
     _chosenChars = { "", "", "", "" };
     
     setHost(true);
+    
+    _UUIDmap = {};
 
     // host only instantiates the all characters list, which stores char selections of all players in the lobby
     _all_characters = std::vector<std::string>(4);
@@ -744,7 +746,6 @@ void LobbyScene::setActive(bool value) {
     if (isActive() != value) {
         if (value) {
             _quit = false;
-
             _backout->activate();
             _select_red->activate();
             _select_blue->activate();

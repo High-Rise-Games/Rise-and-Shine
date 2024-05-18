@@ -178,9 +178,9 @@ void VictoryScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->draw(_building, Vec2(), buildingTrans);
     std::shared_ptr<cugl::Texture> textTexture;
     std::shared_ptr<cugl::SpriteSheet> winnerTexture;
-    if (_winnerChar == "Mushroom") {
-        winnerTexture = _winnerMushroom;
-        textTexture = _winnerRedText;
+    if (_winnerChar == "Chameleon") {
+        winnerTexture = _winnerChameleon;
+        textTexture = _winnerGreenText;
     } else if (_winnerChar == "Flower") {
         winnerTexture = _winnerFlower;
         textTexture = _winnerYellowText;
@@ -188,8 +188,8 @@ void VictoryScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         winnerTexture = _winnerFrog;
         textTexture = _winnerBlueText;
     } else {
-        winnerTexture = _winnerChameleon;
-        textTexture = _winnerGreenText;
+        winnerTexture = _winnerMushroom;
+        textTexture = _winnerRedText;
     }
     Affine2 winnerTrans;
     winnerTrans.translate(winnerTexture->getFrameSize().width * -0.5, winnerTexture->getFrameSize().height * -0.5);
