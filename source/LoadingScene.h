@@ -34,6 +34,8 @@ class LoadingScene : public cugl::Scene2 {
 protected:
     /** The asset manager for loading. */
     std::shared_ptr<cugl::AssetManager> _assets;
+    /** The root scene node */
+    std::shared_ptr<cugl::scene2::SceneNode> _layer;
 
     // NO CONTROLLER (ALL IN SEPARATE THREAD)
     
@@ -46,7 +48,13 @@ protected:
     std::shared_ptr<cugl::scene2::SceneNode>  _brand;
     /** The "play" button */
     std::shared_ptr<cugl::scene2::Button>    _button;
-
+    
+    /** The loading animations */
+    std::shared_ptr<cugl::SpriteSheet> _loading_animation_1;
+    std::shared_ptr<cugl::SpriteSheet> _loading_animation_2;
+    int _frame_cols;
+    int _frame_size;
+    
     // MODEL
     /** The progress displayed on the screen */
     float _progress;
@@ -102,6 +110,13 @@ public:
      * @param timestep  The amount of time (in seconds) since the last frame
      */
     void update(float timestep);
+    
+    /**
+     * The method called to update the loading screen, mainly to step forward animations.
+     *
+     * @param timestep  The amount of time (in seconds) since the last frame
+     */
+    void render(const std::shared_ptr<cugl::SpriteBatch>& batch);
 
     /**
      * Returns true if loading is complete, but the player has not pressed play

@@ -448,7 +448,6 @@ void GameplayController::setCharacters(std::vector<std::string>& chars) {
     for (int i = 0; i < _numPlayers; i++) {
         auto player = _playerVec[i];
         changeCharTexture(player, chars[i]);
-        CULog("character: %a", chars[i].c_str());
     }
 }
 

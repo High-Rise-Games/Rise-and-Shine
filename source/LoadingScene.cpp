@@ -53,9 +53,9 @@ bool LoadingScene::init(const std::shared_ptr<AssetManager>& assets) {
     // IMMEDIATELY load the splash screen assets
     _assets = assets;
     _assets->loadDirectory("json/loading.json");
-    auto layer = assets->get<scene2::SceneNode>("load");
-    layer->setContentSize(dimen);
-    layer->doLayout(); // This rearranges the children to fit the screen
+    _layer = assets->get<scene2::SceneNode>("load");
+    _layer->setContentSize(dimen);
+    _layer->doLayout(); // This rearranges the children to fit the screen
     
     _bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("load_bar"));
     _knob = assets->get<scene2::SceneNode>("load_knob");
@@ -65,8 +65,20 @@ bool LoadingScene::init(const std::shared_ptr<AssetManager>& assets) {
         this->_active = down;
     });
     
+    _frame_cols = 4;
+    _frame_size = 32;
+    
+    int rows = _frame_size/_frame_cols;
+    if (_frame_size % _frame_cols != 0) {
+        rows++;
+    }
+    _loading_animation_1 = SpriteSheet::alloc(_assets->get<Texture>("loading_1"), rows, _frame_cols, _frame_size);
+    _loading_animation_1->setFrame(0);
+    _loading_animation_2 = SpriteSheet::alloc(_assets->get<Texture>("loading_2"), rows, _frame_cols, _frame_size);
+    _loading_animation_2->setFrame(0);
+
     Application::get()->setClearColor(Color4(192,192,192,255));
-    addChild(layer);
+    addChild(_layer);
     return true;
 }
 
@@ -101,7 +113,7 @@ void LoadingScene::update(float progress) {
         if (_progress >= 1) {
             _progress = 1.0f;
             _bar->setVisible(false);
-            _brand->setVisible(false);
+            _knob->setVisible(false);
             _button->setVisible(true);
             _button->activate();
         }
@@ -109,9 +121,30 @@ void LoadingScene::update(float progress) {
         _knob->setPositionX(_bar->getPositionX() - (_bar->getWidth() * 0.5) + (_bar->getWidth() * _bar->getProgress()));
         _knob->setPositionY(_bar->getPositionY());
     }
-    else {
-        _knob->setVisible(false);
+}
+
+void LoadingScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
+    batch->begin(getCamera()->getCombined());
+    _layer->render(batch);
+    if (_progress < 0.5) {
+        //CULog("anim 1 playing frame %f", std::round((_frame_size-1) * (_progress * 2)));
+        _loading_animation_1->setFrame(static_cast<int>(std::round((_frame_size-1) * (_progress * 2))));
+    } else if (_progress < 1) {
+        //CULog("anim 2 playing frame %f", std::round((_frame_size-1) * ((_progress - 0.5) * 2)));
+        _loading_animation_1->setFrame(31);
+        _loading_animation_2->setFrame(static_cast<int>(std::round((_frame_size-1) * ((_progress - 0.5) * 2))));
     }
+    Affine2 trans1;
+    trans1.scale(0.5);
+    trans1.translate(0, getSize().height * 0.5);
+    _loading_animation_1->draw(batch, trans1);
+    
+    Affine2 trans2;
+    trans2.scale(0.5);
+    trans2.translate(getSize().width * 0.5, getSize().height * 0.5);
+    _loading_animation_2->draw(batch, trans2);
+    
+    batch->end();
 }
 
 /**
