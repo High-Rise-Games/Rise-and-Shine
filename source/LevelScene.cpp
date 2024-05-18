@@ -118,8 +118,6 @@ bool LevelScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
 
     addChild(_scene);
     addChild(_scene_ui);
-    std::cout<<_scene->getContentSize().width<<", "<<_scene->getContentSize().height<<"\n";
-    std::cout<<_scene_ui->getContentSize().width<<", "<<_scene_ui->getContentSize().height<<"\n";
     setActive(false);
     return true;
 }
@@ -199,16 +197,14 @@ void LevelScene::update(float timestep) {
     } else {
         if (_input->didPress()) {
             _pressed = true;
-//            std::cout<<_input->getPosition().x<<", "<<_input->getPosition().y<<"\n";
-//            std::cout<<_scene_ui->getChildByName("title")->getPosition().x<<", "<<_scene_ui->getChildByName("title")->getPosition().y<<"\n";
             if (_backbutton->isDown() || _nextbutton->isDown()) {
                 _pressed = false;
             }
-            for (size_t i = 0; i < _levelbuttons.size(); ++i) {
-                if (_levelbuttons[i]->isDown()) {
-                    _pressed = false;
-                }
-            }
+//            for (size_t i = 0; i < _levelbuttons.size(); ++i) {
+//                if (_levelbuttons[i]->isDown()) {
+//                    _pressed = false;
+//                }
+//            }
         }
     }
 }

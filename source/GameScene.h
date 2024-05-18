@@ -48,10 +48,6 @@ protected:
 
     int _countdownFrame;
     
-    /** The win screen scene */
-    std::shared_ptr<cugl::scene2::SceneNode> _winBackground;
-    /** The win screen scene */
-    std::shared_ptr<cugl::scene2::SceneNode> _loseBackground;
     /** Background Textures */
     std::shared_ptr<cugl::Texture> _backgroundTexture;
     std::shared_ptr<cugl::Texture> _parallaxTexture;
@@ -82,12 +78,7 @@ protected:
     std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerLeft;
     std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerRight;
     std::shared_ptr<cugl::scene2::SceneNode> _profilePlayerAcross;
-    
-    /** The scene node for the victory UI */
-    std::shared_ptr<cugl::scene2::SceneNode> _victory_UI;
-    /** back button for victory screen */
-    std::shared_ptr<cugl::scene2::Button> _victoryBackout;
-    
+
     // VIEW items are going to be individual variables
     // In the future, we will replace this with the scene graph
     /** The text bubble image */

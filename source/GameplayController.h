@@ -45,9 +45,9 @@ protected:
         
     /** Whether this player is the host */
     bool _ishost;
-    
-    /** Whether this player won the game */
-    bool _gameWin;
+        
+    /** Whether a player has won */
+    std::vector<bool> _hasWon;
     
     /** game starts after countdown timer completes */
     bool _gameStart;
@@ -168,8 +168,6 @@ protected:
     int _numPlayers;
     /** player id to UUID map */
     std::map<std::string, int> _UUIDmap;
-    /** Whether a player has won */
-    std::vector<bool> _hasWon;
     /** The amount of dirt held by each player in the lobby */
     std::vector<int> _allDirtAmounts;
     /** Bird enemy for entire game */
@@ -398,9 +396,14 @@ public:
     void switchScene();
     
     /** Method to set the player has won the game this round **/
-    void setWin(bool f) {
-        _gameWin = f;
+    void setWin(int playerId) {
+        _hasWon[playerId-1] = true;
     };
+    
+    /** Method to get the player win situation **/
+    std::vector<bool> getWin() {
+        return _hasWon;
+    }
     
     /** Method to set whether the game countdown is over or not **/
     void setGameStart(bool f) {
@@ -419,7 +422,7 @@ public:
     
     /** Returns whether the player has won the game **/
     bool isGameWin() {
-        return _gameWin;
+        return _hasWon[_id-1];
     }
     
     /** advances countdown animation for all players */

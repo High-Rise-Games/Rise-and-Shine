@@ -110,15 +110,15 @@
             "minfilter": "linear",
             "magfilter": "linear"
         },
-        "victorybg1": {
-            "file": "textures/victorybg1.png",
+        "victorybg": {
+            "file": "textures/WinScreenbg.png",
             "wrapS": "clamp",
             "wrapT": "clamp",
             "minfilter": "linear",
             "magfilter": "linear"
         },
-        "victorybg2": {
-            "file": "textures/victorybg2.png",
+        "victory_building": {
+            "file": "textures/WinScreenBuilding.png",
             "wrapS": "clamp",
             "wrapT": "clamp",
             "minfilter": "linear",
@@ -731,16 +731,16 @@
             "wrapT": "repeat"
         },
         "bluewinner": {
-            "file": "textures/bluewinner.png"
+            "file": "textures/WinnerBlue.png"
         },
         "redwinner": {
-            "file": "textures/redwinner.png"
+            "file": "textures/WinnerRed.png"
         },
         "greenwinner": {
-            "file": "textures/greenwinner.png"
+            "file": "textures/WinnerGreen.png"
         },
         "yellowwinner": {
-            "file": "textures/yellowwinner.png"
+            "file": "textures/WinnerYellow.png"
         },
         "Backtohome": {
             "file": "textures/Backtohome.png"
@@ -1177,6 +1177,7 @@
         "lobby": "json/lobby.json",
         "gamescene": "json/gamescene.json",
         "server": "json/server.json",
+        "victory": "json/victory.json",
         "templatelevel": "json/templatelevel.json",
         "templatelevel2": "json/templatelevel2.json",
         "templatelevel3": "json/templatelevel3.json",
@@ -1195,368 +1196,6 @@
         "textbutton": "widgets/textbutton.json",
         "textfield": "widgets/textfield.json",
         "labelbox": "widgets/labelbox.json"
-    },
-    "scene2s": {
-        "victory": {
-            "type": "Node",
-            "format": {
-                "type": "Anchored"
-            },
-            "data": {
-                "anchor": [
-                    0,
-                    0
-                ],
-                "size": [
-                    1280,
-                    720
-                ],
-                "angle": 0,
-                "position": [
-                    1601,
-                    714
-                ],
-                "visible": true
-            },
-            "children": {
-                "victorybg1": {
-                    "type": "Image",
-                    "data": {
-                        "texture": "victorybg1",
-                        "anchor": [
-                            0,
-                            1
-                        ],
-                        "size": [
-                            1286,
-                            724
-                        ],
-                        "angle": 0,
-                        "position": [
-                            -6,
-                            -2
-                        ],
-                        "visible": true
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "absolute": false,
-                        "x_offset": 0,
-                        "y_offset": 0
-                    }
-                },
-                "victorybg2": {
-                    "type": "Image",
-                    "data": {
-                        "texture": "victorybg2",
-                        "anchor": [
-                            0,
-                            1
-                        ],
-                        "size": [
-                            1384,
-                            932
-                        ],
-                        "angle": 0,
-                        "position": [
-                            -36,
-                            -313
-                        ],
-                        "visible": true
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "absolute": false,
-                        "x_offset": -0.03,
-                        "y_offset": -0.14
-                    }
-                },
-                "buttons": {
-                    "type": "Node",
-                    "format": {
-                        "type": "Float",
-                        "x_alignment": "left",
-                        "y_alignment": "middle",
-                        "orientation": "horizontal"
-                    },
-                    "data": {
-                        "anchor": [
-                            0,
-                            1
-                        ],
-                        "size": [
-                            1211,
-                            80
-                        ],
-                        "angle": 0,
-                        "position": [
-                            35,
-                            603
-                        ],
-                        "visible": true
-                    },
-                    "children": {
-                        "settings": {
-                            "type": "Button",
-                            "format": {
-                                "type": "Anchored"
-                            },
-                            "data": {
-                                "anchor": [
-                                    0.5,
-                                    0.5
-                                ],
-                                "size": [
-                                    56,
-                                    56.88
-                                ],
-                                "angle": 0,
-                                "position": [
-                                    28,
-                                    40
-                                ],
-                                "visible": true,
-                                "upnode": "settings"
-                            },
-                            "children": {
-                                "settings": {
-                                    "type": "Image",
-                                    "data": {
-                                        "texture": "settings",
-                                        "anchor": [
-                                            0,
-                                            1
-                                        ],
-                                        "size": [
-                                            56,
-                                            56.88
-                                        ],
-                                        "angle": 0,
-                                        "position": [
-                                            0,
-                                            0
-                                        ],
-                                        "visible": true
-                                    },
-                                    "layout": {
-                                        "x_anchor": "left",
-                                        "y_anchor": "top",
-                                        "absolute": false,
-                                        "x_offset": 0,
-                                        "y_offset": 0
-                                    }
-                                }
-                            },
-                            "layout": {
-                                "priority": 0,
-                                "padding": [
-                                    0,
-                                    0,
-                                    1031,
-                                    0
-                                ]
-                            }
-                        },
-                        "backtohome": {
-                            "type": "Button",
-                            "format": {
-                                "type": "Anchored"
-                            },
-                            "data": {
-                                "anchor": [
-                                    0.5,
-                                    0.5
-                                ],
-                                "size": [
-                                    124,
-                                    80
-                                ],
-                                "angle": 0,
-                                "position": [
-                                    1149,
-                                    40
-                                ],
-                                "visible": true,
-                                "upnode": "Backtohome"
-                            },
-                            "children": {
-                                "Backtohome": {
-                                    "type": "Image",
-                                    "data": {
-                                        "texture": "Backtohome",
-                                        "anchor": [
-                                            0,
-                                            1
-                                        ],
-                                        "size": [
-                                            124,
-                                            80
-                                        ],
-                                        "angle": 0,
-                                        "position": [
-                                            0,
-                                            0
-                                        ],
-                                        "visible": true
-                                    },
-                                    "layout": {
-                                        "x_anchor": "left",
-                                        "y_anchor": "top",
-                                        "absolute": false,
-                                        "x_offset": 0,
-                                        "y_offset": 0
-                                    }
-                                }
-                            },
-                            "layout": {
-                                "priority": 1,
-                                "padding": [
-                                    0,
-                                    0,
-                                    0,
-                                    0
-                                ]
-                            }
-                        }
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "absolute": false,
-                        "x_offset": 0.03,
-                        "y_offset": -0.05
-                    }
-                },
-                "bluewinner": {
-                    "type": "Image",
-                    "data": {
-                        "texture": "bluewinner",
-                        "anchor": [
-                            0,
-                            1
-                        ],
-                        "size": [
-                            622,
-                            333
-                        ],
-                        "angle": 0,
-                        "position": [
-                            329,
-                            387
-                        ],
-                        "visible": true
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "absolute": false,
-                        "x_offset": 0.26,
-                        "y_offset": 0
-                    }
-                },
-                "redwinner": {
-                    "type": "Image",
-                    "data": {
-                        "texture": "redwinner",
-                        "anchor": [
-                            0,
-                            1
-                        ],
-                        "size": [
-                            622,
-                            333
-                        ],
-                        "angle": 0,
-                        "position": [
-                            329,
-                            387
-                        ],
-                        "visible": true
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "absolute": false,
-                        "x_offset": 0.26,
-                        "y_offset": 0
-                    }
-                },
-                "greenwinner": {
-                    "type": "Image",
-                    "data": {
-                        "texture": "greenwinner",
-                        "anchor": [
-                            0,
-                            1
-                        ],
-                        "size": [
-                            622,
-                            333
-                        ],
-                        "angle": 0,
-                        "position": [
-                            329,
-                            387
-                        ],
-                        "visible": true
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "absolute": false,
-                        "x_offset": 0.26,
-                        "y_offset": 0
-                    }
-                },
-                "yellowwinner": {
-                    "type": "Image",
-                    "data": {
-                        "texture": "yellowwinner",
-                        "anchor": [
-                            0,
-                            1
-                        ],
-                        "size": [
-                            622,
-                            333
-                        ],
-                        "angle": 0,
-                        "position": [
-                            329,
-                            387
-                        ],
-                        "visible": true
-                    },
-                    "layout": {
-                        "x_anchor": "left",
-                        "y_anchor": "top",
-                        "absolute": false,
-                        "x_offset": 0.26,
-                        "y_offset": 0
-                    }
-                }
-            }
-        },
-        "win": {
-            "type": "Image",
-            "data": {
-                "texture": "win-background"
-            }
-        },
-        "lose": {
-            "type": "Image",
-            "data": {
-                "texture": "lose-background"
-            }
-        },
-        "invalid": {
-            "type": "Image",
-            "data": {
-                "texture": "invalid"
-            }
-        }
     }
 }
 

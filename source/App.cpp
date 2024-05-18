@@ -168,6 +168,8 @@ void App::update(float timestep) {
         case TUTORIAL:
             updateTutorialScene(timestep);
             break;
+        case VICTORY:
+            updateVictoryScene(timestep);
     }
 
 }
@@ -218,6 +220,8 @@ void App::draw() {
         case TUTORIAL:
             _gamescene.render(_batch);
             break;
+        case VICTORY:
+            _victoryscene.render(_batch);
     }
     
 }
@@ -237,12 +241,13 @@ void App::updateLoadingScene(float timestep) {
         _loading.dispose(); // Permanently disables the input listeners in this mode
         _mainmenu.init(_assets);
 
-        // game scene, gameplay and tutorial controller
+        // game scene, victory scene, gameplay and tutorial controller
         _gamescene.init(_assets, getFPS());
         _gameplay = std::make_shared<GameplayController>();
         _gameplay->init(_assets, getFPS(), _gamescene.getBounds(), _gamescene.getSize());
         _tutorialController = std::make_shared<TutorialController>();
         _tutorialController->init(_assets, getFPS(), _gamescene.getBounds(), _gamescene.getSize());
+        _victoryscene.init(_assets);
 
         // level select and lobby scenes
         _levelscene.init(_assets);
@@ -261,6 +266,7 @@ void App::updateLoadingScene(float timestep) {
         _lobby_client.setAudioController(_audioController);
         _client_join_scene.setAudioController(_audioController);
         _levelscene.setAudioController(_audioController);
+        _victoryscene.setAudioController(_audioController);
         _mainmenu.setActive(true);
         _scene = State::MENU;
     }
@@ -456,8 +462,14 @@ void App::updateLobbyScene(float timestep) {
  */
 void App::updateGameScene(float timestep) {
     _gamescene.update(timestep);
-    if (_gamescene.didQuit() || _gameplay->isThereARequestForMenu()) {
-
+    if (_gameplay->isGameOver()) {
+        _gamescene.setActive(false);
+        _gameplay->setActive(false);
+        _gameplay->disconnect();
+        _victoryscene.setCharacters(_gameplay);
+        _victoryscene.setActive(true);
+        _scene = State::VICTORY;
+    } else if (_gameplay->isThereARequestForMenu()) {
         _gamescene.setActive(false);
         _gameplay->setActive(false);
         _gameplay->disconnect();
@@ -480,6 +492,23 @@ void App::updateTutorialScene(float timestep) {
     if (_gamescene.didQuit() || _tutorialController->isThereARequestForMenu()) {
         _gamescene.setActive(false);
         _tutorialController->setActive(false);
+        _mainmenu.setActive(true);
+        _scene = State::MENU;
+    }
+}
+
+/**
+ * Inidividualized update method for the victory scene.
+ *
+ * This method keeps the primary {@link #update} from being a mess of switch
+ * statements. It also handles the transition logic from the victory scene.
+ *
+ * @param timestep  The amount of time (in seconds) since the last frame
+ */
+void App::updateVictoryScene(float timestep) {
+    _victoryscene.update(timestep);
+    if (_victoryscene.didQuit()) {
+        _victoryscene.setActive(false);
         _mainmenu.setActive(true);
         _scene = State::MENU;
     }

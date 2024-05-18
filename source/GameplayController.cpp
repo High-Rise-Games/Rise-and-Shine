@@ -48,7 +48,6 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     
 
     // we set game win and game over to false
-    _gameWin = false;
     _gameOver = false;
     _gameStart = false;
     _transitionToMenu = false;
@@ -63,6 +62,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     _fps = fps;
     
     Size dimen = Application::get()->getDisplaySize();
+    _hasWon = { false, false, false, false };
     _rng.seed(std::time(nullptr));
     _dirtGenSpeed = 2;
     _fixedDirtUpdateThreshold = 5 * 60;
@@ -428,7 +428,7 @@ void GameplayController::reset() {
 
     _gameOver = false;
     _gameStart = false;
-    _gameWin = false;
+    _hasWon = {false, false, false, false};
 }
 
 /**
@@ -438,7 +438,6 @@ void GameplayController::hostReset() {
     reset();
 
     _allDirtAmounts = { 0, 0, 0, 0 };
-    _hasWon = { false, false, false, false };
 }
 
 /**
@@ -779,7 +778,7 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
     
     if (data->hasWon == 1 && !_gameOver) {
         _gameOver = true;
-        setWin(playerId == _id);
+        setWin(playerId);
         return;
     }
 
@@ -1235,7 +1234,6 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         // update the game state for self (host). Updates for the rest of the players are done in processMovementRequest(),
         // called whenever the host recieves a movement or other action message.
         _currentDirtAmount = _allDirtAmounts[0];
-        _gameWin = _hasWon[0];
         _curBirdPos = getWorldPosition(_bird.birdPosition);
 
     }

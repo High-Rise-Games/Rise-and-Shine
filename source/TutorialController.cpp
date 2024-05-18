@@ -280,7 +280,6 @@ void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     // update the game state for self (host). Updates for the rest of the players are done in processMovementRequest(),
     // called whenever the host recieves a movement or other action message.
     _currentDirtAmount = _allDirtAmounts[0];
-    _gameWin = _hasWon[0];
     _curBirdPos = getWorldPosition(_bird.birdPosition);
 
 

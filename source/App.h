@@ -16,6 +16,7 @@
 #include "MenuScene.h"
 #include "AudioController.h"
 #include "TutorialController.h"
+#include "VictoryScene.h"
 
 /**
  * This class represents the application root for the ship demo.
@@ -41,7 +42,9 @@ protected:
         LOBBY_CLIENT,
         LOBBY_HOST,
         /** The scene to play the game */
-        GAME
+        GAME,
+        /** The victory scene*/
+        VICTORY
     };
     
 
@@ -79,6 +82,9 @@ protected:
     GameScene _gamescene;
     /** The primary controller for the game world */
     std::shared_ptr<GameplayController> _gameplay;
+    
+    /** The victory scene*/
+    VictoryScene _victoryscene;
 
     /** The controller for network during gameplay */
     // std::shared_ptr<NetworkController> _network;
@@ -263,6 +269,15 @@ private:
      */
     void updateTutorialScene(float timestep);
     
+    /**
+     * Inidividualized update method for the victory scene.
+     *
+     * This method keeps the primary {@link #update} from being a mess of switch
+     * statements. It also handles the transition logic from the victory scene.
+     *
+     * @param timestep  The amount of time (in seconds) since the last frame
+     */
+    void updateVictoryScene(float timestep);
 };
 
 #endif /* __APP__ */
