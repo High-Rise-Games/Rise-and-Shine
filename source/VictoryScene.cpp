@@ -173,9 +173,9 @@ void VictoryScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         winnerTexture = _winnerChameleon;
     }
     Affine2 winnerTrans;
+    winnerTrans.translate(winnerTexture->getFrameSize().width * -0.5, winnerTexture->getFrameSize().height * -0.5);
     winnerTrans.scale(0.2);
-    winnerTrans.translate(winnerTexture->getFrameSize().width * -0.5, _building->getSize().height / 3.0);
-    winnerTrans.translate(getSize().width * 0.6, 0);
+    winnerTrans.translate(getSize().width * 0.6, _building->getSize().height / 3.0);
     winnerTexture->draw(batch, winnerTrans);
     for (int i = 0; i < _otherChars.size(); i++) {
         string loser = _otherChars[i];
@@ -198,9 +198,9 @@ void VictoryScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
             ratio = 0.3;
         }
         Affine2 loserTrans;
+        loserTrans.translate(loserTexture->getFrameSize().width * -0.5, loserTexture->getFrameSize().height * -0.5);
         loserTrans.scale(0.2);
-        loserTrans.translate(loserTexture->getFrameSize().width * -0.2, _building->getSize().height / 3.0);
-        loserTrans.translate(getSize().width * ratio, 0);
+        loserTrans.translate(getSize().width * ratio, _building->getSize().height / 3.0);
         loserTexture->draw(batch, loserTrans);
     }
     batch->end();

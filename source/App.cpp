@@ -489,6 +489,14 @@ void App::updateGameScene(float timestep) {
  */
 void App::updateTutorialScene(float timestep) {
     _gamescene.update(timestep);
+    if (_tutorialController->isGameOver()) {
+        _gamescene.setActive(false);
+        _tutorialController->setActive(false);
+        _tutorialController->disconnect();
+        _victoryscene.setCharacters(_tutorialController);
+        _victoryscene.setActive(true);
+        _scene = State::VICTORY;
+    }
     if (_gamescene.didQuit() || _tutorialController->isThereARequestForMenu()) {
         _gamescene.setActive(false);
         _tutorialController->setActive(false);
