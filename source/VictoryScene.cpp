@@ -192,13 +192,14 @@ void VictoryScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     }
     Affine2 winnerTrans;
     winnerTrans.translate(winnerTexture->getFrameSize().width * -0.5, winnerTexture->getFrameSize().height * -0.5);
-    winnerTrans.scale(0.2);
-    winnerTrans.translate(getSize().width * 0.6, _building->getSize().height);
+    winnerTrans.scale(0.15);
+    winnerTrans.translate(getSize().width * 0.55, _building->getSize().height);
     winnerTexture->draw(batch, winnerTrans);
     
     Affine2 textTrans;
     textTrans.translate(textTexture->getSize().width * -0.5, textTexture->getSize().height * -0.5);
-    textTrans.translate(getSize().width * 0.6, getSize().height * 0.8);
+    textTrans.scale(0.75);
+    textTrans.translate(getSize().width * 0.55, getSize().height * 0.8);
     batch->draw(textTexture, Vec2(), textTrans);
     
     for (int i = 0; i < _otherChars.size(); i++) {
@@ -215,16 +216,16 @@ void VictoryScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         }
         float ratio;
         if (i == 0) {
-            ratio = 0.45;
+            ratio = 0.4;
         } else if (i == 1) {
             ratio = 0.7;
         } else {
-            ratio = 0.3;
+            ratio = 0.25;
         }
         Affine2 loserTrans;
         loserTrans.translate(loserTexture->getFrameSize().width * -0.5, loserTexture->getFrameSize().height * -0.5);
-        loserTrans.scale(0.2);
-        loserTrans.translate(getSize().width * ratio, _building->getSize().height);
+        loserTrans.scale(0.15);
+        loserTrans.translate(getSize().width * ratio, _building->getSize().height * 0.75);
         loserTexture->draw(batch, loserTrans);
     }
     batch->end();
