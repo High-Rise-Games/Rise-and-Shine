@@ -59,14 +59,14 @@ bool VictoryScene::init(const std::shared_ptr<cugl::AssetManager>& assets) {
     _winnerBlueText = _assets->get<Texture>("bluewinnertext");
     _winnerYellowText = _assets->get<Texture>("yellowwinnertext");
     _winnerGreenText = _assets->get<Texture>("redwinnertext");
-//    _winnerMushroom = SpriteSheet::alloc(_assets->get<Texture>("redwinner"), 2, 2, 4);
-//    _winnerMushroom->setFrame(0);
-//    _winnerFrog = SpriteSheet::alloc(_assets->get<Texture>("bluewinner"), 2, 2, 4);
-//    _winnerFrog->setFrame(0);
-//    _winnerFlower = SpriteSheet::alloc(_assets->get<Texture>("yellowwinner"), 2, 2, 4);
-//    _winnerFlower->setFrame(0);
-//    _winnerChameleon = SpriteSheet::alloc(_assets->get<Texture>("greenwinner"), 2, 2, 4);
-//    _winnerChameleon->setFrame(0);
+    _winnerMushroom = SpriteSheet::alloc(_assets->get<Texture>("redwinner"),  1, 3, 3);
+    _winnerMushroom->setFrame(0);
+    _winnerFrog = SpriteSheet::alloc(_assets->get<Texture>("bluewinner"),  1, 3, 3);
+    _winnerFrog->setFrame(0);
+    _winnerFlower = SpriteSheet::alloc(_assets->get<Texture>("yellowwinner"),  1, 3, 3);
+    _winnerFlower->setFrame(0);
+    _winnerChameleon = SpriteSheet::alloc(_assets->get<Texture>("greenwinner"),  1, 3, 3);
+    _winnerChameleon->setFrame(0);
     _loserMushroom = SpriteSheet::alloc(_assets->get<Texture>("redloser"), 1, 3, 3);
     _loserMushroom->setFrame(0);
     _loserFrog = SpriteSheet::alloc(_assets->get<Texture>("blueloser"), 1, 3, 3);
@@ -147,9 +147,11 @@ void VictoryScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     int step = 40 / 4;
     int loseStep = 30/3;
     if (loseFrameCounter < 30) {
-        if (loseFrameCounter % loseStep == 0 && winnerTexture != nullptr) {
-//            winnerTexture->setFrame((int)animFrameCounter / step);
-            winnerTexture->setFrame((int)loseFrameCounter / loseStep);
+        if (loseFrameCounter % loseStep == 0) {
+            _winnerMushroom->setFrame((int)loseFrameCounter / loseStep);
+            _winnerFrog->setFrame((int)loseFrameCounter / loseStep);
+            _winnerFlower->setFrame((int)loseFrameCounter / loseStep);
+            _winnerChameleon->setFrame((int)loseFrameCounter / loseStep);
         }
         loseFrameCounter += 1;
 //        CULog("victory Frame %d", animFrameCounter);
@@ -175,29 +177,18 @@ void VictoryScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     buildingTrans.translate(getSize().width / 2, 0);
     batch->draw(_building, Vec2(), buildingTrans);
     std::shared_ptr<cugl::Texture> textTexture;
+    std::shared_ptr<cugl::SpriteSheet> winnerTexture;
     if (_winnerChar == "Mushroom") {
-        if (winnerTexture == nullptr) {
-            winnerTexture = SpriteSheet::alloc(_assets->get<Texture>("redwinner"), 1, 3, 3);
-            winnerTexture->setFrame(0);
-        }
+        winnerTexture = _winnerMushroom;
         textTexture = _winnerRedText;
     } else if (_winnerChar == "Flower") {
-        if (winnerTexture == nullptr) {
-            winnerTexture = SpriteSheet::alloc(_assets->get<Texture>("yellowwinner"), 1, 3, 3);
-            winnerTexture->setFrame(0);
-        }
+        winnerTexture = _winnerFlower;
         textTexture = _winnerYellowText;
     } else if (_winnerChar == "Frog") {
-        if (winnerTexture == nullptr) {
-            winnerTexture = SpriteSheet::alloc(_assets->get<Texture>("bluewinner"), 1, 3, 3);
-            winnerTexture->setFrame(0);
-        }
+        winnerTexture = _winnerFrog;
         textTexture = _winnerBlueText;
     } else {
-        if (winnerTexture == nullptr) {
-            winnerTexture = SpriteSheet::alloc(_assets->get<Texture>("greenwinner"), 1, 3, 3);
-            winnerTexture->setFrame(0);
-        }
+        winnerTexture = _winnerChameleon;
         textTexture = _winnerGreenText;
     }
     Affine2 winnerTrans;
