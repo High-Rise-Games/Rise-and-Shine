@@ -731,16 +731,28 @@
             "wrapT": "repeat"
         },
         "bluewinner": {
-            "file": "textures/WinnerBlue.png"
+            "file": "textures/win-fr-4096.png"
         },
         "redwinner": {
-            "file": "textures/WinnerRed.png"
+            "file": "textures/win-m-4096.png"
         },
         "greenwinner": {
-            "file": "textures/WinnerGreen.png"
+            "file": "textures/win-c-4096.png"
         },
         "yellowwinner": {
-            "file": "textures/WinnerYellow.png"
+            "file": "textures/win-fl-4096.png"
+        },
+        "blueloser": {
+            "file": "textures/losewhite-fr-4096.png"
+        },
+        "redloser": {
+            "file": "textures/losewhite-m-4096.png"
+        },
+        "greenloser": {
+            "file": "textures/losewhite-c-4096.png"
+        },
+        "yellowloser": {
+            "file": "textures/losewhite-fl-4096.png"
         },
         "Backtohome": {
             "file": "textures/Backtohome.png"

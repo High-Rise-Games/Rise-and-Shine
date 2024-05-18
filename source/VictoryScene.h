@@ -23,21 +23,22 @@ public:
     /** The building image */
     std::shared_ptr<cugl::Texture> _building;
     /** The mushroom image as winner*/
-    std::shared_ptr<cugl::Texture> _winnerMushroom;
+    std::shared_ptr<cugl::SpriteSheet> _winnerMushroom;
     /** The frog image as winner*/
-    std::shared_ptr<cugl::Texture> _winnerFrog;
+    std::shared_ptr<cugl::SpriteSheet> _winnerFrog;
     /** The charmeleon image as winner*/
-    std::shared_ptr<cugl::Texture> _winnerChameleon;
+    std::shared_ptr<cugl::SpriteSheet> _winnerChameleon;
     /** The flower image as winner*/
-    std::shared_ptr<cugl::Texture> _winnerFlower;
+    std::shared_ptr<cugl::SpriteSheet> _winnerFlower;
     /** The mushroom image as loser*/
-    std::shared_ptr<cugl::Texture> _loserMushroom;
+    std::shared_ptr<cugl::SpriteSheet> _loserMushroom;
     /** The frog image as loser*/
-    std::shared_ptr<cugl::Texture> _loserFrog;
+    std::shared_ptr<cugl::SpriteSheet> _loserFrog;
     /** The charmeleon image as loser*/
-    std::shared_ptr<cugl::Texture> _loserChameleon;
+    std::shared_ptr<cugl::SpriteSheet> _loserChameleon;
     /** The flower image as loser*/
-    std::shared_ptr<cugl::Texture> _loserFlower;
+    std::shared_ptr<cugl::SpriteSheet> _loserFlower;
+    int animFrameCounter;
     /** Whether the back button is pressed*/
     bool _quit;
     /** The winner character */

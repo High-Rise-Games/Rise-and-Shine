@@ -38,7 +38,7 @@ bool GameplayController::init(const std::shared_ptr<cugl::AssetManager>& assets,
     // Initialize the scene to a locked width
     
     // time of the game set to 120 seconds
-    _gameTime = 120;
+    _gameTime = 2;
     _gameTimeLeft = _gameTime;
     
     _countDown = false;
@@ -1890,7 +1890,6 @@ void GameplayController::setActive(bool f) {
         setRequestForMenu(false);
         setGameOver(false);
         setGameStart(false);
-        setWin(false);
         _countDown = false;
     } else {
         _isActive = true;
@@ -1898,7 +1897,6 @@ void GameplayController::setActive(bool f) {
         setRequestForMenu(false);
         setGameOver(false);
         setGameStart(false);
-        setWin(false);
         _frameCountForWin = 0;
         _countDownFrames = 0;
     };

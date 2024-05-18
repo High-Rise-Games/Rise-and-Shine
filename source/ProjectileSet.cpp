@@ -232,7 +232,6 @@ void ProjectileSet::draw(const std::shared_ptr<SpriteBatch>& batch, Size size, f
             batch->draw(proj->getTexture(), Vec2(), trans);
         }
     }
-    
 }
 
 #endif

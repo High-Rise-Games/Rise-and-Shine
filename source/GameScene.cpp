@@ -250,7 +250,6 @@ void GameScene::update(float timestep) {
     _dirtText->setText(strtool::format("%d", _gameController->getCurDirtAmount()));
     _dirtText->layout();
     
-    
 }
 
 
@@ -369,6 +368,61 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
         _gameController->drawTutorialFinger(batch);
     }
     
+//=======
+//    if (_gameController->isGameWin()) {
+////        std::shared_ptr<Player> p = _gameController->getPlayer(_id);
+//        int barIdx = 0;
+////        CULog("%s", p->getChar().c_str());
+//        _victory_UI->setPosition(cameraPos -getSize().operator Vec2()/2);
+//        _victory_UI->getChildByName("victorybg1")->setVisible(true);
+//        _victory_UI->getChildByName("victorybg2")->setVisible(true);
+//        Affine2 winner_trans;
+//        double scale;
+//        Affine2 loser1_trans;
+//        Affine2 loser2_trans;
+//        Affine2 loser3_trans;
+//        switch (barIdx) {
+//            case 0:                
+//                scale = 300 / _rWin->getFrameSize().height;
+//                winner_trans.translate( -(int)(_rWin->getFrameSize().width)/2 , -(int)(_rWin->getFrameSize().height) / 2);
+//                winner_trans.scale(scale);
+////                player_trans.translate(_pos);
+//                _rWin->draw(batch, winner_trans);
+//                loser1_trans.translate( -(int)(_rWin->getFrameSize().width)/2 , -(int)(_rWin->getFrameSize().height) / 2);
+//                loser1_trans.scale(scale);
+////                player_trans.translate(_pos);
+//                _bLose->draw(batch, loser1_trans);
+//                loser2_trans.translate( -(int)(_rWin->getFrameSize().width)/2 , -(int)(_rWin->getFrameSize().height) / 2);
+//                loser2_trans.scale(scale);
+////                player_trans.translate(_pos);
+//                _gLose->draw(batch, loser2_trans);
+//                loser3_trans.translate( -(int)(_rWin->getFrameSize().width)/2 , -(int)(_rWin->getFrameSize().height) / 2);
+//                loser3_trans.scale(scale);
+////                player_trans.translate(_pos);
+//                _yLose->draw(batch, loser3_trans);
+////                _victory_UI->getChildByName("redwinner")->setVisible(true);
+//                break;
+//            case 1:
+//                _victory_UI->getChildByName("greenwinner")->setVisible(false);
+//                break;
+//            case 2:
+//                _victory_UI->getChildByName("bluewinner")->setVisible(false);
+//                break;
+//            case 3:
+//                _victory_UI->getChildByName("yellowwinner")->setVisible(false);
+//                break;
+//            default:
+//                _victory_UI->getChildByName("yellowwinner")->setVisible(false);
+//                break;
+//        }
+//        _victoryBackout->activate();
+//        _backout->deactivate();
+//        _victory_UI->render(batch);
+//    } else if (_gameController->isGameOver() && !_gameController->isGameWin()) {
+//        _loseBackground->setPosition(cameraPos -getSize().operator Vec2()/2);
+//        _loseBackground->setVisible(true);
+//        _loseBackground->render(batch);
+//    }
     batch->end();
 }
 
