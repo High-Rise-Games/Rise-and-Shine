@@ -466,7 +466,7 @@ void LobbyScene::update(float timestep) {
             
         if ((!isHost() && _status == WAIT && _id != 0) || isHost()) {
             // sends current character selection across network
-            if (_network.getConnection()->isOpen()) {
+            if (_network.getConnection()->isOpen() && !_network.didQuit()) {
                 const std::shared_ptr<JsonValue> json = std::make_shared<JsonValue>();
                 json->init(JsonValue::Type::ObjectType);
                 json->appendValue("id", std::to_string(_id));
