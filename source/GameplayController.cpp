@@ -1239,19 +1239,19 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     int myCurBoard = _allCurBoards[_id - 1];
     if (myCurBoard != 0) {
         bool ifSwitch = false;
-        float button_x = myCurBoard == 1 ? getSize().width - _windowVec[_id-1]->sideGap + 100 : _windowVec[_id - 1]->sideGap - 100;
-        float arc_start = myCurBoard == 1 ? 270 : 90;
-        float arc_rotate_angle = myCurBoard == 1 ? 0 : M_PI;
+        float button_x = myCurBoard == -1 ? getSize().width - _windowVec[_id-1]->sideGap + 100 : _windowVec[_id - 1]->sideGap - 100;
+        float arc_start = myCurBoard == -1 ? 270 : 90;
+        float arc_rotate_angle = myCurBoard == -1 ? 0 : M_PI;
         cugl::Vec2 buttonPos(button_x, SCENE_HEIGHT / 2 - 100);
         dirtThrowButton->setPosition(buttonPos);
         dirtThrowArc->setPosition(buttonPos);
         dirtThrowArc->setAngle(arc_rotate_angle);
-        if ((myCurBoard == 1 && _input.getDir().x == 1) || (myCurBoard == -1 && _input.getDir().x == -1)) {
+        if (_input.getDir().x != 0) {
             ifSwitch = true;
         }
         if (_currentDirtAmount > 0) {
             // _dirtThrowInput.update();
-            float player_x = myCurBoard == 1 ? getSize().width - _windowVec[_id - 1]->sideGap : _windowVec[_id - 1]->sideGap;
+            float player_x = myCurBoard == -1 ? getSize().width - _windowVec[_id - 1]->sideGap : _windowVec[_id - 1]->sideGap;
             cugl::Vec2 playerPos(player_x, _playerVec[_id-1]->getPosition().y);
             if (!_dirtSelected) {
                 if (dirtCon.didPress() && dirtThrowButton->isDown()) {
@@ -1263,7 +1263,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                 if (dirtCon.didRelease()) {
                     _dirtSelected = false;
                     Vec2 diff = worldPos - _prevInputPos;
-                    if ((myCurBoard == -1 && diff.x > 0) || (myCurBoard == 1 && diff.x < 0)) {
+                    if ((myCurBoard == 1 && diff.x > 0) || (myCurBoard == -1 && diff.x < 0)) {
                         diff.x = 0;
                     }
                     if (diff.length() > dirtThrowArc->getWidth() / 2) {
@@ -1289,7 +1289,7 @@ void GameplayController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     std::vector<Vec2> vertices;
                     vertices.push_back(playerPos);
                     Vec2 diff = worldPos - _prevInputPos;
-                    if ((myCurBoard == -1 && diff.x > 0) || (myCurBoard == 1 && diff.x < 0)) {
+                    if ((myCurBoard == 1 && diff.x > 0) || (myCurBoard == -1 && diff.x < 0)) {
                         diff.x = 0;
                     }
                     if (diff.length() > dirtThrowArc->getWidth() / 2) {
@@ -1515,7 +1515,7 @@ void GameplayController::stepForward(std::shared_ptr<Player>& player, std::share
     if (windows->getTotalDirt() == 0 && !_gameOver) {
         _gameOver = true;
         _hasWon[player_id - 1] = true;
-        _curBirdBoard = rand() % _numPlayers + 1;
+        // _curBirdBoard = rand() % _numPlayers + 1;
     }
 
     // calculate progress
@@ -1776,10 +1776,10 @@ void GameplayController::draw(const std::shared_ptr<cugl::SpriteBatch>& batch) {
                 batch->draw(_arrowTexture, Vec2(), rightTransArrow);
             }            
             
-            leftTrans.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransLeft);
+            leftTrans.translate(_windowVec[_id - 1]->sideGap - 50, yTransLeft);
             batch->draw(leftPlayerTexture, Vec2(), leftTrans);
             
-            rightTrans.translate(_windowVec[_id - 1]->sideGap - 50, yTransRight);
+            rightTrans.translate(getSize().width - _windowVec[_id - 1]->sideGap + 50, yTransRight);
             batch->draw(rightPlayerTexture, Vec2(), rightTrans);
         }
         // character indicators drawing end

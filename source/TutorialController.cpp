@@ -287,14 +287,14 @@ void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     int myCurBoard = _allCurBoards[_id - 1];
     if (myCurBoard != 0) {
         bool ifSwitch = false;
-        float button_x = myCurBoard == 1 ? getSize().width - _windowVec[_id - 1]->sideGap + 150 : _windowVec[_id - 1]->sideGap - 150;
-        float arc_start = myCurBoard == 1 ? 270 : 90;
-        float arc_rotate_angle = myCurBoard == 1 ? 0 : M_PI;
+        float button_x = myCurBoard == -1 ? getSize().width - _windowVec[_id - 1]->sideGap + 150 : _windowVec[_id - 1]->sideGap - 150;
+        float arc_start = myCurBoard == -1 ? 270 : 90;
+        float arc_rotate_angle = myCurBoard == -1 ? 0 : M_PI;
         cugl::Vec2 buttonPos(button_x, SCENE_HEIGHT / 2);
         dirtThrowButton->setPosition(buttonPos);
         dirtThrowArc->setPosition(buttonPos);
         dirtThrowArc->setAngle(arc_rotate_angle);
-        if ((myCurBoard == 1 && _input.getDir().x == 1) || (myCurBoard == -1 && _input.getDir().x == -1)) {
+        if (_input.getDir().x != 0) {
             if (_currentTutorialStage != THROW) { // don't allow returning to own board before player has thrown dirt for the first time
                 ifSwitch = true;
                 if (_currentTutorialStage == RETURN) { _currentTutorialStage = ALL_DIRT; } // player has returned to their board after throwing dirt
@@ -302,7 +302,7 @@ void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
         }
         if (_currentDirtAmount > 0) {
             // _dirtThrowInput.update();
-            float player_x = myCurBoard == 1 ? getSize().width - _windowVec[_id - 1]->sideGap : _windowVec[_id - 1]->sideGap;
+            float player_x = myCurBoard == -1 ? getSize().width - _windowVec[_id - 1]->sideGap : _windowVec[_id - 1]->sideGap;
             cugl::Vec2 playerPos(player_x, _playerVec[_id - 1]->getPosition().y);
             if (!_dirtSelected) {
                 if (dirtCon.didPress() && dirtThrowButton->isDown()) {
@@ -316,7 +316,7 @@ void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     if (_currentTutorialStage == THROW) { _currentTutorialStage = RETURN; } // player has thrown dirt at opponent
                     _dirtSelected = false;
                     Vec2 diff = worldPos - _prevInputPos;
-                    if ((myCurBoard == -1 && diff.x > 0) || (myCurBoard == 1 && diff.x < 0)) {
+                    if ((myCurBoard == 1 && diff.x > 0) || (myCurBoard == -1 && diff.x < 0)) {
                         diff.x = 0;
                     }
                     if (diff.length() > dirtThrowArc->getWidth() / 2) {
@@ -343,7 +343,7 @@ void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
                     std::vector<Vec2> vertices;
                     vertices.push_back(playerPos);
                     Vec2 diff = worldPos - _prevInputPos;
-                    if ((myCurBoard == -1 && diff.x > 0) || (myCurBoard == 1 && diff.x < 0)) {
+                    if ((myCurBoard == 1 && diff.x > 0) || (myCurBoard == -1 && diff.x < 0)) {
                         diff.x = 0;
                     }
                     if (diff.length() > dirtThrowArc->getWidth() / 2) {
@@ -572,9 +572,8 @@ void TutorialController::drawTutorialFinger(const std::shared_ptr<cugl::SpriteBa
     float fingerScaleFactor = .1;
     dragFingerTrans.scale(fingerScaleFactor);
     dragFingerTrans.translate(_lastDirtThrowButtonLocation + Vec2(0, player->getPosition().y - 350));
-    Vec2 animationTarget = (player->getCoors().x == 0) ? Vec2(-_fingerTargetDelta.x, _fingerTargetDelta.y) : _fingerTargetDelta;
+    Vec2 animationTarget = (player->getCoors().x == 0) ? _fingerTargetDelta : Vec2(-_fingerTargetDelta.x, _fingerTargetDelta.y);
     Vec2 animationTranslation = animationTarget.scale(fingerT, fingerT);
     dragFingerTrans.translate(animationTranslation);
     batch->draw(_TutorialDragFinger, Vec2(), dragFingerTrans);
-    CULog("%f\n", fingerT);
 }
