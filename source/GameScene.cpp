@@ -71,21 +71,6 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _textBubble = _assets->get<Texture>("text_bubble");
     _mushroomPoint = _assets->get<Texture>("mushroom_point");
 
-    // victory screen
-//    auto _victoryJson = _assets->get<JsonValue>("victory");
-    _victory_UI = assets->get<scene2::SceneNode>("victory");
-    _victoryBackout = std::dynamic_pointer_cast<scene2::Button>(_victory_UI->getChildByName("buttons")->getChildByName("backtohome"));
-    _victoryBackout->addListener([=](const std::string& name, bool down) {
-        if (down) {
-            _quit = true;
-        }
-    });
-    _victory_UI->setContentSize(dimen);
-    _victory_UI->doLayout(); // This rearranges the children to fit the screen
-    addChild(_victory_UI);
-
-    
-    
     // Initialize dirt bucket
     setEmptyBucket(assets->get<Texture>("bucketempty"));
     setFullBucket(assets->get<Texture>("bucketfull"));
@@ -141,12 +126,7 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     
 //    _scene_UI->getChildByName("tutorial")->getChildByName("mushroomtalk")->setVisible(false);
 //    _scene_UI->getChildByName("tutorial")->getChildByName("dialog")->getChildByName("textbox")->setVisible(false);
-//    
-    // get the win background scene when game is win
-    _winBackground = _assets->get<scene2::SceneNode>("win");
-    
-    // get the lose background scene when game is lose
-    _loseBackground = _assets->get<scene2::SceneNode>("lose");
+//
     
 
     _backout = std::dynamic_pointer_cast<scene2::Button>(_assets->get<scene2::SceneNode>("game_back"));
@@ -164,8 +144,6 @@ bool GameScene::init(const std::shared_ptr<cugl::AssetManager>& assets, int fps)
     _quit = false;
     addChild(_scene_UI);
     addChild(_gameplay_elem);
-    addChild(_winBackground);
-    addChild(_loseBackground);
 //    _loseBackground->setVisible(false);
 //    _winBackground->setVisible(false);
     setActive(false);
@@ -186,8 +164,6 @@ void GameScene::dispose() {
         _active = false;
         _dirtThrowButton = nullptr;
         _dirtThrowArc = nullptr;
-        _winBackground = nullptr;
-        _loseBackground = nullptr;
     }
 }
 
@@ -291,8 +267,6 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     // For now we render 3152-style
     // DO NOT DO THIS IN YOUR FINAL GAME
     // CULog("current board: %d", _curBoard);
-    
-
     Vec3 cameraPos;
     if (!_gameController->_countDown) {
         cameraPos = Vec3(getCamera()->getPosition().x, _gameController->getPlayerWindow(_gameController->_id)->_windowHeight * _gameController->getPlayerWindow(_gameController->_id)->_nVertical + _scroll, 1);
@@ -316,18 +290,8 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->draw(_background,(cameraPos -getSize().operator Vec2()/2)-Vec2(0, cameraPos.y/3-0));
     batch->draw(_parallax, (cameraPos -getSize().operator Vec2()/2)-Vec2(0, cameraPos.y));
     
-
-        
-    
     _gameController->draw(batch);
-    
-    
-    
     _gameController->drawCountdown(batch, getCamera()->getPosition(), getSize());
-    
-    
-    
-    
     
     batch->setColor(Color4::WHITE);
     
@@ -403,39 +367,6 @@ void GameScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
 
     if (true) {
         _gameController->drawTutorialFinger(batch);
-    }
-    
-    if (_gameController->isGameWin()) {
-//        std::shared_ptr<Player> p = _gameController->getPlayer(_id);
-        int barIdx = 0;
-//        CULog("%s", p->getChar().c_str());
-        _victory_UI->setPosition(cameraPos -getSize().operator Vec2()/2);
-        _victory_UI->getChildByName("victorybg1")->setVisible(true);
-        _victory_UI->getChildByName("victorybg2")->setVisible(true);
-        switch (barIdx) {
-            case 0:
-                _victory_UI->getChildByName("redwinner")->setVisible(true);
-                break;
-            case 1:
-                _victory_UI->getChildByName("greenwinner")->setVisible(true);
-                break;
-            case 2:
-                _victory_UI->getChildByName("bluewinner")->setVisible(true);
-                break;
-            case 3:
-                _victory_UI->getChildByName("yellowwinner")->setVisible(true);
-                break;
-            default:
-                _victory_UI->getChildByName("yellowwinner")->setVisible(true);
-                break;
-        }
-        _victoryBackout->activate();
-        _backout->deactivate();
-        _victory_UI->render(batch);
-    } else if (_gameController->isGameOver() && !_gameController->isGameWin()) {
-        _loseBackground->setPosition(cameraPos -getSize().operator Vec2()/2);
-        _loseBackground->setVisible(true);
-        _loseBackground->render(batch);
     }
     
     batch->end();

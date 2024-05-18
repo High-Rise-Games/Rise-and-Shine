@@ -70,7 +70,7 @@ public:
      *
      * @return true if there is a ship-asteroid collision, and a possible landed dirt position
      */
-    std::pair<bool, std::optional<std::pair<cugl::Vec2, int>>> resolveCollision(const std::shared_ptr<Player>& player, std::shared_ptr<ProjectileSet>& pset);
+    std::pair<bool, std::optional<std::tuple<cugl::Vec2, int, int>>> resolveCollision(const std::shared_ptr<Player>& player, std::shared_ptr<ProjectileSet>& pset);
 
     /** Returns true if there is a player bird collision*/
     bool resolveBirdCollision(const std::shared_ptr<Player>& player, Bird& bird, cugl::Vec2 birdWorldPos, float radiusMultiplier);

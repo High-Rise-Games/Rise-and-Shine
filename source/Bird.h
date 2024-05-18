@@ -13,6 +13,7 @@ class Bird {
 public:
     /** current position of the bird*/
     cugl::Vec2 birdPosition;
+    int _cooldown;
     
 private:
     

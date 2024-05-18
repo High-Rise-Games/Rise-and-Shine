@@ -35,23 +35,33 @@ public:
         cugl::Vec2 velocity;
         /** projectile destination, ONLY active for dirt. In board position. */
         cugl::Vec2 destination;
+        /** initial position, for drawing bird poo */
+        cugl::Vec2 startPos;
         /** type of projectile */
         ProjectileType type;
         /** amount of dirt to land */
         int spawnAmount;
+        
+        /** total number of frames for poo start and end */
+        int _maxPooSFFrame;
+        // current poo SF frame
+        int _pooSFFrames;
+        bool _inMiddle;
+        float _progress;
+
     
     private:
         /** The drawing scale factor for this projectile */
         float _scaleFactor;
         /** The amount of damage caused by a projectile */
         float _damage;
-        /** The stun time caused by a projectile */
-        float _stunTime;
         /** The radius of the projectile */
         float _radius;
-
+        
         /** projectile texture in flight */
         std::shared_ptr<cugl::Texture> _projectileTexture;
+        /** projectile texture on start or finish, only used by poop */
+        std::shared_ptr<cugl::SpriteSheet> _projectileSFTexture;
 
 
     public:
@@ -59,33 +69,17 @@ public:
         /** Use this constructor to generate a specialized projectile
          * @param t     type of projectile
         */
-        Projectile(const cugl::Vec2 p, const cugl::Vec2 v, const cugl::Vec2 dest, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t, int s);
+        Projectile(const cugl::Vec2 p, const cugl::Vec2 source, const cugl::Vec2 v, const cugl::Vec2 dest, std::shared_ptr<cugl::Texture> texture, float sf, const ProjectileType t, int s);
 
         /** sets projectile scale for drawing */
         void setScale(float s) { _scaleFactor = s; }
 
         /** gets projectile scale for drawing */
         float getScale() { return _scaleFactor; }
-
-        /** sets projectile texture */
-        void setProjectileTexture(const std::shared_ptr<cugl::Texture>& value);
     
         /** get projectile texture */
         const std::shared_ptr<cugl::Texture>& getTexture() const { return _projectileTexture; }
-
-        /**
-         * Returns the amount of damage caused by an projectile.
-         *
-         * @return damage amount
-         */
-        int getDamage() const { return _damage; }
-
-        /**
-         * Returns the amount of stun time caused by an projectile.
-         *
-         * @return stun time
-         */
-        int getStunTime() const { return _stunTime; }
+        const std::shared_ptr<cugl::SpriteSheet>& getSFTexture() const { return _projectileSFTexture; }
 
         /**
          * Returns the radius of the projectile.
@@ -118,13 +112,14 @@ private:
     std::unordered_set<std::shared_ptr<Projectile>> _pending;
     /** The texture for dirt projectiles */
     std::shared_ptr<cugl::Texture> _dirtTexture;
-    /** The texture for poop projectiles */
-    std::shared_ptr<cugl::Texture> _poopTexture;
+    /** The texture for poop  middle part  */
+    std::shared_ptr<cugl::Texture> _poopInFlightTexture;
+    /** The tecture for poop inflight */
+    std::shared_ptr<cugl::SpriteSheet> _poopFlightTexture;
     /** The scale factor for the dirt texture based on window grid size */
     float _dirtScaleFactor;
     /** The scale factor for the poop texture based on window grid size */
-    float _poopScaleFactor;
-
+    float _poopInFlightScaleFactor;
 
 public:
     /**
@@ -189,17 +184,9 @@ public:
     void setDirtTexture(const std::shared_ptr<cugl::Texture>& value) {
         _dirtTexture = value;
     }
-
-    /**
-     * Returns the image for a single poop projectile; reused by all poop projectiles.
-     *
-     * This value should be loaded by the GameScene and set there. However,
-     * we have to be prepared for this to be null at all times.
-     *
-     * @return the image for a single poop projectile; reused by all poop projectiles.
-     */
-    const std::shared_ptr<cugl::Texture>& getPoopTexture() const {
-        return _poopTexture;
+    
+    const std::shared_ptr<cugl::Texture>& getPoopInFlightTexture() const {
+        return _poopInFlightTexture;
     }
 
     /**
@@ -210,10 +197,11 @@ public:
      *
      * @param value the image for a poop projectile; reused by all poop projectiles.
      */
-    void setPoopTexture(const std::shared_ptr<cugl::Texture>& value) {
-        _poopTexture = value;
+    
+    void setPoopInFlightTexture(const std::shared_ptr<cugl::Texture>& value) {
+        _poopInFlightTexture = value;
     }
-
+    
     /**
      * Sets the texture scale factors.
      *
@@ -255,7 +243,7 @@ public:
      * @param dest  The projectile's destination.
      * @param t     The projectile type.
      */
-    void spawnProjectileClient(cugl::Vec2 p, cugl::Vec2 v, cugl::Vec2 dest, Projectile::ProjectileType t);
+    void spawnProjectileClient(cugl::Vec2 p, cugl::Vec2 source, cugl::Vec2 v, cugl::Vec2 dest, Projectile::ProjectileType t);
 
     /**
      * Moves all the projectiles in the active set.
@@ -269,7 +257,7 @@ public:
      *
      * @returns list of destinations to spawn filth objects
      */
-    std::vector<std::pair<cugl::Vec2, int>> update(cugl::Size size);
+    std::vector<std::tuple<cugl::Vec2, int, int>> update(cugl::Size size);
 
     /**
      * Draws all active projectiles to the sprite batch within the given bounds.

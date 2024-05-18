@@ -25,6 +25,8 @@ private:
     std::shared_ptr<cugl::Texture> _filthStaticTexture;
     /** Filth texture in flight */
     std::shared_ptr<cugl::Texture> _filthFlightTexture;
+    /** Whether the texture is birdPoo*/
+    float _birdPoo;
 
 
 public:
@@ -38,8 +40,23 @@ public:
     /** if true, get inflight texture, else get static */
     const std::shared_ptr<cugl::Texture>& getTexture(bool inflight) const { return _filthStaticTexture; }
     
+    /** sets window pane texture */
+    void setBrdPoo(bool value) { if (value) {
+        _birdPoo = 1;
+    } else {
+        _birdPoo = 0;
+    };  }
+    
+    /** Gets whether the texture is bird poo
+     1 = true, 0 = false. */
+    float getBirdPoo() {
+        return _birdPoo;
+    }
+    
     /** draws a filth on static window plane */
     void drawStatic(const std::shared_ptr<cugl::SpriteBatch>& batch, cugl::Size size, cugl::Affine2 filthTrans);
+    
+    
 };
 
 #endif

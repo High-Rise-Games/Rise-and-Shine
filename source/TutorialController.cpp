@@ -118,12 +118,13 @@ bool TutorialController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
         _windowVec[i - 1]->init(_levelJson, _size); // init depends on texture
         _windowVec[i - 1]->setInitDirtNum(_initDirtCount);
         _windowVec[i - 1]->setDirtTexture(assets->get<Texture>(_dirtTextureString));
+        _windowVec[i - 1]->setPooTexture(_assets->get<Texture>("birdPoop"));
         _windowVec[i - 1]->setFadedDirtTexture(assets->get<Texture>("faded-dirt"));
         //_windowVec[i - 1]->generateInitialBoard(_windowVec[i - 1]->getInitDirtNum());
         // generate fixed dirt
         for (int j = 0; j < this->dirt_x_values.size(); j++) {
             //std::shared_ptr<StaticFilth> dirt = std::make_shared<StaticFilth>(Vec2(dirt_x_values.at(j), dirt_y_values.at(j)));
-            _windowVec[i - 1]->addDirt(dirt_y_values.at(j), dirt_x_values.at(j));
+            _windowVec[i - 1]->addDirt(dirt_y_values.at(j), dirt_x_values.at(j), 0);
         }
 
         // Initialize player characters
@@ -136,7 +137,7 @@ bool TutorialController::initHost(const std::shared_ptr<cugl::AssetManager>& ass
         // Initialize projectiles
         _projectileVec[i - 1] = make_shared<ProjectileSet>();
         _projectileVec[i - 1]->setDirtTexture(assets->get<Texture>(_dirtTextureString));
-        _projectileVec[i - 1]->setPoopTexture(assets->get<Texture>("poop"));
+        _projectileVec[i - 1]->setPoopInFlightTexture(assets->get<Texture>("pooMiddle"));
         _projectileVec[i - 1]->setTextureScales(_windowVec[i - 1]->getPaneHeight(), _windowVec[i - 1]->getPaneWidth());
     }
 
@@ -253,7 +254,7 @@ void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
             std::bernoulli_distribution dist(_projectileGenChance);
             if (dist(_rng)) {
                 // random chance to generate bird poo at column center
-                generatePoo(projectiles);
+                generatePoo(projectiles, windows);
             }
         }
     }
@@ -279,7 +280,6 @@ void TutorialController::update(float timestep, Vec2 worldPos, DirtThrowInputCon
     // update the game state for self (host). Updates for the rest of the players are done in processMovementRequest(),
     // called whenever the host recieves a movement or other action message.
     _currentDirtAmount = _allDirtAmounts[0];
-    _gameWin = _hasWon[0];
     _curBirdPos = getWorldPosition(_bird.birdPosition);
 
 
