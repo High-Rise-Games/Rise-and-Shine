@@ -469,7 +469,7 @@ void App::updateGameScene(float timestep) {
         _victoryscene.setCharacters(_gameplay);
         _victoryscene.setActive(true);
         _scene = State::VICTORY;
-    } else if (_gameplay->isThereARequestForMenu()) {
+    } else if (_gamescene.didQuit() || _gameplay->isThereARequestForMenu()) {
         _gamescene.setActive(false);
         _gameplay->setActive(false);
         _gameplay->disconnect();
