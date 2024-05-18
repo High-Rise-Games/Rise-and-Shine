@@ -819,14 +819,14 @@ void GameplayController::updateBoard(std::shared_ptr<NetStructs::BOARD_STATE> da
     if (data->animState == 1) {
         player->setAnimationState(Player::IDLE);
     } else if (data->animState == 2) {
-        if (!(player->getAnimationState() == Player::WIPING)) {
+        if (_id == playerId && !(player->getAnimationState() == Player::WIPING)) {
             _audioController->playCleanSoundClient();
         }
         player->setAnimationState(Player::WIPING);
     } else if (data->animState == 3) {
         player->setAnimationState(Player::SHOOING);
     } else if (data->animState == 4) {
-        if (!(player->getAnimationState() == Player::STUNNED)) {
+        if (_id == playerId && !(player->getAnimationState() == Player::STUNNED)) {
             _audioController->playBangSoundClient();
         }
         player->setAnimationState(Player::STUNNED);
@@ -1455,9 +1455,9 @@ void GameplayController::clientStepForward(std::shared_ptr<Player>& player, std:
             }
             else if (player->getAnimationState() == Player::IDLE) {
                 // TODO: also move sound logic into update board for client
-                if (player_id == _id) {
-                    _audioController->playCleanSoundHost();
-                };
+//                if (player_id == _id) {
+//                    _audioController->playCleanSoundHost();
+//                };
                 player->setAnimationState(Player::AnimStatus::WIPING);
                 _cleanInProgress = true;
             }
@@ -1466,10 +1466,9 @@ void GameplayController::clientStepForward(std::shared_ptr<Player>& player, std:
         // Check for collisions and play sound
         auto collision_result = _collisions.resolveCollision(player, projectiles);
         if (collision_result.first) { // if collision occurred
-            if (player_id == _id) {
-                // TODO: also move sound logic into update board for client
-                _audioController->playBangSoundHost();
-            };
+//            if (player_id == _id) {
+//                _audioController->playBangSoundHost();
+//            };
             player->setAnimationState(Player::STUNNED);
             if (collision_result.second.has_value()) {
                 landedDirts.push_back(collision_result.second.value());

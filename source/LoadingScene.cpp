@@ -58,6 +58,7 @@ bool LoadingScene::init(const std::shared_ptr<AssetManager>& assets) {
     layer->doLayout(); // This rearranges the children to fit the screen
     
     _bar = std::dynamic_pointer_cast<scene2::ProgressBar>(assets->get<scene2::SceneNode>("load_bar"));
+    _knob = assets->get<scene2::SceneNode>("load_knob");
     _brand = assets->get<scene2::SceneNode>("load_name");
     _button = std::dynamic_pointer_cast<scene2::Button>(assets->get<scene2::SceneNode>("load_play"));
     _button->addListener([=](const std::string& name, bool down) {
@@ -105,6 +106,11 @@ void LoadingScene::update(float progress) {
             _button->activate();
         }
         _bar->setProgress(_progress);
+        _knob->setPositionX(_bar->getPositionX() - (_bar->getWidth() * 0.5) + (_bar->getWidth() * _bar->getProgress()));
+        _knob->setPositionY(_bar->getPositionY());
+    }
+    else {
+        _knob->setVisible(false);
     }
 }
 

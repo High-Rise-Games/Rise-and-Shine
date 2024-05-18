@@ -40,6 +40,8 @@ protected:
     // VIEW
     /** The animated progress bar */
     std::shared_ptr<cugl::scene2::ProgressBar>  _bar;
+    /** The knob at the end of the progress bar */
+    std::shared_ptr<cugl::scene2::SceneNode>  _knob;
     /** The engine name */
     std::shared_ptr<cugl::scene2::SceneNode>  _brand;
     /** The "play" button */

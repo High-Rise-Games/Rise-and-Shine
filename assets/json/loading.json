@@ -22,17 +22,26 @@
             "magfilter": "linear"
         },
         "progress": {
-            "file":      "textures/progress.png",
+            "file": "textures/loading-bar-fg.png",
             "wrapS":     "clamp",
             "wrapT":     "clamp",
             "minfilter": "linear",
             "magfilter": "linear",
             "atlas":     {
-                "background" : [0,    0, 320, 45],
-                "foreground" : [24,  45, 296, 90],
-                "leftcap"    : [0,   45,  24, 90],
-                "rightcap"   : [296, 45, 320, 90]
+                "foreground" : [3, 0, 1028, 77],
+                "leftcap"    : [0,   0,  2, 77],
+                "rightcap"   : [1028, 0, 1030, 77]
             }
+        },
+        "progress_bg": {
+            "file": "textures/loading-bar-bg.png",
+            "wrapS":     "clamp",
+            "wrapT":     "clamp",
+            "minfilter": "linear",
+            "magfilter": "linear"
+        },
+        "progress_knob": {
+            "file": "textures/loading-knob.png"
         }
 	},
     "scene2s" : {
@@ -42,7 +51,7 @@
                 "type" : "Anchored"
             },
             "data" : {
-                "color": [239,61,49,255]
+                "color": [234, 190, 166, 105]
             },
             "children"  : {
                 "logo"  : {
@@ -108,15 +117,33 @@
                     "type"   : "Progress",
                     "data"   : {
                         "anchor"     : [0.5,0.5],
-                        "background" : "progress_background",
+                        "background" : "progress_bg",
                         "foreground" : "progress_foreground",
                         "left_cap"   : "progress_leftcap",
-                        "right_cap"  : "progress_rightcap"
+                        "right_cap"  : "progress_rightcap",
+                        "scale": 0.75
                     },
                     "layout" : {
                         "x_anchor" : "center",
                         "y_anchor" : "middle",
                         "y_offset" : -175,
+                        "absolute" : true
+                    }
+                },
+                "knob" : {
+                    "type"   : "Image",
+                    "format"    : {
+                        "type" : "Anchored"
+                    },
+                    "data"   : {
+                        "texture"  : "progress_knob",
+                        "anchor"   : [0.5,0.5],
+                        "scale"    : 0.75
+                    },
+                    "layout" : {
+                        "x_anchor" : "center",
+                        "y_anchor" : "middle",
+                        "y_offset" : -55,
                         "absolute" : true
                     }
                 }
