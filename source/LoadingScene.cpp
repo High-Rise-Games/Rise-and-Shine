@@ -66,15 +66,12 @@ bool LoadingScene::init(const std::shared_ptr<AssetManager>& assets) {
     });
     
     _frame_cols = 4;
-    _frame_size = 32;
+    _frame_size = 64;
+    _curFrame = 0;
     
-    int rows = _frame_size/_frame_cols;
-    if (_frame_size % _frame_cols != 0) {
-        rows++;
-    }
-    _loading_animation_1 = SpriteSheet::alloc(_assets->get<Texture>("loading_1"), rows, _frame_cols, _frame_size);
+    _loading_animation_1 = SpriteSheet::alloc(_assets->get<Texture>("loading_1"), 8, 4, _frame_size / 2);
     _loading_animation_1->setFrame(0);
-    _loading_animation_2 = SpriteSheet::alloc(_assets->get<Texture>("loading_2"), rows, _frame_cols, _frame_size);
+    _loading_animation_2 = SpriteSheet::alloc(_assets->get<Texture>("loading_2"), 8, 4, _frame_size / 2);
     _loading_animation_2->setFrame(0);
 
     Application::get()->setClearColor(Color4(192,192,192,255));
@@ -126,13 +123,15 @@ void LoadingScene::update(float progress) {
 void LoadingScene::render(const std::shared_ptr<cugl::SpriteBatch>& batch) {
     batch->begin(getCamera()->getCombined());
     _layer->render(batch);
-    if (_progress < 0.5) {
+    _curFrame = (int) (cugl::EasingFunction::cubicInOut(_progress) * _frame_size);
+    CULog("lframe: %d", _curFrame);
+    if (_curFrame < 32) {
         //CULog("anim 1 playing frame %f", std::round((_frame_size-1) * (_progress * 2)));
-        _loading_animation_1->setFrame(static_cast<int>(std::round((_frame_size-1) * (_progress * 2))));
-    } else if (_progress < 1) {
+        _loading_animation_1->setFrame(_curFrame);
+    } else {
         //CULog("anim 2 playing frame %f", std::round((_frame_size-1) * ((_progress - 0.5) * 2)));
         _loading_animation_1->setFrame(31);
-        _loading_animation_2->setFrame(static_cast<int>(std::round((_frame_size-1) * ((_progress - 0.5) * 2))));
+        _loading_animation_2->setFrame(_curFrame % 32);
     }
     Affine2 trans1;
     trans1.scale(0.5);

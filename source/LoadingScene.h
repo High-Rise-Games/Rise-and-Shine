@@ -54,6 +54,7 @@ protected:
     std::shared_ptr<cugl::SpriteSheet> _loading_animation_2;
     int _frame_cols;
     int _frame_size;
+    int _curFrame;
     
     // MODEL
     /** The progress displayed on the screen */

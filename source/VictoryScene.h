@@ -39,6 +39,7 @@ public:
     /** The flower image as loser*/
     std::shared_ptr<cugl::SpriteSheet> _loserFlower;
     int animFrameCounter;
+    int loseFrameCounter;
     /** Whether the back button is pressed*/
     bool _quit;
     /** The winner character */
